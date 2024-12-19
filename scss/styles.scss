@@ -1,0 +1,49 @@
+.customfield-sprogramme {
+    overflow: auto;
+    .programm-input {
+        display: block;
+        width: 100%;
+        min-width: 70px;
+        height: calc(1.5em + 0.75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9375rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 0;
+        border-radius: 0rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        &::placeholder,
+        &::-webkit-input-placeholder {
+            color: #d7d7d8;
+        }
+        &:focus {
+            outline: 1px solid #7fb6f1;
+            background-color: #f7f7f7;
+            border-radius: 0rem;
+        }
+    }
+    .programm-table {
+        max-width: 100%;
+        overflow: hidden;
+        border-left: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+        th {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 170px;
+            padding: 0.75rem;
+        }
+        th,
+        td {
+            border-top: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+            &.actions {
+                display: flex;
+            }
+        }
+    }
+}

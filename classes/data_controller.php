@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme;
+use customfield_sprogramme\output\programme;
 
 /**
  * Class data
@@ -30,7 +31,7 @@ class data_controller extends \core_customfield\data_controller {
      * @return string
      */
     public function datafield(): string {
-        return 'charvalue';
+        return 'value';
     }
 
     /**
@@ -39,9 +40,17 @@ class data_controller extends \core_customfield\data_controller {
      * @param \MoodleQuickForm $mform
      */
     public function instance_form_definition(\MoodleQuickForm $mform) {
-        $url = new \moodle_url('/customfield/field/sprogramme/edit.php', ['fieldid' => $this->get_field()->get('id')]);
-        $mform->addElement('static', 'customfield_text', $this->get_field()->get_formatted_name(),
+        global $COURSE;
+        $url = new \moodle_url('/customfield/field/sprogramme/edit.php',
+            [
+                'fieldid' => $this->get_field()->get('id'),
+                'courseid' => $COURSE->id,
+            ]
+        );
+        $mform->addElement('static', 'customfield_text', get_string('edit', 'customfield_text'),
             \html_writer::link($url, get_string('edit', 'customfield_text')));
+        $mform->addElement('textarea', 'value', $this->get_field()->get_formatted_name(), ['rows' => 5, 'cols' => 50]);
+        $mform->setType('value', PARAM_RAW);
     }
 
     /**
@@ -75,7 +84,6 @@ class data_controller extends \core_customfield\data_controller {
         $value = $this->get_value();
         $programme = new \customfield_sprogramme\output\programme($value);
         $renderer = $PAGE->get_renderer('customfield_sprogramme');
-
         return $renderer->render($programme);
     }
 }

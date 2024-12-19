@@ -26,3 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Programme customfield';
+$string['customfield/sprogramme:edit'] = 'Edit the Programme customfield';
+$string['customfield/sprogramme:view'] = 'View the Programme customfield';
+$string['invaliddata'] = 'Invalid data: {$a}';

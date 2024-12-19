@@ -1,0 +1,60 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template customfield_sprogramme/table/rows
+
+    TODO describe template rows
+
+    Example context (json):
+    {
+    }
+}}
+{{#rows}}
+    <tr data-row data-index="{{id}}">
+        {{#cells}}
+            {{#active}}
+                <td data-cell data-columnid="{{columnid}}">
+                {{#edit}}
+                    {{#int}}
+                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}" step="1" />
+                    {{/int}}
+                    {{#float}}
+                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}" step="0.01" />
+                    {{/float}}
+                    {{#text}}
+                        <input class="programm-input" data-input="auto" type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
+                    {{/text}}
+                    {{#select}}
+                        <select data-input="auto" class="programm-input" >
+                            {{#options}}
+                                <option value="{{{value}}}" {{#selected}}selected{{/selected}}>{{{name}}}</option>
+                            {{/options}}
+                        </select>
+                    {{/select}}
+                {{/edit}}
+                {{^edit}}
+                    {{{sample_value}}}
+                {{/edit}}
+                </td>
+            {{/active}}
+        {{/cells}}
+        <td class="actions">
+            <button class="btn btn-icon icon-no-margin mr-1 jsbutton {{#hasuserdata}}btn-warning{{/hasuserdata}}" data-id="{{id}}" data-action="delete" data-type="planning">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 ml-auto jsbutton" data-id="{{id}}" data-action="add" data-type="pause">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
+        </td>
+    </tr>
+{{/rows}}

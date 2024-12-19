@@ -17,6 +17,27 @@
 {{!
     @template customfield_sprogramme/programme
 }}
-<div>
-    The table... with maybe JS ??
-</div>
+<link rel="stylesheet" type="text/css" href="{{{cssurl}}}" />
+<form class="customfield-sprogramme" data-region="app">
+    <table class="programm-table">
+        <thead>
+            <tr data-region="columns">
+            </tr>
+        </thead>
+        <tbody data-region="rows">
+        </tbody>
+    </table>
+</form>
+{{#debug}}
+    <div class="d-flex pt-5">
+        <a href="#" data-toggle="collapse" data-target="#debugc">Debug</a>
+        <div id="debugc" class="collapse">
+            <pre id="debug">{{{debug}}}</pre>
+        </div>
+    </div>
+{{/debug}}
+{{#js}}
+require(['customfield_sprogramme/manager'], function(manager) {
+    manager.init({{courseid}});
+});
+{{/js}}

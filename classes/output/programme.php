@@ -21,6 +21,7 @@ defined('MOODLE_INTERNAL') || die();
 use renderable;
 use templatable;
 use renderer_base;
+use stdClass;
 
 /**
  * Renderable for programme
@@ -30,17 +31,6 @@ use renderer_base;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class programme implements renderable, templatable {
-    /** @var string $value The value to be rendered */
-    protected $value;
-
-    /**
-     * Constructor
-     *
-     * @param object $value The value to be rendered
-     */
-    public function __construct(?object $value) {
-        $this->value = $value;
-    }
 
     /**
      * Export data for the template
@@ -48,9 +38,11 @@ class programme implements renderable, templatable {
      * @param renderer_base $output
      * @return array
      */
-    public function export_for_template(renderer_base $output): array {
-        return [
-            'value' => empty($this->value) ? '' :   json_encode($this->value)
-        ];
+    public function export_for_template(renderer_base $output): stdClass {
+        global $PAGE;
+        $data = new stdClass();
+        $data->courseid = $PAGE->context->instanceid;
+        $data->cssurl = new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]);
+        return $data;
     }
 }

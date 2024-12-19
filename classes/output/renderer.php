@@ -17,6 +17,7 @@
 namespace customfield_sprogramme\output;
 
 use plugin_renderer_base;
+use renderable;
 
 /**
  * Class data
@@ -26,4 +27,16 @@ use plugin_renderer_base;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends plugin_renderer_base {
+    /**
+     * Render the output
+     *
+     * @param programme $programme
+     * @return string
+     */
+    public function render(renderable $programme) {
+        global $CFG;
+        $data = $programme->export_for_template($this);
+        $data->debug = $CFG->debugdisplay;
+        return $this->render_from_template('customfield_sprogramme/programme', $data);
+    }
 }

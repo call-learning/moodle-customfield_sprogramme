@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="customfield/field/sprogramme/db" VERSION="20240408" COMMENT="XMLDB for programme custom field"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+<XMLDB PATH="customfield/field/sprogramme/db" VERSION="20241217" COMMENT="XMLDB for programme custom field"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
-<TABLES>
+  <TABLES>
     <TABLE NAME="customfield_sprogramme" COMMENT="Combined information for the programme">
-        <FIELDS>
-            <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-            <FIELD NAME="uc" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Course identifier" SEQUENCE="false"/>
-            <FIELD NAME="cct_ept" TYPE="char" LENGTH="20" NOTNULL="false" COMMENT="CCT / EPT" SEQUENCE="false"/>
-            <FIELD NAME="dd_rse" TYPE="char" LENGTH="20" NOTNULL="false" COMMENT="DD / RSE" SEQUENCE="false"/>
-            <FIELD NAME="type_ae" TYPE="char" LENGTH="10" NOTNULL="false" COMMENT="Type AEEEV" SEQUENCE="false"/>
-            <FIELD NAME="sequence" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="Sequence in module" SEQUENCE="false"/>
-            <FIELD NAME="intitule_seance" TYPE="char" LENGTH="255" NOTNULL="false" COMMENT="Title of the session/exercise" SEQUENCE="false"/>
-            <FIELD NAME="cm" TYPE="float" NOTNULL="false" COMMENT="CM hours" SEQUENCE="false"/>
-            <FIELD NAME="td" TYPE="float" NOTNULL="false" COMMENT="TD hours" SEQUENCE="false"/>
-            <FIELD NAME="tp" TYPE="float" NOTNULL="false" COMMENT="TP hours" SEQUENCE="false"/>
-            <FIELD NAME="tpa" TYPE="float" NOTNULL="false" COMMENT="TPa hours" SEQUENCE="false"/>
-            <FIELD NAME="tc" TYPE="float" NOTNULL="false" COMMENT="TC hours" SEQUENCE="false"/>
-            <FIELD NAME="aas" TYPE="float" NOTNULL="false" COMMENT="AAS hours" SEQUENCE="false"/>
-            <FIELD NAME="fmp" TYPE="float" NOTNULL="false" COMMENT="FMP hours" SEQUENCE="false"/>
-            <FIELD NAME="perso_av" TYPE="float" NOTNULL="false" COMMENT="Personal hours before" SEQUENCE="false"/>
-            <FIELD NAME="perso_ap" TYPE="float" NOTNULL="false" COMMENT="Personal hours after" SEQUENCE="false"/>
-            <FIELD NAME="consignes" TYPE="text" NOTNULL="false" COMMENT="Work instructions for the session" SEQUENCE="false"/>
-            <FIELD NAME="supports" TYPE="text" NOTNULL="false" COMMENT="Pedagogical supports" SEQUENCE="false"/>
-        </FIELDS>
-        <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            <KEY NAME="uc_fk" TYPE="foreign" FIELDS="uc" REFTABLE="course" REFFIELDS="id"/>
-        </KEYS>
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="uc" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course identifier"/>
+        <FIELD NAME="cct_ept" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="CCT / EPT"/>
+        <FIELD NAME="dd_rse" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="DD / RSE"/>
+        <FIELD NAME="type_ae" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Type AEEEV"/>
+        <FIELD NAME="sequence" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Sequence in module"/>
+        <FIELD NAME="intitule_seance" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Title of the session/exercise"/>
+        <FIELD NAME="cm" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="CM hours"/>
+        <FIELD NAME="td" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TD hours"/>
+        <FIELD NAME="tp" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TP hours"/>
+        <FIELD NAME="tpa" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TPa hours"/>
+        <FIELD NAME="tc" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TC hours"/>
+        <FIELD NAME="aas" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="AAS hours"/>
+        <FIELD NAME="fmp" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="FMP hours"/>
+        <FIELD NAME="perso_av" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="Personal hours before"/>
+        <FIELD NAME="perso_ap" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="Personal hours after"/>
+        <FIELD NAME="consignes" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Work instructions for the session"/>
+        <FIELD NAME="supports" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Pedagogical supports"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="uc_fk" TYPE="foreign" FIELDS="uc" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
     </TABLE>
-
-    <!-- Disciplines Table -->
     <TABLE NAME="customfield_sprogramme_disc" COMMENT="Linked disciplines">
-        <FIELDS>
-            <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-            <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Foreign key to Remplissage table" SEQUENCE="false"/>
-            <FIELD NAME="discipline" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Discipline name" SEQUENCE="false"/>
-            <FIELD NAME="percentage" TYPE="float" NOTNULL="true" COMMENT="Percentage of discipline" SEQUENCE="false"/>
-        </FIELDS>
-        <KEYS>
-            <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            <KEY NAME="fk_programme" TYPE="foreign" FIELDS="pid" REFTABLE="customfield_sprogramme" REFFIELDS="id"/>
-        </KEYS>
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
+        <FIELD NAME="discipline" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Discipline name"/>
+        <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_programme" TYPE="foreign" FIELDS="pid" REFTABLE="customfield_sprogramme" REFFIELDS="id"/>
+      </KEYS>
     </TABLE>
-</TABLES>
+  </TABLES>
 </XMLDB>
