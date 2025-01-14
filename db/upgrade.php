@@ -74,6 +74,41 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2024121700, 'customfield', 'sprogramme');
     }
 
+    if ($oldversion < 2025011000) {
+
+        // Define field did to be added to customfield_sprogramme_disc.
+        $table = new xmldb_table('customfield_sprogramme_disc');
+        $field = new xmldb_field('did', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'pid');
+
+        // Conditionally launch add field did.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'percentage');
+
+        // Conditionally launch add field usermodified.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'usermodified');
+
+        // Conditionally launch add field timecreated.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'timecreated');
+
+        // Conditionally launch add field timemodified.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025011000, 'customfield', 'sprogramme');
+    }
 
     return true;
 }

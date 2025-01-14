@@ -23,11 +23,16 @@
 
 import State from 'customfield_sprogramme/local/state';
 import Repository from 'customfield_sprogramme/local/repository';
+import Templates from 'core/templates';
 import Notification from 'core/notification';
+import {getString} from 'core/str';
 import {debounce} from 'core/utils';
 import './local/components/table';
 
-
+/**
+ * Manager class.
+ * @class
+ */
 class Manager {
 
     /**
@@ -79,6 +84,15 @@ class Manager {
         } catch (error) {
             Notification.exception(error);
         }
+    }
+
+    /**
+     * Get the available disciplines.
+     * @return {Array} The disciplines.
+     */
+    getDisciplines() {
+        const disciplines = Repository.getDisciplines();
+        return disciplines;
     }
 
     /**
@@ -136,6 +150,11 @@ class Manager {
                     'column': 'column',
                     'value': 'value',
                 },
+                'disciplines': {
+                    'id': 'id',
+                    'name': 'name',
+                    'percentage': 'percentage',
+                },
             },
         };
     }
@@ -160,9 +179,16 @@ class Manager {
                 });
                 return cleanedCell;
             });
+            // Clean the disciplines.
+            cleanedRow.disciplines = row.disciplines.map(discipline => {
+                const cleanedDiscipline = {};
+                Object.keys(rowObject.rows.disciplines).forEach(key => {
+                    cleanedDiscipline[key] = discipline[key];
+                });
+                return cleanedDiscipline;
+            });
             return cleanedRow;
         });
-        window.console.log(JSON.stringify(cleanedRows));
         return cleanedRows;
     }
 
@@ -221,9 +247,9 @@ class Manager {
      */
     async delete(btn) {
         const rowid = btn.closest('[data-row]').dataset.index;
-        const response = await Repository.deleteRow({rowid: rowid});
+        const response = await Repository.deleteRow({courseid: this.courseid, rowid: rowid});
         return new Promise((resolve) => {
-            if (response.success) {
+            if (response) {
                 const rows = State.getValue('rows');
                 const index = Array.from(btn.closest('[data-region="rows"]').children).indexOf(btn.closest('[data-row]'));
                 rows.splice(index, 1);
@@ -251,7 +277,8 @@ class Manager {
      * @return {void}
      */
     addEventListeners() {
-        document.addEventListener('click', (e) => {
+        const app = document.querySelector('.' + this.table);
+        app.addEventListener('click', (e) => {
             let btn = e.target.closest('[data-action]');
             if (btn) {
                 e.preventDefault();
@@ -259,12 +286,76 @@ class Manager {
             }
         });
         // Listen to all changes in the table.
-        document.addEventListener('change', (e) => {
+        app.addEventListener('change', (e) => {
             const input = e.target.closest('[data-input]');
             if (input) {
                 this.change(input);
             }
         });
+        // Listen to the arrow down and up keys to navigate to the next or previous row.
+        app.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                this.navigate(e);
+            }
+        });
+        // Disciplines form typeahead, using .disciplineform input[type="search"]
+        // All options are already in the DOM, just show and hide them.
+        // On select return the discipline id and add it in this form to the cell
+        // {id: 1, value: 20}, {id: 2, value: 60}, {id: 7, value: 20}
+        // The value is set to 100 for now, this will be updated later in this code by adding another input field.
+        const form = document.querySelector('[data-region="disciplineform"]');
+        const search = form.querySelector('input[type="search"]');
+        search.addEventListener('input', (e) => {
+            const input = e.target.closest('input');
+            if (input) {
+                this.typeahead(input);
+            }
+        });
+    }
+
+    /**
+     * Typeahead.
+     * Limit to 5 options.
+     * @param {object} input The input that was changed.
+     * @return {void}
+     */
+    typeahead(input) {
+        const value = input.value;
+        const form = document.querySelector('[data-region="disciplineform"]');
+        const options = form.querySelectorAll('[data-option]');
+        options.forEach(option => {
+            this.removeMatchBold(option);
+            if (option.textContent.toLowerCase().includes(value.toLowerCase())) {
+                option.classList.remove('d-none');
+                this.makeMatchBold(option, value);
+            } else {
+                option.classList.add('d-none');
+            }
+        });
+    }
+
+    /**
+     * Make the match bold.
+     * @param {object} option The option.
+     * @param {string} value The value.
+     * @return {void}
+     */
+    makeMatchBold(option, value) {
+        const text = option.textContent;
+        const index = text.toLowerCase().indexOf(value.toLowerCase());
+        const first = text.slice(0, index);
+        const match = text.slice(index, index + value.length);
+        const last = text.slice(index + value.length);
+        option.innerHTML = first + '<strong>' + match + '</strong>' + last;
+    }
+
+    /**
+     * Remove the match bold.
+     * @param {object} option The option.
+     * @return {void}
+     */
+    removeMatchBold(option) {
+        option.innerHTML = option.textContent;
     }
 
     /**
@@ -285,8 +376,26 @@ class Manager {
         if (btn.dataset.action === 'delete') {
             this.delete(btn);
         }
-
-        this.setTableData();
+        if (btn.dataset.action === 'adddisc') {
+            this.showDisciplineForm(btn);
+        }
+        if (btn.dataset.action === 'removedisc') {
+            this.removeDiscipline(btn);
+        }
+        if (btn.dataset.action === 'closedisciplineform') {
+            this.closeDisciplineForm();
+        }
+        if (btn.dataset.action === 'selectdiscipline') {
+            const option = btn.closest('[data-option]');
+            const discipline = {
+                id: option.dataset.id,
+                name: option.textContent,
+            };
+            this.setDisciplineForm(discipline);
+        }
+        if (btn.dataset.action === 'discipline-confirm') {
+            this.addDiscipline();
+        }
     }
 
     /**
@@ -323,6 +432,161 @@ class Manager {
     }
 
     /**
+     * Add a discipline to the row.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async showDisciplineForm(btn) {
+        const row = btn.closest('[data-row]');
+        const form = document.querySelector('[data-region="disciplineform"]');
+        form.querySelector('#rowid').value = row.dataset.index;
+        const arrow = form.querySelector('.formarrow');
+
+
+        // Get the row index nr based on the row position in the table.
+        const rows = document.querySelectorAll('[data-region="rows"] [data-row]');
+        const rowArray = Array.from(rows);
+        const index = rowArray.indexOf(row);
+        // Set the title of the form to show the row number.
+        form.querySelector('[data-region="rownumber"]').textContent =
+            await getString('row', 'customfield_sprogramme', index + 1);
+
+        // Attache the form to the first row for the first 8 rows.
+        // Then attach it to 8 rows before the clicked row.
+        // This makes sure the form is always visible.
+        const setindex = index - 8;
+        let attachTo;
+        let attachToButton;
+        if (setindex > 0) {
+            attachTo = rowArray[setindex].querySelector('[data-disciplines]');
+            attachToButton = rowArray[setindex].querySelector('[data-action="adddisc"]');
+        } else {
+            attachTo = rowArray[0].querySelector('[data-disciplines]');
+            attachToButton = rowArray[0].querySelector('[data-action="adddisc"]');
+        }
+        attachTo.appendChild(form);
+
+        // Position the form arrow next to the button that was clicked.
+        const rectBtn = btn.getBoundingClientRect();
+        const rectAttachToButton = attachToButton.getBoundingClientRect();
+        arrow.style.top = rectBtn.top - rectAttachToButton.top + 'px';
+        this.renderFormDisciplines(row.dataset.index);
+    }
+
+    /**
+     * Remove the discipline form.
+     * @return {void}
+     */
+    closeDisciplineForm() {
+        const container = document.querySelector('[data-region="disciplineform-container"]');
+        const form = document.querySelector('[data-region="disciplineform"]');
+        container.appendChild(form);
+    }
+
+    /**
+     * Select a discipline.
+     * @param {object} discipline The discipline.
+     * @return {void}
+     */
+    async setDisciplineForm(discipline) {
+        const form = document.querySelector('[data-region="disciplineform"]');
+        const formFieldSearch = form.querySelector('input[type="search"]');
+        const formFieldValue = form.querySelector('#discipline-value');
+        const formFieldDiscipline = form.querySelector('#discipline-id');
+        const formFieldDisciplineName = form.querySelector('#discipline-name');
+        const formFieldLastIds = form.querySelector('#lastids');
+
+        formFieldDiscipline.value = discipline.id;
+        formFieldDisciplineName.value = discipline.name;
+        formFieldSearch.value = discipline.name;
+
+        // Add the discipline id to the formFieldLastIds.
+        const lastIds = formFieldLastIds.value.split(',');
+        if (!lastIds.includes(discipline.id)) {
+            lastIds.push(discipline.id);
+            formFieldLastIds.value = lastIds.join(',');
+        }
+        formFieldValue.focus();
+    }
+
+    // Add a discipline to the row.
+    async addDiscipline() {
+        const form = document.querySelector('[data-region="disciplineform"]');
+        const rowid = form.querySelector('#rowid').value;
+        const disciplineid = form.querySelector('#discipline-id').value;
+        const disciplinevalue = form.querySelector('#discipline-value').value;
+        const disciplinename = form.querySelector('#discipline-name').value;
+        const discipline = {
+            id: disciplineid,
+            name: disciplinename,
+            percentage: disciplinevalue,
+        };
+        const rows = State.getValue('rows');
+        const row = rows.find(r => r.id == rowid);
+        // Update or add the discipline to the row.
+        const disciplineIndex = row.disciplines.findIndex(d => d.id == discipline.id);
+        const container = document.querySelector(
+            '[data-disciplines][data-rowid="' + rowid + '"] [data-region="container-disciplines"]');
+        const selectedcontainer = form.querySelector('[data-region="selected-disciplines"]');
+        if (disciplineIndex > -1) {
+            row.disciplines[disciplineIndex] = discipline;
+            const rendered = container.querySelector('[data-id="' + discipline.id + '"]');
+            const selected = selectedcontainer.querySelector('[data-id="' + discipline.id + '"]');
+            const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/discipline', discipline);
+            await Templates.replaceNode(rendered, html, js);
+            await Templates.replaceNode(selected, html, js);
+
+        } else {
+            row.disciplines.push(discipline);
+            const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/discipline', discipline);
+            await Templates.appendNodeContents(container, html, js);
+            await Templates.appendNodeContents(selectedcontainer, html, js);
+        }
+        this.setTableData();
+    }
+
+    /**
+     * Render the disciplines in the form.
+     * @param {int} rowid The rowid.
+     * @return {void}
+     */
+    async renderFormDisciplines(rowid) {
+        const rows = State.getValue('rows');
+        const row = rows.find(r => r.id == rowid);
+        const disciplines = row.disciplines;
+        const form = document.querySelector('[data-region="disciplineform"]');
+        const container = form.querySelector('[data-region="selected-disciplines"]');
+        container.innerHTML = '';
+        disciplines.forEach(async(discipline) => {
+            const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/discipline', discipline);
+            Templates.appendNodeContents(container, html, js);
+        });
+    }
+
+    /**
+     * Remove a discipline from the row.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async removeDiscipline(btn) {
+        const form = document.querySelector('[data-region="disciplineform"]');
+        const rowid = form.querySelector('#rowid').value;
+        const disciplineid = btn.closest('[data-id]').dataset.id;
+        const rows = State.getValue('rows');
+        const row = rows.find(r => r.id == rowid);
+        const index = row.disciplines.findIndex(d => d.id == disciplineid);
+        row.disciplines.splice(index, 1);
+        const container = document.querySelector(
+            '[data-disciplines][data-rowid="' + rowid + '"] [data-region="container-disciplines"]');
+        const selectedcontainer = document.querySelector('[data-region="selected-disciplines"]');
+        const discipline = container.querySelector('[data-id="' + disciplineid + '"]');
+        const selected = selectedcontainer.querySelector('[data-id="' + disciplineid + '"]');
+        container.removeChild(discipline);
+        selectedcontainer.removeChild(selected);
+        this.setTableData();
+    }
+
+    /**
      * Parse response data to a JSON object.
      * @param {Object} response The response.
      * @return {Any} The JSON object.
@@ -333,9 +597,52 @@ class Manager {
         }
         try {
             const Json = JSON.parse(response.data);
+            Json.forEach(column => {
+                column[column.type] = true;
+            });
             return Json;
         } catch (error) {
             return;
+        }
+    }
+
+    /**
+     * Navigate to the next or previous row and left or right column.
+     * @param {Event} e The event.
+     * @return {void}
+     */
+    navigate(e) {
+        const currentIndex = e.target.closest('[data-row]').dataset.index;
+        const currentColumn = e.target.closest('[data-cell]').dataset.columnid;
+        const allRows = document.querySelectorAll('[data-row]');
+        for (let i = 0; i < allRows.length; i++) {
+            if (allRows[i].dataset.index == currentIndex) {
+                if (e.key === 'ArrowDown' && i < allRows.length - 1) {
+                    const nextInput = allRows[i + 1].querySelector(`[data-columnid="${currentColumn}"]`);
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+                if (e.key === 'ArrowUp' && i > 0) {
+                    const previousInput = allRows[i - 1].querySelector(`[data-columnid="${currentColumn}"]`);
+                    if (previousInput) {
+                        previousInput.focus();
+                    }
+                }
+            }
+        }
+        // This part is not working yet, it might not be accessible.
+        if (e.key === 'ArrowRight') {
+            const nextColumn = e.target.closest('[data-cell]').nextElementSibling;
+            if (nextColumn) {
+                nextColumn.focus();
+            }
+        }
+        if (e.key === 'ArrowLeft') {
+            const previousColumn = e.target.closest('[data-cell]').previousElementSibling;
+            if (previousColumn) {
+                previousColumn.focus();
+            }
         }
     }
 }

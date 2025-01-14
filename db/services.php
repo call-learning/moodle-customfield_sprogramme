@@ -59,4 +59,12 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'customfield/sprogramme:edit',
     ],
+    'customfield_sprogramme_delete_row' => [
+        'classname' => \customfield_sprogramme\external\delete_row::class,
+        'methodname' => 'execute',
+        'description' => 'Delete a row',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
 ];

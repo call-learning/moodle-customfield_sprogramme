@@ -1,11 +1,15 @@
+.customfield_sprogramme {
+  height: 100%; }
+
 .customfield-sprogramme {
-  overflow: auto; }
+  overflow: auto;
+  height: 100%; }
   .customfield-sprogramme .programm-input {
     display: block;
     width: 100%;
     min-width: 70px;
     height: calc(1.5em + 0.75rem + 2px);
-    padding: 0.375rem 0.75rem;
+    padding: 0.125rem;
     font-size: 0.9375rem;
     font-weight: 400;
     line-height: 1.5;
@@ -21,17 +25,70 @@
       outline: 1px solid #7fb6f1;
       background-color: #f7f7f7;
       border-radius: 0rem; }
+  .customfield-sprogramme .float .programm-input {
+    min-width: 50px;
+    width: 50px; }
+  .customfield-sprogramme .disciplines {
+    min-width: 150px; }
+    .customfield-sprogramme .disciplines .badge {
+      display: flex;
+      align-items: center;
+      padding: 0.2rem 0.5rem;
+      width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 0.125rem;
+      margin-top: 0.125rem;
+      margin-right: 0.5rem; }
+      .customfield-sprogramme .disciplines .badge .name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 120px;
+        margin-right: 0.5rem; }
+      .customfield-sprogramme .disciplines .badge .percentage {
+        background-color: #fff;
+        margin-left: 0.5rem;
+        border-radius: 1.5rem;
+        margin-left: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 1.5rem;
+        width: 1.5rem;
+        min-width: 1.5rem; }
+      .customfield-sprogramme .disciplines .badge .btn {
+        display: none;
+        margin-left: 0.25rem; }
   .customfield-sprogramme .programm-table {
     max-width: 100%;
-    overflow: hidden;
+    overflow: visible;
     border-left: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6; }
+    .customfield-sprogramme .programm-table input[type="number"] {
+      /* For most modern browsers */
+      -moz-appearance: textfield;
+      /* Firefox */
+      -webkit-appearance: none;
+      /* Chrome, Safari, Edge */
+      appearance: none; }
+    .customfield-sprogramme .programm-table input[type="number"]::-webkit-inner-spin-button,
+    .customfield-sprogramme .programm-table input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      /* Optional: Prevent additional spacing */ }
     .customfield-sprogramme .programm-table th {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       max-width: 170px;
-      padding: 0.75rem; }
+      padding: 0.4rem; }
+      .customfield-sprogramme .programm-table th.float {
+        background-color: #f7f7f7;
+        width: 10px; }
+      .customfield-sprogramme .programm-table th.int {
+        background-color: #f7f7f7; }
     .customfield-sprogramme .programm-table th,
     .customfield-sprogramme .programm-table td {
       border-top: 1px solid #dee2e6;
@@ -39,5 +96,73 @@
       .customfield-sprogramme .programm-table th.actions,
       .customfield-sprogramme .programm-table td.actions {
         display: flex; }
+  .customfield-sprogramme td:focus {
+    outline: 1px solid #7fb6f1; }
+  .customfield-sprogramme td.disciplines {
+    position: relative; }
+  .customfield-sprogramme td.disciplines .discipline-form {
+    display: block;
+    position: absolute;
+    right: 100%;
+    top: -3px;
+    width: 250%;
+    padding: 0.5rem;
+    background-color: #fff;
+    z-index: 1;
+    border: 1px solid var(--light);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+    .customfield-sprogramme td.disciplines .discipline-form .badge .btn {
+      display: block; }
+    .customfield-sprogramme td.disciplines .discipline-form .btn.btn-icon:hover, .customfield-sprogramme td.disciplines .discipline-form .btn.btn-icon:focus {
+      background-color: #ead9d9; }
+  .customfield-sprogramme .formarrow {
+    display: block;
+    top: 0;
+    right: 0;
+    position: absolute; }
+    .customfield-sprogramme .formarrow::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: -12px;
+      width: 0;
+      height: 0;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-left: 12px solid #ffffff;
+      z-index: 2; }
+    .customfield-sprogramme .formarrow::after {
+      content: '';
+      position: absolute;
+      top: 7px;
+      right: -13px;
+      width: 0;
+      height: 0;
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
+      border-left: 13px solid var(--light); }
+  .customfield-sprogramme .discipline-form .list-group {
+    border-top: 1px solid var(--light);
+    border-radius: 0; }
+  .customfield-sprogramme .discipline-form .list-group-item {
+    border-radius: 0; }
+  .customfield-sprogramme .discipline-form #discipline-name {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0; }
+  .customfield-sprogramme .discipline-form #discipline-value {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-left: -1px; }
+  .customfield-sprogramme .discipline-form #discipline-confirm {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -1px;
+    border-color: var(--gray);
+    border-left: 0; }
+  .customfield-sprogramme .discipline-form .discipline-list {
+    height: 200px;
+    overflow-y: auto; }
 
 /*# sourceMappingURL=styles.css.map */

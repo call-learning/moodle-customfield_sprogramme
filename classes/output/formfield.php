@@ -22,14 +22,13 @@ use renderer_base;
 use stdClass;
 
 /**
- * Renderable for programme
+ * Class formfield
  *
  * @package    customfield_sprogramme
- * @copyright  2024 CALL Learning <Laurent David>
- * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class programme implements renderable, templatable {
-
+class formfield implements renderable, templatable {
     /**
      * Export data for the template
      *

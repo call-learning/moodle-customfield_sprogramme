@@ -15,7 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme\external;
-
 use context_system;
 use core_external\external_api;
 use core_external\external_function_parameters;
@@ -26,13 +25,13 @@ use core_external\external_multiple_structure;
 use customfield_sprogramme\local\api\programme;
 
 /**
- * Class create_row
+ * Class delete_row
  *
  * @package    customfield_sprogramme
  * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create_row extends external_api {
+class delete_row extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -41,30 +40,30 @@ class create_row extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
-            'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
+            'rowid' => new external_value(PARAM_INT, 'row id', VALUE_REQUIRED),
         ]);
     }
 
     /**
-     * Create a new row
-     *
+     * Delete a row
      * @param int $courseid
-     * @param int $sortorder
-     * @return int
+     * @param int $rowid
+     * @return bool
      */
-    public static function execute($courseid, $sortorder): int {
+    public static function execute($courseid, $rowid): bool {
         $context = context_system::instance();
         require_capability('customfield/sprogramme:edit', $context);
 
         $params = self::validate_parameters(self::execute_parameters(),
             [
                 'courseid' => $courseid,
-                'sortorder' => $sortorder,
+                'rowid' => $rowid,
             ]
         );
 
-        $rowid = programme::create_row($params['courseid'], $params['sortorder']);
-        return $rowid;
+        $programme = new programme();
+        $status = $programme->delete_row($params['courseid'], $params['rowid']);
+        return $status;
     }
 
     /**
@@ -73,6 +72,6 @@ class create_row extends external_api {
      * @return external_value
      */
     public static function execute_returns(): external_value {
-        return new external_value(PARAM_INT, 'rowid');
+        return new external_value(PARAM_BOOL, 'status');
     }
 }

@@ -17,6 +17,7 @@
 namespace customfield_sprogramme\local\api;
 
 use customfield_sprogramme\local\persistent\sprogramme;
+use customfield_sprogramme\local\persistent\sprogramme_disc;
 use xmldb_structure;
 /**
  * Class programme
@@ -223,10 +224,20 @@ class programme {
                     'type' => $column['type'],
                 ];
             }
+            $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
+            $disciplinedata = [];
+            foreach ($disciplines as $discipline) {
+                $disciplinedata[] = [
+                    'id' => $discipline->get('did'),
+                    'name' => $discipline->get('discipline'),
+                    'percentage' => $discipline->get('percentage'),
+                ];
+            }
             $data[] = [
                 'id' => $record->get('id'),
                 'sortorder' => $record->get('sortorder'),
                 'cells' => $row,
+                'disciplines' => $disciplinedata,
             ];
         }
         return $data;
@@ -288,6 +299,40 @@ class programme {
             }
         }
         $record->save();
+        self::set_disciplines($record, $row);
+    }
+
+    /**
+     * Set the disciplines
+     * @param sprogramme $record
+     * @param array $row
+     */
+    public static function set_disciplines(sprogramme $record, array $row): void {
+        if (!isset($row['disciplines']) || !is_array($row['disciplines']) || empty($row['disciplines'])) {
+            return;
+        }
+        $disciplines = $row['disciplines'];
+        // Assuming there is a method to set disciplines in the sprogramme class
+        // Fetch the existing disciplines
+        $existing = sprogramme_disc::get_all_records_for_programme($row['id']);
+        foreach($disciplines as $discipline) {
+            $updated = false;
+            foreach ($existing as $record) {
+                if ($record->get('did') == $discipline['id']) {
+                    $record->set('percentage', $discipline['percentage']);
+                    $record->save();
+                    $updated = true;
+                }
+            }
+            if (!$updated) {
+                $record = new sprogramme_disc();
+                $record->set('pid', $row['id']);
+                $record->set('did', $discipline['id']);
+                $record->set('discipline', $discipline['name']);
+                $record->set('percentage', $discipline['percentage']);
+                $record->save();
+            }
+        }
     }
 
     /**
@@ -312,6 +357,48 @@ class programme {
             }
         }
         $record->save();
+        self::update_sort_order($courseid, 'add', $record->get('id'));
         return $record->get('id');
+    }
+
+    /**
+     * Delete a row
+     * @param int $courseid
+     * @param int $rowid
+     * @return bool
+     */
+    public static function delete_row($courseid, $rowid): bool {
+        $record = sprogramme::get_record(['id' => $rowid]);
+        if ($record->get('courseid') == $courseid) {
+            self::update_sort_order($courseid, 'remove', $rowid);
+            $record->delete();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update the sort order
+     * @param int $courseid
+     * @param string $actions, add or remove
+     * @param int $rowid
+     */
+    public static function update_sort_order($courseid, $actions, $rowid): void {
+        $records = sprogramme::get_all_records_for_course($courseid);
+        $sortorder = 0;
+        foreach ($records as $record) {
+            if ($record->get('id') == $rowid) {
+                $sortorder = $record->get('sortorder');
+                // Update the remaining records, depending on the action
+                if ($actions == 'add') {
+                    $sortorder++;
+                }
+            }
+            if ($sortorder) {
+                $record->set('sortorder', $sortorder);
+                $record->save();
+                $sortorder++;
+            }
+        }
     }
 }

@@ -162,6 +162,22 @@ class sprogramme extends persistent {
      * @return array
      */
     public static function get_all_records_for_course(int $courseid): array {
-        return self::get_records(['courseid' => $courseid]);
+        return self::get_records(['courseid' => $courseid], 'sortorder');
+    }
+
+    /**
+     * Delete dependencies
+     *
+     * @param bool $result
+     * @return void
+     */
+    protected function after_delete($result) {
+        if (!$result) {
+            return;
+        }
+        $disciplines = sprogramme_disc::get_records(['pid' => $this->raw_get('id')]);
+        foreach ($disciplines as $disc) {
+            $disc->delete();
+        }
     }
 }

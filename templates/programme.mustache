@@ -17,7 +17,6 @@
 {{!
     @template customfield_sprogramme/programme
 }}
-<link rel="stylesheet" type="text/css" href="{{{cssurl}}}" />
 <form class="customfield-sprogramme" data-region="app">
     <table class="programm-table">
         <thead>
@@ -28,6 +27,9 @@
         </tbody>
     </table>
 </form>
+<div class="d-none" data-region="disciplineform-container">
+    {{> customfield_sprogramme/disciplineform }}
+</div>
 {{#debug}}
     <div class="d-flex pt-5">
         <a href="#" data-toggle="collapse" data-target="#debugc">Debug</a>

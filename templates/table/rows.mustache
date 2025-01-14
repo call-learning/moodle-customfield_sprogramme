@@ -27,13 +27,13 @@
     <tr data-row data-index="{{id}}">
         {{#cells}}
             {{#active}}
-                <td data-cell data-columnid="{{columnid}}">
+                <td data-cell data-columnid="{{columnid}}" class="{{#float}}float{{/float}}{{#int}}int{{/int}}">
                 {{#edit}}
                     {{#int}}
-                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}" step="1" />
+                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/int}}
                     {{#float}}
-                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}" step="0.01" />
+                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/float}}
                     {{#text}}
                         <input class="programm-input" data-input="auto" type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
@@ -52,9 +52,19 @@
                 </td>
             {{/active}}
         {{/cells}}
+        <td data-cell data-columnid="{{columnid}}" class="disciplines" data-disciplines data-rowid="{{id}}">
+            <div class="d-flex">
+                <button class="btn btn-icon icon-no-margin jsbutton" data-id="{{id}}" data-action="adddisc">{{#pix}}i/addblock, core, {{#str}}add{{/str}}{{/pix}}</button>
+                <div data-region="container-disciplines">
+                    {{#disciplines}}
+                        {{> customfield_sprogramme/table/discipline}}
+                    {{/disciplines}}
+                </div>
+            </div>
+        </td>
         <td class="actions">
-            <button class="btn btn-icon icon-no-margin mr-1 jsbutton {{#hasuserdata}}btn-warning{{/hasuserdata}}" data-id="{{id}}" data-action="delete" data-type="planning">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
-            <button class="btn btn-icon icon-no-margin mr-1 ml-auto jsbutton" data-id="{{id}}" data-action="add" data-type="pause">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 jsbutton {{#hasuserdata}}btn-warning{{/hasuserdata}}" data-id="{{id}}" data-action="delete">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 ml-auto jsbutton" data-id="{{id}}" data-action="add">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
         </td>
     </tr>
 {{/rows}}

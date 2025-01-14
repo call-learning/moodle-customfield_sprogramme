@@ -86,6 +86,13 @@ class get_data extends external_api {
                             'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
                         ])
                     ),
+                    'disciplines' => new external_multiple_structure(
+                        new external_single_structure([
+                            'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
+                            'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                            'percentage' => new external_value(PARAM_FLOAT, 'Value', VALUE_REQUIRED),
+                        ])
+                    ),
                 ])
             ),
         ]);

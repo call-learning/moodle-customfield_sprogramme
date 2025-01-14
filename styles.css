@@ -1,0 +1,6 @@
+.modal-dialog.modal-customfield_sprogramme {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem;
+    min-height: calc(100vh - 3rem);
+}

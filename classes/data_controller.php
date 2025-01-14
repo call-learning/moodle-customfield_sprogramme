@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme;
-use customfield_sprogramme\output\programme;
+use customfield_sprogramme\output\formfield;
 
 /**
  * Class data
@@ -40,17 +40,17 @@ class data_controller extends \core_customfield\data_controller {
      * @param \MoodleQuickForm $mform
      */
     public function instance_form_definition(\MoodleQuickForm $mform) {
-        global $COURSE;
+        global $COURSE, $PAGE;
         $url = new \moodle_url('/customfield/field/sprogramme/edit.php',
             [
                 'fieldid' => $this->get_field()->get('id'),
                 'courseid' => $COURSE->id,
             ]
         );
-        $mform->addElement('static', 'customfield_text', get_string('edit', 'customfield_text'),
-            \html_writer::link($url, get_string('edit', 'customfield_text')));
-        $mform->addElement('textarea', 'value', $this->get_field()->get_formatted_name(), ['rows' => 5, 'cols' => 50]);
-        $mform->setType('value', PARAM_RAW);
+        $renderer = $PAGE->get_renderer('customfield_sprogramme');
+        $formfield = new formfield();
+        $mform->addElement('static', 'rendered', 'test', $renderer->render($formfield));
+        $mform->setType('rendered', PARAM_RAW);
     }
 
     /**
