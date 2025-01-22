@@ -190,4 +190,19 @@
     height: 200px;
     overflow-y: auto; }
 
+.modal .modal-customfield_sprogramme .close {
+  margin-left: -0.5px; }
+
+.modal .modal-customfield_sprogramme .saveconfirm {
+  margin-left: auto;
+  margin-top: -1.5px; }
+  .modal .modal-customfield_sprogramme .saveconfirm .icon {
+    color: #9f9f9f; }
+  .modal .modal-customfield_sprogramme .saveconfirm .btn .savingicon {
+    display: none; }
+  .modal .modal-customfield_sprogramme .saveconfirm .btn.saving .defaulticon {
+    display: none; }
+  .modal .modal-customfield_sprogramme .saveconfirm .btn.saving .savingicon {
+    display: inline-block; }
+
 /*# sourceMappingURL=styles.css.map */

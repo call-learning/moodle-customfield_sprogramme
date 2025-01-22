@@ -234,3 +234,26 @@
         }
     }
 }
+.modal .modal-customfield_sprogramme {
+    .close {
+        margin-left: -0.5px;
+    }
+    .saveconfirm {
+        margin-left: auto;
+        margin-top: -1.5px;
+        .icon {
+            color: #9f9f9f;
+        }
+        .btn .savingicon {
+            display: none;
+        }
+        .btn.saving {
+            .defaulticon {
+                display: none;
+            }
+            .savingicon {
+                display: inline-block;
+            }
+        }
+    }
+}

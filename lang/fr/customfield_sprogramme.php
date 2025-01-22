@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['addrow'] = 'Ajouter une ligne';
 $string['customfield/sprogramme:edit'] = 'Modifier le champ Programme';
 $string['customfield/sprogramme:view'] = 'Voir le champ Programme';
 $string['disciplines'] = 'Disciplines';
@@ -34,3 +35,4 @@ $string['invaliddata'] = 'Données invalides : {$a}';
 $string['pluginname'] = 'Champ Programme';
 $string['row'] = 'Ligne {$a}';
 $string['save'] = 'Enregistrer';
+$string['saving'] = 'Enregistrement...';

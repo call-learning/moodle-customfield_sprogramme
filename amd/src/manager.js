@@ -167,6 +167,11 @@ class Manager {
                 this.typeahead(input);
             }
         });
+
+        // Listen for the saveconfirm custom event. When run save the table data.
+        document.addEventListener('saveconfirm', () => {
+            this.setTableData();
+        });
     }
 
     async getDatagrid() {
@@ -307,12 +312,17 @@ class Manager {
      */
     async setTableData() {
         const set = debounce(async() => {
+            const saveConfirmButton = document.querySelector('[data-action="saveconfirm"]');
+            saveConfirmButton.classList.add('saving');
             const modules = State.getValue('modules');
             const cleanedModules = this.cleanModules(modules);
             const response = await Repository.setData({courseid: this.courseid, modules: cleanedModules});
             if (!response) {
                 Notification.exception('No response from the server');
             }
+            setTimeout(() => {
+                saveConfirmButton.classList.remove('saving');
+            }, 200);
         }, 600);
         set();
     }
@@ -354,6 +364,9 @@ class Manager {
         if (btn.dataset.action === 'discipline-confirm') {
             this.addDiscipline();
         }
+        if (btn.dataset.action === 'saveconfirm') {
+            this.setTableData();
+        }
     }
 
     /**
@@ -363,11 +376,14 @@ class Manager {
     async addRow(btn) {
         const modules = State.getValue('modules');
 
-        const btnRow = btn.closest('[data-row]');
-        const rowid = btnRow.dataset.index;
+        let rowid = btn.dataset.id;
         const moduleid = btn.closest('[data-region="module"]').dataset.id;
         const module = modules.find(m => m.moduleid == moduleid);
         const rows = module.rows;
+        // When called from the link under the table, the rowid is not set.
+        if (rowid == -1) {
+            rowid = rows[rows.length - 1].id;
+        }
 
         const row = await this.createRow(moduleid, rowid);
         if (!row) {
@@ -520,7 +536,7 @@ class Manager {
         const module = {
             moduleid: moduleid,
             modulesortorder: index + 1,
-            modulename: 'Module ' + (index + 1),
+            modulename: 'Module ' + (index + 2),
             rows: [row],
         };
         modules.push(module);

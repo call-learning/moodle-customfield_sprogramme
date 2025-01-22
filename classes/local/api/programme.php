@@ -374,7 +374,10 @@ class programme {
      * @param array $row
      */
     private static function update_record(sprogramme $record, array $row): void {
-        $fields = array_keys(self::get_table_structure());
+        $columns = self::get_column_structure();
+        $fields = array_map(function($column) {
+            return $column['column'];
+        }, $columns);
         foreach ($fields as $field) {
             if (!isset($row['cells'])) {
                 continue;

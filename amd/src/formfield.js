@@ -21,6 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import Manager from 'customfield_sprogramme/manager';
+import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Modal from 'core/modal';
 /*
@@ -28,7 +29,7 @@ import Modal from 'core/modal';
  * @param {HTMLElement} element The element.
  * @param {String} courseid The courseid.
  */
-const init = (element, courseid) => {
+const init = async(element, courseid) => {
     element.addEventListener('click', async(event) => {
         event.preventDefault();
 
@@ -42,7 +43,24 @@ const init = (element, courseid) => {
             show: true,
         });
 
-        modal.getModal().addClass('modal-customfield_sprogramme');
+        const saveButton = document.createElement('div');
+        const modalElement = modal.getModal()[0];
+        modalElement.classList.add('modal-customfield_sprogramme');
+        const header = modalElement.querySelector('[data-region="header"]');
+        const title = modalElement.querySelector('[data-region="title"]');
+        if (title) {
+            // Add the icone after the title Element.
+            header.insertBefore(saveButton, title.nextSibling);
+        }
+        const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/savebutton', {});
+        await Templates.replaceNode(saveButton, html, js);
+        const renderedSaveButton = document.querySelector('[data-action="saveconfirm"]');
+        renderedSaveButton.addEventListener('click', async(event) => {
+            // Run the 'saveconfirm' custom event.
+            const saveEvent = new CustomEvent('saveconfirm', {bubbles: true});
+            document.dispatchEvent(saveEvent);
+            event.preventDefault();
+        });
     });
 };
 
