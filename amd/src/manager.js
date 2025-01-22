@@ -375,7 +375,6 @@ class Manager {
         }
         // Inject the row after the clicked row.
         rows.splice(rows.indexOf(rows.find(r => r.id == rowid)) + 1, 0, row);
-        // this.resetRowSortorder();
         State.setValue('modules', modules);
     }
 

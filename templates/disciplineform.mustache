@@ -21,6 +21,7 @@
 
     Example context (json):
     {
+        "rowname": "Row 1"
     }
 }}
 <div class="discipline-form" data-region="disciplineform">
@@ -29,7 +30,7 @@
     <input type="hidden" id="discipline-id" value="">
     <input type="hidden" id="lastids" value="">
     <div class="d-flex icon-no-margin">
-        <h5 data-region="rownumber"></h5>
+        <h5 data-region="rownumber">{{rowname}}</h5>
         <button class="btn btn-secondary ml-auto mb-2 btn-sm" data-action="closedisciplineform">
             {{#pix}}e/cancel, core{{/pix}}
             <span class="sr-only">{{#str}}close, admin{{/str}}</span>

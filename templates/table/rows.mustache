@@ -21,8 +21,122 @@
 
     Example context (json):
     {
+        "mustacheonly": true,
+        "rows": [
+            {
+                "id": 126,
+                "sortorder": 0,
+                "cells": [
+                    {
+                        "column": "cct_ept",
+                        "value": "CCT",
+                        "type": "select",
+                        "visible": false
+                    },
+                    {
+                        "column": "dd_rse",
+                        "value": "DD/RSE",
+                        "type": "select",
+                        "visible": false
+                    },
+                    {
+                        "column": "type_ae",
+                        "value": "TD",
+                        "type": "select",
+                        "visible": false
+                    },
+                    {
+                        "column": "intitule_seance",
+                        "value": "Groupes et actions musculaires des membres",
+                        "type": "text",
+                        "visible": true
+                    },
+                    {
+                        "column": "cm",
+                        "value": "1,2",
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "td",
+                        "value": "5,7",
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "tp",
+                        "value": "9,2",
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "tpa",
+                        "value": null,
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "tc",
+                        "value": null,
+                        "type": "int",
+                        "visible": true
+                    },
+                    {
+                        "column": "aas",
+                        "value": null,
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "fmp",
+                        "value": null,
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "perso_av",
+                        "value": null,
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "perso_ap",
+                        "value": null,
+                        "type": "float",
+                        "visible": true
+                    },
+                    {
+                        "column": "consignes",
+                        "value": "Lecture du polycopie",
+                        "type": "text",
+                        "visible": true
+                    },
+                    {
+                        "column": "Dessins, diaporama",
+                        "value": "",
+                        "type": "text",
+                        "visible": true
+                    }
+                ],
+                "disciplines": [
+                    {
+                        "id": 2,
+                        "name": "Literacy & data management",
+                        "percentage": 23
+                    },
+                    {
+                        "id": 1,
+                        "name": "Immunology",
+                        "percentage": 23
+                    }
+                ]
+            }
+        ]
     }
 }}
+{{#mustacheonly}}
+    <table>
+{{/mustacheonly}}
 {{#rows}}
     <tr data-row data-index="{{id}}" draggable="true">
         {{#cells}}
@@ -73,3 +187,6 @@
         {{/editor}}
     </tr>
 {{/rows}}
+{{#mustacheonly}}
+    </table>
+{{/mustacheonly}}

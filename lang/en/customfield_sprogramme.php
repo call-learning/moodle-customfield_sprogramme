@@ -25,12 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Programme customfield';
 $string['customfield/sprogramme:edit'] = 'Edit the Programme customfield';
 $string['customfield/sprogramme:view'] = 'View the Programme customfield';
-$string['invaliddata'] = 'Invalid data: {$a}';
 $string['disciplines'] = 'Disciplines';
-$string['editprogramme'] = 'Edit Programme';
 $string['edit'] = 'Edit';
-$string['save'] = 'Save';
+$string['editprogramme'] = 'Edit Programme';
+$string['invaliddata'] = 'Invalid data: {$a}';
+$string['pluginname'] = 'Programme customfield';
 $string['row'] = 'Row {$a}';
+$string['save'] = 'Save';

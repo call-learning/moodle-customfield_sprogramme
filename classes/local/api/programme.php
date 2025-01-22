@@ -498,6 +498,7 @@ class programme {
      * Create a new row
      * @param int $courseid
      * @param int $moduleid
+     * @param int $prevrowid
      * @return int $sortorder
      */
     public static function create_row($courseid, $moduleid, $prevrowid): int {

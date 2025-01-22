@@ -47,9 +47,9 @@ class create_row extends external_api {
     /**
      * Create a new row
      *
-     * @param int $moduleid
-     * @param int $courseid
-     * @param int $prevrowid
+     * @param int $courseid The course id
+     * @param int $moduleid The module id
+     * @param int $prevrowid The previous row id
      * @return int
      */
     public static function execute($courseid, $moduleid, $prevrowid): int {

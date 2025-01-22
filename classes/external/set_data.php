@@ -74,9 +74,9 @@ class set_data extends external_api {
     /**
      * Execute and return json data.
      *
-     * @param string $courseid - The course id
+     * @param int $courseid - The course id
      * @param array $modules - The modules to update
-     * @return array  - The data in JSON format
+     * @return array The data in JSON format
      * @throws \invalid_parameter_exception
      */
     public static function execute(int $courseid, array $modules): array {
