@@ -24,11 +24,10 @@
     }
 }}
 {{#rows}}
-    <tr data-row data-index="{{id}}">
+    <tr data-row data-index="{{id}}" draggable="true">
         {{#cells}}
-            {{#active}}
+            {{#editor}}
                 <td data-cell data-columnid="{{columnid}}" class="{{#float}}float{{/float}}{{#int}}int{{/int}}">
-                {{#edit}}
                     {{#int}}
                         <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/int}}
@@ -39,23 +38,27 @@
                         <input class="programm-input" data-input="auto" type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
                     {{/text}}
                     {{#select}}
-                        <select data-input="auto" class="programm-input" >
+                        <select data-input="auto" class="programm-input">
                             {{#options}}
-                                <option value="{{{value}}}" {{#selected}}selected{{/selected}}>{{{name}}}</option>
+                                <option value="{{{name}}}" {{#selected}}selected{{/selected}}>{{{name}}}</option>
                             {{/options}}
                         </select>
                     {{/select}}
-                {{/edit}}
-                {{^edit}}
-                    {{{sample_value}}}
-                {{/edit}}
                 </td>
-            {{/active}}
+            {{/editor}}
+            {{^editor}}
+                {{#visible}}
+                    <td class="{{#float}}float{{/float}}{{#int}}int{{/int}}">
+                        {{{value}}}
+                    </td>
+                {{/visible}}
+            {{/editor}}
         {{/cells}}
+        {{#editor}}
         <td data-cell data-columnid="{{columnid}}" class="disciplines" data-disciplines data-rowid="{{id}}">
             <div class="d-flex">
                 <button class="btn btn-icon icon-no-margin jsbutton" data-id="{{id}}" data-action="adddisc">{{#pix}}i/addblock, core, {{#str}}add{{/str}}{{/pix}}</button>
-                <div data-region="container-disciplines">
+                <div class="container-disciplines" data-region="container-disciplines">
                     {{#disciplines}}
                         {{> customfield_sprogramme/table/discipline}}
                     {{/disciplines}}
@@ -63,8 +66,10 @@
             </div>
         </td>
         <td class="actions">
-            <button class="btn btn-icon icon-no-margin mr-1 jsbutton {{#hasuserdata}}btn-warning{{/hasuserdata}}" data-id="{{id}}" data-action="delete">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
-            <button class="btn btn-icon icon-no-margin mr-1 ml-auto jsbutton" data-id="{{id}}" data-action="add">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-id="{{id}}" data-action="deleterow">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 jsbutton" aria-haspopup="true" data-drag-type="move">{{#pix}}i/move_2d, core, {{#str}}move{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-id="{{id}}" data-action="addrow">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
         </td>
+        {{/editor}}
     </tr>
 {{/rows}}

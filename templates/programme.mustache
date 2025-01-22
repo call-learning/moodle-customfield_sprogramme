@@ -17,29 +17,16 @@
 {{!
     @template customfield_sprogramme/programme
 }}
-<form class="customfield-sprogramme" data-region="app">
-    <table class="programm-table">
-        <thead>
-            <tr data-region="columns">
-            </tr>
-        </thead>
-        <tbody data-region="rows">
-        </tbody>
-    </table>
-</form>
-<div class="d-none" data-region="disciplineform-container">
-    {{> customfield_sprogramme/disciplineform }}
+<div class="customfield-sprogramme">
+    <div class="my-5" data-region="modules">
+        {{> customfield_sprogramme/table/modules}}
+    </div>
 </div>
 {{#debug}}
-    <div class="d-flex pt-5">
+    <div class="d-flex pt-5 d-none">
         <a href="#" data-toggle="collapse" data-target="#debugc">Debug</a>
         <div id="debugc" class="collapse">
             <pre id="debug">{{{debug}}}</pre>
         </div>
     </div>
 {{/debug}}
-{{#js}}
-require(['customfield_sprogramme/manager'], function(manager) {
-    manager.init({{courseid}});
-});
-{{/js}}

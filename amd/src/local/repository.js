@@ -137,6 +137,40 @@ class Repository {
     }
 
     /**
+     * Create a new module.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    createModule(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_create_module',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+
+    /**
+     * Delete a module.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    deleteModule(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_delete_module',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+
+    /**
      * Delete a row.
      * @param {Object} args The arguments.
      * @return {Promise} The promise.
@@ -159,6 +193,23 @@ class Repository {
      */
     getDisciplines() {
         return disciplines;
+    }
+
+    /**
+     * Update the sort order.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    updateSortOrder(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_update_sort_order',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
     }
 }
 

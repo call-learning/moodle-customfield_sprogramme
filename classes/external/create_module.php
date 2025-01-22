@@ -24,13 +24,13 @@ use core_external\external_value;
 use customfield_sprogramme\local\api\programme;
 
 /**
- * Class create_row
+ * Class create_module
  *
  * @package    customfield_sprogramme
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create_row extends external_api {
+class create_module extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -38,34 +38,34 @@ class create_row extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'name' => new external_value(PARAM_TEXT, 'Name', VALUE_DEFAULT, ''),
             'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
-            'moduleid' => new external_value(PARAM_INT, 'moduleid', VALUE_DEFAULT, ''),
-            'prevrowid' => new external_value(PARAM_INT, 'Previous row id', VALUE_REQUIRED),
+            'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
         ]);
     }
 
     /**
-     * Create a new row
+     * Create a new module
      *
-     * @param int $moduleid
+     * @param string $name
      * @param int $courseid
-     * @param int $prevrowid
+     * @param int $sortorder
      * @return int
      */
-    public static function execute($courseid, $moduleid, $prevrowid): int {
+    public static function execute($name, $courseid, $sortorder): int {
         $context = context_system::instance();
         require_capability('customfield/sprogramme:edit', $context);
 
         $params = self::validate_parameters(self::execute_parameters(),
             [
+                'name' => $name,
                 'courseid' => $courseid,
-                'moduleid' => $moduleid,
-                'prevrowid' => $prevrowid,
+                'sortorder' => $sortorder,
             ]
         );
 
-        $rowid = programme::create_row($params['courseid'], $params['moduleid'], $params['prevrowid']);
-        return $rowid;
+        $moduleid = programme::create_module($params['name'], $params['courseid'],  $params['sortorder']);
+        return $moduleid;
     }
 
     /**
@@ -74,6 +74,6 @@ class create_row extends external_api {
      * @return external_value
      */
     public static function execute_returns(): external_value {
-        return new external_value(PARAM_INT, 'rowid');
+        return new external_value(PARAM_INT, 'moduleid');
     }
 }

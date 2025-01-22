@@ -1,0 +1,51 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template customfield_sprogramme/table/modules
+
+    TODO describe template modules
+
+    Example context (json):
+    {
+    }
+}}
+{{#modules}}
+    <div class="modules mb-5" data-region="module" data-id="{{moduleid}}">
+        <div class="d-flex mb-3 p-1">
+            {{#editor}}
+                <div class="h5 mb-0 d-flex align-items-center">
+                    <input class="form-control module-input" data-region="modulename" type="text" value="{{{modulename}}}"/>
+                </div>
+                <button class="btn btn-icon icon-no-margin mr-1 ml-3" data-id="{{moduleid}}" data-action="deletemodule">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
+                <button class="btn btn-icon icon-no-margin mr-1" data-id="{{id}}" data-action="addmodule">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
+            {{/editor}}
+            {{^editor}}
+                <h4 class="mb-0">{{{modulename}}}</h4>
+            {{/editor}}
+        </div>
+        <table class="programm-table {{^editor}}standard{{/editor}}{{#editor}}editor{{/editor}}">
+            <thead>
+                <tr data-region="columns">
+                   {{> customfield_sprogramme/table/columns}}
+                </tr>
+            </thead>
+            <tbody data-region="rows">
+                {{> customfield_sprogramme/table/rows}}
+            </tbody>
+        </table>
+    </div>
+{{/modules}}

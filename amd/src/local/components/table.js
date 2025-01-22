@@ -38,11 +38,10 @@ const stateTemplate = (type) => {
             return;
         }
         context[type] = State.getValue(type);
+        context.editor = true;
         region.innerHTML = await Templates.render(template, context);
     };
     State.subscribe(type, tableColumns);
 };
 
-stateTemplate('columns');
-
-stateTemplate('rows');
+stateTemplate('modules');

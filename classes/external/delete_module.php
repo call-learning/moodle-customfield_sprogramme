@@ -24,13 +24,13 @@ use core_external\external_value;
 use customfield_sprogramme\local\api\programme;
 
 /**
- * Class create_row
+ * Class delete_module
  *
  * @package    customfield_sprogramme
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create_row extends external_api {
+class delete_module extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -40,19 +40,17 @@ class create_row extends external_api {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
             'moduleid' => new external_value(PARAM_INT, 'moduleid', VALUE_DEFAULT, ''),
-            'prevrowid' => new external_value(PARAM_INT, 'Previous row id', VALUE_REQUIRED),
         ]);
     }
 
     /**
-     * Create a new row
+     * Delete a module
      *
-     * @param int $moduleid
      * @param int $courseid
-     * @param int $prevrowid
-     * @return int
+     * @param int $moduleid
+     * @return bool
      */
-    public static function execute($courseid, $moduleid, $prevrowid): int {
+    public static function execute($courseid, $moduleid): bool {
         $context = context_system::instance();
         require_capability('customfield/sprogramme:edit', $context);
 
@@ -60,12 +58,9 @@ class create_row extends external_api {
             [
                 'courseid' => $courseid,
                 'moduleid' => $moduleid,
-                'prevrowid' => $prevrowid,
-            ]
-        );
+            ]);
 
-        $rowid = programme::create_row($params['courseid'], $params['moduleid'], $params['prevrowid']);
-        return $rowid;
+        return programme::delete_module($params['courseid'], $params['moduleid']);
     }
 
     /**
@@ -74,6 +69,6 @@ class create_row extends external_api {
      * @return external_value
      */
     public static function execute_returns(): external_value {
-        return new external_value(PARAM_INT, 'rowid');
+        return new external_value(PARAM_BOOL, 'Success');
     }
 }

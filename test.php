@@ -24,6 +24,7 @@
 
 require('../../../config.php');
 use customfield_sprogramme\output\formfield;
+use customfield_sprogramme\output\programme;
 
 require_login();
 
@@ -38,4 +39,8 @@ echo $OUTPUT->header();
 $renderer = $PAGE->get_renderer('customfield_sprogramme');
 $formfield = new formfield();
 echo $renderer->render($formfield);
+
+$programm = new programme();
+echo $renderer->render($programm);
+
 echo $OUTPUT->footer();

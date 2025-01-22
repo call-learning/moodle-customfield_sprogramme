@@ -24,13 +24,13 @@ use core_external\external_value;
 use customfield_sprogramme\local\api\programme;
 
 /**
- * Class create_row
+ * Class update_sort_order
  *
  * @package    customfield_sprogramme
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class create_row extends external_api {
+class update_sort_order extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -38,34 +38,39 @@ class create_row extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
             'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
             'moduleid' => new external_value(PARAM_INT, 'moduleid', VALUE_DEFAULT, ''),
-            'prevrowid' => new external_value(PARAM_INT, 'Previous row id', VALUE_REQUIRED),
+            'id' => new external_value(PARAM_INT, 'row id', VALUE_REQUIRED),
+            'previd' => new external_value(PARAM_INT, 'Previous row id', VALUE_REQUIRED),
         ]);
     }
 
     /**
-     * Create a new row
-     *
-     * @param int $moduleid
+     * Update the sort order of a row
+     * @param string $type
      * @param int $courseid
-     * @param int $prevrowid
-     * @return int
+     * @param int $moduleid
+     * @param int $id
+     * @param int $previd
+     * @return bool
      */
-    public static function execute($courseid, $moduleid, $prevrowid): int {
+    public static function execute($type, $courseid, $moduleid, $id, $previd): bool {
         $context = context_system::instance();
         require_capability('customfield/sprogramme:edit', $context);
 
         $params = self::validate_parameters(self::execute_parameters(),
             [
+                'type' => $type,
                 'courseid' => $courseid,
                 'moduleid' => $moduleid,
-                'prevrowid' => $prevrowid,
-            ]
-        );
+                'id' => $id,
+                'previd' => $previd,
+            ]);
 
-        $rowid = programme::create_row($params['courseid'], $params['moduleid'], $params['prevrowid']);
-        return $rowid;
+        $programme = new programme($courseid);
+        $programme->update_sort_order($params['type'], $params['moduleid'], $params['id'], $params['previd']);
+        return true;
     }
 
     /**
@@ -74,6 +79,6 @@ class create_row extends external_api {
      * @return external_value
      */
     public static function execute_returns(): external_value {
-        return new external_value(PARAM_INT, 'rowid');
+        return new external_value(PARAM_BOOL, 'status');
     }
 }

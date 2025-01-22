@@ -108,7 +108,72 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
 
         // Sprogramme savepoint reached.
         upgrade_plugin_savepoint(true, 2025011000, 'customfield', 'sprogramme');
+
     }
 
+    if ($oldversion < 2025011500) {
+
+        // Changing precision of field cct_ept on table customfield_sprogramme to (254).
+        $table = new xmldb_table('customfield_sprogramme');
+        $field = new xmldb_field('cct_ept', XMLDB_TYPE_CHAR, '254', null, null, null, null, 'uc');
+
+        // Launch change of precision for field cct_ept.
+        $dbman->change_field_precision($table, $field);
+
+        $field = new xmldb_field('dd_rse', XMLDB_TYPE_CHAR, '254', null, null, null, null, 'cct_ept');
+
+        // Launch change of precision for field dd_rse.
+        $dbman->change_field_precision($table, $field);
+
+        $field = new xmldb_field('type_ae', XMLDB_TYPE_CHAR, '254', null, null, null, null, 'dd_rse');
+
+        // Launch change of precision for field type_ae.
+        $dbman->change_field_precision($table, $field);
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025011500, 'customfield', 'sprogramme');
+    }
+
+    if ($oldversion < 2025011600) {
+
+        // Define table customfield_sprogramme_module to be created.
+        $table = new xmldb_table('customfield_sprogramme_module');
+
+        // Adding fields to table customfield_sprogramme_module.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('sortorder', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '254', null, null, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table customfield_sprogramme_module.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for customfield_sprogramme_module.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025011600, 'customfield', 'sprogramme');
+    }
+
+    if ($oldversion < 2025011601) {
+
+        // Define field moduleid to be added to customfield_sprogramme.
+        $table = new xmldb_table('customfield_sprogramme');
+        $field = new xmldb_field('moduleid', XMLDB_TYPE_INTEGER, '20', null, null, null, null, 'courseid');
+
+        // Conditionally launch add field moduleid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025011601, 'customfield', 'sprogramme');
+    }
     return true;
 }

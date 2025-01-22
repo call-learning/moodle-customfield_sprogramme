@@ -25,6 +25,15 @@
 }}
 <link rel="stylesheet" type="text/css" href="{{{cssurl}}}" />
 <a href="" class="btn btn-primary" data-action="editprogramme">Edit programme</a>
+<div class="d-none">
+    <div class="customfield-sprogramme" data-region="app">
+        <div data-region="modules">
+        </div>
+    </div>
+   <div data-region="disciplineform-container">
+   {{> customfield_sprogramme/disciplineform}}
+   </div>
+</div>
 {{#js}}
 require(['customfield_sprogramme/formfield'], function(formfield) {
     const element = document.querySelector('[data-action="editprogramme"]');

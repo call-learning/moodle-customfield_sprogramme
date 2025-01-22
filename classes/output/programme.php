@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme\output;
-
+use customfield_sprogramme\local\api\programme as programme_api;
 use renderable;
 use templatable;
 use renderer_base;
@@ -36,12 +36,14 @@ class programme implements renderable, templatable {
      * @param renderer_base $output
      * @return array
      */
-    public function export_for_template(renderer_base $output): stdClass {
+    public function export_for_template(renderer_base $output): array {
         global $PAGE, $CFG;
-        $data = new stdClass();
-        $data->courseid = $PAGE->context->instanceid;
-        $data->debug = $CFG->debugdisplay;
-        $data->cssurl = new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]);
+        $modules = programme_api::get_data($PAGE->context->instanceid);
+        $data = [
+            'modules' => $modules,
+            'debug' => $CFG->debugdisplay ? json_encode($modules, JSON_PRETTY_PRINT) : '',
+            'cssurl' => new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]),
+        ];
         return $data;
     }
 }

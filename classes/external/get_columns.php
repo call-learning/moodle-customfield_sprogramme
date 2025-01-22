@@ -21,6 +21,7 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
+use core_external\external_multiple_structure;
 
 use customfield_sprogramme\local\api\programme;
 
@@ -62,7 +63,7 @@ class get_columns extends external_api {
 
         $columns = programme::get_column_structure();
         return [
-            'data' => json_encode($columns),
+            'columns' => $columns,
         ];
     }
 
@@ -72,10 +73,31 @@ class get_columns extends external_api {
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        return new external_single_structure(
-            [
-                'data' => new external_value(PARAM_RAW, 'Data'),
-            ]
+        return new external_single_structure([
+            'columns' => new external_multiple_structure(
+                new external_single_structure([
+                    'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
+                    'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
+                    'float' => new external_value(PARAM_BOOL, 'Float', VALUE_OPTIONAL),
+                    'int' => new external_value(PARAM_BOOL, 'Int', VALUE_OPTIONAL),
+                    'text' => new external_value(PARAM_BOOL, 'Text', VALUE_OPTIONAL),
+                    'select' => new external_value(PARAM_BOOL, 'Select', VALUE_OPTIONAL),
+                    'visible' => new external_value(PARAM_BOOL, 'Visible', VALUE_REQUIRED),
+                    'label' => new external_value(PARAM_TEXT, 'Label', VALUE_REQUIRED),
+                    'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
+                    'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),
+                    'field' => new external_value(PARAM_TEXT, 'Field', VALUE_REQUIRED),
+                    'sample_value' => new external_value(PARAM_TEXT, 'Sample value', VALUE_REQUIRED),
+                    'min' => new external_value(PARAM_INT, 'Min', VALUE_OPTIONAL),
+                    'max' => new external_value(PARAM_INT, 'Max', VALUE_OPTIONAL),
+                    'options' => new external_multiple_structure(
+                        new external_single_structure([
+                            'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                            'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
+                        ]), 'Option', VALUE_OPTIONAL
+                    ),
+                ])
+            )]
         );
     }
 }

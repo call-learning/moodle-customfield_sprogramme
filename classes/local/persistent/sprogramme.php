@@ -45,6 +45,10 @@ class sprogramme extends persistent {
                 'type' => PARAM_INT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:courseid'),
             ],
+            'moduleid' => [
+                'type' => PARAM_INT,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:moduleid'),
+            ],
             'sortorder' => [
                 'default' => '',
                 'null' => NULL_ALLOWED,
@@ -76,7 +80,7 @@ class sprogramme extends persistent {
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:type_ae'),
             ],
             'sequence' => [
-                'default' => NULL,
+                'default' => null,
                 'null' => NULL_ALLOWED,
                 'type' => PARAM_INT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:sequence'),
@@ -88,13 +92,13 @@ class sprogramme extends persistent {
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:intitule_seance'),
             ],
             'cm' => [
-                'default' => NULL,
+                'default' => null,
                 'null' => NULL_ALLOWED,
                 'type' => PARAM_FLOAT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:cm'),
             ],
             'td' => [
-                'default' => NULL,
+                'default' => null,
                 'null' => NULL_ALLOWED,
                 'type' => PARAM_FLOAT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:td'),
@@ -163,6 +167,15 @@ class sprogramme extends persistent {
      */
     public static function get_all_records_for_course(int $courseid): array {
         return self::get_records(['courseid' => $courseid], 'sortorder');
+    }
+
+    /**
+     * Get all records for a given module
+     * @param int $moduleid
+     * @return array
+     */
+    public static function get_all_records_for_module(int $moduleid): array {
+        return self::get_records(['moduleid' => $moduleid], 'sortorder');
     }
 
     /**

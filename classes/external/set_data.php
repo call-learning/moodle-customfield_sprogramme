@@ -41,22 +41,29 @@ class set_data extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
-            'rows' => new external_multiple_structure(
+            'modules' => new external_multiple_structure(
                 new external_single_structure([
                     'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
                     'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
-                    'cells' => new external_multiple_structure(
-                        new external_single_structure([
-                            'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
-                            'value' => new external_value(PARAM_TEXT, 'Value', VALUE_REQUIRED),
-                            'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
-                        ])
-                    ),
-                    'disciplines' => new external_multiple_structure(
+                    'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                    'rows' => new external_multiple_structure(
                         new external_single_structure([
                             'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
-                            'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
-                            'percentage' => new external_value(PARAM_FLOAT, 'Value', VALUE_REQUIRED),
+                            'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_OPTIONAL),
+                            'cells' => new external_multiple_structure(
+                                new external_single_structure([
+                                    'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
+                                    'value' => new external_value(PARAM_TEXT, 'Value', VALUE_REQUIRED),
+                                    'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
+                                ])
+                            ),
+                            'disciplines' => new external_multiple_structure(
+                                new external_single_structure([
+                                    'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
+                                    'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                                    'percentage' => new external_value(PARAM_FLOAT, 'Value', VALUE_REQUIRED),
+                                ])
+                            ),
                         ])
                     ),
                 ])
@@ -68,24 +75,24 @@ class set_data extends external_api {
      * Execute and return json data.
      *
      * @param string $courseid - The course id
-     * @param array $rows - The rows to update
+     * @param array $modules - The modules to update
      * @return array  - The data in JSON format
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseid, array $rows): array {
+    public static function execute(int $courseid, array $modules): array {
         $context = context_system::instance();
         require_capability('customfield/sprogramme:edit', $context);
         $params = self::validate_parameters(self::execute_parameters(),
             [
                 'courseid' => $courseid,
-                'rows' => $rows,
+                'modules' => $modules,
             ]
         );
         self::validate_context($context);
         $courseid = $params['courseid'];
-        $rows = $params['rows'];
+        $modules = $params['modules'];
 
-        programme::set_records($courseid, $rows);
+        programme::set_records($courseid, $modules);
 
         $data = [
             'data' => 'This is the data for table ' . $courseid,

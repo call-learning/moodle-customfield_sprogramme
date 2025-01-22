@@ -20,8 +20,7 @@
  * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import Templates from 'core/templates';
-import Repository from 'customfield_sprogramme/local/repository';
+import Manager from 'customfield_sprogramme/manager';
 import {getString} from 'core/str';
 import Modal from 'core/modal';
 /*
@@ -32,12 +31,14 @@ import Modal from 'core/modal';
 const init = (element, courseid) => {
     element.addEventListener('click', async(event) => {
         event.preventDefault();
-        const rendercontainer = await getProgramme(courseid);
+
+        await getProgramme(element, courseid);
+        const modalContent = document.querySelector('[data-region="app"]');
 
         const modal = await Modal.create({
             large: true,
             title: getString('editprogramme', 'customfield_sprogramme'),
-            body: rendercontainer,
+            body: modalContent,
             show: true,
         });
 
@@ -45,29 +46,15 @@ const init = (element, courseid) => {
     });
 };
 
-/**
- * Get the disciplines.
- */
-
 
 /**
  * Get the programme.
+ * @param {HTMLElement} element The element.
  * @param {String} courseid The courseid.
  * @return {Promise} The programme.
  */
-const getProgramme = async(courseid) => {
-    // Create the programme if it does not exist.
-    let container = document.querySelector('.customfield_sprogramme');
-    if (container) {
-        return Promise.resolve(container);
-    }
-    const disciplines = await Repository.getDisciplines();
-    const {html, js} = await Templates.renderForPromise('customfield_sprogramme/programme',
-        {courseid: courseid, disciplines: disciplines});
-    const rendercontainer = document.createElement('div');
-    rendercontainer.classList.add('customfield_sprogramme');
-    Templates.replaceNodeContents(rendercontainer, html, js);
-    return rendercontainer;
+const getProgramme = async(element, courseid) => {
+    Manager.init(element, courseid);
 };
 
 export default {
