@@ -392,7 +392,6 @@
                     <input class="form-control module-input" data-region="modulename" type="text" value="{{{modulename}}}"/>
                 </div>
                 <button class="btn btn-icon icon-no-margin mr-1 ml-3" data-id="{{moduleid}}" data-action="deletemodule">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
-                <button class="btn btn-icon icon-no-margin mr-1" data-id="{{id}}" data-action="addmodule">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
             {{/editor}}
             {{^editor}}
                 <h4 class="mb-0">{{{modulename}}}</h4>
@@ -413,3 +412,6 @@
         {{/editor}}
     </div>
 {{/modules}}
+{{#editor}}
+    <button class="btn btn-sm" href="#" data-id="-1" data-action="addmodule">{{#str}}addmodule, customfield_sprogramme{{/str}}</button>
+{{/editor}}

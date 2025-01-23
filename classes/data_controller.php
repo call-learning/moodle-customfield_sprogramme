@@ -81,8 +81,8 @@ class data_controller extends \core_customfield\data_controller {
      */
     public function export_value() {
         global $PAGE;
-        $value = $this->get_value();
-        $programme = new \customfield_sprogramme\output\programme($value);
+        $courseid = $this->data->get('instanceid');
+        $programme = new \customfield_sprogramme\output\programme($courseid);
         $renderer = $PAGE->get_renderer('customfield_sprogramme');
         return $renderer->render($programme);
     }

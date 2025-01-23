@@ -31,14 +31,28 @@ use stdClass;
 class programme implements renderable, templatable {
 
     /**
+     * @var int $courseid.
+     */
+    private $courseid;
+
+    /**
+     * Construct this renderable.
+     *
+     * @param int $courseid The course id.
+     */
+    public function __construct(int $courseid) {
+        $this->courseid = $courseid;
+    }
+
+    /**
      * Export data for the template
      *
      * @param renderer_base $output
      * @return array
      */
     public function export_for_template(renderer_base $output): array {
-        global $PAGE, $CFG;
-        $modules = programme_api::get_data($PAGE->context->instanceid);
+        global $CFG;
+        $modules = programme_api::get_data($this->courseid);
         $data = [
             'modules' => $modules,
             'debug' => $CFG->debugdisplay ? json_encode($modules, JSON_PRETTY_PRINT) : '',

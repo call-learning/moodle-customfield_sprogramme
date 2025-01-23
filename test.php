@@ -40,7 +40,7 @@ $renderer = $PAGE->get_renderer('customfield_sprogramme');
 $formfield = new formfield();
 echo $renderer->render($formfield);
 
-$programm = new programme();
+$programm = new programme($courseid);
 echo $renderer->render($programm);
 
 echo $OUTPUT->footer();

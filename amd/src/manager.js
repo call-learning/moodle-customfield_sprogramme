@@ -141,7 +141,6 @@ class Manager {
             const rowId = dragging.dataset.index;
             const prevRowId = dragging.previousElementSibling ? dragging.previousElementSibling.dataset.index : 0;
             const moduleId = dragging.closest('[data-region="module"]').dataset.id;
-            window.console.log('RowId: ' + rowId + ' PrevRowId: ' + prevRowId + ' ModuleId: ' + moduleId);
             Repository.updateSortOrder(
                 {
                     type: 'row',
@@ -264,6 +263,21 @@ class Manager {
     }
 
     /**
+     * Check the cell value. It can not exceed the cell length.
+     * @param {object} cell The cell.
+     * @return {void}
+     */
+    checkCellValue(cell) {
+        if (cell.value === null) {
+            return;
+        }
+        if (cell.type === 'text' && cell.value.length > cell.length) {
+            cell.value = cell.value.substring(0, cell.length);
+        }
+    }
+
+
+    /**
      * Clean the Modules array.
      * @param {Array} modules The modules.
      * @return {Array} The cleaned modules.
@@ -281,6 +295,7 @@ class Manager {
                 // Clean the cells.
                 cleanedRow.cells = row.cells.map(cell => {
                     const cleanedCell = {};
+                    this.checkCellValue(cell);
                     Object.keys(rowObject.rows.cells).forEach(key => {
                         cleanedCell[key] = cell[key];
                     });
@@ -524,19 +539,17 @@ class Manager {
 
     /**
      * Add a new module.
-     * @param {object} btn The button that was clicked.
      * @return {void}
      */
-    async addModule(btn) {
+    async addModule() {
         const modules = State.getValue('modules');
-        const moduleRow = btn.closest('[data-region="module"]');
-        const index = Array.from(moduleRow.parentElement.children).indexOf(moduleRow);
-        const moduleid = await this.createModule('Module ' + (index + 2), index);
+        const index = modules.length;
+        const moduleid = await this.createModule(' ', index);
         const row = await this.createRow(moduleid, 0);
         const module = {
             moduleid: moduleid,
             modulesortorder: index + 1,
-            modulename: 'Module ' + (index + 2),
+            modulename: ' ',
             rows: [row],
         };
         modules.push(module);

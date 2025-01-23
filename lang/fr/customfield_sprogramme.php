@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['addmodule'] = 'Ajouter un module';
 $string['addrow'] = 'Ajouter une ligne';
 $string['customfield/sprogramme:edit'] = 'Modifier le champ Programme';
 $string['customfield/sprogramme:view'] = 'Voir le champ Programme';
