@@ -39,6 +39,7 @@ class programme {
                 'type' => 'select',
                 'select' => true,
                 'visible' => false,
+                'canedit' => true,
                 'label' => 'CCT / EPT',
                 'columnid' => 6,
                 'length' => 20,
@@ -64,6 +65,7 @@ class programme {
                 'type' => 'select',
                 'select' => true,
                 'visible' => false,
+                'canedit' => false,
                 'label' => 'DD / RSE',
                 'columnid' => 7,
                 'length' => 20,
@@ -89,6 +91,7 @@ class programme {
                 'type' => 'select',
                 'select' => true,
                 'visible' => false,
+                'canedit' => false,
                 'label' => 'Type AEEEV',
                 'columnid' => 8,
                 'length' => 10,
@@ -130,6 +133,7 @@ class programme {
                 'type' => PARAM_TEXT,
                 'text' => true,
                 'visible' => true,
+                'canedit' => true,
                 'label' => 'Intitulé de la séance / de l’exercice',
                 'columnid' => 19,
                 'length' => 255,
@@ -141,6 +145,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => true,
                 'label' => 'CM',
                 'columnid' => 20,
                 'length' => 10,
@@ -154,6 +159,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'TD',
                 'columnid' => 21,
                 'length' => 10,
@@ -167,6 +173,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'TP',
                 'columnid' => 22,
                 'length' => 10,
@@ -180,6 +187,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'TPa',
                 'columnid' => 23,
                 'length' => 10,
@@ -190,9 +198,10 @@ class programme {
             ],
             [
                 'column' => 'tc',
-                'type' => PARAM_INT,
-                'int' => true,
+                'type' => PARAM_FLOAT,
+                'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'TC',
                 'columnid' => 24,
                 'length' => 10,
@@ -206,6 +215,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'AAS',
                 'columnid' => 25,
                 'length' => 10,
@@ -219,6 +229,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'FMP',
                 'columnid' => 26,
                 'length' => 10,
@@ -232,6 +243,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'Perso av',
                 'columnid' => 27,
                 'length' => 10,
@@ -243,6 +255,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'Perso ap',
                 'columnid' => 28,
                 'length' => 10,
@@ -256,6 +269,7 @@ class programme {
                 'type' => PARAM_TEXT,
                 'text' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'Consignes de travail pour préparer la séance',
                 'columnid' => 29,
                 'length' => 1000,
@@ -267,6 +281,7 @@ class programme {
                 'type' => PARAM_TEXT,
                 'text' => true,
                 'visible' => true,
+                'canedit' => false,
                 'label' => 'Supports pédagogiques essentiels',
                 'columnid' => 30,
                 'length' => 1000,
@@ -475,6 +490,17 @@ class programme {
         $module->set('sortorder', $sortorder);
         $module->save();
         return $module->get('id');
+    }
+
+    /**
+     * Delete a programme for a given course
+     * @param int $courseid
+     */
+    public static function delete_programme($courseid): void {
+        $modules = sprogramme_module::get_all_records_for_course($courseid);
+        foreach ($modules as $module) {
+            self::delete_module($courseid, $module->get('id'));
+        }
     }
 
     /**

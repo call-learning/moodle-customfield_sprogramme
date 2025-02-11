@@ -83,6 +83,7 @@ class get_columns extends external_api {
                     'text' => new external_value(PARAM_BOOL, 'Text', VALUE_OPTIONAL),
                     'select' => new external_value(PARAM_BOOL, 'Select', VALUE_OPTIONAL),
                     'visible' => new external_value(PARAM_BOOL, 'Visible', VALUE_REQUIRED),
+                    'canedit' => new external_value(PARAM_BOOL, 'Admin', VALUE_REQUIRED),
                     'label' => new external_value(PARAM_TEXT, 'Label', VALUE_REQUIRED),
                     'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
                     'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),

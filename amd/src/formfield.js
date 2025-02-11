@@ -52,7 +52,7 @@ const init = async(element, courseid) => {
             // Add the icone after the title Element.
             header.insertBefore(saveButton, title.nextSibling);
         }
-        const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/savebutton', {});
+        const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/savebutton', {courseid: courseid});
         await Templates.replaceNode(saveButton, html, js);
         const renderedSaveButton = document.querySelector('[data-action="saveconfirm"]');
         renderedSaveButton.addEventListener('click', async(event) => {

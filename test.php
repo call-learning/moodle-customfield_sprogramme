@@ -33,8 +33,8 @@ $courseid = optional_param('courseid', 0, PARAM_INT);
 $url = new moodle_url('/customfield/field/sprogramme/test.php', ['courseid' => $courseid]);
 $PAGE->set_url($url);
 $PAGE->set_context(context_course::instance($courseid));
-
 $PAGE->set_heading($SITE->fullname);
+
 echo $OUTPUT->header();
 $renderer = $PAGE->get_renderer('customfield_sprogramme');
 $formfield = new formfield();
@@ -42,5 +42,4 @@ echo $renderer->render($formfield);
 
 $programm = new programme($courseid);
 echo $renderer->render($programm);
-
 echo $OUTPUT->footer();

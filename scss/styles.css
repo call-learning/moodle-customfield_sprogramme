@@ -91,6 +91,10 @@
       -webkit-appearance: none;
       margin: 0;
       /* Optional: Prevent additional spacing */ }
+    .customfield-sprogramme .programm-table .readonly input,
+    .customfield-sprogramme .programm-table .readonly select {
+      background-color: #f7f7f7;
+      border: 0; }
     .customfield-sprogramme .programm-table.editor {
       border-left: 1px solid #dee2e6; }
       .customfield-sprogramme .programm-table.editor th {
@@ -193,8 +197,13 @@
 .modal .modal-customfield_sprogramme .close {
   margin-left: -0.5px; }
 
+.modal .modal-customfield_sprogramme .uploadbutton {
+  margin-left: auto; }
+  .modal .modal-customfield_sprogramme .uploadbutton .icon {
+    color: #9f9f9f; }
+
 .modal .modal-customfield_sprogramme .saveconfirm {
-  margin-left: auto;
+  margin-left: 0rem;
   margin-top: -1.5px; }
   .modal .modal-customfield_sprogramme .saveconfirm .icon {
     color: #9f9f9f; }

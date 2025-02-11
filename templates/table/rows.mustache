@@ -141,18 +141,18 @@
     <tr data-row data-index="{{id}}" draggable="true">
         {{#cells}}
             {{#editor}}
-                <td data-cell data-columnid="{{columnid}}" class="{{#float}}float{{/float}}{{#int}}int{{/int}}">
+                <td data-cell data-columnid="{{columnid}}" class="{{^canedit}}readonly {{/canedit}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
                     {{#int}}
-                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
+                        <input class="programm-input" data-input="auto" {{^canedit}}readonly{{/canedit}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/int}}
                     {{#float}}
-                        <input class="programm-input" data-input="auto" type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
+                        <input class="programm-input" data-input="auto" {{^canedit}}readonly{{/canedit}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/float}}
                     {{#text}}
-                        <input class="programm-input" data-input="auto" type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
+                        <input class="programm-input" data-input="auto" {{^canedit}}readonly{{/canedit}} type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
                     {{/text}}
                     {{#select}}
-                        <select data-input="auto" class="programm-input">
+                        <select data-input="auto" {{^canedit}}readonly{{/canedit}} class="programm-input">
                             {{#options}}
                                 <option value="{{{name}}}" {{#selected}}selected{{/selected}}>{{{name}}}</option>
                             {{/options}}

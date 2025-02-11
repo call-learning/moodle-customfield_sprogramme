@@ -104,6 +104,11 @@
             -webkit-appearance: none;
             margin: 0; /* Optional: Prevent additional spacing */
         }
+        .readonly input,
+        .readonly select {
+            background-color: #f7f7f7;
+            border: 0;
+        }
         &.editor {
             border-left: 1px solid #dee2e6;
             th {
@@ -238,8 +243,14 @@
     .close {
         margin-left: -0.5px;
     }
-    .saveconfirm {
+    .uploadbutton {
         margin-left: auto;
+        .icon {
+            color: #9f9f9f;
+        }
+    }
+    .saveconfirm {
+        margin-left: 0rem;
         margin-top: -1.5px;
         .icon {
             color: #9f9f9f;
