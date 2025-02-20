@@ -149,7 +149,7 @@
                         <input class="programm-input" data-input="auto" {{^canedit}}readonly{{/canedit}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/float}}
                     {{#text}}
-                        <input class="programm-input" data-input="auto" {{^canedit}}readonly{{/canedit}} type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
+                        <input class="programm-input" data-input="auto" maxlength="{{length}}" {{^canedit}}readonly{{/canedit}} type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
                     {{/text}}
                     {{#select}}
                         <select data-input="auto" {{^canedit}}readonly{{/canedit}} class="programm-input">
@@ -162,9 +162,7 @@
             {{/editor}}
             {{^editor}}
                 {{#visible}}
-                    <td class="{{#float}}float{{/float}}{{#int}}int{{/int}}">
-                        {{{value}}}
-                    </td>
+                    <td class="{{type}}">{{{value}}}</td>
                 {{/visible}}
             {{/editor}}
         {{/cells}}
@@ -176,6 +174,16 @@
                     {{#disciplines}}
                         {{> customfield_sprogramme/table/discipline}}
                     {{/disciplines}}
+                </div>
+            </div>
+        </td>
+        <td data-cell data-columnid="{{columnid}}" class="competencies" data-competencies data-rowid="{{id}}">
+            <div class="d-flex">
+                <button class="btn btn-icon icon-no-margin jsbutton" data-id="{{id}}" data-action="addcomp">{{#pix}}i/addblock, core, {{#str}}add{{/str}}{{/pix}}</button>
+                <div class="container-competencies" data-region="container-competencies">
+                    {{#competencies}}
+                        {{> customfield_sprogramme/table/discipline}}
+                    {{/competencies}}
                 </div>
             </div>
         </td>

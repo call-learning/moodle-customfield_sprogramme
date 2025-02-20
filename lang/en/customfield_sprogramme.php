@@ -27,9 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['addmodule'] = 'Add module';
 $string['addrow'] = 'Add row';
-$string['customfield/sprogramme:edit'] = 'Edit the Programme customfield';
-$string['customfield/sprogramme:view'] = 'View the Programme customfield';
+$string['sprogramme:edit'] = 'Edit the Programme customfield';
+$string['sprogramme:view'] = 'View the Programme customfield';
 $string['disciplines'] = 'Disciplines';
+$string['competencies'] = 'Competencies';
 $string['edit'] = 'Edit';
 $string['editprogramme'] = 'Edit Programme';
 $string['invaliddata'] = 'Invalid data: {$a}';

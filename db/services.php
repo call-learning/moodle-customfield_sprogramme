@@ -91,4 +91,11 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'customfield/sprogramme:edit',
     ],
+    'customfield_sprogramme_csv_data' => [
+        'classname' => \customfield_sprogramme\external\csv_data::class,
+        'methodname' => 'execute',
+        'description' => 'Get the contents of the columns',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:view',
+    ],
 ];

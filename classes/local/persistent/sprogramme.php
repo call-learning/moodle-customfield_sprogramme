@@ -161,6 +161,14 @@ class sprogramme extends persistent {
     }
 
     /**
+     * Get the defintion of the table
+     * @return array
+     */
+    public static function get_properties() {
+        return self::define_properties();
+    }
+
+    /**
      * Get all records for a given course
      * @param int $courseid
      * @return array
@@ -191,6 +199,38 @@ class sprogramme extends persistent {
         $disciplines = sprogramme_disc::get_records(['pid' => $this->raw_get('id')]);
         foreach ($disciplines as $disc) {
             $disc->delete();
+        }
+    }
+
+    /**
+     * Hook to execute after a create.
+     *
+     * As situations are visible when the user (student) belongs to one of the groups, we need to make
+     * sure that we send an event that will be observed so we clear the cache
+     *
+     * @return void
+     */
+    public function after_create_custom($data) {
+        $disciplines = $data->disciplines;
+        $competencies = $data->competencies;
+        $pid = $this->raw_get('id');
+        foreach ($disciplines as $discipline) {
+            $disc = new sprogramme_disc(null, (object) [
+                'pid' => $this->raw_get('id'),
+                'did' => $discipline['did'],
+                'discipline' => $discipline['name'],
+                'percentage' => $discipline['percentage'],
+            ]);
+            $disc->save();
+        }
+        foreach ($competencies as $competency) {
+            $comp = new sprogramme_comp(null, (object) [
+                'pid' => $this->raw_get('id'),
+                'cid' => $competency['cid'],
+                'competency' => $competency['name'],
+                'percentage' => $competency['percentage'],
+            ]);
+            $comp->save();
         }
     }
 }

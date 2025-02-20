@@ -175,5 +175,48 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         // Sprogramme savepoint reached.
         upgrade_plugin_savepoint(true, 2025011601, 'customfield', 'sprogramme');
     }
+
+    if ($oldversion < 2025021200) {
+
+        // Define table customfield_sprogramme_competencies to be created.
+        $table = new xmldb_table('customfield_sprogramme_competencies');
+
+        // Adding fields to table customfield_sprogramme_competencies.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('pid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('cid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('competency', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('percentage', XMLDB_TYPE_FLOAT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table customfield_sprogramme_competencies.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('fk_programme', XMLDB_KEY_FOREIGN, ['pid'], 'customfield_sprogramme', ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for customfield_sprogramme_competencies.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025021200, 'customfield', 'sprogramme');
+    }
+
+    if ($oldversion < 2025021900) {
+
+        // Changing type of field intitule_seance on table customfield_sprogramme to text.
+        $table = new xmldb_table('customfield_sprogramme');
+        $field = new xmldb_field('intitule_seance', XMLDB_TYPE_TEXT, null, null, null, null, null, 'sequence');
+
+        // Launch change of type for field intitule_seance.
+        $dbman->change_field_type($table, $field);
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025021900, 'customfield', 'sprogramme');
+    }
+
     return true;
 }

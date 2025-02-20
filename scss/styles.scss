@@ -4,13 +4,26 @@
 .customfield-sprogramme {
     overflow: auto;
     height: 100%;
+    font-size: 0.8rem;
+    .btn.btn-icon {
+        height: 2rem;
+        width: 2rem;
+        font-size: 1rem;
+        .icon {
+            max-width: 1rem;
+            max-height: 1rem;
+        }
+        .fa-fw {
+            font-size: 0.8rem;
+        }
+    }
     .programm-input {
         display: block;
         width: 100%;
         min-width: 70px;
         height: calc(1.5em + 0.75rem + 2px);
         padding: 0.125rem;
-        font-size: 0.9375rem;
+        font-size: 0.8rem;
         font-weight: 400;
         line-height: 1.5;
         color: #495057;
@@ -38,20 +51,26 @@
             }
         }
     }
+    .module-input {
+        border-radius: 0;
+        border-color: #dee2e6;
+    }
     .float .programm-input,
     .int .programm-input {
         min-width: 50px;
         width: 50px;
         max-width: 50px;
     }
-    .container-disciplines {
+    .container-disciplines,
+    .container-competencies {
         flex: 1 1 auto;
         display: flex;
         flex-wrap: wrap;
         max-width: 320px;
     }
-    .disciplines {
-        min-width: 350px;
+    .disciplines,
+    .competencies {
+        min-width: 170px;
         .badge {
             display: flex;
             align-items: center;
@@ -128,6 +147,7 @@
                 border-top: 1px solid #dee2e6;
                 border-right: 1px solid #dee2e6;
                 position: relative;
+                vertical-align: top;
                 &.actions {
                     display: flex;
                 }
@@ -138,10 +158,24 @@
             }
         }
         &.standard {
+            border-right: 1px solid #dee2e6;
             td,
             th {
                 padding: 0.5rem;
                 border-top: 1px solid #dee2e6;
+                border-left: 1px solid #dee2e6;
+                vertical-align: top;
+                &.text {
+                    width: 300px;
+                    white-space: wrap;
+                }
+                &.float,
+                &.int {
+                    width: 50px;
+                }
+                &:empty {
+                    height: 50px;
+                }
             }
             th {
                 &.float,
@@ -158,12 +192,12 @@
     td.disciplines {
         position: relative;
     }
-    td.disciplines .discipline-form {
+    td .discipline-form {
         display: block;
         position: absolute;
         right: 100%;
         top: -3px;
-        width: 150%;
+        width: 400px;
         padding: 0.5rem;
         background-color: #fff;
         z-index: 1;
@@ -233,18 +267,40 @@
             border-color: var(--gray);
             border-left: 0;
         }
-        .discipline-list {
+        .discipline-list,
+        .competences-list {
             height: 200px;
             overflow-y: auto;
+        }
+        &.data-disciplines {
+            .competences-list {
+                display: none;
+            }
+        }
+        &.data-competencies {
+            .discipline-list {
+                display: none;
+            }
         }
     }
 }
 .modal .modal-customfield_sprogramme {
+    max-width: calc(100% - 2rem);
+    .modal-header {
+        align-items: center;
+        .close {
+            display: none;
+        }
+    }
     .close {
         margin-left: -0.5px;
     }
     .uploadbutton {
         margin-left: auto;
+    }
+    .downloadbutton,
+    .closebutton,
+    .uploadbutton {
         .icon {
             color: #9f9f9f;
         }
@@ -252,6 +308,12 @@
     .saveconfirm {
         margin-left: 0rem;
         margin-top: -1.5px;
+        .savingicon .icon {
+            color: var(--warning);
+        }
+        .defaulticon .icon {
+            color: var(--success);
+        }
         .icon {
             color: #9f9f9f;
         }

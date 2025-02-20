@@ -275,12 +275,13 @@
     {{/editor}}
     {{^editor}}
         {{#visible}}
-            <th {{#float}}class="float"{{/float}}{{#int}}class="int"{{/int}}>{{{label}}}</th>
+            <th class="{{field}}">{{{label}}}</th>
         {{/visible}}
     {{/editor}}
 {{/columns}}
 {{#editor}}
 <th class="attachdisciplineform" data-region="attachdisciplineform">{{#str}}disciplines, customfield_sprogramme {{/str}}</th>
+<th class="attachcompetencyform" data-region="attachcompetencyform">{{#str}}competencies, customfield_sprogramme {{/str}}</th>
 <th>{{#str}}actions, plugin {{/str}}</th>
 {{/editor}}
 {{#mustacheonly}}

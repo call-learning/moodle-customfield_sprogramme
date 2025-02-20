@@ -18,6 +18,7 @@ namespace customfield_sprogramme\local\importer;
 
 use customfield_sprogramme\local\persistent\sprogramme as programme;
 use customfield_sprogramme\local\persistent\sprogramme_module as module;
+use customfield_sprogramme\local\api\programme as programme_api;
 /**
  * Class programme_importer
  *
@@ -51,7 +52,7 @@ class programme_importer extends base_persistent_importer {
         $data = parent::to_persistent_data($row, $reader);
         $modulename = $data->module;
         if (!isset($this->modulecache[$modulename])) {
-            $module = module::get_record(['name' => $modulename]);
+            $module = module::get_record(['name' => $modulename, 'courseid' => $courseid]);
             $sortorder = module::count_records() + 1;
             if (!$module) {
                 $module = new module(null, (object) [
@@ -67,7 +68,78 @@ class programme_importer extends base_persistent_importer {
         $data->courseid = $courseid;
         $data->moduleid = $this->modulecache[$modulename];
         $data->sortorder = $this->sortorder++;
+        $programproperties = programme::get_properties();
+        foreach ($programproperties as $property => $definition) {
+            if ($definition['type'] === PARAM_INT) {
+                if ($data->$property === '') {
+                    $data->$property = null;
+                } else {
+                    $data->$property = (int) $data->$property;
+                }
+            }
+            if ($definition['type'] === PARAM_FLOAT) {
+                if ($data->$property === '') {
+                    $data->$property = null;
+                } else {
+                    $data->$property = (float) $data->$property;
+                }
+            }
+        }
+        // Turn competencies and disciplines persistent data.
+        $data->competencies = $this->get_list($data->competencies, 'competencies');
+        $data->disciplines = $this->get_list($data->disciplines, 'disciplines');
 
+        return $data;
+    }
+
+    /**
+     * Turn competencies and disciplines persistent data.
+     * @param string $data
+     * @param string $type
+     * @return array
+     */
+    protected function get_list(string $data, string $type): array {
+        // Split the data by |
+        $data = explode('|', $data);
+        // Get the percentage (50%) from the data.
+        $data = array_map(function ($item) {
+            $item = explode('(', $item);
+            $item[1] = str_replace(['(', ')', '%'], '', $item[1]);
+            return [
+                'name' => trim($item[0]),
+                'percentage' => (float) $item[1],
+            ];
+        }, $data);
+
+        if ($type == 'disciplines') {
+            $disciplines = programme_api::get_disciplines();
+            foreach ($data as $key => $item) {
+                $matchingdiscipline = array_filter($disciplines, function ($discipline) use ($item) {
+                    return $discipline['name'] == $item['name'];
+                });
+                if (empty($matchingdiscipline)) {
+                    unset($data[$key]);
+                } else {
+                    $item['did'] = array_values($matchingdiscipline)[0]['id'];
+                    $data[$key] = $item;
+                }
+            }
+        }
+        // Same as above we need the cid
+        if ($type == 'competencies') {
+            $competencies = programme_api::get_competencies();
+            foreach ($data as $key => $item) {
+                $matchingcompetency = array_filter($competencies, function ($competency) use ($item) {
+                    return $competency['name'] == $item['name'];
+                });
+                if (empty($matchingcompetency)) {
+                    unset($data[$key]);
+                } else {
+                    $item['cid'] = array_values($matchingcompetency)[0]['id'];
+                    $data[$key] = $item;
+                }
+            }
+        }
         return $data;
     }
 }

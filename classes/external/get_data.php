@@ -54,13 +54,13 @@ class get_data extends external_api {
      */
     public static function execute(int $courseid): array {
         $params = self::validate_parameters(self::execute_parameters(),
-            [
-                'courseid' => $courseid,
-            ]
+            ['courseid' => $courseid]
         );
         $courseid = $params['courseid'];
-        self::validate_context(context_course::instance($courseid));
-        if (!has_capability('moodle/course:update', context_course::instance($courseid))) {
+
+        $coursecontext = context_course::instance($courseid);
+        self::validate_context($coursecontext);
+        if (!has_capability('moodle/course:update', $coursecontext)) {
             throw new \invalid_parameter_exception('invalidaccess');
         }
 
@@ -95,6 +95,13 @@ class get_data extends external_api {
                                 ])
                             ),
                             'disciplines' => new external_multiple_structure(
+                                new external_single_structure([
+                                    'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
+                                    'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                                    'percentage' => new external_value(PARAM_FLOAT, 'Value', VALUE_REQUIRED),
+                                ])
+                            ),
+                            'competencies' => new external_multiple_structure(
                                 new external_single_structure([
                                     'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
                                     'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),

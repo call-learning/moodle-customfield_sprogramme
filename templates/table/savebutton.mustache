@@ -23,17 +23,28 @@
     {
     }
 }}
+<div class="saveconfirm icon-no-margin">
+    <button class="btn btn-icon" data-action="saveconfirm">
+        <span class="defaulticon">{{#pix}}i/item, core, {{#str}}save{{/str}}{{/pix}}</span>
+        <span class="savingicon">{{#pix}}i/item, core, {{#str}}saving, customfield_sprogramme{{/str}}{{/pix}}</span>
+    </button>
+</div>
 <div class="uploadbutton icon-no-margin">
     <button class="btn btn-icon" data-action="programme-upload-form" data-courseid="{{courseid}}">
         {{#pix}}i/upload, core, {{#str}}upload{{/str}}{{/pix}}
     </button>
 </div>
-<div class="saveconfirm icon-no-margin">
-    <button class="btn btn-icon" data-action="saveconfirm">
-        <span class="defaulticon">{{#pix}}e/save, core, {{#str}}save{{/str}}{{/pix}}</span>
-        <span class="savingicon">{{#pix}}i/loading, core, {{#str}}saving, customfield_sprogramme{{/str}}{{/pix}}</span>
+<div class="downloadbutton icon-no-margin">
+    <button class="btn btn-icon" data-action="programme-download-csv" data-courseid="{{courseid}}">
+        {{#pix}}t/download, core, {{#str}}download{{/str}}{{/pix}}
     </button>
 </div>
+<div class="closebutton icon-no-margin">
+    <button class="btn btn-icon" data-action="closeform">
+        {{#pix}}e/cancel, core, {{#str}}close, admin{{/str}}{{/pix}}
+    </button>
+</div>
+
 {{#js}}
 require(['customfield_sprogramme/programme_form'], function(form) {
     form.init();

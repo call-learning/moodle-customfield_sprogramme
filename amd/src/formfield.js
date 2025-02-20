@@ -24,6 +24,8 @@ import Manager from 'customfield_sprogramme/manager';
 import Templates from 'core/templates';
 import {getString} from 'core/str';
 import Modal from 'core/modal';
+import ModalEvents from 'core/modal_events';
+import Repository from 'customfield_sprogramme/local/repository';
 /*
  * Initialise
  * @param {HTMLElement} element The element.
@@ -42,6 +44,9 @@ const init = async(element, courseid) => {
             body: modalContent,
             show: true,
         });
+        modal.getRoot().on(ModalEvents.hidden, () => {
+            window.location.reload();
+        });
 
         const saveButton = document.createElement('div');
         const modalElement = modal.getModal()[0];
@@ -52,16 +57,38 @@ const init = async(element, courseid) => {
             // Add the icone after the title Element.
             header.insertBefore(saveButton, title.nextSibling);
         }
+
         const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/savebutton', {courseid: courseid});
         await Templates.replaceNode(saveButton, html, js);
-        const renderedSaveButton = document.querySelector('[data-action="saveconfirm"]');
+        const closeButton = header.querySelector('[data-action="closeform"]');
+        closeButton.addEventListener('click', () => {
+            modal.hide();
+        });
+        const downloadButton = header.querySelector('[data-action="programme-download-csv"]');
+        downloadButton.addEventListener('click', async(event) => {
+            downloadCSV(courseid);
+            event.preventDefault();
+        });
+        const renderedSaveButton = header.querySelector('[data-action="saveconfirm"]');
         renderedSaveButton.addEventListener('click', async(event) => {
             // Run the 'saveconfirm' custom event.
             const saveEvent = new CustomEvent('saveconfirm', {bubbles: true});
             document.dispatchEvent(saveEvent);
             event.preventDefault();
         });
+
     });
+};
+
+const downloadCSV = async(courseid) => {
+    const csv = await Repository.csvData({courseid: courseid});
+    const blob = new Blob([csv.csv], {type: 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = csv.filename;
+    a.click();
+    window.URL.revokeObjectURL(url);
 };
 
 

@@ -16,7 +16,7 @@
 
 namespace customfield_sprogramme\external;
 
-use context_system;
+use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -40,28 +40,28 @@ class get_columns extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'table' => new external_value(PARAM_TEXT, 'table', VALUE_DEFAULT, ''),
+            'courseid' => new external_value(PARAM_INT, 'Courseid', VALUE_DEFAULT, ''),
         ]);
     }
 
     /**
      * Execute and return json data.
      *
-     * @param string $table - The course module id
+     * @param int $courseid - The course module id
      * @return array $data - The plannings list
      * @throws \invalid_parameter_exception
      */
-    public static function execute(string $table): array {
-        global $CFG;
+    public static function execute(int $courseid): array {
         $params = self::validate_parameters(self::execute_parameters(),
             [
-                'table' => $table,
+                'courseid' => $courseid,
             ]
         );
-        self::validate_context(context_system::instance());
+        $courseid = $params['courseid'];
+        self::validate_context(context_course::instance($courseid));
         $table = $params['table'];
 
-        $columns = programme::get_column_structure();
+        $columns = programme::get_column_structure($courseid);
         return [
             'columns' => $columns,
         ];

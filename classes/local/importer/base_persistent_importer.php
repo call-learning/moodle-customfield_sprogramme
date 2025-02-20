@@ -22,7 +22,7 @@ use moodle_exception;
 /**
  * Base persistent importer
  *
- * @package   mod_competvet
+ * @package   customfield_sprogramme
  * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -108,7 +108,11 @@ abstract class base_persistent_importer {
             }
         }
         $newpersistent = new $this->persistenclass(0, $data);
+
         $newpersistent->create();
+        if (method_exists($newpersistent, 'after_create_custom')) {
+            $newpersistent->after_create_custom($data);
+        }
     }
 
     /**

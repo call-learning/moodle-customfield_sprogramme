@@ -183,7 +183,7 @@ class Manager {
      * @return {Promise} The promise.
      */
     async getTableConfig() {
-        const response = await Repository.getColumns({table: this.table});
+        const response = await Repository.getColumns({courseid: this.courseid});
         await State.setValue('columns', response.columns);
     }
 
@@ -258,6 +258,11 @@ class Manager {
                     'name': 'name',
                     'percentage': 'percentage',
                 },
+                'competencies': {
+                    'id': 'id',
+                    'name': 'name',
+                    'percentage': 'percentage',
+                },
             },
         };
     }
@@ -308,6 +313,14 @@ class Manager {
                         cleanedDiscipline[key] = discipline[key];
                     });
                     return cleanedDiscipline;
+                });
+                // Clean the competencies.
+                cleanedRow.competencies = row.competencies.map(competency => {
+                    const cleanedCompetency = {};
+                    Object.keys(rowObject.rows.competencies).forEach(key => {
+                        cleanedCompetency[key] = competency[key];
+                    });
+                    return cleanedCompetency;
                 });
                 return cleanedRow;
             });
@@ -360,6 +373,9 @@ class Manager {
             this.deleteModule(btn);
         }
         if (btn.dataset.action === 'adddisc') {
+            this.showDisciplineForm(btn);
+        }
+        if (btn.dataset.action === 'addcomp') {
             this.showDisciplineForm(btn);
         }
         if (btn.dataset.action === 'removedisc') {
@@ -435,6 +451,7 @@ class Manager {
                 cell[cell.type] = true;
             });
             row.disciplines = [];
+            row.competencies = [];
             resolve(row);
         });
     }
@@ -543,17 +560,17 @@ class Manager {
      */
     async addModule() {
         const modules = State.getValue('modules');
-        const index = modules.length;
-        const moduleid = await this.createModule(' ', index);
+        const moduleid = await this.createModule(' ', 0);
         const row = await this.createRow(moduleid, 0);
         const module = {
             moduleid: moduleid,
-            modulesortorder: index + 1,
             modulename: ' ',
             rows: [row],
         };
         modules.push(module);
+        this.resetRowSortorder();
         State.setValue('modules', modules);
+        this.setTableData();
     }
 
     /**
@@ -576,7 +593,8 @@ class Manager {
      */
     resetRowSortorder() {
         const modules = State.getValue('modules');
-        modules.forEach(module => {
+        modules.forEach((module, mindex) => {
+            module.modulesortorder = mindex;
             module.rows.forEach((row, index) => {
                 row.sortorder = index;
             });
@@ -635,12 +653,15 @@ class Manager {
      * @return {void}
      */
     async showDisciplineForm(btn) {
+        const btnAction = btn.dataset.action;
+        const region = btnAction === 'adddisc' ? 'data-disciplines' : 'data-competencies';
         const row = btn.closest('[data-row]');
         const module = btn.closest('[data-region="module"]');
         const form = document.querySelector('[data-region="disciplineform"]');
+        form.classList.remove('data-disciplines', 'data-competencies');
+        form.classList.add(region);
         form.querySelector('#rowid').value = row.dataset.index;
         const arrow = form.querySelector('.formarrow');
-
 
         // Get the row index nr based on the row position in the table.
         const rows = module.querySelectorAll('[data-region="rows"] [data-row]');
@@ -649,6 +670,7 @@ class Manager {
         // Set the title of the form to show the row number.
         form.querySelector('[data-region="rownumber"]').textContent =
             await getString('row', 'customfield_sprogramme', index + 1);
+        form.dataset.action = region;
 
         // Attache the form to the first row for the first 8 rows.
         // Then attach it to 8 rows before the clicked row.
@@ -657,11 +679,11 @@ class Manager {
         let attachTo;
         let attachToButton;
         if (setindex > 0) {
-            attachTo = rowArray[setindex].querySelector('[data-disciplines]');
-            attachToButton = rowArray[setindex].querySelector('[data-action="adddisc"]');
+            attachTo = rowArray[setindex].querySelector(`[${region}]`);
+            attachToButton = rowArray[setindex].querySelector(`[data-action="${btnAction}"]`);
         } else {
-            attachTo = rowArray[0].querySelector('[data-disciplines]');
-            attachToButton = rowArray[0].querySelector('[data-action="adddisc"]');
+            attachTo = rowArray[0].querySelector(`[${region}]`);
+            attachToButton = rowArray[0].querySelector(`[data-action="${btnAction}"]`);
         }
         attachTo.appendChild(form);
 
@@ -669,7 +691,7 @@ class Manager {
         const rectBtn = btn.getBoundingClientRect();
         const rectAttachToButton = attachToButton.getBoundingClientRect();
         arrow.style.top = rectBtn.top - rectAttachToButton.top + 'px';
-        this.renderFormDisciplines(row.dataset.index);
+        this.renderFormDisciplines(row.dataset.index, region);
     }
 
     /**
@@ -722,12 +744,25 @@ class Manager {
         };
         const row = this.getRow(rowid);
         // Update or add the discipline to the row.
-        const disciplineIndex = row.disciplines.findIndex(d => d.id == discipline.id);
+        const action = form.dataset.action;
+        const containername = action === 'data-disciplines' ? 'container-disciplines' : 'container-competencies';
+        let disciplineIndex = 0;
+        if (action === 'data-disciplines') {
+            disciplineIndex = row.disciplines.findIndex(d => d.id == discipline.id);
+        }
+        if (action === 'data-competencies') {
+            disciplineIndex = row.competencies.findIndex(d => d.id == discipline.id);
+        }
         const container = document.querySelector(
-            '[data-disciplines][data-rowid="' + rowid + '"] [data-region="container-disciplines"]');
+            `[${action}][data-rowid="${rowid}"] [data-region="${containername}"]`);
         const selectedcontainer = form.querySelector('[data-region="selected-disciplines"]');
         if (disciplineIndex > -1) {
-            row.disciplines[disciplineIndex] = discipline;
+            if (action === 'data-disciplines') {
+                row.disciplines[disciplineIndex] = discipline;
+            }
+            if (action === 'data-competencies') {
+                row.competencies[disciplineIndex] = discipline;
+            }
             const rendered = container.querySelector('[data-id="' + discipline.id + '"]');
             const selected = selectedcontainer.querySelector('[data-id="' + discipline.id + '"]');
             const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/discipline', discipline);
@@ -735,7 +770,12 @@ class Manager {
             await Templates.replaceNode(selected, html, js);
 
         } else {
-            row.disciplines.push(discipline);
+            if (action === 'data-disciplines') {
+                row.disciplines.push(discipline);
+            }
+            if (action === 'data-competencies') {
+                row.competencies.push(discipline);
+            }
             const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/discipline', discipline);
             await Templates.appendNodeContents(container, html, js);
             await Templates.appendNodeContents(selectedcontainer, html, js);
@@ -746,11 +786,18 @@ class Manager {
     /**
      * Render the disciplines in the form.
      * @param {int} rowid The rowid.
+     * @param {String} region The region.
      * @return {void}
      */
-    async renderFormDisciplines(rowid) {
+    async renderFormDisciplines(rowid, region) {
         const row = this.getRow(rowid);
-        const disciplines = row.disciplines;
+        let disciplines = [];
+        if (region === 'data-disciplines') {
+            disciplines = row.disciplines;
+        }
+        if (region === 'data-competencies') {
+            disciplines = row.competencies;
+        }
         const form = document.querySelector('[data-region="disciplineform"]');
         const container = form.querySelector('[data-region="selected-disciplines"]');
         container.innerHTML = '';
@@ -767,13 +814,26 @@ class Manager {
      */
     async removeDiscipline(btn) {
         const form = document.querySelector('[data-region="disciplineform"]');
+        const action = form.dataset.action;
+        const containername = action === 'data-disciplines' ? 'container-disciplines' : 'container-competencies';
         const rowid = form.querySelector('#rowid').value;
         const disciplineid = btn.closest('[data-id]').dataset.id;
-        const row = this.getRow(rowid);
-        const index = row.disciplines.findIndex(d => d.id == disciplineid);
-        row.disciplines.splice(index, 1);
+
+        // Remove the discipline from the row.
+        if (action === 'data-disciplines') {
+            const row = this.getRow(rowid);
+            const index = row.disciplines.findIndex(d => d.id == disciplineid);
+            row.disciplines.splice(index, 1);
+        }
+        if (action === 'data-competencies') {
+            const row = this.getRow(rowid);
+            const index = row.competencies.findIndex(d => d.id == disciplineid);
+            row.competencies.splice(index, 1);
+        }
+
+        // Remove the discipline/competency from the view.
         const container = document.querySelector(
-            '[data-disciplines][data-rowid="' + rowid + '"] [data-region="container-disciplines"]');
+            `[${action}][data-rowid="${rowid}"] [data-region="${containername}"]`);
         const selectedcontainer = document.querySelector('[data-region="selected-disciplines"]');
         const discipline = container.querySelector('[data-id="' + disciplineid + '"]');
         const selected = selectedcontainer.querySelector('[data-id="' + disciplineid + '"]');
@@ -821,7 +881,6 @@ class Manager {
             }
         }
     }
-
 }
 
 /*

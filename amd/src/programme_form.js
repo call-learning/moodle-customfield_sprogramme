@@ -27,7 +27,7 @@ import {get_string as getString} from 'core/str';
 export const init = () => {
 
     const submitEventHandler = () => {
-            window.location.reload();
+        window.location.reload();
     };
     document.addEventListener('click', (event) => {
         if (!event.target.closest('[data-action="programme-upload-form"]')) {

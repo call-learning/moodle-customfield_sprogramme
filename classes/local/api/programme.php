@@ -18,7 +18,10 @@ namespace customfield_sprogramme\local\api;
 
 use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\persistent\sprogramme_disc;
+use customfield_sprogramme\local\persistent\sprogramme_comp;
 use customfield_sprogramme\local\persistent\sprogramme_module;
+require_once($CFG->libdir . '/csvlib.class.php');
+use context_course;
 use xmldb_structure;
 /**
  * Class programme
@@ -43,7 +46,7 @@ class programme {
                 'label' => 'CCT / EPT',
                 'columnid' => 6,
                 'length' => 20,
-                'field' => 'float',
+                'field' => 'select',
                 'sample_value' => '',
                 'options' => [
                     [
@@ -69,7 +72,7 @@ class programme {
                 'label' => 'DD / RSE',
                 'columnid' => 7,
                 'length' => 20,
-                'field' => 'float',
+                'field' => 'select',
                 'sample_value' => '',
                 'options' => [
                     [
@@ -136,7 +139,7 @@ class programme {
                 'canedit' => true,
                 'label' => 'Intitulé de la séance / de l’exercice',
                 'columnid' => 19,
-                'length' => 255,
+                'length' => 3000,
                 'field' => 'text',
                 'sample_value' => '...',
             ],
@@ -272,7 +275,7 @@ class programme {
                 'canedit' => false,
                 'label' => 'Consignes de travail pour préparer la séance',
                 'columnid' => 29,
-                'length' => 1000,
+                'length' => 3000,
                 'field' => 'select',
                 'sample_value' => '...',
             ],
@@ -284,7 +287,7 @@ class programme {
                 'canedit' => false,
                 'label' => 'Supports pédagogiques essentiels',
                 'columnid' => 30,
-                'length' => 1000,
+                'length' => 3000,
                 'field' => 'select',
                 'sample_value' => '...',
             ],
@@ -293,11 +296,85 @@ class programme {
     }
 
     /**
+     * Get all disciplines
+     *
+     * @return array
+     */
+    public static function get_disciplines(): array {
+        $disciplinesjson = '[
+            {"id": 1, "number": 2, "name": "Immunology"},
+            {"id": 2, "number": 2, "name": "Literacy & data management"},
+            {"id": 3, "number": 2, "name": "Microbiology"},
+            {"id": 4, "number": 2, "name": "Parasitology"},
+            {"id": 5, "number": 2, "name": "Pathology"},
+            {"id": 6, "number": 2, "name": "Pharma-cy-cology-cotherapy"},
+            {"id": 7, "number": 2, "name": "Physiology"},
+            {"id": 8, "number": 2, "name": "Prof. ethics & communication"},
+            {"id": 9, "number": 2, "name": "Toxicology"},
+            {"id": 10, "number": 3, "name": "CA_EQ Anesthesiology"},
+            {"id": 11, "number": 3, "name": "CA_EQ Clinical pract training"},
+            {"id": 12, "number": 3, "name": "CA_EQ Diagnostic imaging"},
+            {"id": 13, "number": 3, "name": "CA_EQ Diagnostic pathology"},
+            {"id": 14, "number": 3, "name": "CA_EQ Infectious diseases"},
+            {"id": 15, "number": 3, "name": "CA_EQ Medecine"},
+            {"id": 16, "number": 3, "name": "CA_EQ Preventive medicine"},
+            {"id": 17, "number": 3, "name": "CA_EQ Repro & obstetrics"},
+            {"id": 18, "number": 3, "name": "CA_EQ Surgery"},
+            {"id": 19, "number": 3, "name": "CA_EQ Therapy"},
+            {"id": 20, "number": 4, "name": "FPA Anesthesiology"},
+            {"id": 21, "number": 4, "name": "FPA Clinical pract training"},
+            {"id": 22, "number": 4, "name": "FPA Diagnostic imaging"},
+            {"id": 23, "number": 4, "name": "FPA Diagnostic pathology"},
+            {"id": 24, "number": 4, "name": "FPA Herd health management"},
+            {"id": 25, "number": 4, "name": "FPA Husb, breeding & economics"},
+            {"id": 26, "number": 4, "name": "FPA Infectious diseases"},
+            {"id": 27, "number": 4, "name": "FPA Medecine"},
+            {"id": 28, "number": 4, "name": "FPA Preventive medicine"},
+            {"id": 29, "number": 4, "name": "FPA Repro & obstetrics"},
+            {"id": 30, "number": 4, "name": "FPA Surgery"},
+            {"id": 31, "number": 4, "name": "FPA Therapy"},
+            {"id": 32, "number": 5, "name": "Control of food & feed"},
+            {"id": 33, "number": 5, "name": "Food hygiene & environ. health"},
+            {"id": 34, "number": 5, "name": "Food technology"},
+            {"id": 35, "number": 5, "name": "Vet. legis & certification"},
+            {"id": 36, "number": 5, "name": "Zoonoses"}
+        ]';
+        $disciplines = json_decode($disciplinesjson, true);
+        return $disciplines;
+    }
+
+    /**
+     * Get all competences
+     * @return array
+     */
+    public static function get_competencies(): array {
+        // Sorted by name, updates the ID too
+        $competencesjson = '[
+            {"id": 1, "number": 1, "name": "Agir de manière responsable"},
+            {"id": 2, "number": 1, "name": "Agir en Scientifique"},
+            {"id": 3, "number": 1, "name": "Agir pour la santé publique"},
+            {"id": 4, "number": 1, "name": "Communiquer"},
+            {"id": 5, "number": 1, "name": "Conseiller et Prévenir"},
+            {"id": 6, "number": 1, "name": "Etablir un diagnostic"},
+            {"id": 7, "number": 1, "name": "Soigner et traiter"},
+            {"id": 8, "number": 1, "name": "Travailler en entrepris"}
+        ]';
+        $competences = json_decode($competencesjson, true);
+        return $competences;
+    }
+
+    /**
      * Get the column structure for the custom field
+     * @param int $courseid
      * @return array $columns
      */
-    public static function get_column_structure(): array {
+    public static function get_column_structure($courseid): array {
         $table = self::get_table_structure();
+        $canedit = has_capability('customfield/sprogramme:edit', context_course::instance($courseid));
+        $table = array_map(function($column) use ($canedit) {
+            $column['canedit'] = $canedit;
+            return $column;
+        }, $table);
         return array_values($table);
     }
 
@@ -308,14 +385,14 @@ class programme {
      */
     public static function get_data(int $courseid): array {
         $modules = sprogramme_module::get_all_records_for_course($courseid);
-        $columns = self::get_column_structure();
+        $columns = self::get_column_structure($courseid);
         $data = [];
         foreach ($modules as $module) {
             $records = sprogramme::get_all_records_for_module($module->get('id'));
             $modulerows = [];
             foreach ($records as $record) {
                 $row = [];
-                foreach ($columns as $column) {
+                foreach ($columns as $key => $column) {
                     $row[] = [
                         'column' => $column['column'],
                         'value' => $record->get($column['column']),
@@ -332,11 +409,21 @@ class programme {
                         'percentage' => $discipline->get('percentage'),
                     ];
                 }
+                $competencies = sprogramme_comp::get_all_records_for_programme($record->get('id'));
+                $competencydata = [];
+                foreach ($competencies as $competency) {
+                    $competencydata[] = [
+                        'id' => $competency->get('cid'),
+                        'name' => $competency->get('competency'),
+                        'percentage' => $competency->get('percentage'),
+                    ];
+                }
                 $modulerows[] = [
                     'id' => $record->get('id'),
                     'sortorder' => $record->get('sortorder'),
                     'cells' => $row,
                     'disciplines' => $disciplinedata,
+                    'competencies' => $competencydata,
                 ];
             }
             $data[] = [
@@ -361,13 +448,14 @@ class programme {
             $rows = $module['rows'];
             $mod = sprogramme_module::get_record(['id' => $moduleid]);
             $mod->set('name', $module['name']);
+            $mod->set('sortorder', $module['sortorder']);
             $mod->save();
             $records = sprogramme::get_all_records_for_module($moduleid);
             foreach ($rows as $row) {
                 $updated = false;
                 foreach ($records as $record) {
                     if ($record->get('id') == $row['id']) {
-                        self::update_record($record, $row);
+                        self::update_record($record, $row, $courseid);
                         $updated = true;
                     }
                 }
@@ -376,7 +464,7 @@ class programme {
                     $record->set('uc', $courseid);
                     $record->set('courseid', $courseid);
                     $record->set('moduleid', $moduleid);
-                    self::update_record($record, $row);
+                    self::update_record($record, $row, $courseid);
                 }
             }
         }
@@ -387,9 +475,10 @@ class programme {
      * Update a record
      * @param sprogramme $record
      * @param array $row
+     * @param int $courseid
      */
-    private static function update_record(sprogramme $record, array $row): void {
-        $columns = self::get_column_structure();
+    private static function update_record(sprogramme $record, array $row, int $courseid): void {
+        $columns = self::get_column_structure($courseid);
         $fields = array_map(function($column) {
             return $column['column'];
         }, $columns);
@@ -415,6 +504,7 @@ class programme {
         }
         $record->save();
         self::set_disciplines($record, $row);
+        self::set_competencies($record, $row);
     }
 
     /**
@@ -423,7 +513,7 @@ class programme {
      * @param array $row
      */
     public static function set_disciplines(sprogramme $record, array $row): void {
-        if (!isset($row['disciplines']) || !is_array($row['disciplines']) || empty($row['disciplines'])) {
+        if (!isset($row['disciplines']) || !is_array($row['disciplines'])) {
             return;
         }
         $disciplines = $row['disciplines'];
@@ -452,6 +542,50 @@ class programme {
             $found = false;
             foreach ($disciplines as $discipline) {
                 if ($record->get('did') == $discipline['id']) {
+                    $found = true;
+                }
+            }
+            if (!$found) {
+                $record->delete();
+            }
+        }
+    }
+
+    /**
+     * Set the competencies
+     * @param sprogramme $record
+     * @param array $row
+     */
+    public static function set_competencies(sprogramme $record, array $row): void {
+        if (!isset($row['competencies']) || !is_array($row['competencies'])) {
+            return;
+        }
+        $competencies = $row['competencies'];
+
+        $existing = sprogramme_comp::get_all_records_for_programme($row['id']);
+        foreach ($competencies as $competency) {
+            $updated = false;
+            foreach ($existing as $record) {
+                if ($record->get('cid') == $competency['id']) {
+                    $record->set('percentage', $competency['percentage']);
+                    $record->save();
+                    $updated = true;
+                }
+            }
+            if (!$updated) {
+                $record = new sprogramme_comp();
+                $record->set('pid', $row['id']);
+                $record->set('cid', $competency['id']);
+                $record->set('competency', $competency['name']);
+                $record->set('percentage', $competency['percentage']);
+                $record->save();
+            }
+        }
+        // Remove any competencies that are no longer there.
+        foreach ($existing as $record) {
+            $found = false;
+            foreach ($competencies as $competency) {
+                if ($record->get('cid') == $competency['id']) {
                     $found = true;
                 }
             }
@@ -620,5 +754,46 @@ class programme {
                 }
             }
         }
+    }
+
+    /**
+     * Get the data in csv format
+     * @param int $courseid
+     * @return string $csv
+     */
+    public static function get_csv_data(int $courseid): string {
+        $data = self::get_data($courseid);
+        $csvexport = new \csv_export_writer('semicolon', '"');
+        $course = get_course($courseid);
+        $filename = 'programme_' . $course->shortname . '_' . date('Ymd_His') . '.txt';
+        $csvexport->set_filename($filename);
+        $columns = self::get_column_structure($courseid);
+        // Add the module name to the first item of the columns.
+        $columns = array_merge([['column' => 'module']], $columns, 
+            [['column' => 'disciplines'], ['column' => 'competencies']]);
+        $csvexport->add_data(array_map(function($column) {
+            return $column['column'];
+        }, $columns));
+        foreach($data as $module) {
+            $name = $module['modulename'];
+            foreach ($module['rows'] as $row) {
+                $cells = [];
+                foreach ($row['cells'] as $cell) {
+                    $cells[] = $cell['value'];
+                }
+                $disciplines = [];
+                foreach ($row['disciplines'] as $discipline) {
+                    $disciplines[] = $discipline['name'] . ' (' . $discipline['percentage'] . '%)';
+                }
+                $competencies = [];
+                foreach ($row['competencies'] as $competency) {
+                    $competencies[] = $competency['name'] . ' (' . $competency['percentage'] . '%)';
+                }
+                $cells[] = implode('| ', $disciplines);
+                $cells[] = implode('| ', $competencies);
+                $csvexport->add_data(array_merge([$name], $cells));
+            }
+        }
+        return $csvexport->print_csv_data(true);
     }
 }

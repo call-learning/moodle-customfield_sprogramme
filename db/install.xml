@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="customfield/field/sprogramme/db" VERSION="20250116" COMMENT="XMLDB for programme custom field"
+<XMLDB PATH="customfield/field/sprogramme/db" VERSION="20250219" COMMENT="XMLDB for programme custom field"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
@@ -15,7 +15,7 @@
         <FIELD NAME="dd_rse" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="DD / RSE"/>
         <FIELD NAME="type_ae" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="Type AEEEV"/>
         <FIELD NAME="sequence" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Sequence in module"/>
-        <FIELD NAME="intitule_seance" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Title of the session/exercise"/>
+        <FIELD NAME="intitule_seance" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Title of the session/exercise"/>
         <FIELD NAME="cm" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="CM hours"/>
         <FIELD NAME="td" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TD hours"/>
         <FIELD NAME="tp" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TP hours"/>
@@ -42,6 +42,23 @@
         <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
         <FIELD NAME="did" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
         <FIELD NAME="discipline" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Discipline name"/>
+        <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_programme" TYPE="foreign" FIELDS="pid" REFTABLE="customfield_sprogramme" REFFIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_competencies" COMMENT="Linked competencies">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
+        <FIELD NAME="cid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
+        <FIELD NAME="competency" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Discipline name"/>
         <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
         <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
