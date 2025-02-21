@@ -141,6 +141,15 @@
                     background-color: #f7f7f7;
                     width: 10px;
                 }
+                &.select {
+                    width: 100px;
+                    max-width: 100px;
+                }
+                &.text {
+                    width: 200px;
+                    min-width: 200px;
+                    white-space: wrap;
+                }
             }
             th,
             td {

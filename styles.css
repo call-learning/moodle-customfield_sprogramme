@@ -172,6 +172,17 @@
     width: 10px;
 }
 
+.customfield-sprogramme .programm-table.editor th.select {
+    width: 100px;
+    max-width: 100px;
+}
+
+.customfield-sprogramme .programm-table.editor th.text {
+    width: 200px;
+    min-width: 200px;
+    white-space: wrap;
+}
+
 .customfield-sprogramme .programm-table.editor th,
 .customfield-sprogramme .programm-table.editor td {
     border-top: 1px solid #dee2e6;

@@ -95,7 +95,7 @@ class programme {
                 'select' => true,
                 'visible' => false,
                 'canedit' => false,
-                'label' => 'Type AEEEV',
+                'label' => 'Type d\'enseignement',
                 'columnid' => 8,
                 'length' => 10,
                 'field' => 'select',
@@ -276,7 +276,7 @@ class programme {
                 'label' => 'Consignes de travail pour préparer la séance',
                 'columnid' => 29,
                 'length' => 3000,
-                'field' => 'select',
+                'field' => 'text',
                 'sample_value' => '...',
             ],
             [
@@ -288,7 +288,7 @@ class programme {
                 'label' => 'Supports pédagogiques essentiels',
                 'columnid' => 30,
                 'length' => 3000,
-                'field' => 'select',
+                'field' => 'text',
                 'sample_value' => '...',
             ],
         ];

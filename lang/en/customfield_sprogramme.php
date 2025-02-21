@@ -40,3 +40,4 @@ $string['save'] = 'Save';
 $string['saving'] = 'Saving...';
 $string['maxpercentage'] = 'Max allowed {$a} The sum of the percentages must be 100';
 $string['invalidinput'] = 'Invalid input';
+$string['maxdisciplines'] = 'You can not any more, max allowed {$a}';

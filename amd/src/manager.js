@@ -697,6 +697,7 @@ class Manager {
         const rectAttachToButton = attachToButton.getBoundingClientRect();
         arrow.style.top = rectBtn.top - rectAttachToButton.top + 'px';
         this.renderFormDisciplines(row.dataset.index, region);
+        this.disableFormInput(form);
     }
 
     /**
@@ -782,6 +783,30 @@ class Manager {
         form.querySelector('#discipline-value').focus();
     }
 
+    /**
+     * Disable the form input if the maximum number of disciplines is reached.
+     * @param {object} form The form.
+     * @return {void}
+     */
+    async disableFormInput(form) {
+        const action = form.dataset.action;
+        const rowid = form.querySelector('#rowid').value;
+        const row = this.getRow(rowid);
+        if ((action === 'data-disciplines' && row.disciplines.length >= 3) ||
+            (action === 'data-competencies' && row.competencies.length >= 300)) {
+            form.querySelector('input[type="search"]').disabled = true;
+            form.querySelector('input[type="number"]').disabled = true;
+            form.querySelector('button[data-action="discipline-confirm"]').disabled = true;
+            form.querySelector('[data-region="warnings"]').innerHTML =
+                await getString('maxdisciplines', 'customfield_sprogramme', 3);
+        } else {
+            form.querySelector('input[type="search"]').disabled = false;
+            form.querySelector('input[type="number"]').disabled = false;
+            form.querySelector('button[data-action="discipline-confirm"]').disabled = false;
+            form.querySelector('[data-region="warnings"]').innerHTML = '';
+        }
+    }
+
     // Add a discipline to the row.
     async addDiscipline() {
         const form = document.querySelector('[data-region="disciplineform"]');
@@ -799,7 +824,6 @@ class Manager {
         if (action === 'data-disciplines') {
             disciplineIndex = row.disciplines.findIndex(d => d.id == discipline.id);
             maxpercentage = 100 - row.disciplines.reduce((acc, comp) => acc + parseInt(comp.percentage), 0);
-
         }
         if (action === 'data-competencies') {
             disciplineIndex = row.competencies.findIndex(d => d.id == discipline.id);
@@ -839,6 +863,7 @@ class Manager {
             await Templates.appendNodeContents(container, html, js);
             await Templates.appendNodeContents(selectedcontainer, html, js);
         }
+        this.disableFormInput(form);
         this.setTableData();
     }
 
@@ -898,6 +923,7 @@ class Manager {
         const selected = selectedcontainer.querySelector('[data-id="' + disciplineid + '"]');
         container.removeChild(discipline);
         selectedcontainer.removeChild(selected);
+        this.disableFormInput(form);
         this.setTableData();
     }
 
