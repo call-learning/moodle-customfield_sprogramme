@@ -398,6 +398,9 @@ class Manager {
         if (btn.dataset.action === 'saveconfirm') {
             this.setTableData();
         }
+        if (btn.dataset.action === 'loaddiscipline') {
+            this.loadDiscipline(btn);
+        }
     }
 
     /**
@@ -662,6 +665,8 @@ class Manager {
         form.classList.add(region);
         form.querySelector('#rowid').value = row.dataset.index;
         const arrow = form.querySelector('.formarrow');
+        form.querySelector('#discipline-value').value = '';
+        form.querySelector('#discipline-name').value = '';
 
         // Get the row index nr based on the row position in the table.
         const rows = module.querySelectorAll('[data-region="rows"] [data-row]');
@@ -730,28 +735,82 @@ class Manager {
         formFieldValue.focus();
     }
 
-    // Add a discipline to the row.
-    async addDiscipline() {
-        const form = document.querySelector('[data-region="disciplineform"]');
-        const rowid = form.querySelector('#rowid').value;
+    /**
+     * Get the selected discipline.
+     * @param {object} form The form.
+     * @return {Promise} The promise.
+     */
+    async getSelectedDiscipline(form) {
+        const action = form.dataset.action;
         const disciplineid = form.querySelector('#discipline-id').value;
         const disciplinevalue = form.querySelector('#discipline-value').value;
         const disciplinename = form.querySelector('#discipline-name').value;
-        const discipline = {
+
+        if (!disciplineid || !disciplinevalue || !disciplinename) {
+            form.querySelector('[data-region="warnings"]').innerHTML = 'Invalid input';
+            return false;
+        }
+        const availableDisciplines = form.querySelectorAll(`[data-list="${action}"] [data-action="selectdiscipline"]`);
+        // Find the discipline in the available disciplines based on the discipline id.
+        const listedDiscipline = Array.from(availableDisciplines).find(d => d.dataset.id == disciplineid);
+        if (!listedDiscipline || listedDiscipline.textContent !== disciplinename) {
+            form.querySelector('[data-region="warnings"]').innerHTML =
+                await getString('invalidinput', 'customfield_sprogramme');
+            return false;
+        }
+        const displine = {
             id: disciplineid,
             name: disciplinename,
-            percentage: disciplinevalue,
+            percentage: parseInt(disciplinevalue),
         };
+        // Return a promise.
+        return new Promise((resolve) => {
+            resolve(displine);
+        });
+    }
+
+    /**
+     * Load the discipline in the form.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    loadDiscipline(btn) {
+        const form = document.querySelector('[data-region="disciplineform"]');
+        form.querySelector('#discipline-id').value = btn.dataset.id;
+        form.querySelector('#discipline-name').value = btn.dataset.name;
+        form.querySelector('#discipline-value').value = btn.dataset.percentage;
+        form.querySelector('#discipline-value').focus();
+    }
+
+    // Add a discipline to the row.
+    async addDiscipline() {
+        const form = document.querySelector('[data-region="disciplineform"]');
+        const action = form.dataset.action;
+        const discipline = await this.getSelectedDiscipline(form);
+        if (!discipline) {
+            return;
+        }
+        const rowid = form.querySelector('#rowid').value;
         const row = this.getRow(rowid);
         // Update or add the discipline to the row.
-        const action = form.dataset.action;
         const containername = action === 'data-disciplines' ? 'container-disciplines' : 'container-competencies';
         let disciplineIndex = 0;
+        let maxpercentage = 100;
         if (action === 'data-disciplines') {
             disciplineIndex = row.disciplines.findIndex(d => d.id == discipline.id);
+            maxpercentage = 100 - row.disciplines.reduce((acc, comp) => acc + parseInt(comp.percentage), 0);
+
         }
         if (action === 'data-competencies') {
             disciplineIndex = row.competencies.findIndex(d => d.id == discipline.id);
+            maxpercentage = 100 - row.competencies.reduce((acc, disc) => acc + parseInt(disc.percentage), 0);
+        }
+        if (discipline.percentage > maxpercentage) {
+            form.querySelector('[data-region="warnings"]').innerHTML =
+                await getString('maxpercentage', 'customfield_sprogramme', maxpercentage);
+            return;
+        } else {
+            form.querySelector('[data-region="warnings"]').innerHTML = '';
         }
         const container = document.querySelector(
             `[${action}][data-rowid="${rowid}"] [data-region="${containername}"]`);

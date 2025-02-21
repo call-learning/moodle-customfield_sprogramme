@@ -763,7 +763,7 @@ class programme {
      */
     public static function get_csv_data(int $courseid): string {
         $data = self::get_data($courseid);
-        $csvexport = new \csv_export_writer('semicolon', '"');
+        $csvexport = new \csv_export_writer('comma', '"');
         $course = get_course($courseid);
         $filename = 'programme_' . $course->shortname . '_' . date('Ymd_His') . '.txt';
         $csvexport->set_filename($filename);

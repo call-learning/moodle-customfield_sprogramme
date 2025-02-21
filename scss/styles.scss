@@ -66,11 +66,11 @@
         flex: 1 1 auto;
         display: flex;
         flex-wrap: wrap;
-        max-width: 320px;
+        max-width: 170px;
     }
     .disciplines,
     .competencies {
-        min-width: 170px;
+        min-width: 205px;
         .badge {
             display: flex;
             align-items: center;
@@ -148,9 +148,6 @@
                 border-right: 1px solid #dee2e6;
                 position: relative;
                 vertical-align: top;
-                &.actions {
-                    display: flex;
-                }
                 &.int {
                     width: 52px;
                     max-width: 52px;
@@ -242,6 +239,11 @@
         }
     }
     .discipline-form {
+        font-size: 0.8rem;
+        input,
+        .btn {
+            font-size: 0.8rem;
+        }
         .list-group {
             border-top: 1px solid var(--light);
             border-radius: 0;

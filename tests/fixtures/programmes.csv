@@ -1,11 +1,20 @@
-"module";"cct_ept";"dd_rse";"type_ae";"sequence";"intitule_seance";"cm";"td";"tp";"tpa";"tc";"aas";"fmp";"perso_av";"perso_ap";"consignes";"supports"
-"Module 1";"Examen clinique";"Diagnostic différentiel";"Type de traitement";1;"Introduction à la médecine vétérinaire";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"Pré-réquis. : cours A4";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 1";"Vaccination";"Évaluation des risques";"Type de vaccin";2;"Principes de vaccination";1.0;1.5;1.0;0.5;1.0;0.5;1;1;0;"Pré-réquis. : cours A4";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 1";"Traitement médical 3";"Analyse des symptômes 3";"Type de soin 3";3;"Pharmacologie vétérinaire";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"Pré-réquis. : cours A3";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 1";"Traitement médical 4";"Analyse des symptômes 4";"Type de soin 4";4;"Chirurgie vétérinaire";2.0;2.5;1.5;0.5;1.5;0.5;1;1;0;"Pré-réquis. : cours A3";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 2";"Traitement médical 5";"Analyse des symptômes 5";"Type de soin 5";5;"Anatomie animale";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"Pré-réquis. : cours A1";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 2";"Traitement médical 6";"Analyse des symptômes 6";"Type de soin 6";6;"Physiologie animale";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 2";"Traitement médical 7";"Analyse des symptômes 7";"Type de soin 7";7;"Pathologie vétérinaire";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 3";"Traitement médical 8";"Analyse des symptômes 8";"Type de soin 8";8;"Microbiologie vétérinaire";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"Pré-réquis. : cours A4 (UC 413, 42)";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 3";"Traitement médical 9";"Analyse des symptômes 9";"Type de soin 9";9;"Immunologie vétérinaire";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"Pré-réquis. : cours A4 (UC 413, 42)";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
-"Module 3";"Traitement médical 10";"Analyse des symptômes 10";"Type de soin 10";10;"Épidémiologie vétérinaire";1.5;2.0;1.0;0.5;1.0;0.5;1;1;0;"Pré-réquis. : cours A4 (UC 413, 42)";"Hopital virtuel (Moodle), topo pédagogiques entre les consultations"
+module,cct_ept,dd_rse,type_ae,intitule_seance,cm,td,tp,tpa,tc,aas,fmp,perso_av,perso_ap,consignes,supports,disciplines,competencies
+"Module - phénomènes diffusifs (PC)",,,,"CM - phénomènes de transports",5,,,,,,,,5,,"poly et PPT","Literacy & data management (23%)| Pathology (23%)| Parasitology (45%)| Microbiology (9%)","Agir en Scientifique (12%)| Communiquer (23%)| Etablir un diagnostic (44%)| Travailler en entrepris (21%)"
+"Module - phénomènes diffusifs (PC)",,,,"TD - phénomènes de transports",,3,,,,,,,4,,"fiche d'exercices + corrections à disposition",,
+"Module - phénomènes diffusifs (PC)",,,,"i i o",,,,,,,,,,,"lender lender",,
+"Module - phénomènes diffusifs (PC)",,,,"compléments numériques - phénomènes de transports",,,,,,1,,,,,"genially + corrections du TD + wooflash + cartes mentales",,
+"Module l'animal comme système thermodynamique (PC)",,,,"CM - approche physico-chimique de la thermorégulation animale",3,,,,,,,,3,,"PPT et poly complémentaire",,
+"Module l'animal comme système thermodynamique (PC)",,,,"TD - approche physico-chimique de la thermorégulation animale",,3,,,,,,,4,,"fiche d'exercices + corrections à disposition",,
+"Module l'animal comme système thermodynamique (PC)",,,,"compléments numériques - approche physico-chimique de la thermorégulation animale",,,,,,1,,,,,"genially + corrections du TD + wooflash + cartes mentales",,
+"Module l'animal comme système thermodynamique (PC)",,,,"CM - aspects physico-chimiques de la physiologie animale",2,,,,,,,,2,,"poly et PPT",,
+"Module l'animal comme système thermodynamique (PC)",,,,"TD - aspects physico-chimiques de la physiologie animale",,2,,,,,,,3,,"fiche d'exercices + corrections à disposition",,
+"Module l'animal comme système thermodynamique (PC)",,,,"compléments numériques - aspects physico-chimiques de la physiologie animale",,,,,,1,,,,,"genially + corrections du TD + wooflash + cartes mentales",,
+"Module l'animal comme système thermodynamique (PC)",,,,"Feedback informatif post-évaluation",,1,,,,,,,2,,"annales (énoncés et corrections) à disposition + grille de compétences",,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"CM - relation-digestion",5,,,,,,,,3,,PPT,,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"CM - respiration",5,,,,,,,,3,,PPT,,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"CM - circulation",5,,,,,,,,3,,PPT,,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"CM - excrétion-reproduction",7,,,,,,,,5,,PPT,,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"TD - digestion, Fick",,2,,,,,,,3,,"fiches d'exercices + corrections à disposition",,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"TD - cardio",,4,,,,,,,6,,"fiches d'exercices + corrections à disposition",,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"TP - les grandes fonctions",,,6,,,,,,3,,"support du TP + corrections à disposition",,
+"Module les grandes fonctions : approche intégrative (BES)",,,,"compléments numériques - les grandes fonctions",,,,,,4,,,,,"vidéos, wooflash, genially, autoévaluations, glossaires et mots croisés",,

@@ -86,8 +86,12 @@ class programme_importer extends base_persistent_importer {
             }
         }
         // Turn competencies and disciplines persistent data.
-        $data->competencies = $this->get_list($data->competencies, 'competencies');
-        $data->disciplines = $this->get_list($data->disciplines, 'disciplines');
+        if (isset($data->competencies)) {
+            $data->competencies = $this->get_list($data->competencies, 'competencies');
+        }
+        if (isset($data->disciplines)) {
+            $data->disciplines = $this->get_list($data->disciplines, 'disciplines');
+        }
 
         return $data;
     }

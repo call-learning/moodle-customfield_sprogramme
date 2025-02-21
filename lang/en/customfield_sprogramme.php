@@ -38,3 +38,5 @@ $string['pluginname'] = 'Programme customfield';
 $string['row'] = 'Row {$a}';
 $string['save'] = 'Save';
 $string['saving'] = 'Saving...';
+$string['maxpercentage'] = 'Max allowed {$a} The sum of the percentages must be 100';
+$string['invalidinput'] = 'Invalid input';

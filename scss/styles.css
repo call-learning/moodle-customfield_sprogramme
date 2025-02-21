@@ -55,10 +55,10 @@
     flex: 1 1 auto;
     display: flex;
     flex-wrap: wrap;
-    max-width: 320px; }
+    max-width: 170px; }
   .customfield-sprogramme .disciplines,
   .customfield-sprogramme .competencies {
-    min-width: 170px; }
+    min-width: 205px; }
     .customfield-sprogramme .disciplines .badge,
     .customfield-sprogramme .competencies .badge {
       display: flex;
@@ -131,9 +131,6 @@
         border-right: 1px solid #dee2e6;
         position: relative;
         vertical-align: top; }
-        .customfield-sprogramme .programm-table.editor th.actions,
-        .customfield-sprogramme .programm-table.editor td.actions {
-          display: flex; }
         .customfield-sprogramme .programm-table.editor th.int,
         .customfield-sprogramme .programm-table.editor td.int {
           width: 52px;
@@ -205,34 +202,39 @@
       border-top: 13px solid transparent;
       border-bottom: 13px solid transparent;
       border-left: 13px solid var(--light); }
-  .customfield-sprogramme .discipline-form .list-group {
-    border-top: 1px solid var(--light);
-    border-radius: 0; }
-  .customfield-sprogramme .discipline-form .list-group-item {
-    border-radius: 0; }
-  .customfield-sprogramme .discipline-form #discipline-name {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0; }
-  .customfield-sprogramme .discipline-form #discipline-value {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-left: -1px; }
-  .customfield-sprogramme .discipline-form #discipline-confirm {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    margin-left: -1px;
-    border-color: var(--gray);
-    border-left: 0; }
-  .customfield-sprogramme .discipline-form .discipline-list,
-  .customfield-sprogramme .discipline-form .competences-list {
-    height: 200px;
-    overflow-y: auto; }
-  .customfield-sprogramme .discipline-form.data-disciplines .competences-list {
-    display: none; }
-  .customfield-sprogramme .discipline-form.data-competencies .discipline-list {
-    display: none; }
+  .customfield-sprogramme .discipline-form {
+    font-size: 0.8rem; }
+    .customfield-sprogramme .discipline-form input,
+    .customfield-sprogramme .discipline-form .btn {
+      font-size: 0.8rem; }
+    .customfield-sprogramme .discipline-form .list-group {
+      border-top: 1px solid var(--light);
+      border-radius: 0; }
+    .customfield-sprogramme .discipline-form .list-group-item {
+      border-radius: 0; }
+    .customfield-sprogramme .discipline-form #discipline-name {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0; }
+    .customfield-sprogramme .discipline-form #discipline-value {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      margin-left: -1px; }
+    .customfield-sprogramme .discipline-form #discipline-confirm {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      margin-left: -1px;
+      border-color: var(--gray);
+      border-left: 0; }
+    .customfield-sprogramme .discipline-form .discipline-list,
+    .customfield-sprogramme .discipline-form .competences-list {
+      height: 200px;
+      overflow-y: auto; }
+    .customfield-sprogramme .discipline-form.data-disciplines .competences-list {
+      display: none; }
+    .customfield-sprogramme .discipline-form.data-competencies .discipline-list {
+      display: none; }
 
 .modal .modal-customfield_sprogramme {
   max-width: calc(100% - 2rem); }

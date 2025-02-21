@@ -36,13 +36,13 @@
             <span class="sr-only">{{#str}}close, admin{{/str}}</span>
         </button>
     </div>
-    <div class="form-group d-flex">
+    <div class="form-group d-flex mb-0">
         <label for="discipline-name" class="sr-only">{{#str}}disciplines, customfield_sprogramme{{/str}}</label>
         <div class="col-6 p-0">
             <input type="search" class="form-control" id="discipline-name" placeholder="Search">
         </div>
         <div class="col-4 p-0">
-            <input type="number" class="form-control" id="discipline-value" placeholder="Value">
+            <input type="number" class="form-control" id="discipline-value" placeholder="Value" max="100" min="0">
         </div>
         <div class="col-2 p-0">
             <button class="btn btn-secondary" id="discipline-confirm" data-action="discipline-confirm">
@@ -50,16 +50,21 @@
             </button>
         </div>
     </div>
-    <hr>
+    <div class="row no-gutters">
+        <div class="col-12 p-0">
+            <div data-region="warnings" class="text-danger"></div>
+        </div>
+    </div>
+    <hr class="mb-1">
     <div data-region="selected-disciplines" class="d-flex flex-wrap">
     </div>
-    <hr>
-    <div class="list-group discipline-list">
+    <hr class="mt-1">
+    <div class="list-group discipline-list" data-list="data-disciplines">
         {{#disciplines}}
             <a href="#" class="list-group-item list-group-item-action p-2" data-option data-action="selectdiscipline" data-id="{{id}}">{{name}}</a>
         {{/disciplines}}
     </div>
-    <div class="list-group competences-list">
+    <div class="list-group competences-list" data-list="data-competencies">
         {{#competences}}
             <a href="#" class="list-group-item list-group-item-action p-2" data-option data-action="selectdiscipline" data-id="{{id}}">{{name}}</a>
         {{/competences}}
