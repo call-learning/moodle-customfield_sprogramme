@@ -207,6 +207,7 @@ class sprogramme extends persistent {
      *
      * As situations are visible when the user (student) belongs to one of the groups, we need to make
      * sure that we send an event that will be observed so we clear the cache
+     * @param object $data
      *
      * @return void
      */

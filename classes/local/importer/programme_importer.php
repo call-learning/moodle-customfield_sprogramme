@@ -103,7 +103,6 @@ class programme_importer extends base_persistent_importer {
      * @return array
      */
     protected function get_list(string $data, string $type): array {
-        // Split the data by |
         $data = explode('|', $data);
         // Get the percentage (50%) from the data.
         $data = array_map(function ($item) {
@@ -129,7 +128,6 @@ class programme_importer extends base_persistent_importer {
                 }
             }
         }
-        // Same as above we need the cid
         if ($type == 'competencies') {
             $competencies = programme_api::get_competencies();
             foreach ($data as $key => $item) {

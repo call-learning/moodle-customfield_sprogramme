@@ -16,6 +16,8 @@
 
 namespace customfield_sprogramme\local\api;
 
+defined('MOODLE_INTERNAL') || die();
+
 use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\persistent\sprogramme_disc;
 use customfield_sprogramme\local\persistent\sprogramme_comp;
@@ -23,6 +25,7 @@ use customfield_sprogramme\local\persistent\sprogramme_module;
 require_once($CFG->libdir . '/csvlib.class.php');
 use context_course;
 use xmldb_structure;
+
 /**
  * Class programme
  *
@@ -348,7 +351,6 @@ class programme {
      * @return array
      */
     public static function get_competencies(): array {
-        // Sorted by name, updates the ID too
         $competencesjson = '[
             {"id": 1, "number": 1, "name": "Agir de manière responsable"},
             {"id": 2, "number": 1, "name": "Agir en Scientifique"},
@@ -769,12 +771,12 @@ class programme {
         $csvexport->set_filename($filename);
         $columns = self::get_column_structure($courseid);
         // Add the module name to the first item of the columns.
-        $columns = array_merge([['column' => 'module']], $columns, 
+        $columns = array_merge([['column' => 'module']], $columns,
             [['column' => 'disciplines'], ['column' => 'competencies']]);
         $csvexport->add_data(array_map(function($column) {
             return $column['column'];
         }, $columns));
-        foreach($data as $module) {
+        foreach ($data as $module) {
             $name = $module['modulename'];
             foreach ($module['rows'] as $row) {
                 $cells = [];
