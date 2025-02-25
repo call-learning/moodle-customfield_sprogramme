@@ -469,7 +469,10 @@ class Manager {
         const rowid = btn.closest('[data-row]').dataset.index;
         const moduleid = btn.closest('[data-region="module"]').dataset.id;
         const module = modules.find(m => m.moduleid == moduleid);
-        const response = await Repository.deleteRow({courseid: this.courseid, rowid: rowid});
+        let response = false;
+        if (module.rows.length > 1) {
+            response = await Repository.deleteRow({courseid: this.courseid, rowid: rowid});
+        }
         return new Promise((resolve) => {
             if (response) {
                 const rows = module.rows;
