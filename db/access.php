@@ -30,18 +30,27 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = [
     'customfield/sprogramme:view' => [
         'captype' => 'read',
-        'contextlevel' => CONTEXT_SYSTEM,
+        'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
         ],
     ],
     'customfield/sprogramme:edit' => [
         'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
+        'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
+        ],
+    ],
+    'customfield/sprogramme:editall' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
         ],
     ],
 ];

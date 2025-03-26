@@ -141,23 +141,44 @@
     <tr data-row data-index="{{id}}" draggable="true">
         {{#cells}}
             {{#editor}}
-                <td data-cell data-columnid="{{columnid}}" class="{{^canedit}}readonly {{/canedit}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
+                <td data-cell data-columnid="{{columnid}}"{{#changes}} data-action="showchanges"{{/changes}} class="{{^canedit}}readonly {{/canedit}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
                     {{#int}}
-                        <input class="programm-input" data-input="auto" {{^canedit}}readonly{{/canedit}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
+                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/int}}
                     {{#float}}
-                        <input class="programm-input" data-input="auto" {{^canedit}}readonly{{/canedit}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
+                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/float}}
                     {{#text}}
-                        <input class="programm-input" data-input="auto" maxlength="{{length}}" {{^canedit}}readonly{{/canedit}} type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
+                        <input class="programm-input" data-input="auto" maxlength="{{length}}" type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
                     {{/text}}
                     {{#select}}
-                        <select data-input="auto" {{^canedit}}readonly{{/canedit}} class="programm-input">
+                        <select data-input="auto" class="programm-input">
                             {{#options}}
                                 <option value="{{{name}}}" {{#selected}}selected{{/selected}}>{{{name}}}</option>
                             {{/options}}
                         </select>
                     {{/select}}
+                    {{#changes}}
+                        <div class="changes" data-changes data-userid="{{userinfo.userid}}" data-newvalue="{{newvalue}}">
+                            <div class="changesboxcorner">
+                            </div>
+                            <div class="changecontent">
+                                <div class="change">
+                                    <span class="oldvalue">{{{oldvalue}}}</span>
+                                    <span class="newvalue">{{{newvalue}}}</span>
+                                </div>
+                                <div class="infogroup">
+                                    <div class="requestedby">
+                                        {{#userinfo}}
+                                            <span class="fullname">{{{fullname}}}</span>
+                                        {{/userinfo}}
+                                        <span class="date">{{#userdate}} {{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}} {{/userdate}}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    {{/changes}}
                 </td>
             {{/editor}}
             {{^editor}}
@@ -189,7 +210,7 @@
         </td>
         <td class="actions">
             <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-id="{{id}}" data-action="deleterow">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
-            <button class="btn btn-icon icon-no-margin mr-1 jsbutton">{{#pix}}i/move_2d, core, {{#str}}move{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-region="dragicon">{{#pix}}i/move_2d, core, {{#str}}move{{/str}}{{/pix}}</button>
             <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-id="{{id}}" data-action="addrow">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
         </td>
         {{/editor}}

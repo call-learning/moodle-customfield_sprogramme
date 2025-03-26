@@ -40,16 +40,15 @@
             outline: 1px solid #7fb6f1;
             background-color: #f7f7f7;
             border-radius: 0rem;
-
-            &[type="text"] {
-                position: absolute;
-                top: 1px;
-                left: 1px;
-                bottom: 0;
-                width: 200%;
-                z-index: 2;
-            }
         }
+        // &[type="text"]:not(.showchanges):focus {
+        //     position: absolute;
+        //     top: 1px;
+        //     left: 1px;
+        //     bottom: 0;
+        //     width: 200%;
+        //     z-index: 2;
+        // }
     }
     .module-input {
         border-radius: 0;
@@ -150,6 +149,20 @@
                     min-width: 200px;
                     white-space: wrap;
                 }
+                .thlabel {
+                    display: block;
+                }
+                .sum:not(:empty) {
+                    display: flex;
+                    width: 100%;
+                    text-align: left;
+                    color:rgb(206, 38, 38);
+                    width: 20px;
+                    height: 20px;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 50%;
+                }
             }
             th,
             td {
@@ -160,6 +173,15 @@
                 &.int {
                     width: 52px;
                     max-width: 52px;
+                }
+            }
+            td.actions {
+                display: flex;
+            }
+            td.rfc {
+                background-color: #7fb6f1;
+                input {
+                    background-color: #defeff;
                 }
             }
         }
@@ -339,5 +361,74 @@
                 display: inline-block;
             }
         }
+    }
+    .changes {
+        .changesboxcorner {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid rgb(255, 0, 0);
+            border-bottom: 10px solid transparent;
+        }
+        .changecontent {
+            position: absolute;
+            display: none;
+            top: 0px;
+            right: -200px;
+            width: 200px;
+            height: 200px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1;
+            .change {
+                border: 1px solid #dee2e6;
+                margin-bottom: 0.5rem;
+                border-radius: 5px;
+            }
+            .newvalue {
+                display: block;
+                padding: 0.2rem 0.5rem;
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+            .oldvalue {
+                background-color: #f7f7f7;
+                padding: 0.2rem 0.5rem;
+                display: block;
+                text-decoration: line-through;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+            .accept {
+                color: var(--success);
+            }
+            .reject {
+                color: rgb(255, 0, 0);
+            }
+            .infogroup {
+                display: flex;
+                .actions {
+                    background-color: #f7f7f7;
+                    border-radius: 15px;
+                    display: flex;
+                }
+            }
+            .requestedby {
+                display: flex;
+                flex: 1 1 auto;
+                flex-direction: column;
+                align-items: flex-end;
+                font-size: 0.7rem;
+                color: #9f9f9f;
+            }
+        }
+    }
+    td.active .changes .changecontent {
+        display: block;
     }
 }

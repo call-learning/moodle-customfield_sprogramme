@@ -87,11 +87,16 @@ class Manager {
             if (btn) {
                 e.preventDefault();
                 this.actions(btn);
+            } else {
+                const activetds = form.querySelectorAll('[data-action="showchanges"]');
+                activetds.forEach(td => {
+                    td.classList.remove('active');
+                });
             }
         });
         // Listen to all changes in the table.
         form.addEventListener('change', (e) => {
-            const input = e.target.closest('[data-input]');
+            const input = e.target.closest('[data-input="auto"]');
             if (input) {
                 this.change(input);
             }
@@ -115,8 +120,19 @@ class Manager {
         });
 
         let dragging = null;
+        let isDraggingAllowed = false;
+        form.addEventListener('mousedown', (e) => {
+            if (e.target.closest('[data-region="dragicon"]')) {
+                isDraggingAllowed = true;
+            } else {
+                isDraggingAllowed = false;
+            }
+        });
 
         form.addEventListener('dragstart', (e) => {
+            if (!isDraggingAllowed) {
+                e.preventDefault();
+            }
             if (e.target.tagName === 'TR') {
                 dragging = e.target;
                 e.target.effectAllowed = 'move';
@@ -193,11 +209,12 @@ class Manager {
      */
     async getTableData() {
         try {
-            const response = await Repository.getData({courseid: this.courseid});
+            const response = await Repository.getData({courseid: this.courseid, showrfc: 1});
             // Validate the response, the response.date should be a string that can be parsed to a JSON object.
             if (response.modules.length > 0) {
                 const modules = this.parseModules(response.modules);
                 State.setValue('modules', modules);
+                State.setValue('rfcs', response.rfcs);
             } else {
                 const moduleid = await this.createModule('Module 1', 0);
                 await this.createRow(moduleid, 0, 0);
@@ -401,6 +418,21 @@ class Manager {
         if (btn.dataset.action === 'loaddiscipline') {
             this.loadDiscipline(btn);
         }
+        if (btn.dataset.action === 'showchanges') {
+            this.showchanges(btn);
+        }
+        if (btn.dataset.action === 'acceptrfc') {
+            this.acceptRfc(btn);
+        }
+        if (btn.dataset.action === 'rejectrfc') {
+            this.rejectRfc(btn);
+        }
+        if (btn.dataset.action === 'augmenttable') {
+            this.augmentTable(btn);
+        }
+        if (btn.dataset.action === 'resetrfc') {
+            this.resetRfc(btn);
+        }
     }
 
     /**
@@ -492,9 +524,10 @@ class Manager {
     change(input) {
         const row = input.closest('[data-row]');
         const cell = input.closest('[data-cell]');
+        const group = input.dataset.group;
         const value = input.value;
-        const columnid = cell.dataset.columnid;
-        const index = row.dataset.index;
+        const columnid = parseInt(cell.dataset.columnid);
+        const index = parseInt(row.dataset.index);
         const modules = State.getValue('modules');
         modules.forEach(module => {
             // Find the correct cell in the row.
@@ -504,8 +537,39 @@ class Manager {
             }
             const cellIndex = module.rows[rowIndex].cells.findIndex(c => c.columnid == columnid);
             module.rows[rowIndex].cells[cellIndex].value = value;
+            // Find the other cells with the same group and null the value.
+            if (group) {
+                module.rows[rowIndex].cells.forEach(c => {
+                    if (c.group === group && c.columnid !== columnid) {
+                        c.value = null;
+                        row.querySelector(`[data-columnid="${c.columnid}"] input`).value = null;
+                    }
+                });
+            }
         });
+        this.sumtotals();
         this.setTableData();
+    }
+
+    /**
+     * Sumtotals.
+     * Sum all columns.
+     */
+    sumtotals() {
+        const form = document.querySelector('[data-region="app"]');
+        const columns = form.querySelectorAll('[data-region="sumtotals"]');
+        columns.forEach(column => {
+            const columnid = column.dataset.columnid;
+            let sum = 0;
+            const inputs = form.querySelectorAll(`[data-columnid="${columnid}"] input`);
+            inputs.forEach(input => {
+                if (input.value) {
+                    sum += parseFloat(input.value);
+                }
+            });
+            sum = sum ? sum : '';
+            column.innerHTML = sum;
+        });
     }
 
     /**
@@ -784,6 +848,100 @@ class Manager {
         form.querySelector('#discipline-name').value = btn.dataset.name;
         form.querySelector('#discipline-value').value = btn.dataset.percentage;
         form.querySelector('#discipline-value').focus();
+    }
+
+    /**
+     * Show the changes.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async showchanges(btn) {
+        // Remove the active class from all buttons.
+        const tds = document.querySelectorAll('[data-action="showchanges"]');
+        tds.forEach(td => {
+            if (td !== btn) {
+                td.classList.remove('active');
+            }
+        });
+        // Add the active class to the clicked button.
+        btn.classList.add('active');
+    }
+
+    /**
+     * Accept the RFC.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async acceptRfc(btn) {
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        const response = await Repository.acceptRfc({courseid: this.courseid, userid: userid});
+        if (response) {
+            this.getTableData();
+        }
+    }
+
+    /**
+     * Reject the RFC.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     * */
+    async rejectRfc(btn) {
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        const response = await Repository.rejectRfc({courseid: this.courseid, userid: userid});
+        if (response) {
+            this.getTableData();
+        }
+    }
+
+    /**
+     * Augment the table.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     * */
+    async augmentTable(btn) {
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        // Find all cells with data-action="showchanges"
+        // Find the input in this cell
+        // Disable the input by changing data-input="auto" to data-input="rfc"
+        // Find the changesdiv in this cell with [data-changes][data-userid="userid"]
+        // get the new value attribute from changesdiv [data-newvalue="newvalue"]
+        // Temporarly set the input value for the cell to the new value. Store the old value in a data-attribute.
+        const form = document.querySelector('[data-region="app"]');
+        const resetRfc = form.querySelector('[data-action="resetrfc"]');
+        resetRfc.classList.remove('d-none');
+        const changeCells = form.querySelectorAll('[data-action="showchanges"]');
+        changeCells.forEach(cell => {
+            const input = cell.querySelector('[data-input="auto"]');
+            if (input) {
+                input.dataset.input = 'rfc';
+                const changesdiv = cell.querySelector('[data-changes][data-userid="' + userid + '"]');
+                const newvalue = changesdiv.dataset.newvalue;
+                input.dataset.oldvalue = input.value;
+                input.value = newvalue;
+                cell.classList.add('rfc');
+            }
+        });
+        this.sumtotals();
+    }
+
+    /**
+     * Reset the table to the original state.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async resetRfc(btn) {
+        const form = document.querySelector('[data-region="app"]');
+        const changeCells = form.querySelectorAll('[data-action="showchanges"]');
+        changeCells.forEach(cell => {
+            const input = cell.querySelector('[data-input="rfc"]');
+            if (input) {
+                input.dataset.input = 'auto';
+                input.value = input.dataset.oldvalue;
+                cell.classList.remove('rfc');
+            }
+        });
+        this.sumtotals();
+        btn.classList.add('d-none');
     }
 
     /**

@@ -59,7 +59,6 @@ class get_columns extends external_api {
         );
         $courseid = $params['courseid'];
         self::validate_context(context_course::instance($courseid));
-        $table = $params['table'];
 
         $columns = programme::get_column_structure($courseid);
         return [
@@ -87,6 +86,7 @@ class get_columns extends external_api {
                     'label' => new external_value(PARAM_TEXT, 'Label', VALUE_REQUIRED),
                     'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
                     'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),
+                    'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                     'field' => new external_value(PARAM_TEXT, 'Field', VALUE_REQUIRED),
                     'sample_value' => new external_value(PARAM_TEXT, 'Sample value', VALUE_REQUIRED),
                     'min' => new external_value(PARAM_INT, 'Min', VALUE_OPTIONAL),

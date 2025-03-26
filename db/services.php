@@ -98,4 +98,20 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'customfield/sprogramme:view',
     ],
+    'customfield_sprogramme_accept_rfc' => [
+        'classname' => \customfield_sprogramme\external\accept_rfc::class,
+        'methodname' => 'execute',
+        'description' => 'Accept the RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
+    'customfield_sprogramme_reject_rfc' => [
+        'classname' => \customfield_sprogramme\external\reject_rfc::class,
+        'methodname' => 'execute',
+        'description' => 'Reject the RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
 ];

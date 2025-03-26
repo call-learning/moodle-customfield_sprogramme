@@ -271,7 +271,7 @@
 {{/mustacheonly}}
 {{#columns}}
     {{#editor}}
-        <th class="{{field}}">{{{label}}}</th>
+        <th class="{{field}}"><span class="thlabel">{{{label}}}</span>{{#hassum}}<span class="sum" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>{{/hassum}}</th>
     {{/editor}}
     {{^editor}}
         {{#visible}}

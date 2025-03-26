@@ -203,6 +203,101 @@ class sprogramme extends persistent {
     }
 
     /**
+     * Set the type_ae based on the float fields cm, td, tp, tpa, tc, aas, fmp
+     * This one is for tc
+     * record the name of the set field in type_ae
+     * @param mixed $tc
+     */
+    public function set_tc($tc) {
+        if ($tc) {
+            $this->set('type_ae', 'tc');
+        }
+        // Change the value to null if it is 0
+        $tc = $tc == 0 ? null : $tc;
+        $this->raw_set('tc', $tc);
+    }
+
+    /**
+     * Set the type_ae based on the float fields cm, td, tp, tpa, tc, aas, fmp
+     * This one is for tpa
+     * record the name of the set field in type_ae
+     * @param mixed $tpa
+     */
+    public function set_tpa($tpa) {
+        if ($tpa) {
+            $this->set('type_ae', 'tpa');
+        }
+        $tpa = $tpa == 0 ? null : $tpa;
+        $this->raw_set('tpa', $tpa);
+    }
+    /**
+     * Set the type_ae based on the float fields cm, td, tp, tpa, tc, aas, fmp
+     * This one is for tp
+     * record the name of the set field in type_ae
+     * @param mixed $tp
+     */
+    public function set_tp($tp) {
+        if ($tp) {
+            $this->set('type_ae', 'tp');
+        }
+        $tp = $tp == 0 ? null : $tp;
+        $this->raw_set('tp', $tp);
+    }
+    /**
+     * Set the type_ae based on the float fields cm, td, tp, tpa, tc, aas, fmp
+     * This one is for td
+     * record the name of the set field in type_ae
+     * @param mixed $td
+     */
+    public function set_td($td) {
+        if ($td) {
+            $this->set('type_ae', 'td');
+        }
+        $td = $td == 0 ? null : $td;
+        $this->raw_set('td', $td);
+    }
+    /**
+     * Set the type_ae based on the float fields cm, td, tp, tpa, tc, aas, fmp
+     * This one is for cm
+     * record the name of the set field in type_ae
+     * @param mixed $cm
+     */
+    public function set_cm($cm) {
+        if ($cm) {
+            $this->set('type_ae', 'cm');
+        }
+        $cm = $cm == 0 ? null : $cm;
+        $this->raw_set('cm', $cm);
+    }
+    /**
+     * Set the type_ae based on the float fields cm, td, tp, tpa, tc, aas, fmp
+     * This one is for aas
+     * record the name of the set field in type_ae
+     * @param mixed $aas
+     */
+    public function set_aas($aas) {
+        if ($aas) {
+            $this->set('type_ae', 'aas');
+        }
+        $aas = $aas == 0 ? null : $aas;
+        $this->raw_set('aas', $aas);
+    }
+    /**
+     * Set the type_ae based on the float fields cm, td, tp, tpa, tc, aas, fmp
+     * This one is for fmp
+     * record the name of the set field in type_ae
+     * @param mixed $fmp
+     */
+    public function set_fmp($fmp) {
+        if ($fmp) {
+            $this->set('type_ae', 'fmp');
+        }
+        $fmp = $fmp == 0 ? null : $fmp;
+        $this->raw_set('fmp', $fmp);
+    }
+
+
+    /**
      * Hook to execute after a create.
      *
      * As situations are visible when the user (student) belongs to one of the groups, we need to make

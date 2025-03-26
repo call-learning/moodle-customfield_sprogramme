@@ -45,3 +45,4 @@ const stateTemplate = (type) => {
 };
 
 stateTemplate('modules');
+stateTemplate('rfcs');

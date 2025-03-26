@@ -25,8 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['accept'] = 'Accept';
 $string['addmodule'] = 'Add module';
 $string['addrow'] = 'Add row';
+$string['augment'] = 'Show suggested changes';
 $string['competencies'] = 'Competencies';
 $string['disciplines'] = 'Disciplines';
 $string['edit'] = 'Edit';
@@ -36,8 +38,15 @@ $string['invalidinput'] = 'Invalid input';
 $string['maxdisciplines'] = 'You can not any more, max allowed {$a}';
 $string['maxpercentage'] = 'Max allowed {$a} The sum of the percentages must be 100';
 $string['pluginname'] = 'Programme customfield';
+$string['reject'] = 'Reject';
+$string['resetrfc'] = 'Reset Table';
 $string['row'] = 'Row {$a}';
 $string['save'] = 'Save';
 $string['saving'] = 'Saving...';
 $string['sprogramme:edit'] = 'Edit the Programme customfield';
+$strign['sprogramme:editall'] = 'Edit all the Programme customfield';
 $string['sprogramme:view'] = 'View the Programme customfield';
+$string['programme:intitule_seance'] = 'Intitule seance';
+$string['programme:courseid'] = 'Course id';
+$string['entity:programme'] = 'Programme';
+$string['report:programme'] = 'Programme';

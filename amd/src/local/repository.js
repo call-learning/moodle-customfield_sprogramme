@@ -182,6 +182,39 @@ class Repository {
 
         return promise;
     }
+
+    /**
+     * Accept the changes.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    acceptRfc(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_accept_rfc',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+    /**
+     * Reject the changes.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    rejectRfc(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_reject_rfc',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
 }
 
 const RepositoryInstance = new Repository();

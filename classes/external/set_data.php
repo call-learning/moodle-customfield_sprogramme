@@ -16,7 +16,7 @@
 
 namespace customfield_sprogramme\external;
 
-use context_system;
+use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -87,7 +87,8 @@ class set_data extends external_api {
      * @throws \invalid_parameter_exception
      */
     public static function execute(int $courseid, array $modules): array {
-        $context = context_system::instance();
+        global $USER;
+        $context = context_course::instance($courseid);
         require_capability('customfield/sprogramme:edit', $context);
         $params = self::validate_parameters(self::execute_parameters(),
             [

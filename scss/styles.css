@@ -35,13 +35,6 @@
       outline: 1px solid #7fb6f1;
       background-color: #f7f7f7;
       border-radius: 0rem; }
-      .customfield-sprogramme .programm-input:focus[type="text"] {
-        position: absolute;
-        top: 1px;
-        left: 1px;
-        bottom: 0;
-        width: 200%;
-        z-index: 2; }
   .customfield-sprogramme .module-input {
     border-radius: 0;
     border-color: #dee2e6; }
@@ -132,6 +125,18 @@
           width: 200px;
           min-width: 200px;
           white-space: wrap; }
+        .customfield-sprogramme .programm-table.editor th .thlabel {
+          display: block; }
+        .customfield-sprogramme .programm-table.editor th .sum:not(:empty) {
+          display: flex;
+          width: 100%;
+          text-align: left;
+          color: #ce2626;
+          width: 20px;
+          height: 20px;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%; }
       .customfield-sprogramme .programm-table.editor th,
       .customfield-sprogramme .programm-table.editor td {
         border-top: 1px solid #dee2e6;
@@ -142,6 +147,12 @@
         .customfield-sprogramme .programm-table.editor td.int {
           width: 52px;
           max-width: 52px; }
+      .customfield-sprogramme .programm-table.editor td.actions {
+        display: flex; }
+      .customfield-sprogramme .programm-table.editor td.rfc {
+        background-color: #7fb6f1; }
+        .customfield-sprogramme .programm-table.editor td.rfc input {
+          background-color: #defeff; }
     .customfield-sprogramme .programm-table.standard {
       border-right: 1px solid #dee2e6; }
       .customfield-sprogramme .programm-table.standard td,
@@ -272,5 +283,61 @@
       display: none; }
     .modal .modal-customfield_sprogramme .saveconfirm .btn.saving .savingicon {
       display: inline-block; }
+  .modal .modal-customfield_sprogramme .changes .changesboxcorner {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid red;
+    border-bottom: 10px solid transparent; }
+  .modal .modal-customfield_sprogramme .changes .changecontent {
+    position: absolute;
+    display: none;
+    top: 0px;
+    right: -200px;
+    width: 200px;
+    height: 200px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1; }
+    .modal .modal-customfield_sprogramme .changes .changecontent .change {
+      border: 1px solid #dee2e6;
+      margin-bottom: 0.5rem;
+      border-radius: 5px; }
+    .modal .modal-customfield_sprogramme .changes .changecontent .newvalue {
+      display: block;
+      padding: 0.2rem 0.5rem;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px; }
+    .modal .modal-customfield_sprogramme .changes .changecontent .oldvalue {
+      background-color: #f7f7f7;
+      padding: 0.2rem 0.5rem;
+      display: block;
+      text-decoration: line-through;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px; }
+    .modal .modal-customfield_sprogramme .changes .changecontent .accept {
+      color: var(--success); }
+    .modal .modal-customfield_sprogramme .changes .changecontent .reject {
+      color: red; }
+    .modal .modal-customfield_sprogramme .changes .changecontent .infogroup {
+      display: flex; }
+      .modal .modal-customfield_sprogramme .changes .changecontent .infogroup .actions {
+        background-color: #f7f7f7;
+        border-radius: 15px;
+        display: flex; }
+    .modal .modal-customfield_sprogramme .changes .changecontent .requestedby {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 0.7rem;
+      color: #9f9f9f; }
+  .modal .modal-customfield_sprogramme td.active .changes .changecontent {
+    display: block; }
 
 /*# sourceMappingURL=styles.css.map */

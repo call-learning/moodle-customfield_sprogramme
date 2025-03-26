@@ -218,5 +218,38 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025021900, 'customfield', 'sprogramme');
     }
 
+    if ($oldversion < 2025030400) {
+        // Define table customfield_sprogramme_changes to be created.
+        $table = new xmldb_table('customfield_sprogramme_changes');
+
+        // Adding fields to table customfield_sprogramme_changes.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('pid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('newrowid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('action', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+        $table->add_field('field', XMLDB_TYPE_CHAR, '254', null, null, null, null);
+        $table->add_field('oldvalue', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('newvalue', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('snapshot', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('adminid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table customfield_sprogramme_changes.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Conditionally launch create table for customfield_sprogramme_changes.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025030400, 'customfield', 'sprogramme');
+    }
+
+
     return true;
 }

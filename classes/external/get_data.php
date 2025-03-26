@@ -42,6 +42,7 @@ class get_data extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'Courseid', VALUE_DEFAULT, ''),
+            'showrfc' => new external_value(PARAM_BOOL, 'Show Change request', VALUE_DEFAULT, false),
         ]);
     }
 
@@ -49,14 +50,16 @@ class get_data extends external_api {
      * Execute and return json data.
      *
      * @param int $courseid - The course id.
+     * @param bool $showrfc - Show change request.
      * @return array $data - The data in JSON format
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseid): array {
+    public static function execute(int $courseid, bool $showrfc): array {
         $params = self::validate_parameters(self::execute_parameters(),
-            ['courseid' => $courseid]
+            ['courseid' => $courseid, 'showrfc' => $showrfc]
         );
         $courseid = $params['courseid'];
+        $showrfc = $params['showrfc'];
 
         $coursecontext = context_course::instance($courseid);
         self::validate_context($coursecontext);
@@ -65,7 +68,8 @@ class get_data extends external_api {
         }
 
         $data = [
-            'modules' => programme::get_data($courseid),
+            'modules' => programme::get_data($courseid, $showrfc),
+            'rfcs' => programme::get_rfc_data($courseid, $showrfc),
         ];
 
         return $data;
@@ -92,6 +96,18 @@ class get_data extends external_api {
                                     'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
                                     'value' => new external_value(PARAM_TEXT, 'Value', VALUE_REQUIRED),
                                     'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
+                                    'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
+                                    'changes' => new external_multiple_structure(
+                                        new external_single_structure([
+                                            'oldvalue' => new external_value(PARAM_TEXT, 'Old value', VALUE_OPTIONAL),
+                                            'newvalue' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
+                                            'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
+                                            'userinfo' => new external_single_structure([
+                                                'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
+                                                'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
+                                            ], 'User Info', VALUE_OPTIONAL),
+                                        ])
+                                    ),
                                 ])
                             ),
                             'disciplines' => new external_multiple_structure(
@@ -127,6 +143,8 @@ class get_data extends external_api {
                             'sample_value' => new external_value(PARAM_TEXT, 'Sample value', VALUE_REQUIRED),
                             'min' => new external_value(PARAM_INT, 'Min', VALUE_OPTIONAL),
                             'max' => new external_value(PARAM_INT, 'Max', VALUE_OPTIONAL),
+                            'sum' => new external_value(PARAM_FLOAT, 'Sum', VALUE_OPTIONAL),
+                            'hassum' => new external_value(PARAM_BOOL, 'Has sum', VALUE_OPTIONAL),
                             'options' => new external_multiple_structure(
                                 new external_single_structure([
                                     'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
@@ -135,6 +153,15 @@ class get_data extends external_api {
                             ),
                         ])
                     ),
+                ])
+            ),
+            'rfcs' => new external_multiple_structure(
+                new external_single_structure([
+                    'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
+                    'userinfo' => new external_single_structure([
+                        'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
+                        'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
+                    ], 'User Info', VALUE_OPTIONAL),
                 ])
             ),
         ]);

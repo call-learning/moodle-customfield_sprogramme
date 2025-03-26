@@ -22,6 +22,7 @@ use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\persistent\sprogramme_disc;
 use customfield_sprogramme\local\persistent\sprogramme_comp;
 use customfield_sprogramme\local\persistent\sprogramme_module;
+use customfield_sprogramme\local\persistent\sprogramme_change;
 require_once($CFG->libdir . '/csvlib.class.php');
 use context_course;
 use xmldb_structure;
@@ -65,13 +66,14 @@ class programme {
                         'selected' => false,
                     ],
                 ],
+                'group' => '',
             ],
             [
                 'column' => 'dd_rse',
                 'type' => 'select',
                 'select' => true,
                 'visible' => false,
-                'canedit' => false,
+                'canedit' => true,
                 'label' => 'DD / RSE',
                 'columnid' => 7,
                 'length' => 20,
@@ -91,48 +93,7 @@ class programme {
                         'selected' => false,
                     ],
                 ],
-            ],
-            [
-                'column' => 'type_ae',
-                'type' => 'select',
-                'select' => true,
-                'visible' => false,
-                'canedit' => false,
-                'label' => 'Type d\'enseignement',
-                'columnid' => 8,
-                'length' => 10,
-                'field' => 'select',
-                'sample_value' => 'TC',
-                'options' => [
-                    [
-                        'name' => 'CM',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'TD',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'TP',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'TPa',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'TC',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'AAS',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'FMP',
-                        'selected' => false,
-                    ],
-                ],
+                'group' => '',
             ],
             [
                 'column' => 'intitule_seance',
@@ -145,13 +106,14 @@ class programme {
                 'length' => 3000,
                 'field' => 'text',
                 'sample_value' => '...',
+                'group' => '',
             ],
             [
                 'column' => 'cm',
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
-                'canedit' => true,
+                'canedit' => false,
                 'label' => 'CM',
                 'columnid' => 20,
                 'length' => 10,
@@ -159,6 +121,8 @@ class programme {
                 'sample_value' => '0,0',
                 'min' => 0,
                 'max' => 99,
+                'group' => 'unique',
+                'sum' => 0,
             ],
             [
                 'column' => 'td',
@@ -173,6 +137,8 @@ class programme {
                 'sample_value' => '0,0',
                 'min' => 0,
                 'max' => 99,
+                'group' => 'unique',
+                'sum' => 0,
             ],
             [
                 'column' => 'tp',
@@ -187,6 +153,8 @@ class programme {
                 'sample_value' => '0,0',
                 'min' => 0,
                 'max' => 99,
+                'group' => 'unique',
+                'sum' => 0,
             ],
             [
                 'column' => 'tpa',
@@ -201,6 +169,8 @@ class programme {
                 'sample_value' => '0,0',
                 'min' => 0,
                 'max' => 99,
+                'group' => 'unique',
+                'sum' => 0,
             ],
             [
                 'column' => 'tc',
@@ -215,6 +185,8 @@ class programme {
                 'sample_value' => '0',
                 'min' => 0,
                 'max' => 99,
+                'group' => 'unique',
+                'sum' => 0,
             ],
             [
                 'column' => 'aas',
@@ -229,6 +201,8 @@ class programme {
                 'sample_value' => '0,0',
                 'min' => 0,
                 'max' => 99,
+                'group' => 'unique',
+                'sum' => 0,
             ],
             [
                 'column' => 'fmp',
@@ -243,25 +217,29 @@ class programme {
                 'sample_value' => '0,0',
                 'min' => 0,
                 'max' => 99,
+                'group' => 'unique',
+                'sum' => 0,
             ],
             [
                 'column' => 'perso_av',
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
-                'canedit' => false,
+                'canedit' => true,
                 'label' => 'Perso av',
                 'columnid' => 27,
                 'length' => 10,
                 'field' => 'float',
                 'sample_value' => '0,0',
+                'group' => '',
+                'sum' => 0,
             ],
             [
                 'column' => 'perso_ap',
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
-                'canedit' => false,
+                'canedit' => true,
                 'label' => 'Perso ap',
                 'columnid' => 28,
                 'length' => 10,
@@ -269,30 +247,34 @@ class programme {
                 'sample_value' => '0,0',
                 'min' => 0,
                 'max' => 99,
+                'group' => '',
+                'sum' => 0,
             ],
             [
                 'column' => 'consignes',
                 'type' => PARAM_TEXT,
                 'text' => true,
                 'visible' => true,
-                'canedit' => false,
+                'canedit' => true,
                 'label' => 'Consignes de travail pour préparer la séance',
                 'columnid' => 29,
                 'length' => 3000,
                 'field' => 'text',
                 'sample_value' => '...',
+                'group' => '',
             ],
             [
                 'column' => 'supports',
                 'type' => PARAM_TEXT,
                 'text' => true,
                 'visible' => true,
-                'canedit' => false,
+                'canedit' => true,
                 'label' => 'Supports pédagogiques essentiels',
                 'columnid' => 30,
                 'length' => 3000,
                 'field' => 'text',
                 'sample_value' => '...',
+                'group' => '',
             ],
         ];
         return $columns;
@@ -372,34 +354,113 @@ class programme {
      */
     public static function get_column_structure($courseid): array {
         $table = self::get_table_structure();
-        $canedit = has_capability('customfield/sprogramme:edit', context_course::instance($courseid));
+        $canedit = has_capability('customfield/sprogramme:editall', context_course::instance($courseid));
         $table = array_map(function($column) use ($canedit) {
-            $column['canedit'] = $canedit;
+            if ($column['canedit'] == false) {
+                $column['canedit'] = $canedit;
+            }
             return $column;
         }, $table);
         return array_values($table);
     }
 
     /**
-     * Get the data for a given course
+     * Get the user name, userpicture for a given user id
+     * @param int $userid
+     * @return array
+     */
+    public static function get_user_info($userid) {
+        global $DB;
+        $user = $DB->get_record('user', ['id' => $userid]);
+        if ($user) {
+            return [
+                'fullname' => fullname($user),
+                'userid' => $user->id,
+            ];
+        }
+        return [];
+    }
+
+    /**
+     * Find a change record for a given column and row
+     * @param array $changerecords
+     * @param int $rowid
+     * @param string $column
+     * @return array
+     */
+    public static function find_change_record($changerecords, $rowid, $column) {
+        $changes = [];
+        foreach ($changerecords as $changerecord) {
+            if ($changerecord->get('pid') == $rowid && $changerecord->get('field') == $column) {
+                $changes[] = [
+                    'oldvalue' => $changerecord->get('oldvalue'),
+                    'newvalue' => $changerecord->get('newvalue'),
+                    'timemodified' => $changerecord->get('timemodified'),
+                    'userinfo' => self::get_user_info($changerecord->get('usermodified')),
+                ];
+            }
+        }
+        return $changes;
+    }
+
+    /**
+     * Get the rfc data for a given course
      * @param int $courseid
+     * @param bool $showrfc
      * @return array $data
      */
-    public static function get_data(int $courseid): array {
+    public static function get_rfc_data(int $courseid, bool $showrfc = false): array {
+        $changerecords = [];
+        if ($showrfc) {
+            $changerecords = sprogramme_change::get_all_records_for_course($courseid);
+        }
+        $users = [];
+        foreach ($changerecords as $changerecord) {
+            $userid = $changerecord->get('usermodified');
+            $users[$userid]['timemodified'] = $changerecord->get('timemodified');
+            $users[$userid]['userinfo'] = self::get_user_info($userid);
+        }
+        return array_values($users);
+    }
+
+    /**
+     * Get the data for a given course
+     * @param int $courseid
+     * @param bool $showrfc
+     * @return array $data
+     */
+    public static function get_data(int $courseid, bool $showrfc = false): array {
         $modules = sprogramme_module::get_all_records_for_course($courseid);
+        $changerecords = [];
+        if ($showrfc) {
+            $changerecords = sprogramme_change::get_all_records_for_course($courseid);
+        }
         $columns = self::get_column_structure($courseid);
         $data = [];
+        $sum = [];
+        // Set the sum to 0 for each column
+        foreach ($columns as $column) {
+            if (isset($column['sum'])) {
+                $sum[$column['column']] = 0;
+            }
+        }
         foreach ($modules as $module) {
             $records = sprogramme::get_all_records_for_module($module->get('id'));
             $modulerows = [];
             foreach ($records as $record) {
-                $row = [];
+                $cells = [];
                 foreach ($columns as $key => $column) {
-                    $row[] = [
+                    $value = $record->get($column['column']);
+                    if ($column['type'] == PARAM_FLOAT || $column['type'] == PARAM_INT) {
+                        $sum[$column['column']] += $value;
+                    }
+                    $cells[] = [
                         'column' => $column['column'],
-                        'value' => $record->get($column['column']),
+                        'value' => $value,
                         'type' => $column['type'],
                         'visible' => $column['visible'],
+                        'group' => $column['group'],
+                        'changes' => self::find_change_record($changerecords, $record->get('id'), $column['column']),
                     ];
                 }
                 $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
@@ -423,7 +484,7 @@ class programme {
                 $modulerows[] = [
                     'id' => $record->get('id'),
                     'sortorder' => $record->get('sortorder'),
-                    'cells' => $row,
+                    'cells' => $cells,
                     'disciplines' => $disciplinedata,
                     'competencies' => $competencydata,
                 ];
@@ -436,6 +497,16 @@ class programme {
                 'columns' => $columns,
             ];
         }
+        if (isset($data[0])) {
+            $data[0]['columns'] = array_map(function($column) use ($sum) {
+                if (isset($sum[$column['column']])) {
+                    $column['sum'] = $sum[$column['column']];
+                    $column['hassum'] = true;
+                }
+                return $column;
+            }, $data[0]['columns']);
+        }
+
         return $data;
     }
 
@@ -445,6 +516,7 @@ class programme {
      * @param array $data
      */
     public static function set_records(int $courseid, array $data): void {
+
         foreach ($data as $module) {
             $moduleid = $module['id'];
             $rows = $module['rows'];
@@ -480,17 +552,29 @@ class programme {
      * @param int $courseid
      */
     private static function update_record(sprogramme $record, array $row, int $courseid): void {
+        global $USER;
+        $context = context_course::instance($courseid);
+        $editall = has_capability('customfield/sprogramme:editall', $context);
+        $edit = has_capability('customfield/sprogramme:edit', $context);
         $columns = self::get_column_structure($courseid);
-        $fields = array_map(function($column) {
-            return $column['column'];
-        }, $columns);
-        foreach ($fields as $field) {
+        $changes = false;
+        foreach ($columns as $column) {
             if (!isset($row['cells'])) {
                 continue;
             }
+            $field = $column['column'];
+            $canedit = $column['canedit'] && ($editall);
             foreach ($row['cells'] as $cell) {
                 if ($cell['column'] == $field) {
-                    if ($cell['type'] == PARAM_INT) {
+                    $currentvalue = $record->get($field);
+                    if ($cell['value'] == $currentvalue) {
+                        continue;
+                    }
+                    $changes = true;
+                    // Check if the user has permission to edit this field
+                    if (!$canedit) {
+                        self::record_change_request($courseid, $row['id'], $field, $record->get($field), $cell['value']);
+                    } else if ($cell['type'] == PARAM_INT) {
                         $value = $cell['value'] ? (int)$cell['value'] : null;
                         $record->set($field, $value);
                         continue;
@@ -504,7 +588,9 @@ class programme {
                 }
             }
         }
-        $record->save();
+        if ($changes) {
+            $record->save();
+        }
         self::set_disciplines($record, $row);
         self::set_competencies($record, $row);
     }
@@ -797,5 +883,66 @@ class programme {
             }
         }
         return $csvexport->print_csv_data(true);
+    }
+
+    /**
+     * Record a change request
+     * @param int $courseid
+     * @param int $rowid
+     * @param string $field
+     * @param mixed $oldvalue
+     * @param mixed $newvalue
+     */
+    public static function record_change_request(int $courseid, int $rowid, string $field, $oldvalue, $newvalue): void {
+        $record = sprogramme_change::get_record(['pid' => $rowid, 'courseid' => $courseid, 'field' => $field]);
+        if (!$record) {
+            $record = new sprogramme_change();
+            $record->set('courseid', $courseid);
+            $record->set('pid', $rowid);
+            $record->set('field', $field);
+        }
+        $record->set('newrowid', 0);
+        $record->set('action', sprogramme_change::RFC_REQUESTED);
+        $record->set('oldvalue', $oldvalue ? $oldvalue : 0);
+        $record->set('newvalue', $newvalue ? $newvalue : 0);
+        $record->set('adminid', 0);
+        $record->set('snapshot', self::get_csv_data($courseid));
+        $record->save();
+    }
+
+    /**
+     * Accept a change request by a user
+     * @param int $courseid
+     * @param int $userid
+     * @return bool true if accepted
+     */
+    public static function accept_rfc(int $courseid, int $userid): bool {
+        $result = false;
+        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid]);
+        foreach ($records as $record) {
+            $row = sprogramme::get_record(['id' => $record->get('pid')]);
+            $row->set($record->get('field'), $record->get('newvalue'));
+            $row->save();
+            $record->set('action', sprogramme_change::RFC_ACCEPTED);
+            $record->save();
+            $result = true;
+        }
+        return $result;
+    }
+
+    /**
+     * Reject a change request by a user
+     * @param int $courseid
+     * @param int $userid
+     */
+    public static function reject_rfc(int $courseid, int $userid): bool {
+        $result = false;
+        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid]);
+        foreach ($records as $record) {
+            $record->set('action', sprogramme_change::RFC_REJECTED);
+            $result = true;
+            $record->save();
+        }
+        return $result;
     }
 }
