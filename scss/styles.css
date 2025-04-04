@@ -107,6 +107,8 @@
     .customfield-sprogramme .programm-table .readonly select {
       background-color: #f7f7f7;
       border: 0; }
+    .customfield-sprogramme .programm-table .haschanges input {
+      color: #ce2626; }
     .customfield-sprogramme .programm-table.editor {
       border-left: 1px solid #dee2e6; }
       .customfield-sprogramme .programm-table.editor th {
@@ -126,13 +128,26 @@
           min-width: 200px;
           white-space: wrap; }
         .customfield-sprogramme .programm-table.editor th .thlabel {
-          display: block; }
+          display: block;
+          width: 100%; }
+        .customfield-sprogramme .programm-table.editor th .sumcontainer {
+          display: flex;
+          justify-content: space-between; }
         .customfield-sprogramme .programm-table.editor th .sum:not(:empty) {
           display: flex;
           width: 100%;
           text-align: left;
+          width: auto;
+          height: 20px;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%; }
+        .customfield-sprogramme .programm-table.editor th .newsum:not(:empty) {
+          display: flex;
+          width: 100%;
           color: #ce2626;
-          width: 20px;
+          text-align: left;
+          width: auto;
           height: 20px;
           justify-content: center;
           align-items: center;
@@ -152,7 +167,7 @@
       .customfield-sprogramme .programm-table.editor td.rfc {
         background-color: #7fb6f1; }
         .customfield-sprogramme .programm-table.editor td.rfc input {
-          background-color: #defeff; }
+          background-color: #f4ffff; }
     .customfield-sprogramme .programm-table.standard {
       border-right: 1px solid #dee2e6; }
       .customfield-sprogramme .programm-table.standard td,

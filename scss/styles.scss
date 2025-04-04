@@ -127,6 +127,9 @@
             background-color: #f7f7f7;
             border: 0;
         }
+        .haschanges input {
+            color:rgb(206, 38, 38);
+        }
         &.editor {
             border-left: 1px solid #dee2e6;
             th {
@@ -151,13 +154,28 @@
                 }
                 .thlabel {
                     display: block;
+                    width: 100%;
+                }
+                .sumcontainer {
+                    display: flex;
+                    justify-content: space-between;
                 }
                 .sum:not(:empty) {
                     display: flex;
                     width: 100%;
                     text-align: left;
-                    color:rgb(206, 38, 38);
-                    width: 20px;
+                    width: auto;
+                    height: 20px;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 50%;
+                }
+                .newsum:not(:empty) {
+                    display: flex;
+                    width: 100%;
+                    color: rgb(206, 38, 38);
+                    text-align: left;
+                    width: auto;
                     height: 20px;
                     justify-content: center;
                     align-items: center;
@@ -181,7 +199,7 @@
             td.rfc {
                 background-color: #7fb6f1;
                 input {
-                    background-color: #defeff;
+                    background-color: #f4ffff;
                 }
             }
         }

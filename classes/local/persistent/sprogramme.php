@@ -208,7 +208,7 @@ class sprogramme extends persistent {
      * record the name of the set field in type_ae
      * @param mixed $tc
      */
-    public function set_tc($tc) {
+    protected function set_tc($tc) {
         if ($tc) {
             $this->set('type_ae', 'tc');
         }
@@ -223,7 +223,7 @@ class sprogramme extends persistent {
      * record the name of the set field in type_ae
      * @param mixed $tpa
      */
-    public function set_tpa($tpa) {
+    protected function set_tpa($tpa) {
         if ($tpa) {
             $this->set('type_ae', 'tpa');
         }
@@ -236,7 +236,7 @@ class sprogramme extends persistent {
      * record the name of the set field in type_ae
      * @param mixed $tp
      */
-    public function set_tp($tp) {
+    protected function set_tp($tp) {
         if ($tp) {
             $this->set('type_ae', 'tp');
         }
@@ -249,7 +249,7 @@ class sprogramme extends persistent {
      * record the name of the set field in type_ae
      * @param mixed $td
      */
-    public function set_td($td) {
+    protected function set_td($td) {
         if ($td) {
             $this->set('type_ae', 'td');
         }
@@ -262,7 +262,7 @@ class sprogramme extends persistent {
      * record the name of the set field in type_ae
      * @param mixed $cm
      */
-    public function set_cm($cm) {
+    protected function set_cm($cm) {
         if ($cm) {
             $this->set('type_ae', 'cm');
         }
@@ -275,7 +275,7 @@ class sprogramme extends persistent {
      * record the name of the set field in type_ae
      * @param mixed $aas
      */
-    public function set_aas($aas) {
+    protected function set_aas($aas) {
         if ($aas) {
             $this->set('type_ae', 'aas');
         }
@@ -288,7 +288,7 @@ class sprogramme extends persistent {
      * record the name of the set field in type_ae
      * @param mixed $fmp
      */
-    public function set_fmp($fmp) {
+    protected function set_fmp($fmp) {
         if ($fmp) {
             $this->set('type_ae', 'fmp');
         }

@@ -404,23 +404,51 @@ class programme {
     }
 
     /**
+     * Find the new value for a given column and row
+     * @param array $changerecords
+     * @param int $rowid
+     * @param string $column
+     * @param mixed $value
+     * @return mixed
+     */
+    public static function find_new_value($changerecords, $rowid, $column, $value) {
+        global $USER;
+        foreach ($changerecords as $changerecord) {
+            if ($changerecord->get('pid') == $rowid && $changerecord->get('field') == $column
+                && $changerecord->get('usermodified') == $USER->id) {
+                return $changerecord->get('newvalue');
+            }
+        }
+        return $value;
+    }
+
+    /**
      * Get the rfc data for a given course
      * @param int $courseid
      * @param bool $showrfc
      * @return array $data
      */
     public static function get_rfc_data(int $courseid, bool $showrfc = false): array {
+        global $USER;
         $changerecords = [];
         if ($showrfc) {
             $changerecords = sprogramme_change::get_all_records_for_course($courseid);
         }
-        $users = [];
+        $data = [];
         foreach ($changerecords as $changerecord) {
             $userid = $changerecord->get('usermodified');
-            $users[$userid]['timemodified'] = $changerecord->get('timemodified');
-            $users[$userid]['userinfo'] = self::get_user_info($userid);
+            $cansumit = has_capability('customfield/sprogramme:edit', context_course::instance($courseid)) && $userid == $USER->id;
+            $canaccept = has_capability('customfield/sprogramme:editall', context_course::instance($courseid));
+            $issubmitted = $changerecord->get('action') == sprogramme_change::RFC_SUBMITTED;
+            $key = $issubmitted ? $userid : ($userid . '_requested');
+            $data[$key]['issubmitted'] = $issubmitted;
+            $data[$key]['timemodified'] = $changerecord->get('timemodified');
+            $data[$key]['userinfo'] = self::get_user_info($key);
+            $data[$key]['canaccept'] = $canaccept;
+            $data[$key]['cansubmit'] = $cansumit && !$issubmitted && !$canaccept;
+            $data[$key]['cancancel'] = $issubmitted && !$canaccept;
         }
-        return array_values($users);
+        return array_values($data);
     }
 
     /**
@@ -438,10 +466,12 @@ class programme {
         $columns = self::get_column_structure($courseid);
         $data = [];
         $sum = [];
+        $newsum = [];
         // Set the sum to 0 for each column
         foreach ($columns as $column) {
             if (isset($column['sum'])) {
                 $sum[$column['column']] = 0;
+                $newsum[$column['column']] = 0;
             }
         }
         foreach ($modules as $module) {
@@ -451,16 +481,20 @@ class programme {
                 $cells = [];
                 foreach ($columns as $key => $column) {
                     $value = $record->get($column['column']);
+
+                    $changes = self::find_change_record($changerecords, $record->get('id'), $column['column']);
+                    $newvalue = self::find_new_value($changerecords, $record->get('id'), $column['column'], $value);
                     if ($column['type'] == PARAM_FLOAT || $column['type'] == PARAM_INT) {
                         $sum[$column['column']] += $value;
+                        $newsum[$column['column']] += $newvalue;
                     }
                     $cells[] = [
                         'column' => $column['column'],
-                        'value' => $value,
+                        'value' => $newvalue,
                         'type' => $column['type'],
                         'visible' => $column['visible'],
                         'group' => $column['group'],
-                        'changes' => self::find_change_record($changerecords, $record->get('id'), $column['column']),
+                        'changes' => $changes,
                     ];
                 }
                 $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
@@ -498,10 +532,17 @@ class programme {
             ];
         }
         if (isset($data[0])) {
-            $data[0]['columns'] = array_map(function($column) use ($sum) {
+            $data[0]['columns'] = array_map(function($column) use ($sum, $newsum) {
                 if (isset($sum[$column['column']])) {
                     $column['sum'] = $sum[$column['column']];
                     $column['hassum'] = true;
+                }
+                if (isset($newsum[$column['column']])) {
+                    $column['newsum'] = $newsum[$column['column']];
+                    $column['hasnewsum'] = true;
+                }
+                if (isset($column['sum']) && $column['sum'] == $column['newsum']) {
+                    $column['hasnewsum'] = false;
                 }
                 return $column;
             }, $data[0]['columns']);
@@ -514,9 +555,10 @@ class programme {
      * Set the data.
      * @param int $courseid
      * @param array $data
+     * @param string $result The result of the operation
      */
-    public static function set_records(int $courseid, array $data): void {
-
+    public static function set_records(int $courseid, array $data): string {
+        $result = '';
         foreach ($data as $module) {
             $moduleid = $module['id'];
             $rows = $module['rows'];
@@ -529,7 +571,10 @@ class programme {
                 $updated = false;
                 foreach ($records as $record) {
                     if ($record->get('id') == $row['id']) {
-                        self::update_record($record, $row, $courseid);
+                        $update = self::update_record($record, $row, $courseid);
+                        if ($update != '') {
+                            $result = $update;
+                        }
                         $updated = true;
                     }
                 }
@@ -538,10 +583,14 @@ class programme {
                     $record->set('uc', $courseid);
                     $record->set('courseid', $courseid);
                     $record->set('moduleid', $moduleid);
-                    self::update_record($record, $row, $courseid);
+                    $update = self::update_record($record, $row, $courseid);
+                    if ($update != '') {
+                        $result = $update;
+                    }
                 }
             }
         }
+        return $result;
 
     }
 
@@ -550,20 +599,21 @@ class programme {
      * @param sprogramme $record
      * @param array $row
      * @param int $courseid
+     * @return string $result
      */
-    private static function update_record(sprogramme $record, array $row, int $courseid): void {
-        global $USER;
+    private static function update_record(sprogramme $record, array $row, int $courseid): string {
         $context = context_course::instance($courseid);
         $editall = has_capability('customfield/sprogramme:editall', $context);
         $edit = has_capability('customfield/sprogramme:edit', $context);
         $columns = self::get_column_structure($courseid);
         $changes = false;
+        $result = '';
         foreach ($columns as $column) {
             if (!isset($row['cells'])) {
                 continue;
             }
             $field = $column['column'];
-            $canedit = $column['canedit'] && ($editall);
+            $canedit = $column['canedit'] || $editall;
             foreach ($row['cells'] as $cell) {
                 if ($cell['column'] == $field) {
                     $currentvalue = $record->get($field);
@@ -573,7 +623,8 @@ class programme {
                     $changes = true;
                     // Check if the user has permission to edit this field
                     if (!$canedit) {
-                        self::record_change_request($courseid, $row['id'], $field, $record->get($field), $cell['value']);
+                        $result = self::record_change_request($courseid, $row['id'], $field, $column['group'],
+                            $record->get($field), $cell['value']);
                     } else if ($cell['type'] == PARAM_INT) {
                         $value = $cell['value'] ? (int)$cell['value'] : null;
                         $record->set($field, $value);
@@ -593,6 +644,7 @@ class programme {
         }
         self::set_disciplines($record, $row);
         self::set_competencies($record, $row);
+        return $result;
     }
 
     /**
@@ -890,11 +942,21 @@ class programme {
      * @param int $courseid
      * @param int $rowid
      * @param string $field
+     * @param string $group
      * @param mixed $oldvalue
      * @param mixed $newvalue
+     * @return string $result
      */
-    public static function record_change_request(int $courseid, int $rowid, string $field, $oldvalue, $newvalue): void {
-        $record = sprogramme_change::get_record(['pid' => $rowid, 'courseid' => $courseid, 'field' => $field]);
+    public static function record_change_request(int $courseid, int $rowid, string $field, string $group,
+        $oldvalue, $newvalue): string {
+        global $USER;
+        $submitted = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $USER->id,
+            'action' => sprogramme_change::RFC_SUBMITTED]);
+        if (count($submitted) > 0) {
+            return 'rfclocked';
+        }
+        $record = sprogramme_change::get_record(['pid' => $rowid, 'courseid' => $courseid, 'field' => $field,
+            'usermodified' => $USER->id, 'action' => sprogramme_change::RFC_REQUESTED]);
         if (!$record) {
             $record = new sprogramme_change();
             $record->set('courseid', $courseid);
@@ -908,6 +970,7 @@ class programme {
         $record->set('adminid', 0);
         $record->set('snapshot', self::get_csv_data($courseid));
         $record->save();
+        return 'newrfc';
     }
 
     /**
@@ -918,7 +981,8 @@ class programme {
      */
     public static function accept_rfc(int $courseid, int $userid): bool {
         $result = false;
-        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid]);
+        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid,
+            'action' => sprogramme_change::RFC_SUBMITTED]);
         foreach ($records as $record) {
             $row = sprogramme::get_record(['id' => $record->get('pid')]);
             $row->set($record->get('field'), $record->get('newvalue'));
@@ -937,11 +1001,64 @@ class programme {
      */
     public static function reject_rfc(int $courseid, int $userid): bool {
         $result = false;
-        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid]);
+        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid,
+            'action' => sprogramme_change::RFC_SUBMITTED]);
         foreach ($records as $record) {
             $record->set('action', sprogramme_change::RFC_REJECTED);
             $result = true;
             $record->save();
+        }
+        return $result;
+    }
+
+    /**
+     * Submit a change request
+     * @param int $courseid
+     * @param int $userid
+     * @return bool true if submitted
+     */
+    public static function submit_rfc(int $courseid, int $userid): bool {
+        $result = false;
+        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid]);
+        foreach ($records as $record) {
+            $record->set('action', sprogramme_change::RFC_SUBMITTED);
+            $record->save();
+            $result = true;
+        }
+        return $result;
+    }
+
+    /**
+     * Cancel a change request
+     * @param int $courseid
+     * @param int $userid
+     * @return bool true if cancelled
+     */
+    public static function cancel_rfc(int $courseid, int $userid): bool {
+        $result = false;
+        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid,
+            'action' => sprogramme_change::RFC_SUBMITTED]);
+        foreach ($records as $record) {
+            $record->set('action', sprogramme_change::RFC_REQUESTED);
+            $record->save();
+            $result = true;
+        }
+        return $result;
+    }
+
+    /**
+     * Remove a change request
+     * @param int $courseid
+     * @param int $userid
+     * @return bool true if removed
+     */
+    public static function remove_rfc(int $courseid, int $userid): bool {
+        $result = false;
+        $records = sprogramme_change::get_records(['courseid' => $courseid, 'usermodified' => $userid,
+            'action' => sprogramme_change::RFC_REQUESTED]);
+        foreach ($records as $record) {
+            $record->delete();
+            $result = true;
         }
         return $result;
     }

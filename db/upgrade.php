@@ -250,6 +250,22 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025030400, 'customfield', 'sprogramme');
     }
 
+    if ($oldversion < 2025032600) {
+
+        // Define field fieldgroup to be added to customfield_sprogramme_changes.
+        $table = new xmldb_table('customfield_sprogramme_changes');
+        $field = new xmldb_field('fieldgroup', XMLDB_TYPE_CHAR, '254', null, null, null, null, 'field');
+
+        // Conditionally launch add field fieldgroup.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025032600, 'customfield', 'sprogramme');
+    }
+
+
 
     return true;
 }

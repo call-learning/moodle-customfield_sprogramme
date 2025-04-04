@@ -358,12 +358,26 @@ class Manager {
     async setTableData() {
         const set = debounce(async() => {
             const saveConfirmButton = document.querySelector('[data-action="saveconfirm"]');
+            const warnings = document.querySelector('[data-region="sprogramme-warnings"]');
             saveConfirmButton.classList.add('saving');
             const modules = State.getValue('modules');
             const cleanedModules = this.cleanModules(modules);
             const response = await Repository.setData({courseid: this.courseid, modules: cleanedModules});
             if (!response) {
                 Notification.exception('No response from the server');
+            } else {
+                window.console.log(response);
+                if (response.data == 'newrfc') {
+                    this.getTableData();
+                }
+                if (response.data == 'rfclocked') {
+                    warnings.innerHTML = await getString('rfclocked', 'customfield_sprogramme');
+                    warnings.classList.remove('d-none');
+                    this.getTableData();
+                } else {
+                    warnings.innerHTML = '';
+                    warnings.classList.add('d-none');
+                }
             }
             setTimeout(() => {
                 saveConfirmButton.classList.remove('saving');
@@ -377,61 +391,38 @@ class Manager {
      * @param {object} btn The button that was clicked.
      */
     actions(btn) {
-        if (btn.dataset.action === 'addrow') {
-            this.addRow(btn);
-        }
-        if (btn.dataset.action === 'deleterow') {
-            this.deleteRow(btn);
-        }
-        if (btn.dataset.action === 'addmodule') {
-            this.addModule(btn);
-        }
-        if (btn.dataset.action === 'deletemodule') {
-            this.deleteModule(btn);
-        }
-        if (btn.dataset.action === 'adddisc') {
-            this.showDisciplineForm(btn);
-        }
-        if (btn.dataset.action === 'addcomp') {
-            this.showDisciplineForm(btn);
-        }
-        if (btn.dataset.action === 'removedisc') {
-            this.removeDiscipline(btn);
-        }
-        if (btn.dataset.action === 'closedisciplineform') {
-            this.closeDisciplineForm();
-        }
-        if (btn.dataset.action === 'selectdiscipline') {
-            const option = btn.closest('[data-option]');
-            const discipline = {
-                id: option.dataset.id,
-                name: option.textContent,
-            };
-            this.setDisciplineForm(discipline);
-        }
-        if (btn.dataset.action === 'discipline-confirm') {
-            this.addDiscipline();
-        }
-        if (btn.dataset.action === 'saveconfirm') {
-            this.setTableData();
-        }
-        if (btn.dataset.action === 'loaddiscipline') {
-            this.loadDiscipline(btn);
-        }
-        if (btn.dataset.action === 'showchanges') {
-            this.showchanges(btn);
-        }
-        if (btn.dataset.action === 'acceptrfc') {
-            this.acceptRfc(btn);
-        }
-        if (btn.dataset.action === 'rejectrfc') {
-            this.rejectRfc(btn);
-        }
-        if (btn.dataset.action === 'augmenttable') {
-            this.augmentTable(btn);
-        }
-        if (btn.dataset.action === 'resetrfc') {
-            this.resetRfc(btn);
+        const actionMap = {
+            'addrow': this.addRow,
+            'deleterow': this.deleteRow,
+            'addmodule': this.addModule,
+            'deletemodule': this.deleteModule,
+            'adddisc': this.showDisciplineForm,
+            'addcomp': this.showDisciplineForm,
+            'removedisc': this.removeDiscipline,
+            'closedisciplineform': this.closeDisciplineForm,
+            'selectdiscipline': (btn) => {
+                const option = btn.closest('[data-option]');
+                const discipline = {
+                    id: option.dataset.id,
+                    name: option.textContent,
+                };
+                this.setDisciplineForm(discipline);
+            },
+            'discipline-confirm': this.addDiscipline,
+            'saveconfirm': this.setTableData,
+            'loaddiscipline': this.loadDiscipline,
+            'showchanges': this.showchanges,
+            'acceptrfc': this.acceptRfc,
+            'rejectrfc': this.rejectRfc,
+            'submitrfc': this.submitRfc,
+            'cancelrfc': this.cancelRfc,
+            'removerfc': this.removeRfc,
+            'augmenttable': this.augmentTable,
+            'resetrfc': this.resetRfc,
+        };
+        const action = btn.dataset.action;
+        if (actionMap[action]) {
+            actionMap[action].call(this, btn);
         }
     }
 
@@ -884,7 +875,7 @@ class Manager {
      * Reject the RFC.
      * @param {object} btn The button that was clicked.
      * @return {void}
-     * */
+     */
     async rejectRfc(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.rejectRfc({courseid: this.courseid, userid: userid});
@@ -894,10 +885,49 @@ class Manager {
     }
 
     /**
+     * Submit the RFC for approval.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async submitRfc(btn) {
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        const response = await Repository.submitRfc({courseid: this.courseid, userid: userid});
+        if (response) {
+            this.getTableData();
+        }
+    }
+
+    /**
+     * Cancel the RFC.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async cancelRfc(btn) {
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        const response = await Repository.cancelRfc({courseid: this.courseid, userid: userid});
+        if (response) {
+            this.getTableData();
+        }
+    }
+
+    /**
+     * Remove the RFC.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async removeRfc(btn) {
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        const response = await Repository.removeRfc({courseid: this.courseid, userid: userid});
+        if (response) {
+            this.getTableData();
+        }
+    }
+
+    /**
      * Augment the table.
      * @param {object} btn The button that was clicked.
      * @return {void}
-     * */
+     */
     async augmentTable(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
         // Find all cells with data-action="showchanges"
@@ -908,13 +938,18 @@ class Manager {
         // Temporarly set the input value for the cell to the new value. Store the old value in a data-attribute.
         const form = document.querySelector('[data-region="app"]');
         const resetRfc = form.querySelector('[data-action="resetrfc"]');
+        this.resetRfc(resetRfc);
         resetRfc.classList.remove('d-none');
         const changeCells = form.querySelectorAll('[data-action="showchanges"]');
+        window.console.log(changeCells);
         changeCells.forEach(cell => {
             const input = cell.querySelector('[data-input="auto"]');
             if (input) {
                 input.dataset.input = 'rfc';
                 const changesdiv = cell.querySelector('[data-changes][data-userid="' + userid + '"]');
+                if (!changesdiv) {
+                    return;
+                }
                 const newvalue = changesdiv.dataset.newvalue;
                 input.dataset.oldvalue = input.value;
                 input.value = newvalue;

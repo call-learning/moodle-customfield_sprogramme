@@ -16,7 +16,7 @@
 
 namespace customfield_sprogramme\external;
 
-use context_system;
+use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -51,14 +51,15 @@ class reject_rfc extends external_api {
      * @return bool
      */
     public static function execute($courseid, $userid): bool {
-        $context = context_system::instance();
-        require_capability('customfield/sprogramme:edit', $context);
-
         $params = self::validate_parameters(self::execute_parameters(),
             [
                 'courseid' => $courseid,
                 'userid' => $userid,
             ]);
+        $courseid = $params['courseid'];
+        $context = context_course::instance($courseid);
+        self::validate_context($context);
+        require_capability('customfield/sprogramme:editall', $context);
 
         return programme::reject_rfc($params['courseid'], $params['userid']);
     }

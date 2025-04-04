@@ -87,23 +87,22 @@ class set_data extends external_api {
      * @throws \invalid_parameter_exception
      */
     public static function execute(int $courseid, array $modules): array {
-        global $USER;
-        $context = context_course::instance($courseid);
-        require_capability('customfield/sprogramme:edit', $context);
         $params = self::validate_parameters(self::execute_parameters(),
             [
                 'courseid' => $courseid,
                 'modules' => $modules,
             ]
         );
-        self::validate_context($context);
         $courseid = $params['courseid'];
+        $context = context_course::instance($courseid);
+        self::validate_context($context);
+        require_capability('customfield/sprogramme:edit', $context);
         $modules = $params['modules'];
 
-        programme::set_records($courseid, $modules);
+        $result = programme::set_records($courseid, $modules);
 
         $data = [
-            'data' => 'This is the data for table ' . $courseid,
+            'data' => $result,
         ];
 
         return $data;
@@ -116,7 +115,7 @@ class set_data extends external_api {
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
-            'data' => new external_value(PARAM_TEXT, 'The data in JSON format'),
+            'data' => new external_value(PARAM_TEXT, 'The result of the set data'),
         ]);
     }
 }

@@ -33,14 +33,25 @@
     {{#rfcs}}
     <div class="dropdown" data-rfc data-userid="{{userinfo.userid}}">
             <button class="btn btn-outline-info btn-sm ml-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{userinfo.fullname}}
+                {{userinfo.fullname}} {{#issubmitted}}<i class="fa fa-check"></i>{{/issubmitted}}
             </button>
             <div class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
-                <p class="dropdown-item mb-0 small">Requested by: {{userinfo.fullname}}</p>
-                <p class="dropdown-item mb-0 small">Requested on: {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
+                {{#issubmitted}}
+                    <p class="dropdown-item mb-0 small">{{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
+                {{/issubmitted}}
                 <div class="dropdown-divider"></div>
+                {{#canaccept}}
                 <a class="dropdown-item small" data-action="acceptrfc">{{#str}}accept, customfield_sprogramme{{/str}}</a>
                 <a class="dropdown-item small" data-action="rejectrfc">{{#str}}reject, customfield_sprogramme{{/str}}</a>
+                {{/canaccept}}
+                {{#cansubmit}}
+                    <a class="dropdown-item small" data-action="submitrfc">{{#str}}submitrfc, customfield_sprogramme{{/str}}</a>
+                    <a class="dropdown-item small" data-action="removerfc">{{#str}}removerfc, customfield_sprogramme{{/str}}</a>
+
+                {{/cansubmit}}
+                {{#cancancel}}
+                    <a class="dropdown-item small" data-action="cancelrfc">{{#str}}cancelrfc, customfield_sprogramme{{/str}}</a>
+                {{/cancancel}}
                 <a class="dropdown-item small" data-action="augmenttable">{{#str}}augment, customfield_sprogramme{{/str}}</a>
             </div>
         </div>

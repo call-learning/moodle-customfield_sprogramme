@@ -215,6 +215,54 @@ class Repository {
 
         return promise;
     }
+    /**
+     * Submit the changes.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    submitRfc(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_submit_rfc',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+    /**
+     * Cancel the changes.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    cancelRfc(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_cancel_rfc',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+    /**
+     * Remove the changes.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    removeRfc(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_remove_rfc',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
 }
 
 const RepositoryInstance = new Repository();

@@ -15,23 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme\external;
+
 use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
-use core_external\external_single_structure;
-use core_external\external_multiple_structure;
 
 use customfield_sprogramme\local\api\programme;
 
 /**
- * Class delete_row
+ * Class submit_rfc
  *
  * @package    customfield_sprogramme
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class delete_row extends external_api {
+class submit_rfc extends external_api {
     /**
      * Returns description of method parameters
      *
@@ -40,21 +39,21 @@ class delete_row extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
-            'rowid' => new external_value(PARAM_INT, 'row id', VALUE_REQUIRED),
+            'userid' => new external_value(PARAM_INT, 'user id', VALUE_REQUIRED),
         ]);
     }
-
     /**
-     * Delete a row
-     * @param int $courseid
-     * @param int $rowid
+     * Submit a RFC
+     *
+     * @param int $courseid The course id
+     * @param int $userid The user id
      * @return bool
      */
-    public static function execute($courseid, $rowid): bool {
+    public static function execute($courseid, $userid): bool {
         $params = self::validate_parameters(self::execute_parameters(),
             [
                 'courseid' => $courseid,
-                'rowid' => $rowid,
+                'userid' => $userid,
             ]
         );
         $courseid = $params['courseid'];
@@ -62,17 +61,14 @@ class delete_row extends external_api {
         self::validate_context($context);
         require_capability('customfield/sprogramme:edit', $context);
 
-        $programme = new programme();
-        $status = $programme->delete_row($params['courseid'], $params['rowid']);
-        return $status;
+        return programme::submit_rfc($params['courseid'], $params['userid']);
     }
-
     /**
      * Returns description of method result value
      *
      * @return external_value
      */
     public static function execute_returns(): external_value {
-        return new external_value(PARAM_BOOL, 'status');
+        return new external_value(PARAM_BOOL, 'true on success');
     }
 }

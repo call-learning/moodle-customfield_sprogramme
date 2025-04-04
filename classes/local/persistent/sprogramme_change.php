@@ -16,6 +16,7 @@
 
 namespace customfield_sprogramme\local\persistent;
 
+use context_course;
 use core\persistent;
 use lang_string;
 
@@ -37,6 +38,7 @@ class sprogramme_change extends persistent {
      */
     const CHANGE_TYPES = [
         self::RFC_REQUESTED => 'requested',
+        self::RFC_SUBMITTED => 'submitted',
         self::RFC_ACCEPTED => 'accepted',
         self::RFC_REJECTED => 'rejected',
     ];
@@ -45,13 +47,17 @@ class sprogramme_change extends persistent {
      */
     const RFC_REQUESTED = 1;
     /**
+     * Request for change submitted.
+     */
+    const RFC_SUBMITTED = 2;
+    /**
      * Request for change accepted.
      */
-    const RFC_ACCEPTED = 2;
+    const RFC_ACCEPTED = 3;
     /**
      * Request for change rejected.
      */
-    const RFC_REJECTED = 3;
+    const RFC_REJECTED = 4;
 
     /**
      * Return the custom definition of the properties of this model.
@@ -111,6 +117,15 @@ class sprogramme_change extends persistent {
      * @return array
      */
     public static function get_all_records_for_course(int $courseid): array {
-        return self::get_records(['courseid' => $courseid, 'action' => self::RFC_REQUESTED]);
+        global $USER;
+        $context = context_course::instance($courseid);
+        $editall = has_capability('customfield/sprogramme:editall', $context);
+        if ($editall) {
+            return self::get_records(['courseid' => $courseid, 'action' => self::RFC_SUBMITTED]);
+        } else {
+            $submitted = self::get_records(['courseid' => $courseid, 'action' => self::RFC_REQUESTED, 'usermodified' => $USER->id]);
+            $requested = self::get_records(['courseid' => $courseid, 'action' => self::RFC_SUBMITTED, 'usermodified' => $USER->id]);
+            return array_merge($submitted, $requested);
+        }
     }
 }

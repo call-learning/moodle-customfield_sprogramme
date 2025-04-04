@@ -16,7 +16,7 @@
 
 namespace customfield_sprogramme\external;
 
-use context_system;
+use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
@@ -56,9 +56,6 @@ class update_sort_order extends external_api {
      * @return bool
      */
     public static function execute($type, $courseid, $moduleid, $id, $previd): bool {
-        $context = context_system::instance();
-        require_capability('customfield/sprogramme:edit', $context);
-
         $params = self::validate_parameters(self::execute_parameters(),
             [
                 'type' => $type,
@@ -67,6 +64,10 @@ class update_sort_order extends external_api {
                 'id' => $id,
                 'previd' => $previd,
             ]);
+        $courseid = $params['courseid'];
+        $context = context_course::instance($courseid);
+        self::validate_context($context);
+        require_capability('customfield/sprogramme:edit', $context);
 
         $programme = new programme($courseid);
         $programme->update_sort_order($params['type'], $params['moduleid'], $params['id'], $params['previd']);

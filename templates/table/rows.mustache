@@ -141,7 +141,7 @@
     <tr data-row data-index="{{id}}" draggable="true">
         {{#cells}}
             {{#editor}}
-                <td data-cell data-columnid="{{columnid}}"{{#changes}} data-action="showchanges"{{/changes}} class="{{^canedit}}readonly {{/canedit}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
+                <td data-cell data-columnid="{{columnid}}"{{#changes}} data-action="showchanges"{{/changes}} class="{{#changes}}haschanges {{/changes}}{{^canedit}}readonly {{/canedit}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
                     {{#int}}
                         <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
                     {{/int}}
@@ -175,7 +175,6 @@
                                         <span class="date">{{#userdate}} {{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}} {{/userdate}}</span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     {{/changes}}

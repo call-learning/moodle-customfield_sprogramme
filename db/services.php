@@ -114,4 +114,28 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'customfield/sprogramme:edit',
     ],
+    'customfield_sprogramme_submit_rfc' => [
+        'classname' => \customfield_sprogramme\external\submit_rfc::class,
+        'methodname' => 'execute',
+        'description' => 'Submit the RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
+    'customfield_sprogramme_cancel_rfc' => [
+        'classname' => \customfield_sprogramme\external\cancel_rfc::class,
+        'methodname' => 'execute',
+        'description' => 'Cancel the RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
+    'customfield_sprogramme_remove_rfc' => [
+        'classname' => \customfield_sprogramme\external\remove_rfc::class,
+        'methodname' => 'execute',
+        'description' => 'Remove the RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
 ];
