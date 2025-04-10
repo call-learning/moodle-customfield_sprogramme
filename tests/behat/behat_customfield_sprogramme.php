@@ -60,7 +60,7 @@ class behat_customfield_sprogramme extends behat_base {
         }
 
         // Find the row in the modules rows in [data-region="rows"].
-        $rows = $module->findAll('css', '[data-region="rows"]');
+        $rows = $module->findAll('css', '[data-region="rows"] tr');
         if (empty($rows)) {
             throw new ElementNotFoundException($this->getSession(), 'rows', 'css', '[data-region="rows"]');
         }
@@ -137,7 +137,7 @@ class behat_customfield_sprogramme extends behat_base {
         }
 
         // Find the row in the modules rows in [data-region="rows"].
-        $rows = $module->findAll('css', '[data-region="rows"]');
+        $rows = $module->findAll('css', '[data-region="rows"] tr');
         if (empty($rows)) {
             throw new ElementNotFoundException($this->getSession(), 'rows', 'css', '[data-region="rows"]');
         }
@@ -181,4 +181,39 @@ class behat_customfield_sprogramme extends behat_base {
         }
     }
 
+    /**
+     * Adds a new row to the module by clicking the add button (data-action="addrow").
+     *
+     * @Given /^I add a new row to mod "(?P<modulenr_string>(?:[^"]|\\")*)"$/
+     * @param string $modulenr The module number
+     * @throws ExpectationException
+     */
+    public function add_row($modulenr) {
+        // App
+        $app = $this->find('css', '[data-region="app"]');
+        // There can be multiple modules in the app identified by [data-region="module"].
+        // The modulenr corresponds with the order of the modules in the app.
+        $modules = $app->findAll('css', '[data-region="module"]');
+        if (empty($modules)) {
+            throw new ElementNotFoundException($this->getSession(), 'module', 'css', '[data-region="module"]');
+        }
+        if ($modulenr > count($modules)) {
+            throw new ExpectationException('Module number ' . $modulenr . ' is out of range. There are only ' . count($modules) . ' modules.', $this->getSession());
+        }
+        // Find the module.
+        $module = $modules[$modulenr - 1];
+        if (empty($module)) {
+            throw new ElementNotFoundException($this->getSession(), 'module', 'css', '[data-region="module"]');
+        }
+        // Count the number of rows in the module.
+        $rows = $module->findAll('css', '[data-region="rows"]');
+
+        // Find the add button in the module.
+        $addbutton = $module->find('css', '[data-action="addrow"]');
+        if (empty($addbutton)) {
+            throw new ElementNotFoundException($this->getSession(), 'add button', 'css', '[data-action="addrow"]');
+        }
+        // Click the add button.
+        $addbutton->click();
+    }
 }

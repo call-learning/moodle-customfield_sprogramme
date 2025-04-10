@@ -1,0 +1,128 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template customfield_sprogramme/emails/viewrfcs
+
+    TODO describe template viewrfcs
+
+    Example context (json):
+    {
+    }
+}}
+<div class="d-flex mb-3">
+    <div class="select-instance">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
+                {{#str}}selectcompetvet, customfield_sprogramme{{/str}}
+            </button>
+            <div class="dropdown-menu">
+                {{#selectcourse}}
+                    <a href="{{{url}}}" class="dropdown-item  {{#selected}}active{{/selected}}">
+                        {{name}} ( {{{course}}} )
+                    </a>
+                {{/selectcourse}}
+            </div>
+        </div>
+    </div>
+    <div class="select-task ml-2">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
+                {{#str}}selecttype, customfield_sprogramme{{/str}}
+            </button>
+            <div class="dropdown-menu">
+                {{#tasks}}
+                    <a href="{{{url}}}" class="dropdown-item {{#selected}}active{{/selected}}">
+                        {{name}}
+                    </a>
+                {{/tasks}}
+            </div>
+        </div>
+    </div>
+    <div class="select-status ml-2">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
+                {{#str}}selectstatus, customfield_sprogramme{{/str}}
+            </button>
+            <div class="dropdown-menu">
+                {{#status}}
+                    <a href="{{{url}}}" class="dropdown-item {{#selected}}active{{/selected}}">
+                        {{name}}
+                    </a>
+                {{/status}}
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>{{#str}}notification:notification, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}notification:timecreated, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}notification:recipient, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}notification:message, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}status, customfield_sprogramme{{/str}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#viewrfcs}}
+        <tr>
+            <td>{{notification}}</td>
+            <td>{{#userdate}}{{timecreated}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</td>
+            <td>{{recipient}}</td>
+            <td>
+                <a href="#" data-toggle="modal" data-target="#messageModal-{{id}}" class="text-decoration-none">
+                    {{{shortmessage}}}
+                </a>
+                <!-- Modal -->
+                <div class="modal fade" id="messageModal-{{id}}" tabindex="-1" aria-labelledby="messageModalLabel-{{id}}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="messageModalLabel-{{id}}">{{recipient}}</h5>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="{{#str}}close, form{{/str}}"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="subject mb-3">{{subject}}</div>
+                                <hr>
+                                {{{body}}}
+                            </div>
+                            <div class="modal-footer">
+                                {{#cansend}}
+                                    <a href="{{{send}}}" class="btn btn-success mr-2">{{#str}}send, message{{/str}}</a>
+                                {{/cansend}}
+                                <a href="{{{delete}}}" class="btn btn-danger">{{#str}}delete, customfield_sprogramme{{/str}}</a>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}}close, form{{/str}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                {{status}}
+            </td>
+        </tr>
+        {{/viewrfcs}}
+    </tbody>
+</table>
+<div class="d-flex justify-content-end mt-3">
+    {{#sendallurl}}
+        <a href="{{{sendallurl}}}" class="btn btn-success">{{#str}}notification:sendall, customfield_sprogramme, {{numpending}}{{/str}}</a>
+    {{/sendallurl}}
+    {{#deleteallurl}}
+        <a href="{{{deleteallurl}}}" class="btn btn-danger ml-2">{{#str}}notification:deleteall, customfield_sprogramme, {{numviewrfcs}}{{/str}}</a>
+    {{/deleteallurl}}
+</div>

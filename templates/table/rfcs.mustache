@@ -31,7 +31,7 @@
 }}
 <div class="d-flex">
     {{#rfcs}}
-    <div class="dropdown" data-rfc data-userid="{{userinfo.userid}}">
+        <div class="dropdown" data-rfc data-userid="{{userinfo.userid}}">
             <button class="btn btn-outline-info btn-sm ml-1 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{userinfo.fullname}} {{#issubmitted}}<i class="fa fa-check"></i>{{/issubmitted}}
             </button>
@@ -56,7 +56,19 @@
             </div>
         </div>
     {{/rfcs}}
-    <button class="btn btn-info btn-sm d-none ml-1" data-action="resetrfc">
+    {{#rfcs}}
+        <div class="actions" data-rfc data-userid="{{userinfo.userid}}">
+            {{#issubmitted}}{{#cancancel}}
+                <div class="text-danger d-flex pl-3 pt-1">
+                    {{#str}}changesubmitted, customfield_sprogramme, {{userinfo.fullname}} {{/str}}, {{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}
+                </div>
+            {{/cancancel}}{{/issubmitted}}
+            {{#cansubmit}}
+                <a class="btn btn-sm ml-1 btn-outline-success" data-action="submitrfc">{{#str}}submitrfc, customfield_sprogramme{{/str}}</a>
+            {{/cansubmit}}
+        </div>
+    {{/rfcs}}
+    <button class="btn btn-sm btn-info btn-sm d-none ml-1" data-action="resetrfc">
         {{#str}}resetrfc, customfield_sprogramme{{/str}}
     </button>
 </div>

@@ -15,28 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Edit customfield sprogramme
+ * TODO describe file test
  *
  * @package    customfield_sprogramme
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require('../../../config.php');
+use customfield_sprogramme\output\formfield;
+use customfield_sprogramme\output\programme;
+use customfield_sprogramme\output\viewrfcs;
 
 require_login();
 
-$courseid = required_param('courseid', PARAM_INT);
+$courseid = optional_param('courseid', 0, PARAM_INT);
+$showrfcs = optional_param('showrfcs', 0, PARAM_INT);
 
-$url = new moodle_url('/customfield/field/sprogramme/index.php', []);
+$url = new moodle_url('/customfield/field/sprogramme/edit.php', ['courseid' => $courseid]);
 $PAGE->set_url($url);
 $PAGE->set_context(context_course::instance($courseid));
-
 $PAGE->set_heading($SITE->fullname);
 $PAGE->set_secondary_navigation(false);
 
-$programm = new customfield_sprogramme\output\programme();
-$output = $PAGE->get_renderer('customfield_sprogramme');
 echo $OUTPUT->header();
-echo $output->render($programm);
+$renderer = $PAGE->get_renderer('customfield_sprogramme');
+
+if ($showrfcs) {
+    $viewnotification = new viewrfcs();
+    echo $renderer->render($viewnotification);
+} else {
+    $formfield = new formfield();
+    echo $renderer->render($formfield);
+    $programm = new programme($courseid);
+    echo $renderer->render($programm);
+}
+
 echo $OUTPUT->footer();

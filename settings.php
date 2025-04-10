@@ -15,31 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TODO describe file test
+ * Setting for the customfield_sprogramme plugin.
  *
  * @package    customfield_sprogramme
  * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require('../../../config.php');
-use customfield_sprogramme\output\formfield;
-use customfield_sprogramme\output\programme;
+defined('MOODLE_INTERNAL') || die();
 
-require_login();
-
-$courseid = optional_param('courseid', 0, PARAM_INT);
-
-$url = new moodle_url('/customfield/field/sprogramme/test.php', ['courseid' => $courseid]);
-$PAGE->set_url($url);
-$PAGE->set_context(context_course::instance($courseid));
-$PAGE->set_heading($SITE->fullname);
-
-echo $OUTPUT->header();
-$renderer = $PAGE->get_renderer('customfield_sprogramme');
-$formfield = new formfield();
-echo $renderer->render($formfield);
-
-$programm = new programme($courseid);
-echo $renderer->render($programm);
-echo $OUTPUT->footer();
+if ($hassiteconfig) {
+    // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
+    if ($ADMIN->fulltree) {
+        $settings->add(
+            new admin_setting_configtext(
+                'customfield_sprogramme/approvalemail',
+                get_string('approvalemail', 'customfield_sprogramme'),
+                get_string('approvalemail_desc', 'customfield_sprogramme'),
+                '',
+                PARAM_RAW,
+            )
+        );
+    }
+}

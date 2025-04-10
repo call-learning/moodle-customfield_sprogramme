@@ -37,3 +37,12 @@ $string['pluginname'] = 'Champ Programme';
 $string['row'] = 'Ligne {$a}';
 $string['save'] = 'Enregistrer';
 $string['saving'] = 'Enregistrement...';
+$string['email:rfc:subject'] = '[Programme] Vous avez une demande de changement pour {$a->coursename}';
+
+$string['email:rfc'] = <<<'EOF'
+<p>Bonjour,</p>
+<p>Une demande de changement a été soumise pour le programme de {$a->coursename}.</p>
+<p>Veuillez visiter le lien suivant pour examiner la demande :</p>
+<p><a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Cordialement,</p>
+EOF;

@@ -23,6 +23,8 @@ use customfield_sprogramme\local\persistent\sprogramme_disc;
 use customfield_sprogramme\local\persistent\sprogramme_comp;
 use customfield_sprogramme\local\persistent\sprogramme_module;
 use customfield_sprogramme\local\persistent\sprogramme_change;
+use customfield_sprogramme\local\api\notifications;
+
 require_once($CFG->libdir . '/csvlib.class.php');
 use context_course;
 use xmldb_structure;
@@ -970,6 +972,20 @@ class programme {
         $record->set('adminid', 0);
         $record->set('snapshot', self::get_csv_data($courseid));
         $record->save();
+        // Now check if $field is a grouped field
+        if ($group !== '') {
+            // Find fields to remove which are in the same group as $field
+            $columns = self::get_column_structure($courseid);
+            foreach ($columns as $column) {
+                if ($column['group'] == $group && $column['column'] != $field) {
+                    $record = sprogramme_change::get_record(['pid' => $rowid, 'courseid' => $courseid,
+                        'field' => $column['column'], 'usermodified' => $USER->id]);
+                    if ($record) {
+                        $record->delete();
+                    }
+                }
+            }
+        }
         return 'newrfc';
     }
 
@@ -1025,6 +1041,7 @@ class programme {
             $record->save();
             $result = true;
         }
+        notifications::setnotification('rfc', $userid, $courseid);
         return $result;
     }
 
