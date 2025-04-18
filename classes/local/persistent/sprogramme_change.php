@@ -19,6 +19,9 @@ namespace customfield_sprogramme\local\persistent;
 use context_course;
 use core\persistent;
 use lang_string;
+use user_picture;
+use core_user;
+use moodle_exception;
 
 /**
  * Class sprogramme_comp
@@ -127,5 +130,70 @@ class sprogramme_change extends persistent {
             $requested = self::get_records(['courseid' => $courseid, 'action' => self::RFC_SUBMITTED, 'usermodified' => $USER->id]);
             return array_merge($submitted, $requested);
         }
+    }
+
+    /**
+     * Get user rfcs.
+     * Users can only provide 1 RFC per course at a time, get the RFCS grouped by user sorted by timecreated.
+     * Each user can have submitted multiple records per course, once these RFCS have self::RFC_SUBMITTED they are send to the
+     * admin for approval. So for each course each user will need to have 1 line returned from this function.
+     * The timemodified should be the latests time modified from this group of rfc records in the table.
+     * If no courseid is provided, all rfcs will be returned.
+     *
+     * @param int $courseid
+     * @param int $status
+     * @return array
+     */
+    public static function get_course_rfcs(int $courseid = 0, int $status = self::RFC_SUBMITTED): array {
+        $allrfcs = self::get_records(['action' => $status]);
+        $rfcs = [];
+        foreach ($allrfcs as $rfcpersistent) {
+            $rfc = $rfcpersistent->to_record();
+            if ($courseid && $rfc->courseid != $courseid) {
+                continue;
+            }
+            $rfc->userinfo = self::get_user_info($rfc->usermodified);
+            $rfc->course = get_course($rfc->courseid);
+            if (!isset($rfcs[$rfc->usermodified])) {
+                $rfcs[$rfc->usermodified] = $rfc;
+            } else {
+                if ($rfcs[$rfc->usermodified]->timemodified < $rfc->timemodified) {
+                    $rfcs[$rfc->usermodified] = $rfc;
+                }
+            }
+        }
+        return $rfcs;
+    }
+
+    /**
+     * Get user information (picture and fullname) for the given user id.
+     *
+     * @param int $userid The ID of the user.
+     * @return array associative array with id, fullname and userpictureurl.
+     */
+    public static function get_user_info(int $userid): array {
+        global $PAGE;
+        $user = core_user::get_user($userid);
+        if (!$user) {
+            $renderer = $PAGE->get_renderer('core');
+            return [
+                'id' => $userid,
+                'fullname' => get_string('usernotfound', 'customfield_sprogramme'),
+                'userpictureurl' => $renderer->image_url('u/f1')->out(false), // Default image.
+                'firstname' => 'firstname',
+                'lastname' => 'lastname',
+            ];
+        }
+        $userpicture = new user_picture($user);
+        $userpicture->includetoken = true;
+        $userpicture->size = 1; // Size f1.
+        return [
+            'id' => $userid,
+            'fullname' => fullname($user),
+            'email' => $user->email,
+            'userpictureurl' => $userpicture->get_url($PAGE)->out(false),
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+        ];
     }
 }

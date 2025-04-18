@@ -57,18 +57,27 @@
         </div>
     {{/rfcs}}
     {{#rfcs}}
-        <div class="actions" data-rfc data-userid="{{userinfo.userid}}">
+        <div class="actions d-flex align-items-start" data-rfc data-userid="{{userinfo.userid}}">
             {{#issubmitted}}{{#cancancel}}
                 <div class="text-danger d-flex pl-3 pt-1">
                     {{#str}}changesubmitted, customfield_sprogramme, {{userinfo.fullname}} {{/str}}, {{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}
                 </div>
             {{/cancancel}}{{/issubmitted}}
             {{#cansubmit}}
-                <a class="btn btn-sm ml-1 btn-outline-success" data-action="submitrfc">{{#str}}submitrfc, customfield_sprogramme{{/str}}</a>
+                <a class="btn btn-sm ml-1 mr-1 btn-success" data-action="submitrfc">{{#str}}submitrfc, customfield_sprogramme{{/str}}</a>
+                <a class="btn btn-sm btn-icon d-flex justify-content-center align-items-center icon-no-margin" data-toggle="collapse" data-target="#rfc-help" aria-expanded="false" aria-controls="rfc-{{rfcid}}">
+                    {{#pix}} a/help, core, {{#str}} rfc:help, customfield_sprogramme {{/str}} {{/pix}}
+                </a>
             {{/cansubmit}}
         </div>
     {{/rfcs}}
-    <button class="btn btn-sm btn-info btn-sm d-none ml-1" data-action="resetrfc">
+
+    <button class="btn btn-sm btn-info d-none ml-1" data-action="resetrfc">
         {{#str}}resetrfc, customfield_sprogramme{{/str}}
     </button>
+</div>
+<div class="collapse" id="rfc-help">
+    <div class="alert alert-info mt-3 mx-1 pt-4">
+        {{#str}}rfc:helptext, customfield_sprogramme{{/str}}
+    </div>
 </div>

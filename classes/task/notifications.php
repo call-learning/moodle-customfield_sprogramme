@@ -41,10 +41,9 @@ class notifications extends \core\task\scheduled_task {
      * Execute the task sending reminders to students who have items to do.
      */
     public function execute() {
-        $notifications = notification::get_notifications(notification::STATUS_PENDING);
+        $notifications = notification::get_notifications();
         foreach ($notifications as $notification) {
             try {
-                $notification->set_status(notification::STATUS_SEND);
                 $notification->update();
                 notificationsapi::send_email($notification);
             } catch (\Exception $e) {

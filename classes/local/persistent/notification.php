@@ -133,6 +133,6 @@ class notification extends persistent {
      * @return array
      */
     public static function get_notifications($status = self::STATUS_PENDING): array {
-        return self::get_records(self::TABLE, ['status' => $status], 'timecreated ASC');
+        return self::get_records(['status' => $status], 'timecreated');
     }
 }

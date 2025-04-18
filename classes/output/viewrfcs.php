@@ -16,7 +16,7 @@
 
 namespace customfield_sprogramme\output;
 
-use customfield_sprogramme\local\persistent\notification;
+use customfield_sprogramme\local\persistent\sprogramme_change;
 use customfield_sprogramme\api\notifications as notifications_api;
 use core\output\named_templatable;
 use renderable;
@@ -33,12 +33,12 @@ use moodle_url;
  */
 class viewrfcs implements renderable, named_templatable {
     /**
-     * @var $courseid The course id.
+     * @var int $courseid The course id.
      */
     protected $courseid;
 
     /**
-     * @var $status The status to display.
+     * @var int $status The status to display.
      */
     protected $status;
 
@@ -56,58 +56,46 @@ class viewrfcs implements renderable, named_templatable {
         $data['selectcourse'] = array_values($this->get_course_select());
         $data['status'] = $this->get_status_select();
 
-        $searchparams = [];
-        if ($this->status) {
-            $searchparams['status'] = $this->status;
-        }
+        $rfcs = sprogramme_change::get_course_rfcs($this->courseid, $this->status);
 
-        $notifications = notification::get_records($searchparams);
+        $data['rfcs'] = [];
+        $numsubmitted = 0;
+        foreach ($rfcs as $rfc) {
 
-        $data['notifications'] = [];
-        $numpending = 0;
-        foreach ($notifications as $notification) {
-            $body = $notification->get('body');
-            // Get a short version of the body in plain text.
-            $shortmessage = strip_tags($body);
-            $shortmessage = substr($shortmessage, 0, 30);
-            $status = $notification->get('status');
-            if ($status === notification::STATUS_PENDING) {
-                $numpending++;
-            };
-            $delete = new moodle_url('/customfield/field/sprogramme/edit.php', array_merge($this->get_url_params(),
-                ['delete' => $notification->get('id')]));
+            $delete = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(
+                ['action' => 'deleterfc', 'courseid' => $rfc->courseid, 'user' => $rfc->usermodified]));
 
-            $send = new moodle_url('/customfield/field/sprogramme/edit.php', array_merge($this->get_url_params(),
-                ['send' => $notification->get('id')]));
+            $accept = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(
+                ['action' => 'acceptrfc', 'courseid' => $rfc->courseid, 'user' => $rfc->usermodified]));
 
-            $data['notifications'][] = [
-                'id' => $notification->get('id'),
-                'timecreated' => $notification->get('timecreated'),
-                'notification' => get_string('notification:' . $notification->get('notification'),
-                    'customfield_sprogramme'),
-                'shortmessage' => $shortmessage,
-                'recipient' => $notification->get('recipient'),
-                'subject' => $notification->get('subject'),
-                'body' => $body,
+            $view = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(
+                ['pagetype' => 'course', 'courseid' => $rfc->courseid, 'user' => $rfc->usermodified]));
+
+            $data['rfcs'][] = [
+                'timemodified' => $rfc->timemodified,
+                'userinfo' => $rfc->userinfo,
+                'course' => $rfc->course,
+                'status' => get_string('rfc:' . sprogramme_change::CHANGE_TYPES[$rfc->action], 'customfield_sprogramme'),
+                'viewurl' => $view->out(),
                 'delete' => $delete->out(),
-                'send' => $send->out(),
-                'status' => get_string('notification:status:' . notification::STATUS_TYPES[$status], 'customfield_sprogramme'),
-                'cansend' => $notification->can_send(),
+                'accept' => $accept->out(),
             ];
+
         }
-        if ($numpending) {
-            $data['numpending'] = $numpending;
-            $data['sendallurl'] = new moodle_url('/customfield/field/sprogramme/edit.php',
-            array_merge($this->get_url_params(), ['sendall' => 1]));
+        if ($numsubmitted) {
+            $data['numsubmitted'] = $numsubmitted;
+            $data['acceptall'] = new moodle_url('/customfield/field/sprogramme/edit.php',
+            $this->get_url_params(['acceptall' => 1]));
         }
-        $data['numnotifications'] = count($notifications);
-        if (count($notifications) > 0) {
+        $data['numrfcs'] = count($rfcs);
+        if (count($rfcs) > 0) {
             $data['deleteallurl'] = new moodle_url('/customfield/field/sprogramme/edit.php',
-            array_merge($this->get_url_params(), ['deleteall' => 1]));
+            $this->get_url_params(['action' => 'deleteall']));
         }
 
         $data['version'] = time();
         $data['debug'] = $CFG->debugdisplay;
+        $data['cssurl'] = new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]);
 
         return $data;
     }
@@ -119,16 +107,24 @@ class viewrfcs implements renderable, named_templatable {
     public function get_course_select(): array {
         global $DB;
         $allinstances = $DB->get_records('course', ['visible' => 1], 'fullname ASC');
+        $data = [];
+        $data[] = [
+            'key' => '',
+            'name' => get_string('all'),
+            'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => 0])),
+            'selected' => ($this->courseid == 0),
+        ];
         // Map these instances to an array with the id as key, the course and the name as value.
-        return array_map(function ($instance) {
+        $courses = array_map(function ($instance) {
             return [
                 'id' => $instance->id,
                 'course' => get_course($instance->id)->fullname,
                 'name' => $instance->fullname,
                 'selected' => $instance->id == $this->courseid,
-                'url' => new moodle_url('/customfield/field/sprogramme/edit.php', ['id' => $instance->id]),
+                'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => $instance->id])),
             ];
         }, $allinstances);
+        return array_merge($data, $courses);
     }
 
     /**
@@ -140,15 +136,15 @@ class viewrfcs implements renderable, named_templatable {
         $data[] = [
             'key' => '',
             'name' => get_string('all'),
-            'url' => new moodle_url('/customfield/field/sprogramme/edit.php', ['id' => $this->courseid]),
-            'selected' => empty($this->status),
+            'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => $this->courseid])),
+            'selected' => ($this->status == 0),
         ];
-        foreach (notification::STATUS_TYPES as $key => $status) {
+        foreach (sprogramme_change::CHANGE_TYPES as $key => $status) {
             $data[] = [
                 'key' => $key,
-                'name' => get_string('notification:status:' . $status, 'customfield_sprogramme'),
+                'name' => get_string('rfc:' . $status, 'customfield_sprogramme'),
                 'url' => new moodle_url('/customfield/field/sprogramme/edit.php',
-                    ['pagetype' => 'viewrfcs', 'id' => $this->courseid, 'status' => $key]),
+                    $this->get_url_params(['status' => $key])),
                 'selected' => $key == $this->status,
             ];
         }
@@ -157,14 +153,22 @@ class viewrfcs implements renderable, named_templatable {
 
     /**
      * Get the url parameters for this renderable.
+     * @param array $params
      * @return array
      */
-    public function get_url_params(): array {
-        return [
+    public function get_url_params($params): array {
+        $defaults = [
             'pagetype' => 'viewrfcs',
-            'c' => $this->courseid,
+            'courseid' => $this->courseid,
             'status' => $this->status,
         ];
+        // Params overwrite defaults.
+        $params = array_merge($defaults, $params);
+        // Remove empty values.
+        $params = array_filter($params, function ($value) {
+            return !empty($value);
+        });
+        return $params;
     }
 
     /**
@@ -172,16 +176,36 @@ class viewrfcs implements renderable, named_templatable {
      * @return void
      */
     public function before_render(): void {
+        $this->courseid = optional_param('courseid', 0, PARAM_INT);
+        $this->status = optional_param('status', sprogramme_change::RFC_SUBMITTED, PARAM_INT);
+        $action = optional_param('action', '', PARAM_ALPHANUMEXT);
+        switch ($action) {
+            case 'deleteall':
+                $params = ['action' => $this->status];
+                if ($this->courseid !== 0) {
+                    $params['courseid'] = $this->courseid;
+                }
+                $todelete = sprogramme_change::get_records($params);
+                foreach ($todelete as $rfc) {
+                    $rfc->delete();
+                }
+                break;
+            case 'acceptrfc':
+                $this->accept_rfc();
+                break;
+        }
+
+
         $delete = optional_param('delete', null, PARAM_INT);
         if ($delete) {
-            $todelete = notification::get_record(['id' => $delete]);
+            $todelete = sprogramme_change::get_record(['id' => $delete]);
             $todelete->delete();
         }
 
         $send = optional_param('send', null, PARAM_INT);
         if ($send) {
-            $notification = notification::get_record(['id' => $send]);
-            notifications_api::send_email($notification);
+            $rfc = sprogramme_change::get_record(['id' => $send]);
+            notifications_api::send_email($rfc);
         }
 
         $sendall = optional_param('sendall', null, PARAM_INT);
@@ -190,9 +214,9 @@ class viewrfcs implements renderable, named_templatable {
             if ($this->task) {
                 $params['notification'] = $this->task;
             }
-            $notifications = notification::get_records($params);
-            foreach ($notifications as $notification) {
-                notifications_api::send_email($notification);
+            $rfcs = sprogramme_change::get_records($params);
+            foreach ($rfcs as $rfc) {
+                notifications_api::send_email($rfc);
             }
         }
 
@@ -202,56 +226,11 @@ class viewrfcs implements renderable, named_templatable {
             if ($this->task) {
                 $params['notification'] = $this->task;
             }
-            $notifications = notification::get_records($params);
-            foreach ($notifications as $notification) {
-                $notification->delete();
+            $rfcs = sprogramme_change::get_records($params);
+            foreach ($rfcs as $rfc) {
+                $rfc->delete();
             }
         }
-    }
-
-    /**
-     * Set data for the object.
-     *
-     * If data is empty we autofill information from the API and the current user.
-     * If not, we get the information from the parameters.
-     *
-     * The idea behind it is to reuse the template in customfield_sprogramme and local_competvet
-     *
-     * @param mixed ...$data Array containing two elements: $plannings and $planningstats.
-     * @return void
-     */
-    public function set_data(...$data) {
-        if (empty($data)) {
-            global $PAGE;
-            if ($PAGE->context->contextlevel === CONTEXT_MODULE) {
-                $PAGE->set_secondary_active_tab('viewrfcs');
-
-                $courseid = optional_param('c', null, PARAM_INT);
-                $task = optional_param('task', null, PARAM_RAW);
-                $tasks = $this->get_tasks();
-                if (!array_key_exists($task, $tasks)) {
-                    $task = null;
-                }
-
-                $status = optional_param('status', null, PARAM_INT);
-                if (!array_key_exists($status, notification::STATUS_TYPES)) {
-                    $status = null;
-                }
-
-                $cmid = $PAGE->cm->id;
-                if (!$courseid) {
-                    $competvet = competvet::get_from_context($PAGE->context);
-                    $courseid = $competvet->get_instance_id();
-                } else {
-                    $competvet = competvet::get_from_instance_id($courseid);
-                    $cmid = $competvet->get_course_module_id();
-                }
-                $data = [$courseid, $cmid, $task, $status];
-            } else {
-                $data = [null];
-            }
-        }
-        [$this->courseid, $this->courseid, $this->task, $this->status] = $data;
     }
 
     /**
@@ -274,22 +253,6 @@ class viewrfcs implements renderable, named_templatable {
      * @return string
      */
     public function get_template_name(\renderer_base $renderer): string {
-        return 'customfield_sprogramme/emails/notifications';
-    }
-
-    /**
-     * Get the available tasks for the notifications.
-     * @return array
-     */
-    private function get_tasks(): array {
-        return [
-            'items_todo' => get_string('notification:items_todo', 'customfield_sprogramme'),
-            'end_of_planning' => get_string('notification:end_of_planning', 'customfield_sprogramme'),
-            'student_graded' => get_string('notification:student_graded', 'customfield_sprogramme'),
-            'student_target:eval' => get_string('notification:student_target:eval', 'customfield_sprogramme'),
-            'student_target:autoeval' => get_string('notification:student_target:autoeval', 'customfield_sprogramme'),
-            'student_target:cert' => get_string('notification:student_target:cert', 'customfield_sprogramme'),
-            'student_target:list' => get_string('notification:student_target:list', 'customfield_sprogramme'),
-        ];
+        return 'customfield_sprogramme/emails/viewrfcs';
     }
 }

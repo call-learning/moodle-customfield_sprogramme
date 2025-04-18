@@ -77,12 +77,13 @@ class notifications {
         if ($notification->get('status') == notification::STATUS_SEND) {
             return;
         }
-        $recipient = core_user::get_user($notification->get('recipientid'));
+        $noreplyuser = \core_user::get_noreply_user();
+        $noreplyuser->email = $notification->get('recipient');
         $subject = $notification->get('subject');
         $body = $notification->get('body');
-        $success = email_to_user($recipient, core_user::get_noreply_user(), $subject, $body);
+        $success = email_to_user($noreplyuser, core_user::get_noreply_user(), $subject, $body);
         if (!$success) {
-            debugging("Failed to send email to user ID {$recipient->id}", DEBUG_DEVELOPER);
+            debugging("Failed to send email to user ID {$noreplyuser->email}", DEBUG_DEVELOPER);
         } else {
             $notification->set('status', notification::STATUS_SEND);
             $notification->save();
@@ -155,7 +156,7 @@ class notifications {
      */
     public static function add_global_context($context, $courseid): array {
         $course = get_course($courseid);
-        $programmelink = new moodle_url('/field/sprogramme/edit.php', ['id' => $courseid]);
+        $programmelink = new moodle_url('/customfield/field/sprogramme/edit.php', ['id' => $courseid, 'pagetype' => 'viewrfcs']);
         $context['programmelink'] = $programmelink->out();
         $context['coursename'] = $course->fullname;
         return $context;

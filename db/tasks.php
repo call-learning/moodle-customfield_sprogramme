@@ -29,10 +29,10 @@ defined('MOODLE_INTERNAL') || die();
 
 $tasks = [
     [
-        'classname' => 'customfield_sprogramme\task\send_notifications',
+        'classname' => 'customfield_sprogramme\task\notifications',
         'blocking' => 0,
-        'minute' => '12',
-        'hour' => '0',
+        'minute' => '*',
+        'hour' => '*',
         'day' => '*',
         // Run on Tuesdays.
         'dayofweek' => '0',

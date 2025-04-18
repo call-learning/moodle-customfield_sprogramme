@@ -23,11 +23,12 @@
     {
     }
 }}
+<link rel="stylesheet" type="text/css" href="{{{cssurl}}}">
 <div class="d-flex mb-3">
     <div class="select-instance">
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
-                {{#str}}selectcompetvet, customfield_sprogramme{{/str}}
+                {{#str}}rfc:selectcourse, customfield_sprogramme{{/str}}
             </button>
             <div class="dropdown-menu">
                 {{#selectcourse}}
@@ -38,24 +39,10 @@
             </div>
         </div>
     </div>
-    <div class="select-task ml-2">
-        <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
-                {{#str}}selecttype, customfield_sprogramme{{/str}}
-            </button>
-            <div class="dropdown-menu">
-                {{#tasks}}
-                    <a href="{{{url}}}" class="dropdown-item {{#selected}}active{{/selected}}">
-                        {{name}}
-                    </a>
-                {{/tasks}}
-            </div>
-        </div>
-    </div>
     <div class="select-status ml-2">
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
-                {{#str}}selectstatus, customfield_sprogramme{{/str}}
+                {{#str}}rfc:selectstatus, customfield_sprogramme{{/str}}
             </button>
             <div class="dropdown-menu">
                 {{#status}}
@@ -67,62 +54,39 @@
         </div>
     </div>
 </div>
-<table class="table table-striped">
+<table class="table table-striped tablerfcs">
     <thead>
         <tr>
-            <th>{{#str}}notification:notification, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}notification:timecreated, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}notification:recipient, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}notification:message, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}status, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}rfc:user, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}rfc:timecreated, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}rfc:course, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}rfc:status, customfield_sprogramme{{/str}}</th>
+            <th>{{#str}}rfc:actions, customfield_sprogramme{{/str}}</th>
         </tr>
     </thead>
     <tbody>
-        {{#viewrfcs}}
+        {{#rfcs}}
         <tr>
-            <td>{{notification}}</td>
-            <td>{{#userdate}}{{timecreated}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</td>
-            <td>{{recipient}}</td>
             <td>
-                <a href="#" data-toggle="modal" data-target="#messageModal-{{id}}" class="text-decoration-none">
-                    {{{shortmessage}}}
-                </a>
-                <!-- Modal -->
-                <div class="modal fade" id="messageModal-{{id}}" tabindex="-1" aria-labelledby="messageModalLabel-{{id}}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="messageModalLabel-{{id}}">{{recipient}}</h5>
-                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="{{#str}}close, form{{/str}}"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="subject mb-3">{{subject}}</div>
-                                <hr>
-                                {{{body}}}
-                            </div>
-                            <div class="modal-footer">
-                                {{#cansend}}
-                                    <a href="{{{send}}}" class="btn btn-success mr-2">{{#str}}send, message{{/str}}</a>
-                                {{/cansend}}
-                                <a href="{{{delete}}}" class="btn btn-danger">{{#str}}delete, customfield_sprogramme{{/str}}</a>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{#str}}close, form{{/str}}</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="d-flex align-items-center position-relative">
+                    <img src="{{userinfo.userpictureurl}}" alt="{{userinfo.fullname}}" class="userpicture">
+                    <a class="stretched-link" href="{{{profileurl}}}" data-region="studentname" data-studentid="{{userinfo.id}}" data-firstname="{{userinfo.firstname}}" data-lastname="{{userinfo.lastname}}" data-email="{{userinfo.email}}">{{userinfo.fullname}}</a>
                 </div>
             </td>
+            <td>{{#userdate}}{{timemodified}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</td>
+            <td>{{course.fullname}}</td>
+            <td>{{status}}</td>
             <td>
-                {{status}}
+                <a href="{{{viewurl}}}" class="btn btn-sm btn-primary">
+                    {{#str}}rfc:view, customfield_sprogramme{{/str}}
+                </a>
             </td>
         </tr>
-        {{/viewrfcs}}
+        {{/rfcs}}
     </tbody>
 </table>
 <div class="d-flex justify-content-end mt-3">
-    {{#sendallurl}}
-        <a href="{{{sendallurl}}}" class="btn btn-success">{{#str}}notification:sendall, customfield_sprogramme, {{numpending}}{{/str}}</a>
-    {{/sendallurl}}
     {{#deleteallurl}}
-        <a href="{{{deleteallurl}}}" class="btn btn-danger ml-2">{{#str}}notification:deleteall, customfield_sprogramme, {{numviewrfcs}}{{/str}}</a>
+        <a href="{{{deleteallurl}}}" class="btn btn-danger ml-2">{{#str}}rfc:deleteall, customfield_sprogramme, {{numviewrfcs}}{{/str}}</a>
     {{/deleteallurl}}
 </div>

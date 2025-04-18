@@ -70,8 +70,27 @@ $string['email:rfc'] = <<<'EOF'
 <p>Best regards,</p>
 EOF;
 $string['notification:rfc'] = 'Request for change';
+$string['notification:notifications'] = 'Email notifications';
 $string['rfc:requested'] = 'Requested';
 $string['rfc:submitted'] = 'Submitted';
 $string['rfc:accepted'] = 'Accepted';
 $string['rfc:rejected'] = 'Rejected';
-
+$string['invalidpagetype'] = 'Invalid page type';
+$string['usernotfound'] = 'User not found';
+$string['rfc:user'] = 'User';
+$string['rfc:course'] = 'Course';
+$string['rfc:timecreated'] = 'Time created';
+$string['rfc:status'] = 'Status';
+$string['rfc:actions'] = 'Actions';
+$string['rfc:selectcourse'] = 'Select course';
+$string['rfc:selectstatus'] = 'Select status';
+$string['rfc:deleteall'] = 'Delete all';
+$string['rfc:view'] = 'View';
+$string['rfc:help'] = 'Help';
+$string['rfc:helptext'] = <<<'EOF'
+<h3>The submit request process</h3>
+<p>To submit a change request, start changing the grayed fields. When you are done, click on the "Submit change request" button.</p>
+<p>To cancel a change request, click on the "Cancel change request" button in the dropdown menu.</p>
+<p>Once the change request is submitted, the site manager will receive an email with a link to the change request.</p>
+<p>Once the change request is accepted, the changes will be applied to the course.</p>
+EOF;
