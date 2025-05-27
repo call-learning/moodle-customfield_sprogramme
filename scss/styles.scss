@@ -194,6 +194,10 @@
                     align-items: center;
                     border-radius: 50%;
                 }
+                .sum.strikethrough {
+                    text-decoration: line-through;
+                    color: #b5b5b5;
+                }
                 .newsum:not(:empty) {
                     display: flex;
                     width: 100%;
@@ -359,8 +363,38 @@
         }
     }
 }
-.modal .modal-customfield_sprogramme {
+.modal .modal-customfield_sprogramme_history {
     max-width: calc(100% - 2rem);
+    .programm-table.toprow {
+        margin-left: 300px;
+    }
+    .programm-table.standard {
+        th.text {
+            width: 300px;
+            min-width: 300px;
+            white-space: wrap;
+        }
+        th.int,
+        th.float {
+            width: 52.55px;
+            min-width: 52.55px;
+        }
+    }
+    .oldvalue {
+        // Strike through the old value
+        text-decoration: line-through;
+    }
+    .newvalue {
+        // Highlight the new value
+        color: rgb(206, 38, 38);
+    }
+}
+
+.modal .modal-customfield_sprogramme_editor {
+    max-width: calc(100% - 2rem);
+    .sum.strikethrough {
+        display: none !important;
+    }
     .modal-header {
         align-items: center;
         .close {

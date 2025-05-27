@@ -34,7 +34,7 @@
         <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.userid}}">
             <div class="rfcinfo">
                 {{#issubmitted}}
-                    <a href="#" data-action="augmenttable" title="{{#str}}augment, customfield_sprogramme{{/str}}">{{#str}}rfc:changerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}</a>
+                    <a href="#" data-action="augmenttable" title="{{#str}}augment, customfield_sprogramme{{/str}}">{{#str}}rfc:showchangerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}</a>
                     <p class="mb-0 small">{{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
                 {{/issubmitted}}
                 <div class="actions">
@@ -63,7 +63,6 @@
                     {{#pix}} a/help, core, {{#str}} rfc:rfcblocked, customfield_sprogramme {{/str}} {{/pix}}
                 </a>
             {{/cansubmit}}
-
         </div>
     {{/rfcs}}
 

@@ -23,6 +23,30 @@
     {
     }
 }}
+<div class="d-flex align-items-start">
+    {{#rfcs}}
+        <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.userid}}">
+            <div class="rfcinfo">
+                <div>{{#str}}rfc:changerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}</div>
+                <p class="mb-0 small">{{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timecreated}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
+            </div>
+        </div>
+    {{/rfcs}}
+</div>
+{{#modulesstatic.0}}
+    <table class="programm-table editor toprow">
+        <tr>
+            {{#columns}}
+                <th class="{{field}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
+                    <div class="d-flex sumcontainer">
+                        <span class="newsum {{^hasnewsum}}d-none{{/hasnewsum}}{{#hasnewsum}}ml-1{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>
+                        <span class="sum{{#hasnewsum}} strikethrough{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>
+                    </div>
+                </th>
+            {{/columns}}
+        </tr>
+    </table>
+{{/modulesstatic.0}}
 {{#modulesstatic}}
     <div class="modules mb-5" data-region="module" data-id="{{moduleid}}">
         <div class="d-flex mb-1 p-1 align-items-center">
@@ -38,7 +62,19 @@
                 {{#rows}}
                     <tr data-row >
                         {{#cells}}
-                            <td class="{{type}}">{{{value}}}</td>
+                            {{#visible}}
+                                <td class="{{type}}">
+                                    {{#changes}}
+                                        <div class="change">
+                                            <span class="oldvalue">{{{oldvalue}}}</span>
+                                            <span class="newvalue">{{{newvalue}}}</span>
+                                        </div>
+                                    {{/changes}}
+                                    {{^changes}}
+                                        {{{value}}}
+                                    {{/changes}}
+                                </td>
+                            {{/visible}}
                         {{/cells}}
                     </tr>
                 {{/rows}}

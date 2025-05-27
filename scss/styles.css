@@ -166,6 +166,9 @@
           justify-content: center;
           align-items: center;
           border-radius: 50%; }
+        .customfield-sprogramme .programm-table.editor th .sum.strikethrough {
+          text-decoration: line-through;
+          color: #b5b5b5; }
         .customfield-sprogramme .programm-table.editor th .newsum:not(:empty) {
           display: flex;
           width: 100%;
@@ -293,36 +296,55 @@
     .customfield-sprogramme .discipline-form.data-competencies .discipline-list {
       display: none; }
 
-.modal .modal-customfield_sprogramme {
+.modal .modal-customfield_sprogramme_history {
   max-width: calc(100% - 2rem); }
-  .modal .modal-customfield_sprogramme .modal-header {
+  .modal .modal-customfield_sprogramme_history .programm-table.toprow {
+    margin-left: 300px; }
+  .modal .modal-customfield_sprogramme_history .programm-table.standard th.text {
+    width: 300px;
+    min-width: 300px;
+    white-space: wrap; }
+  .modal .modal-customfield_sprogramme_history .programm-table.standard th.int,
+  .modal .modal-customfield_sprogramme_history .programm-table.standard th.float {
+    width: 52.55px;
+    min-width: 52.55px; }
+  .modal .modal-customfield_sprogramme_history .oldvalue {
+    text-decoration: line-through; }
+  .modal .modal-customfield_sprogramme_history .newvalue {
+    color: #ce2626; }
+
+.modal .modal-customfield_sprogramme_editor {
+  max-width: calc(100% - 2rem); }
+  .modal .modal-customfield_sprogramme_editor .sum.strikethrough {
+    display: none !important; }
+  .modal .modal-customfield_sprogramme_editor .modal-header {
     align-items: center; }
-    .modal .modal-customfield_sprogramme .modal-header .close {
+    .modal .modal-customfield_sprogramme_editor .modal-header .close {
       display: none; }
-  .modal .modal-customfield_sprogramme .close {
+  .modal .modal-customfield_sprogramme_editor .close {
     margin-left: -0.5px; }
-  .modal .modal-customfield_sprogramme .uploadbutton {
+  .modal .modal-customfield_sprogramme_editor .uploadbutton {
     margin-left: auto; }
-  .modal .modal-customfield_sprogramme .downloadbutton .icon,
-  .modal .modal-customfield_sprogramme .closebutton .icon,
-  .modal .modal-customfield_sprogramme .uploadbutton .icon {
+  .modal .modal-customfield_sprogramme_editor .downloadbutton .icon,
+  .modal .modal-customfield_sprogramme_editor .closebutton .icon,
+  .modal .modal-customfield_sprogramme_editor .uploadbutton .icon {
     color: #9f9f9f; }
-  .modal .modal-customfield_sprogramme .saveconfirm {
+  .modal .modal-customfield_sprogramme_editor .saveconfirm {
     margin-left: 0rem;
     margin-top: -1.5px; }
-    .modal .modal-customfield_sprogramme .saveconfirm .savingicon .icon {
+    .modal .modal-customfield_sprogramme_editor .saveconfirm .savingicon .icon {
       color: var(--warning); }
-    .modal .modal-customfield_sprogramme .saveconfirm .defaulticon .icon {
+    .modal .modal-customfield_sprogramme_editor .saveconfirm .defaulticon .icon {
       color: var(--success); }
-    .modal .modal-customfield_sprogramme .saveconfirm .icon {
+    .modal .modal-customfield_sprogramme_editor .saveconfirm .icon {
       color: #9f9f9f; }
-    .modal .modal-customfield_sprogramme .saveconfirm .btn .savingicon {
+    .modal .modal-customfield_sprogramme_editor .saveconfirm .btn .savingicon {
       display: none; }
-    .modal .modal-customfield_sprogramme .saveconfirm .btn.saving .defaulticon {
+    .modal .modal-customfield_sprogramme_editor .saveconfirm .btn.saving .defaulticon {
       display: none; }
-    .modal .modal-customfield_sprogramme .saveconfirm .btn.saving .savingicon {
+    .modal .modal-customfield_sprogramme_editor .saveconfirm .btn.saving .savingicon {
       display: inline-block; }
-  .modal .modal-customfield_sprogramme .changes .changesboxcorner {
+  .modal .modal-customfield_sprogramme_editor .changes .changesboxcorner {
     position: absolute;
     top: 0px;
     right: 0px;
@@ -331,7 +353,7 @@
     border-left: 10px solid transparent;
     border-right: 10px solid red;
     border-bottom: 10px solid transparent; }
-  .modal .modal-customfield_sprogramme .changes .changecontent {
+  .modal .modal-customfield_sprogramme_editor .changes .changecontent {
     position: absolute;
     display: none;
     top: 0px;
@@ -343,40 +365,40 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 10px;
     z-index: 1; }
-    .modal .modal-customfield_sprogramme .changes .changecontent .change {
+    .modal .modal-customfield_sprogramme_editor .changes .changecontent .change {
       border: 1px solid #dee2e6;
       margin-bottom: 0.5rem;
       border-radius: 5px; }
-    .modal .modal-customfield_sprogramme .changes .changecontent .newvalue {
+    .modal .modal-customfield_sprogramme_editor .changes .changecontent .newvalue {
       display: block;
       padding: 0.2rem 0.5rem;
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px; }
-    .modal .modal-customfield_sprogramme .changes .changecontent .oldvalue {
+    .modal .modal-customfield_sprogramme_editor .changes .changecontent .oldvalue {
       background-color: #f7f7f7;
       padding: 0.2rem 0.5rem;
       display: block;
       text-decoration: line-through;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px; }
-    .modal .modal-customfield_sprogramme .changes .changecontent .accept {
+    .modal .modal-customfield_sprogramme_editor .changes .changecontent .accept {
       color: var(--success); }
-    .modal .modal-customfield_sprogramme .changes .changecontent .reject {
+    .modal .modal-customfield_sprogramme_editor .changes .changecontent .reject {
       color: red; }
-    .modal .modal-customfield_sprogramme .changes .changecontent .infogroup {
+    .modal .modal-customfield_sprogramme_editor .changes .changecontent .infogroup {
       display: flex; }
-      .modal .modal-customfield_sprogramme .changes .changecontent .infogroup .actions {
+      .modal .modal-customfield_sprogramme_editor .changes .changecontent .infogroup .actions {
         background-color: #f7f7f7;
         border-radius: 15px;
         display: flex; }
-    .modal .modal-customfield_sprogramme .changes .changecontent .requestedby {
+    .modal .modal-customfield_sprogramme_editor .changes .changecontent .requestedby {
       display: flex;
       flex: 1 1 auto;
       flex-direction: column;
       align-items: flex-end;
       font-size: 0.7rem;
       color: #9f9f9f; }
-  .modal .modal-customfield_sprogramme td.active .changes .changecontent {
+  .modal .modal-customfield_sprogramme_editor td.active .changes .changecontent {
     display: block; }
 
 .tablerfcs .userpicture {

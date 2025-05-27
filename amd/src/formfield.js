@@ -60,12 +60,14 @@ const showHistory = async(element, courseid, rfcid) => {
     await getProgrammeHistory(element, courseid, rfcid);
     const modalContent = document.querySelector('[data-region="history"]');
 
-    await Modal.create({
+    const modal = await Modal.create({
         large: true,
         title: getString('history', 'customfield_sprogramme'),
         body: modalContent,
         show: true,
     });
+    const modalElement = modal.getModal()[0];
+    modalElement.classList.add('modal-customfield_sprogramme_history');
 };
 
 const getEditor = async(element, courseid) => {
@@ -88,7 +90,7 @@ const getEditor = async(element, courseid) => {
 
     const saveButton = document.createElement('div');
     const modalElement = modal.getModal()[0];
-    modalElement.classList.add('modal-customfield_sprogramme');
+    modalElement.classList.add('modal-customfield_sprogramme_editor');
     const header = modalElement.querySelector('[data-region="header"]');
     const title = modalElement.querySelector('[data-region="title"]');
     if (title) {

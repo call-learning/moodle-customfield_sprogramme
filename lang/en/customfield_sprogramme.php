@@ -78,7 +78,8 @@ $string['rfc:accepted'] = 'Accepted';
 $string['rfc:rejected'] = 'Rejected';
 $string['invalidpagetype'] = 'Invalid page type';
 $string['usernotfound'] = 'User not found';
-$string['rfc:changerequestby'] = 'Show request for change by {$a}';
+$string['rfc:showchangerequestby'] = 'Show request for change by {$a}';
+$string['rfc:changerequestby'] = 'Change request by {$a}';
 $string['rfc:rfcblocked'] = 'RFC blocked';
 $string['rfc:rfcblocked:helptext'] = <<<'EOF'
 A change request has been submitted for the programme. Only one change request can be submitted at a time.

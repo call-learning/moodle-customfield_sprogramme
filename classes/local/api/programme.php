@@ -349,13 +349,24 @@ class programme {
     public static function find_change_record($changerecords, $rowid, $column) {
         $changes = [];
         foreach ($changerecords as $changerecord) {
-            if ($changerecord->get('pid') == $rowid && $changerecord->get('field') == $column) {
-                $changes[] = [
-                    'oldvalue' => $changerecord->get('oldvalue'),
-                    'newvalue' => $changerecord->get('newvalue'),
-                    'timemodified' => $changerecord->get('timemodified'),
-                    'userinfo' => self::get_user_info($changerecord->get('usermodified')),
-                ];
+            if ($changerecord instanceof sprogramme_change) {
+                if ($changerecord->get('pid') == $rowid && $changerecord->get('field') == $column) {
+                    $changes[] = [
+                        'oldvalue' => $changerecord->get('oldvalue'),
+                        'newvalue' => $changerecord->get('newvalue'),
+                        'timemodified' => $changerecord->get('timemodified'),
+                        'userinfo' => self::get_user_info($changerecord->get('adminid')),
+                    ];
+                }
+            } else {
+                if ($changerecord->pid == $rowid && $changerecord->field == $column) {
+                    $changes[] = [
+                        'oldvalue' => $changerecord->oldvalue,
+                        'newvalue' => $changerecord->newvalue,
+                        'timemodified' => $changerecord->timemodified,
+                        'userinfo' => self::get_user_info($changerecord->adminid),
+                    ];
+                }
             }
         }
         return $changes;
@@ -572,9 +583,15 @@ class programme {
         }
         if (isset($data[0])) {
             $data[0]['columns'] = array_map(function($column) use ($sum, $newsum) {
+                $currentsum = 0;
                 if (isset($sum[$column['column']])) {
-                    $column['sum'] = $sum[$column['column']];
+                    $currentsum = $sum[$column['column']];
+                    $column['sum'] = $currentsum ;
                     $column['hassum'] = true;
+                }
+                if (isset($newsum[$column['column']])) {
+                    $column['newsum'] = $newsum[$column['column']];
+                    $column['hasnewsum'] = $newsum[$column['column']] !== $currentsum ;
                 }
                 return $column;
             }, $data[0]['columns']);
@@ -1045,20 +1062,7 @@ class programme {
         $record->set('adminid', $USER->id);
         $record->set('snapshot', json_encode(self::get_data($courseid)));
         $record->save();
-        // Now check if $field is a grouped field
-        // if ($group !== '') {
-        //     // Find fields to remove which are in the same group as $field
-        //     $columns = self::get_column_structure($courseid);
-        //     foreach ($columns as $column) {
-        //         if ($column['group'] == $group && $column['column'] != $field) {
-        //             $record = sprogramme::get_record(['pid' => $rowid, 'courseid' => $courseid,
-        //                 'field' => $column['column'], 'usermodified' => $USER->id]);
-        //             if ($record) {
-        //                 self::record_change_request($courseid, $rowid, $column['column'], '', $record->get('oldvalue'), 0);
-        //             }
-        //         }
-        //     }
-        // }
+
         return 'newrfc';
     }
 
@@ -1207,18 +1211,46 @@ class programme {
      * @return array $history
      */
     public static function get_programme_history(int $courseid, int $adminid): array {
-        $rfcrecord = sprogramme_change::get_course_rfcs($courseid, sprogramme_change::RFC_ACCEPTED, $adminid);
-        if (!$rfcrecord) {
+        $rfcrecords = sprogramme_change::get_course_rfcs($courseid, sprogramme_change::RFC_ACCEPTED, $adminid);
+        if (!$rfcrecords) {
             return [];
         }
-        $snapshot = $rfcrecord[0]->snapshot;
+        $snapshot = $rfcrecords[0]->snapshot;
         if (!$snapshot) {
             return [];
         }
-        $data = json_decode($snapshot, true);
-        if (!$data) {
+        $modules = json_decode($snapshot, true);
+        if (!$modules) {
             return [];
         }
-        return $data;
+        // Add the $rfcrecords changes data to the data, the $modules is an array of modules, each module has rows,
+        // each row has cells, and each cell has a value.
+        foreach ($modules as &$module) {
+            foreach ($module['rows'] as &$row) {
+                $rowchanges = self::find_change_record($rfcrecords, $row['id'], 'row');
+                if ($rowchanges) {
+                    $row['changes'] = $rowchanges;
+                }
+                foreach ($row['cells'] as &$cell) {
+                    $changes = self::find_change_record($rfcrecords, $row['id'], $cell['column']);
+                    if ($changes) {
+                        $cell['changes'] = $changes;
+                    }
+                }
+            }
+        }
+        $rfcdata = [];
+        foreach ($rfcrecords as $record) {
+            $rfcdata[] = [
+                'action' => $record->action,
+                'userinfo' => self::get_user_info($record->adminid),
+                'timecreated' => $record->timecreated,
+                'timemodified' => $record->timemodified,
+            ];
+        }
+        return [
+            'modules' => $modules,
+            'rfcs' => $rfcdata,
+        ];
     }
 }

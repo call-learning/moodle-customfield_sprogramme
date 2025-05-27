@@ -68,7 +68,8 @@ class get_programme_history extends external_api {
         $history = \customfield_sprogramme\local\api\programme::get_programme_history($courseid, $adminid);
 
         return [
-            'modulesstatic' => $history,
+            'modulesstatic' => $history['modules'],
+            'rfcs' => $history['rfcs'],
         ];
     }
 
@@ -94,6 +95,7 @@ class get_programme_history extends external_api {
                                     'value' => new external_value(PARAM_TEXT, 'Value', VALUE_REQUIRED),
                                     'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
                                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
+                                    'visible' => new external_value(PARAM_BOOL, 'Visible', VALUE_OPTIONAL),
                                     'changes' => new external_multiple_structure(
                                         new external_single_structure([
                                             'oldvalue' => new external_value(PARAM_TEXT, 'Old value', VALUE_OPTIONAL),
@@ -154,6 +156,17 @@ class get_programme_history extends external_api {
                             ),
                         ])
                     ),
+                ])
+            ),
+            'rfcs' => new external_multiple_structure(
+                new external_single_structure([
+                    'action' => new external_value(PARAM_TEXT, 'Time modified', VALUE_OPTIONAL),
+                    'timecreated' => new external_value(PARAM_INT, 'Time created', VALUE_OPTIONAL),
+                    'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
+                    'userinfo' => new external_single_structure([
+                        'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
+                        'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
+                    ], 'User Info', VALUE_OPTIONAL),
                 ])
             ),
         ]);
