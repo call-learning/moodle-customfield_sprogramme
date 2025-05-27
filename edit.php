@@ -26,23 +26,24 @@ require('../../../config.php');
 use customfield_sprogramme\output\formfield;
 use customfield_sprogramme\output\programme;
 use customfield_sprogramme\output\viewrfcs;
-
-require_login();
+use customfield_sprogramme\setup;
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $pagetype = optional_param('pagetype', 'course', PARAM_ALPHANUMEXT);
 
-
 if ($courseid) {
     $context = context_course::instance($courseid);
+    $course = get_course($courseid);
 } else {
     $context = context_system::instance();
+    $course = get_site();
 }
+require_login($course);
 $url = new moodle_url('/customfield/field/sprogramme/edit.php', ['courseid' => $courseid]);
 $PAGE->set_url($url);
 $PAGE->set_context($context);
-$PAGE->set_heading($SITE->fullname);
-$PAGE->set_secondary_navigation(false);
+$PAGE->set_heading($course->fullname);
+$PAGE->set_secondary_navigation(true);
 
 echo $OUTPUT->header();
 $renderer = $PAGE->get_renderer('customfield_sprogramme');
@@ -57,6 +58,10 @@ switch ($pagetype) {
     case 'viewrfcs':
         $viewnotification = new viewrfcs();
         echo $renderer->render($viewnotification);
+        break;
+    case 'setup':
+        setup::fill_disclist();
+        setup::fill_complist();
         break;
     default:
         echo $OUTPUT->notification(get_string('invalidpagetype', 'customfield_sprogramme'), 'error');

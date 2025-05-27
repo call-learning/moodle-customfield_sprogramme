@@ -138,4 +138,12 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'customfield/sprogramme:edit',
     ],
+    'customfield_sprogramme_get_programme_history' => [
+        'classname' => \customfield_sprogramme\external\get_programme_history::class,
+        'methodname' => 'execute',
+        'description' => 'Get the programme history',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:view',
+    ],
 ];

@@ -48,8 +48,9 @@ $string['programme:intitule_seance'] = 'Intitule seance';
 $string['reject'] = 'Reject';
 $string['removerfc'] = 'Reset all changes';
 $string['report:programme'] = 'Programme';
-$string['resetrfc'] = 'Reset Table';
+$string['resetrfc'] = 'Hide suggested changes';
 $string['rfclocked'] = 'RFC locked';
+$string['rfcs'] = 'RFCs {$a}';
 $string['row'] = 'Row {$a}';
 $string['save'] = 'Save';
 $string['saving'] = 'Saving...';
@@ -77,6 +78,12 @@ $string['rfc:accepted'] = 'Accepted';
 $string['rfc:rejected'] = 'Rejected';
 $string['invalidpagetype'] = 'Invalid page type';
 $string['usernotfound'] = 'User not found';
+$string['rfc:changerequestby'] = 'Show request for change by {$a}';
+$string['rfc:rfcblocked'] = 'RFC blocked';
+$string['rfc:rfcblocked:helptext'] = <<<'EOF'
+A change request has been submitted for the programme. Only one change request can be submitted at a time.
+If you want to make another change, please discuss it with the requestor first.'
+EOF;
 $string['rfc:user'] = 'User';
 $string['rfc:course'] = 'Course';
 $string['rfc:timecreated'] = 'Time created';
@@ -94,3 +101,4 @@ $string['rfc:helptext'] = <<<'EOF'
 <p>Once the change request is submitted, the site manager will receive an email with a link to the change request.</p>
 <p>Once the change request is accepted, the changes will be applied to the course.</p>
 EOF;
+$string['history'] = 'History';

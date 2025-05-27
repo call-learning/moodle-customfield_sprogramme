@@ -109,6 +109,31 @@
       border: 0; }
     .customfield-sprogramme .programm-table .haschanges input {
       color: #ce2626; }
+    .customfield-sprogramme .programm-table tr.hasrowchanges td {
+      text-decoration: line-through; }
+    .customfield-sprogramme .programm-table.editor.toprow {
+      margin-left: 350px; }
+      .customfield-sprogramme .programm-table.editor.toprow th {
+        display: none;
+        position: relative;
+        color: #C6C6C6; }
+      .customfield-sprogramme .programm-table.editor.toprow .sumcontainer {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        color: var(--dark); }
+        .customfield-sprogramme .programm-table.editor.toprow .sumcontainer .sum.rfc {
+          color: #ce2626; }
+      .customfield-sprogramme .programm-table.editor.toprow th.float,
+      .customfield-sprogramme .programm-table.editor.toprow th.int {
+        display: table-cell;
+        width: 52.55px; }
     .customfield-sprogramme .programm-table.editor {
       border-left: 1px solid #dee2e6; }
       .customfield-sprogramme .programm-table.editor th {
@@ -119,20 +144,19 @@
         padding: 0.4rem; }
         .customfield-sprogramme .programm-table.editor th.float, .customfield-sprogramme .programm-table.editor th.int {
           background-color: #f7f7f7;
-          width: 10px; }
+          width: 50px;
+          max-width: 52.55px; }
         .customfield-sprogramme .programm-table.editor th.select {
-          width: 100px;
-          max-width: 100px; }
+          width: 75px;
+          min-width: 75px; }
         .customfield-sprogramme .programm-table.editor th.text {
           width: 200px;
           min-width: 200px;
           white-space: wrap; }
         .customfield-sprogramme .programm-table.editor th .thlabel {
           display: block;
-          width: 100%; }
-        .customfield-sprogramme .programm-table.editor th .sumcontainer {
-          display: flex;
-          justify-content: space-between; }
+          width: 100%;
+          white-space: break-spaces; }
         .customfield-sprogramme .programm-table.editor th .sum:not(:empty) {
           display: flex;
           width: 100%;

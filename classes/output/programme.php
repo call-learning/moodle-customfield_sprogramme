@@ -54,8 +54,7 @@ class programme implements renderable, templatable {
         global $CFG;
         $modules = programme_api::get_data($this->courseid);
         $data = [
-            'modules' => $modules,
-            'debug' => $CFG->debugdisplay ? json_encode($modules, JSON_PRETTY_PRINT) : '',
+            'modulesstatic' => $modules,
             'cssurl' => new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]),
         ];
         return $data;

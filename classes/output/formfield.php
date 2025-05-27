@@ -43,6 +43,10 @@ class formfield implements renderable, templatable {
         $data->debug = $CFG->debugdisplay;
         $data->disciplines = programme::get_disciplines();
         $data->competences = programme::get_competencies();
+        $data->canedit = has_capability('customfield/sprogramme:edit', $PAGE->context);
+        $data->editrfcs = has_capability('customfield/sprogramme:editall', $PAGE->context);
+        $data->rfcsurl = new \moodle_url('/customfield/field/sprogramme/edit.php', ['courseid' => $data->courseid, 'pagetype' => 'viewrfcs']);
+        $data->numrfcs = programme::get_numrfcs($data->courseid);
         $data->cssurl = new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]);
         return $data;
     }

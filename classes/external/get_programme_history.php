@@ -16,23 +16,21 @@
 
 namespace customfield_sprogramme\external;
 
-use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use core_external\external_single_structure;
 use core_external\external_multiple_structure;
-
-use customfield_sprogramme\local\api\programme;
+use context_course;
 
 /**
- * Class get_data
+ * Class get_programme_history
  *
  * @package    customfield_sprogramme
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_data extends external_api {
+class get_programme_history extends external_api {
 
     /**
      * Returns description of method parameters
@@ -42,40 +40,36 @@ class get_data extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'Courseid', VALUE_DEFAULT, ''),
-            'showrfc' => new external_value(PARAM_BOOL, 'Show Change request', VALUE_DEFAULT, false),
+            'adminid' => new external_value(PARAM_INT, 'Admin id', VALUE_DEFAULT, false),
         ]);
     }
 
     /**
-     * Execute and return json data.
+     * Get the programme history
      *
-     * @param int $courseid - The course id.
-     * @param bool $showrfc - Show change request.
-     * @return array $data - The data in JSON format
-     * @throws \invalid_parameter_exception
+     * @param int $courseid
+     * @param int $adminid
+     * @return array
      */
-    public static function execute(int $courseid, bool $showrfc): array {
+    public static function execute($courseid, $adminid): array {
         $params = self::validate_parameters(self::execute_parameters(),
-            ['courseid' => $courseid, 'showrfc' => $showrfc]
-        );
+            [
+                'courseid' => $courseid,
+                'adminid' => $adminid,
+            ]);
         $courseid = $params['courseid'];
-        $showrfc = $params['showrfc'];
+        $adminid = $params['adminid'];
 
-        $coursecontext = context_course::instance($courseid);
-        self::validate_context($coursecontext);
-        if (!has_capability('moodle/course:update', $coursecontext)) {
-            throw new \invalid_parameter_exception('invalidaccess');
-        }
+        // Validate course context.
+        $context = context_course::instance($courseid);
+        self::validate_context($context);
 
-        $modules = programme::get_data($courseid, $showrfc, true, true);
-        $rfcs = programme::get_rfc_data($courseid, $showrfc);
+        // Get the programme history.
+        $history = \customfield_sprogramme\local\api\programme::get_programme_history($courseid, $adminid);
 
-        $data = [
-            'modules' => $modules,
-            'rfcs' => $rfcs,
+        return [
+            'modulesstatic' => $history,
         ];
-
-        return $data;
     }
 
     /**
@@ -85,7 +79,7 @@ class get_data extends external_api {
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
-            'modules' => new external_multiple_structure(
+            'modulesstatic' => new external_multiple_structure(
                 new external_single_structure([
                     'moduleid' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
                     'modulesortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
@@ -162,20 +156,6 @@ class get_data extends external_api {
                     ),
                 ])
             ),
-            'rfcs' => new external_multiple_structure(
-                new external_single_structure([
-                    'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
-                    'issubmitted' => new external_value(PARAM_BOOL, 'Is submitted', VALUE_OPTIONAL),
-                    'canaccept' => new external_value(PARAM_BOOL, 'Can accept', VALUE_OPTIONAL),
-                    'cansubmit' => new external_value(PARAM_BOOL, 'Can submit', VALUE_OPTIONAL),
-                    'cancancel' => new external_value(PARAM_BOOL, 'Can cancel', VALUE_OPTIONAL),
-                    'userinfo' => new external_single_structure([
-                        'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
-                        'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
-                    ], 'User Info', VALUE_OPTIONAL),
-                ])
-            ),
         ]);
     }
 }
-

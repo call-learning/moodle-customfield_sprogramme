@@ -138,18 +138,18 @@
     <table>
 {{/mustacheonly}}
 {{#rows}}
-    <tr data-row data-index="{{id}}" draggable="true">
+    <tr data-row data-index="{{id}}" draggable="true" class="{{#rowchanges}}hasrowchanges{{/rowchanges}}">
         {{#cells}}
             {{#editor}}
                 <td data-cell data-columnid="{{columnid}}"{{#changes}} data-action="showchanges"{{/changes}} class="{{#changes}}haschanges {{/changes}}{{^canedit}}readonly {{/canedit}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
                     {{#int}}
-                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
+                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}"/>
                     {{/int}}
                     {{#float}}
-                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}" placeholder="{{{sample_value}}}"/>
+                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}"/>
                     {{/float}}
                     {{#text}}
-                        <input class="programm-input" data-input="auto" maxlength="{{length}}" type="text" value="{{{value}}}" placeholder="{{{sample_value}}}" />
+                        <input class="programm-input" data-input="auto" maxlength="{{length}}" type="text" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}" />
                     {{/text}}
                     {{#select}}
                         <select data-input="auto" class="programm-input">
@@ -159,24 +159,7 @@
                         </select>
                     {{/select}}
                     {{#changes}}
-                        <div class="changes" data-changes data-userid="{{userinfo.userid}}" data-newvalue="{{newvalue}}">
-                            <div class="changesboxcorner">
-                            </div>
-                            <div class="changecontent">
-                                <div class="change">
-                                    <span class="oldvalue">{{{oldvalue}}}</span>
-                                    <span class="newvalue">{{{newvalue}}}</span>
-                                </div>
-                                <div class="infogroup">
-                                    <div class="requestedby">
-                                        {{#userinfo}}
-                                            <span class="fullname">{{{fullname}}}</span>
-                                        {{/userinfo}}
-                                        <span class="date">{{#userdate}} {{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}} {{/userdate}}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {{> customfield_sprogramme/table/changeinfopopup }}
                     {{/changes}}
                 </td>
             {{/editor}}

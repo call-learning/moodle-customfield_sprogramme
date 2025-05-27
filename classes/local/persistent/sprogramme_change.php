@@ -142,9 +142,10 @@ class sprogramme_change extends persistent {
      *
      * @param int $courseid
      * @param int $status
+     * @param int $adminid
      * @return array
      */
-    public static function get_course_rfcs(int $courseid = 0, int $status = self::RFC_SUBMITTED): array {
+    public static function get_course_rfcs(int $courseid = 0, int $status = self::RFC_SUBMITTED, $adminid = 0): array {
         $allrfcs = self::get_records(['action' => $status]);
         $rfcs = [];
         foreach ($allrfcs as $rfcpersistent) {
@@ -152,14 +153,19 @@ class sprogramme_change extends persistent {
             if ($courseid && $rfc->courseid != $courseid) {
                 continue;
             }
-            $rfc->userinfo = self::get_user_info($rfc->usermodified);
+            $rfc->userinfo = self::get_user_info($rfc->adminid);
             $rfc->course = get_course($rfc->courseid);
-            if (!isset($rfcs[$rfc->usermodified])) {
-                $rfcs[$rfc->usermodified] = $rfc;
+            if (!isset($rfcs[$rfc->adminid])) {
+                $rfcs[$rfc->adminid] = $rfc;
             } else {
-                if ($rfcs[$rfc->usermodified]->timemodified < $rfc->timemodified) {
-                    $rfcs[$rfc->usermodified] = $rfc;
+                if ($rfcs[$rfc->adminid]->timemodified < $rfc->timemodified) {
+                    $rfcs[$rfc->adminid] = $rfc;
                 }
+            }
+        }
+        if ($adminid) {
+            if (isset($rfcs[$adminid])) {
+                return [$rfcs[$adminid]];
             }
         }
         return $rfcs;

@@ -1,0 +1,559 @@
+.customfield_sprogramme {
+    height: 100%;
+}
+
+.customfield-sprogramme {
+    overflow: auto;
+    height: 100%;
+    font-size: 0.8rem;
+}
+
+.customfield-sprogramme .btn.btn-icon {
+    height: 2rem;
+    width: 2rem;
+    font-size: 1rem;
+}
+
+.customfield-sprogramme .btn.btn-icon .icon {
+    max-width: 1rem;
+    max-height: 1rem;
+}
+
+.customfield-sprogramme .btn.btn-icon .fa-fw {
+    font-size: 0.8rem;
+}
+
+.customfield-sprogramme .programm-input {
+    display: block;
+    width: 100%;
+    min-width: 70px;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.125rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0;
+    border-radius: 0rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.customfield-sprogramme .programm-input::placeholder, .customfield-sprogramme .programm-input::-webkit-input-placeholder {
+    color: #d7d7d8;
+}
+
+.customfield-sprogramme .programm-input:focus {
+    outline: 1px solid #7fb6f1;
+    background-color: #f7f7f7;
+    border-radius: 0rem;
+}
+
+.customfield-sprogramme .module-input {
+    border-radius: 0;
+    border-color: #dee2e6;
+}
+
+.customfield-sprogramme .float .programm-input,
+.customfield-sprogramme .int .programm-input {
+    min-width: 50px;
+    width: 50px;
+    max-width: 50px;
+}
+
+.customfield-sprogramme .container-disciplines,
+.customfield-sprogramme .container-competencies {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 170px;
+}
+
+.customfield-sprogramme .disciplines,
+.customfield-sprogramme .competencies {
+    min-width: 205px;
+}
+
+.customfield-sprogramme .disciplines .badge,
+.customfield-sprogramme .competencies .badge {
+    display: flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.125rem;
+    margin-top: 0.125rem;
+    margin-right: 0.5rem;
+}
+
+.customfield-sprogramme .disciplines .badge .name,
+.customfield-sprogramme .competencies .badge .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 120px;
+    margin-right: 0.5rem;
+}
+
+.customfield-sprogramme .disciplines .badge .percentage,
+.customfield-sprogramme .competencies .badge .percentage {
+    background-color: #fff;
+    margin-left: 0.5rem;
+    border-radius: 1.5rem;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1.5rem;
+    width: 1.5rem;
+    min-width: 1.5rem;
+}
+
+.customfield-sprogramme .disciplines .badge .btn,
+.customfield-sprogramme .competencies .badge .btn {
+    display: none;
+    margin-left: 0.25rem;
+}
+
+.customfield-sprogramme .programm-table {
+    max-width: 100%;
+    overflow: visible;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.customfield-sprogramme .programm-table input[type="number"] {
+    /* For most modern browsers */
+    -moz-appearance: textfield;
+    /* Firefox */
+    -webkit-appearance: none;
+    /* Chrome, Safari, Edge */
+    appearance: none;
+}
+
+.customfield-sprogramme .programm-table input[type="number"]::-webkit-inner-spin-button,
+.customfield-sprogramme .programm-table input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    /* Optional: Prevent additional spacing */
+}
+
+.customfield-sprogramme .programm-table .readonly input,
+.customfield-sprogramme .programm-table .readonly select {
+    background-color: #f7f7f7;
+    border: 0;
+}
+
+.customfield-sprogramme .programm-table .haschanges input {
+    color: #ce2626;
+}
+
+.customfield-sprogramme .programm-table tr.hasrowchanges td {
+    text-decoration: line-through;
+}
+
+.customfield-sprogramme .programm-table.editor.toprow {
+    margin-left: 350px;
+}
+
+.customfield-sprogramme .programm-table.editor.toprow th {
+    display: none;
+    position: relative;
+    color: #C6C6C6;
+}
+
+.customfield-sprogramme .programm-table.editor.toprow .sumcontainer {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    color: var(--dark);
+}
+
+.customfield-sprogramme .programm-table.editor.toprow .sumcontainer .sum.rfc {
+    color: #ce2626;
+}
+
+.customfield-sprogramme .programm-table.editor.toprow th.float,
+.customfield-sprogramme .programm-table.editor.toprow th.int {
+    display: table-cell;
+    width: 52.55px;
+}
+
+.customfield-sprogramme .programm-table.editor {
+    border-left: 1px solid #dee2e6;
+}
+
+.customfield-sprogramme .programm-table.editor th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 170px;
+    padding: 0.4rem;
+}
+
+.customfield-sprogramme .programm-table.editor th.float, .customfield-sprogramme .programm-table.editor th.int {
+    background-color: #f7f7f7;
+    width: 50px;
+    max-width: 52.55px;
+}
+
+.customfield-sprogramme .programm-table.editor th.select {
+    width: 75px;
+    min-width: 75px;
+}
+
+.customfield-sprogramme .programm-table.editor th.text {
+    width: 200px;
+    min-width: 200px;
+    white-space: wrap;
+}
+
+.customfield-sprogramme .programm-table.editor th .thlabel {
+    display: block;
+    width: 100%;
+    white-space: break-spaces;
+}
+
+.customfield-sprogramme .programm-table.editor th .sum:not(:empty) {
+    display: flex;
+    width: 100%;
+    text-align: left;
+    width: auto;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.customfield-sprogramme .programm-table.editor th .newsum:not(:empty) {
+    display: flex;
+    width: 100%;
+    color: #ce2626;
+    text-align: left;
+    width: auto;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.customfield-sprogramme .programm-table.editor th,
+.customfield-sprogramme .programm-table.editor td {
+    border-top: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    position: relative;
+    vertical-align: top;
+}
+
+.customfield-sprogramme .programm-table.editor th.int,
+.customfield-sprogramme .programm-table.editor td.int {
+    width: 52px;
+    max-width: 52px;
+}
+
+.customfield-sprogramme .programm-table.editor td.actions {
+    display: flex;
+}
+
+.customfield-sprogramme .programm-table.editor td.rfc {
+    background-color: #7fb6f1;
+}
+
+.customfield-sprogramme .programm-table.editor td.rfc input {
+    background-color: #f4ffff;
+}
+
+.customfield-sprogramme .programm-table.standard {
+    border-right: 1px solid #dee2e6;
+}
+
+.customfield-sprogramme .programm-table.standard td,
+.customfield-sprogramme .programm-table.standard th {
+    padding: 0.5rem;
+    border-top: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    vertical-align: top;
+}
+
+.customfield-sprogramme .programm-table.standard td.text,
+.customfield-sprogramme .programm-table.standard th.text {
+    width: 300px;
+    white-space: wrap;
+}
+
+.customfield-sprogramme .programm-table.standard td.float, .customfield-sprogramme .programm-table.standard td.int,
+.customfield-sprogramme .programm-table.standard th.float,
+.customfield-sprogramme .programm-table.standard th.int {
+    width: 50px;
+}
+
+.customfield-sprogramme .programm-table.standard td:empty,
+.customfield-sprogramme .programm-table.standard th:empty {
+    height: 50px;
+}
+
+.customfield-sprogramme .programm-table.standard th.float, .customfield-sprogramme .programm-table.standard th.int {
+    background-color: #f7f7f7;
+    width: 50px;
+}
+
+.customfield-sprogramme td:focus {
+    outline: 1px solid #7fb6f1;
+}
+
+.customfield-sprogramme td.disciplines {
+    position: relative;
+}
+
+.customfield-sprogramme td .discipline-form {
+    display: block;
+    position: absolute;
+    right: 100%;
+    top: -3px;
+    width: 400px;
+    padding: 0.5rem;
+    background-color: #fff;
+    z-index: 1;
+    border: 1px solid var(--light);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.customfield-sprogramme td .discipline-form .badge .btn {
+    display: block;
+}
+
+.customfield-sprogramme td .discipline-form .btn.btn-icon:hover, .customfield-sprogramme td .discipline-form .btn.btn-icon:focus {
+    background-color: #ead9d9;
+}
+
+.customfield-sprogramme .formarrow {
+    display: block;
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
+.customfield-sprogramme .formarrow::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: -12px;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 12px solid #ffffff;
+    z-index: 2;
+}
+
+.customfield-sprogramme .formarrow::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    right: -13px;
+    width: 0;
+    height: 0;
+    border-top: 13px solid transparent;
+    border-bottom: 13px solid transparent;
+    border-left: 13px solid var(--light);
+}
+
+.customfield-sprogramme .discipline-form {
+    font-size: 0.8rem;
+}
+
+.customfield-sprogramme .discipline-form input,
+.customfield-sprogramme .discipline-form .btn {
+    font-size: 0.8rem;
+}
+
+.customfield-sprogramme .discipline-form .list-group {
+    border-top: 1px solid var(--light);
+    border-radius: 0;
+}
+
+.customfield-sprogramme .discipline-form .list-group-item {
+    border-radius: 0;
+}
+
+.customfield-sprogramme .discipline-form #discipline-name {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.customfield-sprogramme .discipline-form #discipline-value {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-left: -1px;
+}
+
+.customfield-sprogramme .discipline-form #discipline-confirm {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -1px;
+    border-color: var(--gray);
+    border-left: 0;
+}
+
+.customfield-sprogramme .discipline-form .discipline-list,
+.customfield-sprogramme .discipline-form .competences-list {
+    height: 200px;
+    overflow-y: auto;
+}
+
+.customfield-sprogramme .discipline-form.data-disciplines .competences-list {
+    display: none;
+}
+
+.customfield-sprogramme .discipline-form.data-competencies .discipline-list {
+    display: none;
+}
+
+.modal .modal-customfield_sprogramme {
+    max-width: calc(100% - 2rem);
+}
+
+.modal .modal-customfield_sprogramme .modal-header {
+    align-items: center;
+}
+
+.modal .modal-customfield_sprogramme .modal-header .close {
+    display: none;
+}
+
+.modal .modal-customfield_sprogramme .close {
+    margin-left: -0.5px;
+}
+
+.modal .modal-customfield_sprogramme .uploadbutton {
+    margin-left: auto;
+}
+
+.modal .modal-customfield_sprogramme .downloadbutton .icon,
+.modal .modal-customfield_sprogramme .closebutton .icon,
+.modal .modal-customfield_sprogramme .uploadbutton .icon {
+    color: #9f9f9f;
+}
+
+.modal .modal-customfield_sprogramme .saveconfirm {
+    margin-left: 0rem;
+    margin-top: -1.5px;
+}
+
+.modal .modal-customfield_sprogramme .saveconfirm .savingicon .icon {
+    color: var(--warning);
+}
+
+.modal .modal-customfield_sprogramme .saveconfirm .defaulticon .icon {
+    color: var(--success);
+}
+
+.modal .modal-customfield_sprogramme .saveconfirm .icon {
+    color: #9f9f9f;
+}
+
+.modal .modal-customfield_sprogramme .saveconfirm .btn .savingicon {
+    display: none;
+}
+
+.modal .modal-customfield_sprogramme .saveconfirm .btn.saving .defaulticon {
+    display: none;
+}
+
+.modal .modal-customfield_sprogramme .saveconfirm .btn.saving .savingicon {
+    display: inline-block;
+}
+
+.modal .modal-customfield_sprogramme .changes .changesboxcorner {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid red;
+    border-bottom: 10px solid transparent;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent {
+    position: absolute;
+    display: none;
+    top: 0px;
+    right: -200px;
+    width: 200px;
+    height: 200px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .change {
+    border: 1px solid #dee2e6;
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .newvalue {
+    display: block;
+    padding: 0.2rem 0.5rem;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .oldvalue {
+    background-color: #f7f7f7;
+    padding: 0.2rem 0.5rem;
+    display: block;
+    text-decoration: line-through;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .accept {
+    color: var(--success);
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .reject {
+    color: red;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .infogroup {
+    display: flex;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .infogroup .actions {
+    background-color: #f7f7f7;
+    border-radius: 15px;
+    display: flex;
+}
+
+.modal .modal-customfield_sprogramme .changes .changecontent .requestedby {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.7rem;
+    color: #9f9f9f;
+}
+
+.modal .modal-customfield_sprogramme td.active .changes .changecontent {
+    display: block;
+}
+
+.tablerfcs .userpicture {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 100%;
+}

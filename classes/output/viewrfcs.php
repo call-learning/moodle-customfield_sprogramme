@@ -16,6 +16,7 @@
 
 namespace customfield_sprogramme\output;
 
+use customfield_sprogramme\local\api\programme;
 use customfield_sprogramme\local\persistent\sprogramme_change;
 use customfield_sprogramme\api\notifications as notifications_api;
 use core\output\named_templatable;
@@ -62,23 +63,14 @@ class viewrfcs implements renderable, named_templatable {
         $numsubmitted = 0;
         foreach ($rfcs as $rfc) {
 
-            $delete = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(
-                ['action' => 'deleterfc', 'courseid' => $rfc->courseid, 'user' => $rfc->usermodified]));
-
-            $accept = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(
-                ['action' => 'acceptrfc', 'courseid' => $rfc->courseid, 'user' => $rfc->usermodified]));
-
-            $view = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(
-                ['pagetype' => 'course', 'courseid' => $rfc->courseid, 'user' => $rfc->usermodified]));
-
             $data['rfcs'][] = [
                 'timemodified' => $rfc->timemodified,
                 'userinfo' => $rfc->userinfo,
                 'course' => $rfc->course,
+                'courseid' => $rfc->courseid,
+                'adminid' => $rfc->adminid,
                 'status' => get_string('rfc:' . sprogramme_change::CHANGE_TYPES[$rfc->action], 'customfield_sprogramme'),
-                'viewurl' => $view->out(),
-                'delete' => $delete->out(),
-                'accept' => $accept->out(),
+                'action' => 'showrfc-' . sprogramme_change::CHANGE_TYPES[$rfc->action]
             ];
 
         }
@@ -92,6 +84,8 @@ class viewrfcs implements renderable, named_templatable {
             $data['deleteallurl'] = new moodle_url('/customfield/field/sprogramme/edit.php',
             $this->get_url_params(['action' => 'deleteall']));
         }
+        $data['disciplines'] = programme::get_disciplines();
+        $data['competences'] = programme::get_competencies();
 
         $data['version'] = time();
         $data['debug'] = $CFG->debugdisplay;

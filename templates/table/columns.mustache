@@ -271,11 +271,8 @@
 {{/mustacheonly}}
 {{#columns}}
     {{#editor}}
-        <th class="{{field}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
-            <div class="d-flex sumcontainer">
-            {{#hasnewsum}}<span class="newsum" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>{{/hasnewsum}}
-            {{#hassum}}<span class="sum" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>{{/hassum}}
-            </div>
+        <th class="{{field}}" data-columnid="{{columnid}}">
+            <span class="thlabel">{{{label}}}</span>
         </th>
     {{/editor}}
     {{^editor}}

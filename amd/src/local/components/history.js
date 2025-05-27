@@ -14,51 +14,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TODO describe module table
+ * TODO describe module history
  *
- * @module     customfield_sprogramme/local/components/table
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @module     customfield_sprogramme/local/components/history
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import State from 'customfield_sprogramme/local/state';
 import Templates from 'core/templates';
 
-
-
-/**
- * Define the user navigation.
- * @param {String} type The type.
- * @param {String} templatename The template name.
- * @param {String} root region root.
- */
-const stateTemplate = (type, templatename = '', root = 'app') => {
-    const app = document.querySelector(`[data-region="${root}"]`);
+const stateTemplate = () => {
+    const app = document.querySelector(`[data-region="history"]`);
     if (!app) {
         return;
     }
-    const region = app.querySelector(`[data-region="${type}"]`);
+    const region = app.querySelector(`[data-region="modulesstatic"]`);
     if (!region) {
         return;
     }
-    if (templatename == '') {
-        templatename = type;
-    }
-    const template = `customfield_sprogramme/table/${templatename}`;
-    const tableColumns = async(context) => {
-        if (context[type] === undefined) {
-            return;
-        }
-        context[type] = State.getValue(type);
+    const template = `customfield_sprogramme/table/moduleshistory`;
+    const tableColumns = async() => {
+        let context = State.getValue('history');
         // Clone the context to avoid issues with the same context in multiple templates.
         context = JSON.parse(JSON.stringify(context));
-        context.editor = root == 'app' ? true : false;
         region.innerHTML = await Templates.render(template, context);
     };
-    State.subscribe(type, tableColumns);
+    State.subscribe('history', tableColumns);
 };
 
-stateTemplate('columns', 'columnsheader');
-stateTemplate('modules');
-stateTemplate('modulesstatic', '', 'static');
-stateTemplate('rfcs');
+stateTemplate();

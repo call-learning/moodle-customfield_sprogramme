@@ -247,6 +247,7 @@ class Repository {
 
         return promise;
     }
+
     /**
      * Remove the changes.
      * @param {Object} args The arguments.
@@ -255,6 +256,23 @@ class Repository {
     removeRfc(args) {
         const request = {
             methodname: 'customfield_sprogramme_remove_rfc',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+
+    /**
+     * Get the programme history.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    getProgrammeHistory(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_get_programme_history',
             args: args
         };
 

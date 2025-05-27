@@ -20,7 +20,9 @@ defined('MOODLE_INTERNAL') || die();
 
 use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\persistent\sprogramme_disc;
+use customfield_sprogramme\local\persistent\sprogramme_disclist;
 use customfield_sprogramme\local\persistent\sprogramme_comp;
+use customfield_sprogramme\local\persistent\sprogramme_complist;
 use customfield_sprogramme\local\persistent\sprogramme_module;
 use customfield_sprogramme\local\persistent\sprogramme_change;
 use customfield_sprogramme\local\api\notifications;
@@ -227,7 +229,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
-                'canedit' => true,
+                'canedit' => false,
                 'label' => 'Perso av',
                 'columnid' => 27,
                 'length' => 10,
@@ -241,7 +243,7 @@ class programme {
                 'type' => PARAM_FLOAT,
                 'float' => true,
                 'visible' => true,
-                'canedit' => true,
+                'canedit' => false,
                 'label' => 'Perso ap',
                 'columnid' => 28,
                 'length' => 10,
@@ -288,45 +290,7 @@ class programme {
      * @return array
      */
     public static function get_disciplines(): array {
-        $disciplinesjson = '[
-            {"id": 1, "number": 2, "name": "Immunology"},
-            {"id": 2, "number": 2, "name": "Literacy & data management"},
-            {"id": 3, "number": 2, "name": "Microbiology"},
-            {"id": 4, "number": 2, "name": "Parasitology"},
-            {"id": 5, "number": 2, "name": "Pathology"},
-            {"id": 6, "number": 2, "name": "Pharma-cy-cology-cotherapy"},
-            {"id": 7, "number": 2, "name": "Physiology"},
-            {"id": 8, "number": 2, "name": "Prof. ethics & communication"},
-            {"id": 9, "number": 2, "name": "Toxicology"},
-            {"id": 10, "number": 3, "name": "CA_EQ Anesthesiology"},
-            {"id": 11, "number": 3, "name": "CA_EQ Clinical pract training"},
-            {"id": 12, "number": 3, "name": "CA_EQ Diagnostic imaging"},
-            {"id": 13, "number": 3, "name": "CA_EQ Diagnostic pathology"},
-            {"id": 14, "number": 3, "name": "CA_EQ Infectious diseases"},
-            {"id": 15, "number": 3, "name": "CA_EQ Medecine"},
-            {"id": 16, "number": 3, "name": "CA_EQ Preventive medicine"},
-            {"id": 17, "number": 3, "name": "CA_EQ Repro & obstetrics"},
-            {"id": 18, "number": 3, "name": "CA_EQ Surgery"},
-            {"id": 19, "number": 3, "name": "CA_EQ Therapy"},
-            {"id": 20, "number": 4, "name": "FPA Anesthesiology"},
-            {"id": 21, "number": 4, "name": "FPA Clinical pract training"},
-            {"id": 22, "number": 4, "name": "FPA Diagnostic imaging"},
-            {"id": 23, "number": 4, "name": "FPA Diagnostic pathology"},
-            {"id": 24, "number": 4, "name": "FPA Herd health management"},
-            {"id": 25, "number": 4, "name": "FPA Husb, breeding & economics"},
-            {"id": 26, "number": 4, "name": "FPA Infectious diseases"},
-            {"id": 27, "number": 4, "name": "FPA Medecine"},
-            {"id": 28, "number": 4, "name": "FPA Preventive medicine"},
-            {"id": 29, "number": 4, "name": "FPA Repro & obstetrics"},
-            {"id": 30, "number": 4, "name": "FPA Surgery"},
-            {"id": 31, "number": 4, "name": "FPA Therapy"},
-            {"id": 32, "number": 5, "name": "Control of food & feed"},
-            {"id": 33, "number": 5, "name": "Food hygiene & environ. health"},
-            {"id": 34, "number": 5, "name": "Food technology"},
-            {"id": 35, "number": 5, "name": "Vet. legis & certification"},
-            {"id": 36, "number": 5, "name": "Zoonoses"}
-        ]';
-        $disciplines = json_decode($disciplinesjson, true);
+        $disciplines = sprogramme_disclist::get_sorted();
         return $disciplines;
     }
 
@@ -335,17 +299,7 @@ class programme {
      * @return array
      */
     public static function get_competencies(): array {
-        $competencesjson = '[
-            {"id": 1, "number": 1, "name": "Agir de manière responsable"},
-            {"id": 2, "number": 1, "name": "Agir en Scientifique"},
-            {"id": 3, "number": 1, "name": "Agir pour la santé publique"},
-            {"id": 4, "number": 1, "name": "Communiquer"},
-            {"id": 5, "number": 1, "name": "Conseiller et Prévenir"},
-            {"id": 6, "number": 1, "name": "Etablir un diagnostic"},
-            {"id": 7, "number": 1, "name": "Soigner et traiter"},
-            {"id": 8, "number": 1, "name": "Travailler en entrepris"}
-        ]';
-        $competences = json_decode($competencesjson, true);
+        $competences = sprogramme_complist::get_sorted();
         return $competences;
     }
 
@@ -357,8 +311,10 @@ class programme {
     public static function get_column_structure($courseid): array {
         $table = self::get_table_structure();
         $canedit = has_capability('customfield/sprogramme:editall', context_course::instance($courseid));
-        $table = array_map(function($column) use ($canedit) {
+        $canaddrfc = self::can_add_rfc($courseid);
+        $table = array_map(function($column) use ($canedit, $canaddrfc) {
             if ($column['canedit'] == false) {
+                $column['canaddrfc'] = $canaddrfc;
                 $column['canedit'] = $canedit;
             }
             return $column;
@@ -448,23 +404,92 @@ class programme {
             $data[$key]['userinfo'] = self::get_user_info($key);
             $data[$key]['canaccept'] = $canaccept;
             $data[$key]['cansubmit'] = $cansumit && !$issubmitted && !$canaccept;
-            $data[$key]['cancancel'] = $issubmitted && !$canaccept;
+            $data[$key]['cancancel'] = $cansumit && $issubmitted && !$canaccept;
         }
         return array_values($data);
+    }
+
+    /**
+     * Check if a course has submitted rfcs
+     * @param int $courseid
+     * @return bool
+     */
+    public static function has_submitted_rfcs(int $courseid): bool {
+        $changerecords = sprogramme_change::get_all_records_for_course($courseid);
+        foreach ($changerecords as $changerecord) {
+            if ($changerecord->get('action') == sprogramme_change::RFC_SUBMITTED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if a user can add a new rfc for a course
+     * (there shoubld be no submitted rfcs yet) and the user has the capability to edit
+     * @param int $courseid
+     * @return bool
+     */
+    public static function can_add_rfc(int $courseid): bool {
+        global $USER;
+        $coursecontext = context_course::instance($courseid);
+        if (!has_capability('customfield/sprogramme:edit', $coursecontext)) {
+            return false;
+        }
+        if (self::has_submitted_rfcs($courseid)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the number of submitted rfcs for a course
+     * @param int $courseid
+     * @return int
+     */
+    public static function get_numrfcs(int $courseid): int {
+        $changerecords = sprogramme_change::get_all_records_for_course($courseid);
+        $data = [];
+        foreach ($changerecords as $changerecord) {
+            if ($changerecord->get('action') == sprogramme_change::RFC_SUBMITTED) {
+                $key = $changerecord->get('usermodified');
+                $data[$key] = true;
+            }
+        }
+        return count($data);
+    }
+
+    /**
+     * Check if there is any data in the programme for a given course
+     * @param int $courseid
+     * @return bool
+     */
+    public static function has_data(int $courseid): bool {
+        $modules = sprogramme_module::get_all_records_for_course($courseid);
+        if (empty($modules)) {
+            return false;
+        }
+        foreach ($modules as $module) {
+            $records = sprogramme::get_all_records_for_module($module->get('id'));
+            if (!empty($records)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Get the data for a given course
      * @param int $courseid
      * @param bool $showrfc
+     * @param bool $showcompet
+     * @param bool $showdisc
      * @return array $data
      */
-    public static function get_data(int $courseid, bool $showrfc = false): array {
+    public static function get_data(int $courseid, bool $showrfc = false, bool $showcompet = false, bool $showdisc = false): array {
         $modules = sprogramme_module::get_all_records_for_course($courseid);
-        $changerecords = [];
-        if ($showrfc) {
-            $changerecords = sprogramme_change::get_all_records_for_course($courseid);
-        }
+        $canaddrfc = self::can_add_rfc($courseid);
+        $changerecords = $showrfc ? sprogramme_change::get_all_records_for_course($courseid, $canaddrfc) : [];
         $columns = self::get_column_structure($courseid);
         $data = [];
         $sum = [];
@@ -499,23 +524,34 @@ class programme {
                         'changes' => $changes,
                     ];
                 }
-                $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
+
                 $disciplinedata = [];
-                foreach ($disciplines as $discipline) {
-                    $disciplinedata[] = [
-                        'id' => $discipline->get('did'),
-                        'name' => $discipline->get('discipline'),
-                        'percentage' => $discipline->get('percentage'),
-                    ];
+                if ($showdisc) {
+                    $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
+                    foreach ($disciplines as $discipline) {
+                        $disciplinedata[] = [
+                            'id' => $discipline->get('did'),
+                            'name' => $discipline->get('discipline'),
+                            'percentage' => $discipline->get('percentage'),
+                        ];
+                    }
                 }
-                $competencies = sprogramme_comp::get_all_records_for_programme($record->get('id'));
+
                 $competencydata = [];
-                foreach ($competencies as $competency) {
-                    $competencydata[] = [
-                        'id' => $competency->get('cid'),
-                        'name' => $competency->get('competency'),
-                        'percentage' => $competency->get('percentage'),
-                    ];
+                if ($showcompet) {
+                    $competencies = sprogramme_comp::get_all_records_for_programme($record->get('id'));
+                    foreach ($competencies as $competency) {
+                        $competencydata[] = [
+                            'id' => $competency->get('cid'),
+                            'name' => $competency->get('competency'),
+                            'percentage' => $competency->get('percentage'),
+                        ];
+                    }
+                }
+
+                $rowchanges = self::find_change_record($changerecords, $record->get('id'), 'row');
+                if ($rowchanges) {
+                    $cells[2]['changes'] = $rowchanges;
                 }
                 $modulerows[] = [
                     'id' => $record->get('id'),
@@ -523,6 +559,7 @@ class programme {
                     'cells' => $cells,
                     'disciplines' => $disciplinedata,
                     'competencies' => $competencydata,
+                    'rowchanges' => $rowchanges ? true : false,
                 ];
             }
             $data[] = [
@@ -538,13 +575,6 @@ class programme {
                 if (isset($sum[$column['column']])) {
                     $column['sum'] = $sum[$column['column']];
                     $column['hassum'] = true;
-                }
-                if (isset($newsum[$column['column']])) {
-                    $column['newsum'] = $newsum[$column['column']];
-                    $column['hasnewsum'] = true;
-                }
-                if (isset($column['sum']) && $column['sum'] == $column['newsum']) {
-                    $column['hasnewsum'] = false;
                 }
                 return $column;
             }, $data[0]['columns']);
@@ -622,6 +652,24 @@ class programme {
                     if ($cell['value'] == $currentvalue) {
                         continue;
                     }
+
+                    // Filter the $columns array, find columns fields with the same group, then see if a value is set
+                    // for this fiel in $record. If so, then set the value to null.
+                    $group = $column['group'];
+                    if ($group != '') {
+                        foreach ($columns as $col) {
+                            if ($col['group'] == $group && $col['column'] != $field) {
+                                $value = $record->get($col['column']);
+                                if (!$canedit && $value) {
+                                    $result = self::record_change_request($courseid, $row['id'], $col['column'],
+                                        $column['group'], $value, null);
+                                } else if ($value) {
+                                    $record->set($col['column'], null);
+                                }
+                            }
+                        }
+                    }
+
                     $changes = true;
                     // Check if the user has permission to edit this field
                     if (!$canedit) {
@@ -791,9 +839,13 @@ class programme {
             // Delete all rows in this module.
             $records = sprogramme::get_all_records_for_module($moduleid);
             foreach ($records as $record) {
-                $record->delete();
+                self::delete_row($courseid, $record->get('id'));
             }
-            $module->delete();
+            $recordsleft = sprogramme::get_all_records_for_module($moduleid);
+            if (empty($recordsleft)) {
+                // Delete the module if there are no rows left.
+                $module->delete();
+            }
             return true;
         }
         return false;
@@ -838,10 +890,31 @@ class programme {
      * @return bool
      */
     public static function delete_row($courseid, $rowid): bool {
+        $context = context_course::instance($courseid);
+        $editall = has_capability('customfield/sprogramme:editall', $context);
         $record = sprogramme::get_record(['id' => $rowid]);
         if ($record->get('courseid') == $courseid) {
-            $record->delete();
-            return true;
+            if ($editall) {
+                $disciplines = sprogramme_disc::get_all_records_for_programme($rowid);
+                foreach ($disciplines as $discipline) {
+                    $discipline->delete();
+                }
+                $competencies = sprogramme_comp::get_all_records_for_programme($rowid);
+                foreach ($competencies as $competency) {
+                    $competency->delete();
+                }
+                $record->delete();
+                return true;
+            } else {
+                $result = self::record_change_request($courseid, $rowid, 'row', '', '', -1);
+                if ($result == 'rfclocked') {
+                    return false;
+                }
+                if ($result == 'newrfc') {
+                    return true;
+                }
+            }
+
         }
         return false;
     }
@@ -969,23 +1042,23 @@ class programme {
         $record->set('action', sprogramme_change::RFC_REQUESTED);
         $record->set('oldvalue', $oldvalue ? $oldvalue : 0);
         $record->set('newvalue', $newvalue ? $newvalue : 0);
-        $record->set('adminid', 0);
-        $record->set('snapshot', self::get_csv_data($courseid));
+        $record->set('adminid', $USER->id);
+        $record->set('snapshot', json_encode(self::get_data($courseid)));
         $record->save();
         // Now check if $field is a grouped field
-        if ($group !== '') {
-            // Find fields to remove which are in the same group as $field
-            $columns = self::get_column_structure($courseid);
-            foreach ($columns as $column) {
-                if ($column['group'] == $group && $column['column'] != $field) {
-                    $record = sprogramme_change::get_record(['pid' => $rowid, 'courseid' => $courseid,
-                        'field' => $column['column'], 'usermodified' => $USER->id]);
-                    if ($record) {
-                        $record->delete();
-                    }
-                }
-            }
-        }
+        // if ($group !== '') {
+        //     // Find fields to remove which are in the same group as $field
+        //     $columns = self::get_column_structure($courseid);
+        //     foreach ($columns as $column) {
+        //         if ($column['group'] == $group && $column['column'] != $field) {
+        //             $record = sprogramme::get_record(['pid' => $rowid, 'courseid' => $courseid,
+        //                 'field' => $column['column'], 'usermodified' => $USER->id]);
+        //             if ($record) {
+        //                 self::record_change_request($courseid, $rowid, $column['column'], '', $record->get('oldvalue'), 0);
+        //             }
+        //         }
+        //     }
+        // }
         return 'newrfc';
     }
 
@@ -1001,11 +1074,18 @@ class programme {
             'action' => sprogramme_change::RFC_SUBMITTED]);
         foreach ($records as $record) {
             $row = sprogramme::get_record(['id' => $record->get('pid')]);
-            $row->set($record->get('field'), $record->get('newvalue'));
-            $row->save();
-            $record->set('action', sprogramme_change::RFC_ACCEPTED);
-            $record->save();
-            $result = true;
+            if (!$row) {
+                continue;
+            }
+            if ($record->get('field') == 'row') {
+                $row->delete();
+            } else {
+                $row->set($record->get('field'), $record->get('newvalue'));
+                $row->save();
+                $record->set('action', sprogramme_change::RFC_ACCEPTED);
+                $record->save();
+                $result = true;
+            }
         }
         return $result;
     }
@@ -1078,5 +1158,67 @@ class programme {
             $result = true;
         }
         return $result;
+    }
+
+    /**
+     * Get the numeric columns
+     * @return array $columns
+     */
+    public static function get_numeric_columns(): array {
+        $columns = [];
+        $table = self::get_table_structure();
+        foreach ($table as $column) {
+            if (isset($column['sum'])) {
+                $columns[] = $column;
+            }
+        }
+        return $columns;
+    }
+
+    /**
+     * Get the sums of the numerice column values for a given courseid
+     * @param int $courseid
+     * @return array $columns
+     */
+    public static function get_sums(int $courseid): array {
+        $numericcomlumns = self::get_numeric_columns();
+        $data = self::get_data($courseid);
+        // Sums are found in the first module.
+        $columns = [];
+        if (isset($data[0])) {
+            $columns = $data[0]['columns'];
+            // Filter out the numeric columns.
+            $columns = array_filter($columns, function($column) use ($numericcomlumns) {
+                foreach ($numericcomlumns as $numericcolumn) {
+                    if ($column['column'] == $numericcolumn['column']) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
+        return $columns;
+    }
+
+    /**
+     * Get the programme history for a given rfc record.
+     * @param int $courseid
+     * @param int $adminid
+     * @return array $history
+     */
+    public static function get_programme_history(int $courseid, int $adminid): array {
+        $rfcrecord = sprogramme_change::get_course_rfcs($courseid, sprogramme_change::RFC_ACCEPTED, $adminid);
+        if (!$rfcrecord) {
+            return [];
+        }
+        $snapshot = $rfcrecord[0]->snapshot;
+        if (!$snapshot) {
+            return [];
+        }
+        $data = json_decode($snapshot, true);
+        if (!$data) {
+            return [];
+        }
+        return $data;
     }
 }

@@ -122,6 +122,39 @@
         .haschanges input {
             color:rgb(206, 38, 38);
         }
+        tr.hasrowchanges {
+            td {
+                text-decoration: line-through;
+            }
+        }
+        &.editor.toprow {
+            margin-left:350px;
+            th {
+                display: none;
+                position: relative;
+                color: #C6C6C6;
+            }
+            .sumcontainer {
+                position: absolute;
+                right: 5px;
+                bottom: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                color: var(--dark);
+                .sum.rfc {
+                    color: rgb(206, 38, 38);
+                }
+            }
+            th.float,
+            th.int {
+                display: table-cell;
+                width: 52.55px;
+            }
+        }
         &.editor {
             border-left: 1px solid #dee2e6;
             th {
@@ -133,11 +166,12 @@
                 &.float,
                 &.int {
                     background-color: #f7f7f7;
-                    width: 10px;
+                    width: 50px;
+                    max-width: 52.55px;
                 }
                 &.select {
-                    width: 100px;
-                    max-width: 100px;
+                    width: 75px;
+                    min-width: 75px;
                 }
                 &.text {
                     width: 200px;
@@ -147,11 +181,9 @@
                 .thlabel {
                     display: block;
                     width: 100%;
+                    white-space: break-spaces;
                 }
-                .sumcontainer {
-                    display: flex;
-                    justify-content: space-between;
-                }
+
                 .sum:not(:empty) {
                     display: flex;
                     width: 100%;

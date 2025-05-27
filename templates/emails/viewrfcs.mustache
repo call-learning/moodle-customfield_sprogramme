@@ -77,7 +77,7 @@
             <td>{{course.fullname}}</td>
             <td>{{status}}</td>
             <td>
-                <a href="{{{viewurl}}}" class="btn btn-sm btn-primary">
+                <a href="#" class="btn btn-sm btn-primary" data-action="{{action}}" data-adminid="{{adminid}}" data-courseid="{{courseid}}">
                     {{#str}}rfc:view, customfield_sprogramme{{/str}}
                 </a>
             </td>
@@ -85,8 +85,34 @@
         {{/rfcs}}
     </tbody>
 </table>
+<div class="d-none">
+    <div class="customfield-sprogramme" data-region="app">
+        <div data-region="rfcs">
+        </div>
+        <div class="test" data-region="columns">
+        </div>
+        <div data-region="modules">
+        </div>
+    </div>
+    <div data-region="disciplineform-container">
+        {{> customfield_sprogramme/disciplineform}}
+    </div>
+    <div class="customfield-sprogramme" data-region="history">
+        <div class="my-5" data-region="modulesstatic">
+            {{> customfield_sprogramme/table/modulesstatic}}
+        </div>
+    </div>
+</div>
+</div>
+{{#disabled}}
 <div class="d-flex justify-content-end mt-3">
     {{#deleteallurl}}
         <a href="{{{deleteallurl}}}" class="btn btn-danger ml-2">{{#str}}rfc:deleteall, customfield_sprogramme, {{numviewrfcs}}{{/str}}</a>
     {{/deleteallurl}}
 </div>
+{{/disabled}}
+{{#js}}
+require(['customfield_sprogramme/formfield'], function(formfield) {
+    formfield.init();
+});
+{{/js}}

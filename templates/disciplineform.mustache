@@ -61,12 +61,22 @@
     <hr class="mt-1">
     <div class="list-group discipline-list" data-list="data-disciplines">
         {{#disciplines}}
-            <a href="#" class="list-group-item list-group-item-action p-2" data-option data-action="selectdiscipline" data-id="{{id}}">{{name}}</a>
+            <div class="list-group-item py-1 px-2 bg-light">
+                <div class="strong">{{name}}</div>
+            </div>
+            {{#items}}
+                <a href="#" class="list-group-item list-group-item-action p-2" data-option data-action="selectdiscipline" data-id="{{uniqueid}}">{{name}}</a>
+            {{/items}}
         {{/disciplines}}
     </div>
     <div class="list-group competences-list" data-list="data-competencies">
         {{#competences}}
-            <a href="#" class="list-group-item list-group-item-action p-2" data-option data-action="selectdiscipline" data-id="{{id}}">{{name}}</a>
+            <div class="list-group-item py-1 px-2 bg-light">
+                <div class="strong">{{name}}</div>  
+            </div>
+            {{#items}}
+                <a href="#" class="list-group-item list-group-item-action p-2" data-option data-action="selectdiscipline" data-id="{{uniqueid}}">{{name}}</a>
+            {{/items}}
         {{/competences}}
     </div>
 </div>

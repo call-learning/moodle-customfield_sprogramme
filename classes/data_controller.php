@@ -16,6 +16,7 @@
 
 namespace customfield_sprogramme;
 use customfield_sprogramme\output\formfield;
+use customfield_sprogramme\local\api\programme as programme_api;
 
 /**
  * Class data
@@ -76,14 +77,30 @@ class data_controller extends \core_customfield\data_controller {
 
     /**
      * Returns value in a human-readable format
+     * Not exporting the real programme as this function is used to check if the field has data too.
      *
      * @return mixed|null value or null if empty
      */
     public function export_value() {
+        $courseid = $this->data->get('instanceid');
+        if (!programme_api::has_data($courseid)) {
+            return null;
+        }
+        return 'hadata';
+    }
+
+    /**
+     * Export programme data for the given course.
+     * @return string the rendered HTML for the programme.
+     */
+    public function export_programme(): string {
         global $PAGE;
         $courseid = $this->data->get('instanceid');
         $programme = new \customfield_sprogramme\output\programme($courseid);
         $renderer = $PAGE->get_renderer('customfield_sprogramme');
-        return $renderer->render($programme);
+        $formfield = new formfield();
+        $return = $renderer->render($formfield);
+        $return .= $renderer->render($programme);
+        return $return;
     }
 }

@@ -71,9 +71,13 @@ class Manager {
      */
     constructor(element, courseid) {
         this.element = element;
+        if (this.element.dataset.inintialized) {
+            return;
+        }
         this.courseid = parseInt(courseid);
         this.addEventListeners();
-        this.getDatagrid();
+        this.getTableData();
+        this.element.dataset.inintialized = true;
     }
 
     /**
@@ -93,6 +97,16 @@ class Manager {
                     td.classList.remove('active');
                 });
             }
+            // Remove the useredits data attribute from all inputs in the form.
+            const inputs = form.querySelectorAll('[data-input="auto"]');
+            inputs.forEach(input => {
+                input.dataset.useredits = 'false';
+            });
+            const input = e.target.closest('[data-input="auto"]');
+            // Set the input dataattribute to editing
+            if (input) {
+                input.dataset.useredits = 'true';
+            }
         });
         // Listen to all changes in the table.
         form.addEventListener('change', (e) => {
@@ -103,6 +117,22 @@ class Manager {
             const modulename = e.target.closest('[data-region="modulename"]');
             if (modulename) {
                 this.changeModule(modulename);
+            }
+        });
+        // Listen to the global saveprogrammconfirm event,
+        // if triggered save the data for the inputs that have useredits set to true.
+        document.addEventListener('saveprogrammconfirm', async() => {
+            const inputs = form.querySelectorAll('[data-input="auto"]');
+            inputs.forEach(input => {
+                if (input.dataset.useredits === 'true') {
+                    this.change(input);
+                }
+            });
+            const response = await Repository.getData({courseid: this.courseid, showrfc: 0});
+            // Validate the response, the response.date should be a string that can be parsed to a JSON object.
+            if (response.modules.length > 0) {
+                const modules = this.parseModules(response.modules);
+                State.setValue('modulesstatic', modules);
             }
         });
         // Listen to the arrow down and up keys to navigate to the next or previous row.
@@ -189,11 +219,6 @@ class Manager {
         });
     }
 
-    async getDatagrid() {
-        await this.getTableData();
-        await this.getTableConfig();
-    }
-
     /**
      * Get the table configuration.
      * @return {Promise} The promise.
@@ -213,6 +238,10 @@ class Manager {
             // Validate the response, the response.date should be a string that can be parsed to a JSON object.
             if (response.modules.length > 0) {
                 const modules = this.parseModules(response.modules);
+                const columns = modules[0].columns;
+                // Now clone this columns array to the state.
+
+                State.setValue('columns', [...columns]);
                 State.setValue('modules', modules);
                 State.setValue('rfcs', response.rfcs);
             } else {
@@ -366,7 +395,6 @@ class Manager {
             if (!response) {
                 Notification.exception('No response from the server');
             } else {
-                window.console.log(response);
                 if (response.data == 'newrfc') {
                     this.getTableData();
                 }
@@ -490,22 +518,16 @@ class Manager {
     async deleteRow(btn) {
         const modules = State.getValue('modules');
         const rowid = btn.closest('[data-row]').dataset.index;
-        const moduleid = btn.closest('[data-region="module"]').dataset.id;
-        const module = modules.find(m => m.moduleid == moduleid);
+        const moduleid = parseInt(btn.closest('[data-region="module"]').dataset.id);
+        const modulefound = modules.find(m => m.moduleid == moduleid);
+
         let response = false;
-        if (module.rows.length > 1) {
+        if (modulefound.rows.length > 0) {
             response = await Repository.deleteRow({courseid: this.courseid, rowid: rowid});
         }
-        return new Promise((resolve) => {
-            if (response) {
-                const rows = module.rows;
-                const index = Array.from(btn.closest('[data-region="rows"]').children).indexOf(btn.closest('[data-row]'));
-                rows.splice(index, 1);
-                this.resetRowSortorder();
-                State.setValue('modules', modules);
-            }
-            resolve(rowid);
-        });
+        if (response) {
+            this.getTableData();
+        }
     }
 
     /**
@@ -552,14 +574,22 @@ class Manager {
         columns.forEach(column => {
             const columnid = column.dataset.columnid;
             let sum = 0;
+            let containsRfc = false;
             const inputs = form.querySelectorAll(`[data-columnid="${columnid}"] input`);
             inputs.forEach(input => {
                 if (input.value) {
                     sum += parseFloat(input.value);
+                    if (input.dataset.rfcstate === '1') {
+                        containsRfc = true;
+                    }
                 }
             });
             sum = sum ? sum : '';
             column.innerHTML = sum;
+            if (containsRfc) {
+                column.classList.add('rfc');
+                column.innerHTML = sum ? sum : 0;
+            }
         });
     }
 
@@ -584,22 +614,14 @@ class Manager {
     /**
      * Delete a module.
      * @param {object} btn The button that was clicked.
-     * @return {Promise} The promise.
      * @return {void}
      */
     async deleteModule(btn) {
-        const modules = State.getValue('modules');
         const moduleid = btn.closest('[data-region="module"]').dataset.id;
-        const module = modules.find(m => m.moduleid == moduleid);
         const response = await Repository.deleteModule({courseid: this.courseid, moduleid: moduleid});
-        return new Promise((resolve) => {
-            if (response) {
-                const index = modules.indexOf(module);
-                modules.splice(index, 1);
-                State.setValue('modules', modules);
-            }
-            resolve(moduleid);
-        });
+        if (response) {
+            this.getTableData();
+        }
     }
 
     /**
@@ -930,18 +952,12 @@ class Manager {
      */
     async augmentTable(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        // Find all cells with data-action="showchanges"
-        // Find the input in this cell
-        // Disable the input by changing data-input="auto" to data-input="rfc"
-        // Find the changesdiv in this cell with [data-changes][data-userid="userid"]
-        // get the new value attribute from changesdiv [data-newvalue="newvalue"]
-        // Temporarly set the input value for the cell to the new value. Store the old value in a data-attribute.
+
         const form = document.querySelector('[data-region="app"]');
         const resetRfc = form.querySelector('[data-action="resetrfc"]');
         this.resetRfc(resetRfc);
         resetRfc.classList.remove('d-none');
         const changeCells = form.querySelectorAll('[data-action="showchanges"]');
-        window.console.log(changeCells);
         changeCells.forEach(cell => {
             const input = cell.querySelector('[data-input="auto"]');
             if (input) {
@@ -953,6 +969,7 @@ class Manager {
                 const newvalue = changesdiv.dataset.newvalue;
                 input.dataset.oldvalue = input.value;
                 input.value = newvalue;
+                input.dataset.rfcstate = '1';
                 cell.classList.add('rfc');
             }
         });
@@ -972,6 +989,7 @@ class Manager {
             if (input) {
                 input.dataset.input = 'auto';
                 input.value = input.dataset.oldvalue;
+                input.dataset.rfcstate = '0';
                 cell.classList.remove('rfc');
             }
         });
