@@ -39,7 +39,7 @@ class formfield implements renderable, templatable {
     public function export_for_template(renderer_base $output): stdClass {
         global $PAGE, $CFG;
         $data = new stdClass();
-        $data->courseid = $PAGE->context->instanceid;
+        $data->courseid = $PAGE->course->id;
         $data->debug = $CFG->debugdisplay;
         $data->disciplines = programme::get_disciplines();
         $data->competences = programme::get_competencies();
