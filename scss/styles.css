@@ -323,14 +323,13 @@
       display: none; }
   .modal .modal-customfield_sprogramme_editor .close {
     margin-left: -0.5px; }
-  .modal .modal-customfield_sprogramme_editor .uploadbutton {
+  .modal .modal-customfield_sprogramme_editor .saveconfirm {
     margin-left: auto; }
   .modal .modal-customfield_sprogramme_editor .downloadbutton .icon,
   .modal .modal-customfield_sprogramme_editor .closebutton .icon,
   .modal .modal-customfield_sprogramme_editor .uploadbutton .icon {
     color: #9f9f9f; }
   .modal .modal-customfield_sprogramme_editor .saveconfirm {
-    margin-left: 0rem;
     margin-top: -1.5px; }
     .modal .modal-customfield_sprogramme_editor .saveconfirm .savingicon .icon {
       color: var(--warning); }

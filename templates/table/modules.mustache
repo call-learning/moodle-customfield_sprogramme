@@ -385,11 +385,11 @@
     }
 }}
 {{#modules}}
-    <div class="modules mb-5" data-region="module" data-id="{{moduleid}}">
+    <div class="{{#deleted}}d-none{{/deleted}} modules mb-5" data-region="module" data-id="{{moduleid}}">
         <div class="d-flex mb-1 p-1 align-items-center">
             {{#editor}}
                 <div class="h5 mb-0 d-flex align-items-center">
-                    <input class="form-control module-input" data-region="modulename" type="text" value="{{{modulename}}}"/>
+                    <input name="input-modname-{{moduleid}}" class="form-control module-input" data-region="modulename" type="text" value="{{{modulename}}}"/>
                 </div>
                 <button class="btn btn-icon icon-no-margin mr-1 ml-1" data-id="{{moduleid}}" data-action="deletemodule">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
             {{/editor}}

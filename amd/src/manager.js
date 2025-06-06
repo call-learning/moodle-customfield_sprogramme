@@ -41,6 +41,11 @@ class Manager {
     rowNumber = 0;
 
     /**
+     * Module number.
+     */
+    moduleNumber = 0;
+
+    /**
      * The courseid.
      * @type {Number}
      */
@@ -97,16 +102,6 @@ class Manager {
                     td.classList.remove('active');
                 });
             }
-            // Remove the useredits data attribute from all inputs in the form.
-            const inputs = form.querySelectorAll('[data-input="auto"]');
-            inputs.forEach(input => {
-                input.dataset.useredits = 'false';
-            });
-            const input = e.target.closest('[data-input="auto"]');
-            // Set the input dataattribute to editing
-            if (input) {
-                input.dataset.useredits = 'true';
-            }
         });
         // Listen to all changes in the table.
         form.addEventListener('change', (e) => {
@@ -119,22 +114,7 @@ class Manager {
                 this.changeModule(modulename);
             }
         });
-        // Listen to the global saveprogrammconfirm event,
-        // if triggered save the data for the inputs that have useredits set to true.
-        document.addEventListener('saveprogrammconfirm', async() => {
-            const inputs = form.querySelectorAll('[data-input="auto"]');
-            inputs.forEach(input => {
-                if (input.dataset.useredits === 'true') {
-                    this.change(input);
-                }
-            });
-            const response = await Repository.getData({courseid: this.courseid, showrfc: 0});
-            // Validate the response, the response.date should be a string that can be parsed to a JSON object.
-            if (response.modules.length > 0) {
-                const modules = this.parseModules(response.modules);
-                State.setValue('modulesstatic', modules);
-            }
-        });
+
         // Listen to the arrow down and up keys to navigate to the next or previous row.
         form.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -187,15 +167,7 @@ class Manager {
             const rowId = dragging.dataset.index;
             const prevRowId = dragging.previousElementSibling ? dragging.previousElementSibling.dataset.index : 0;
             const moduleId = dragging.closest('[data-region="module"]').dataset.id;
-            Repository.updateSortOrder(
-                {
-                    type: 'row',
-                    courseid: this.courseid,
-                    moduleid: moduleId,
-                    id: rowId,
-                    previd: prevRowId
-                }
-            );
+            this.moveRow(parseInt(moduleId), parseInt(rowId), prevRowId ? parseInt(prevRowId) : null);
             dragging = null;
             e.preventDefault(); // Voorkom standaard drop-actie
         });
@@ -220,15 +192,6 @@ class Manager {
     }
 
     /**
-     * Get the table configuration.
-     * @return {Promise} The promise.
-     */
-    async getTableConfig() {
-        const response = await Repository.getColumns({courseid: this.courseid});
-        await State.setValue('columns', response.columns);
-    }
-
-    /**
      * Get the table data.
      * @return {void}
      */
@@ -245,8 +208,7 @@ class Manager {
                 State.setValue('modules', modules);
                 State.setValue('rfcs', response.rfcs);
             } else {
-                const moduleid = await this.createModule('Module 1', 0);
-                await this.createRow(moduleid, 0, 0);
+                this.addModule();
                 this.getTableData();
             }
         } catch (error) {
@@ -294,6 +256,7 @@ class Manager {
             'rows': {
                 'id': 'id',
                 'sortorder': 'sortorder',
+                'deleted': 'false',
                 'cells': {
                     'type': 'type',
                     'column': 'column',
@@ -327,6 +290,34 @@ class Manager {
         }
     }
 
+    /**
+     * Clean a single cell.
+     * @param {object} cell The cell to clean.
+     * @param {Array} cellKeys The keys to keep in the cell.
+     */
+    cleanCell(cell, cellKeys) {
+        const cleaned = {};
+        this.checkCellValue(cell);
+        cellKeys.forEach(key => {
+            cleaned[key] = cell[key];
+        });
+        return cleaned;
+    }
+
+    /**
+     * Clean a list of objects based on allowed keys.
+     * @param {Array} items The items to clean.
+     * @param {Array} allowedKeys The keys to keep in the items.
+     */
+    cleanList(items, allowedKeys) {
+        return items.map(item => {
+            const cleaned = {};
+            allowedKeys.forEach(key => {
+                cleaned[key] = item[key];
+            });
+            return cleaned;
+        });
+    }
 
     /**
      * Clean the Modules array.
@@ -334,50 +325,28 @@ class Manager {
      * @return {Array} The cleaned modules.
      */
     cleanModules(modules) {
-        const cleanedModules = [];
-        modules.forEach(module => {
-            const rows = module.rows;
-            const rowObject = this.getRowObject();
-            const cleanedRows = rows.map(row => {
-                const cleanedRow = {};
-                Object.keys(rowObject.rows).forEach(key => {
-                    cleanedRow[key] = row[key];
-                });
-                // Clean the cells.
-                cleanedRow.cells = row.cells.map(cell => {
-                    const cleanedCell = {};
-                    this.checkCellValue(cell);
-                    Object.keys(rowObject.rows.cells).forEach(key => {
-                        cleanedCell[key] = cell[key];
-                    });
-                    return cleanedCell;
-                });
-                // Clean the disciplines.
-                cleanedRow.disciplines = row.disciplines.map(discipline => {
-                    const cleanedDiscipline = {};
-                    Object.keys(rowObject.rows.disciplines).forEach(key => {
-                        cleanedDiscipline[key] = discipline[key];
-                    });
-                    return cleanedDiscipline;
-                });
-                // Clean the competencies.
-                cleanedRow.competencies = row.competencies.map(competency => {
-                    const cleanedCompetency = {};
-                    Object.keys(rowObject.rows.competencies).forEach(key => {
-                        cleanedCompetency[key] = competency[key];
-                    });
-                    return cleanedCompetency;
-                });
-                return cleanedRow;
-            });
-            const cleanedModule = {};
-            cleanedModule.id = module.moduleid;
-            cleanedModule.sortorder = module.modulesortorder;
-            cleanedModule.name = module.modulename;
-            cleanedModule.rows = cleanedRows;
-            cleanedModules.push(cleanedModule);
+        const rowSpec = this.getRowObject().rows;
+
+        return modules.map(module => {
+            const cleanedModule = {
+                id: module.moduleid,
+                name: module.modulename,
+                sortorder: module.modulesortorder,
+                deleted: module.deleted || false,
+                rows: module.rows.map(row => {
+                    const cleanedRow = {
+                        id: row.id,
+                        sortorder: row.sortorder,
+                        deleted: row.deleted || false,
+                        cells: this.cleanList(row.cells, Object.keys(rowSpec.cells)),
+                        disciplines: this.cleanList(row.disciplines, Object.keys(rowSpec.disciplines)),
+                        competencies: this.cleanList(row.competencies, Object.keys(rowSpec.competencies)),
+                    };
+                    return cleanedRow;
+                }),
+            };
+            return cleanedModule;
         });
-        return cleanedModules;
     }
 
     /**
@@ -395,17 +364,16 @@ class Manager {
             if (!response) {
                 Notification.exception('No response from the server');
             } else {
-                if (response.data == 'newrfc') {
-                    this.getTableData();
-                }
                 if (response.data == 'rfclocked') {
                     warnings.innerHTML = await getString('rfclocked', 'customfield_sprogramme');
                     warnings.classList.remove('d-none');
-                    this.getTableData();
                 } else {
                     warnings.innerHTML = '';
                     warnings.classList.add('d-none');
                 }
+                this.getTableData();
+                const modulesStatic = State.getValue('modules');
+                State.setValue('modulesstatic', modulesStatic);
             }
             setTimeout(() => {
                 saveConfirmButton.classList.remove('saving');
@@ -470,44 +438,37 @@ class Manager {
             rowid = rows[rows.length - 1].id;
         }
 
-        const row = await this.createRow(moduleid, rowid);
+        const row = await this.createRow();
         if (!row) {
             return;
         }
         // Inject the row after the clicked row.
         rows.splice(rows.indexOf(rows.find(r => r.id == rowid)) + 1, 0, row);
+        this.resetRowSortorder();
         State.setValue('modules', modules);
     }
 
     /**
      * Create a new row.
      *
-     * @param {Number} moduleid The moduleid.
-     * @param {Number} prevrowid The previous rowid.
-     * @return {Promise} The promise.
+     * @return {Object} The row object.
      */
-    async createRow(moduleid, prevrowid) {
-        const rowid = await Repository.createRow({courseid: this.courseid, moduleid: moduleid, prevrowid: prevrowid});
-        return new Promise((resolve) => {
-            const row = {};
-            row.id = rowid;
-            const columns = State.getValue('columns');
-            if (columns === undefined) {
-                resolve();
-                return;
-            }
-            // The copy the columns to the row and call them cells.
-            row.cells = columns.map(column => structuredClone(column));
-            // Set the correct types for the cells.
-            row.cells.forEach(cell => {
-                cell.edit = true;
-                cell.value = '';
-                cell[cell.type] = true;
-            });
-            row.disciplines = [];
-            row.competencies = [];
-            resolve(row);
+     createRow() {
+
+        const row = {};
+        row.id = this.rowNumber - 1;
+        const columns = State.getValue('columns');
+        // The copy the columns to the row and call them cells.
+        row.cells = columns.map(column => structuredClone(column));
+        // Set the correct types for the cells.
+        row.cells.forEach(cell => {
+            cell.edit = true;
+            cell.value = '';
+            cell[cell.type] = true;
         });
+        row.disciplines = [];
+        row.competencies = [];
+        return row;
     }
 
     /**
@@ -517,16 +478,19 @@ class Manager {
      */
     async deleteRow(btn) {
         const modules = State.getValue('modules');
-        const rowid = btn.closest('[data-row]').dataset.index;
+        const rowid = parseInt(btn.closest('[data-row]').dataset.index);
         const moduleid = parseInt(btn.closest('[data-region="module"]').dataset.id);
         const modulefound = modules.find(m => m.moduleid == moduleid);
-
-        let response = false;
         if (modulefound.rows.length > 0) {
-            response = await Repository.deleteRow({courseid: this.courseid, rowid: rowid});
-        }
-        if (response) {
-            this.getTableData();
+            // Find the row in the module.
+            const rowIndex = modulefound.rows.findIndex(r => r.id == rowid);
+            if (rowIndex !== -1) {
+                // Add the deleted attribute to the row.
+                modulefound.rows[rowIndex].deleted = true;
+                State.setValue('modules', modules);
+            } else {
+                Notification.exception('Row not found');
+            }
         }
     }
 
@@ -561,7 +525,7 @@ class Manager {
             }
         });
         this.sumtotals();
-        this.setTableData();
+        // this.setTableData();
     }
 
     /**
@@ -608,7 +572,7 @@ class Manager {
                 module.modulename = name;
             }
         });
-        this.setTableData();
+        // this.setTableData();
     }
 
     /**
@@ -618,23 +582,21 @@ class Manager {
      */
     async deleteModule(btn) {
         const moduleid = btn.closest('[data-region="module"]').dataset.id;
-        const response = await Repository.deleteModule({courseid: this.courseid, moduleid: moduleid});
-        if (response) {
-            this.getTableData();
+        const modules = State.getValue('modules');
+        const moduleIndex = modules.findIndex(m => m.moduleid == moduleid);
+        if (moduleIndex !== -1) {
+            // Add the deleted attribute to the module.
+            modules[moduleIndex].deleted = true;
+            State.setValue('modules', modules);
         }
     }
 
     /**
      * Create a new module.
-     * @param {String} name The name.
-     * @param {Number} index The index.
-     * @return {Promise} The promise.
+     * @return {Integer} The module id.
      */
-    async createModule(name, index) {
-        const id = await Repository.createModule({name: name, courseid: this.courseid, sortorder: index});
-        return new Promise((resolve) => {
-            resolve(id);
-        });
+    async createModule() {
+        return this.moduleNumber--;
     }
 
     /**
@@ -643,8 +605,8 @@ class Manager {
      */
     async addModule() {
         const modules = State.getValue('modules');
-        const moduleid = await this.createModule(' ', 0);
-        const row = await this.createRow(moduleid, 0);
+        const moduleid = await this.createModule();
+        const row = this.createRow();
         const module = {
             moduleid: moduleid,
             modulename: ' ',
@@ -653,7 +615,6 @@ class Manager {
         modules.push(module);
         this.resetRowSortorder();
         State.setValue('modules', modules);
-        this.setTableData();
     }
 
     /**
@@ -668,6 +629,47 @@ class Manager {
         }, []);
         const row = rows.find(r => r.id == rowid);
         return row;
+    }
+
+    /**
+     * Move a row within a module to a new position, based on previd.
+     * @param {Number} moduleId The module to update.
+     * @param {Number} rowId The row to move.
+     * @param {Number|null} prevRowId The row after which the moved row should appear. Null means move to top.
+     */
+    moveRow(moduleId, rowId, prevRowId) {
+        const modules = State.getValue('modules');
+        const module = modules.find(m => m.moduleid === moduleId);
+        if (!module) {
+            return;
+        }
+
+        const rows = module.rows;
+        const rowIndex = rows.findIndex(r => r.id === rowId);
+        if (rowIndex === -1) {
+            return;
+        }
+
+        // Remove the row from its current position
+        const [rowToMove] = rows.splice(rowIndex, 1);
+
+        // Find index to insert after
+        let insertIndex = 0;
+        if (prevRowId !== null) {
+            const prevIndex = rows.findIndex(r => r.id === prevRowId);
+            insertIndex = prevIndex + 1;
+        }
+
+        // Insert the row
+        rows.splice(insertIndex, 0, rowToMove);
+
+        // Reset sortorders
+        rows.forEach((row, index) => {
+            row.sortorder = index + 1;
+        });
+
+        // Update the state
+        State.setValue('modules', modules);
     }
 
     /**
@@ -1078,7 +1080,6 @@ class Manager {
             await Templates.appendNodeContents(selectedcontainer, html, js);
         }
         this.disableFormInput(form);
-        this.setTableData();
     }
 
     /**
@@ -1138,7 +1139,6 @@ class Manager {
         container.removeChild(discipline);
         selectedcontainer.removeChild(selected);
         this.disableFormInput(form);
-        this.setTableData();
     }
 
     /**

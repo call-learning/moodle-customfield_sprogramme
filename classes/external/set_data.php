@@ -46,10 +46,12 @@ class set_data extends external_api {
                     'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
                     'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
                     'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                    'deleted' => new external_value(PARAM_BOOL, 'Deleted', VALUE_DEFAULT, false),
                     'rows' => new external_multiple_structure(
                         new external_single_structure([
                             'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
                             'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_OPTIONAL),
+                            'deleted' => new external_value(PARAM_BOOL, 'Deleted', VALUE_DEFAULT, false),
                             'cells' => new external_multiple_structure(
                                 new external_single_structure([
                                     'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),

@@ -18,6 +18,7 @@ namespace customfield_sprogramme\local\api;
 
 defined('MOODLE_INTERNAL') || die();
 
+use cache;
 use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\persistent\sprogramme_disc;
 use customfield_sprogramme\local\persistent\sprogramme_disclist;
@@ -476,6 +477,14 @@ class programme {
      * @return bool
      */
     public static function has_data(int $courseid): bool {
+        $cache = cache::make('customfield_sprogramme', 'programmedata');
+        if ($data = $cache->get($courseid)) {
+            if (is_array($data) && !empty($data) && isset($data[0]) && isset($data[0]['rows']) && !empty($data[0]['rows'])) {
+                return true;
+            } else {
+                return false;
+            }
+        }
         $modules = sprogramme_module::get_all_records_for_course($courseid);
         if (empty($modules)) {
             return false;
@@ -498,6 +507,11 @@ class programme {
      * @return array $data
      */
     public static function get_data(int $courseid, bool $showrfc = false, bool $showcompet = false, bool $showdisc = false): array {
+        $cache = cache::make('customfield_sprogramme', 'programmedata');
+        if ($data = $cache->get($courseid)) {
+            // Cache turned off, the capabilities ar not set per user when using the cache.
+            // return $data;
+        }
         $modules = sprogramme_module::get_all_records_for_course($courseid);
         $canaddrfc = self::can_add_rfc($courseid);
         $changerecords = $showrfc ? sprogramme_change::get_all_records_for_course($courseid, $canaddrfc) : [];
@@ -597,29 +611,79 @@ class programme {
             }, $data[0]['columns']);
         }
 
+        $cache->set($courseid, $data);
         return $data;
+    }
+
+    /**
+     * Get the column totals for a given course
+     * @param int $courseid
+     * @return array $totals
+     */
+    public static function get_column_totals(int $courseid): array {
+        $cache = cache::make('customfield_sprogramme', 'columntotals');
+        if ($data = $cache->get($courseid)) {
+            return $data;
+        }
+        $columns = self::get_column_structure($courseid);
+        $totals = [];
+        foreach ($columns as $column) {
+            if (isset($column['sum'])) {
+                $totals[$column['column']] = [
+                    'label' => $column['label'],
+                    'sum' => 0,
+                ];
+            }
+        }
+        $data = self::get_data($courseid);
+        if (isset($data[0]) && isset($data[0]['columns'])) {
+            foreach ($data[0]['columns'] as $column) {
+                if (isset($totals[$column['column']])) {
+                    $totals[$column['column']]['sum'] = $column['sum'];
+                }
+            }
+        }
+        $cache->set($courseid, $totals);
+        return $totals;
     }
 
     /**
      * Set the data.
      * @param int $courseid
      * @param array $data
-     * @param string $result The result of the operation
      */
     public static function set_records(int $courseid, array $data): string {
         $result = '';
+        $context = context_course::instance($courseid);
+        $editall = has_capability('customfield/sprogramme:editall', $context);
+        if ($editall) {
+            self::delete_flagged_records($courseid, $data);
+        }
         foreach ($data as $module) {
+            if ($module['deleted'] == true) {
+                continue; // Skip deleted modules.
+            }
             $moduleid = $module['id'];
             $rows = $module['rows'];
             $mod = sprogramme_module::get_record(['id' => $moduleid]);
+            if (!$mod) {
+                $mod = new sprogramme_module();
+                $mod->set('courseid', $courseid);
+            }
             $mod->set('name', $module['name']);
             $mod->set('sortorder', $module['sortorder']);
             $mod->save();
+            $moduleid = $mod->get('id');
             $records = sprogramme::get_all_records_for_module($moduleid);
             foreach ($rows as $row) {
+                if ($row['deleted'] == true) {
+                    continue; // Skip deleted rows.
+                }
                 $updated = false;
                 foreach ($records as $record) {
                     if ($record->get('id') == $row['id']) {
+                        $record->set('sortorder', $row['sortorder']);
+                        $record->save();
                         $update = self::update_record($record, $row, $courseid);
                         if ($update != '') {
                             $result = $update;
@@ -632,6 +696,12 @@ class programme {
                     $record->set('uc', $courseid);
                     $record->set('courseid', $courseid);
                     $record->set('moduleid', $moduleid);
+                    $record->set('sortorder', $row['sortorder']);
+                    foreach ($row['cells'] as $cell) {
+                        $record->set($cell['column'], null);
+                    }
+                    $record->save();
+                    $row['id'] = $record->get('id');
                     $update = self::update_record($record, $row, $courseid);
                     if ($update != '') {
                         $result = $update;
@@ -640,7 +710,40 @@ class programme {
             }
         }
         return $result;
+    }
 
+    /**
+     * Delete records
+     * Deletes the modules and rows that have the deleted flag set to true.
+     * @param int $courseid
+     * @param array $data
+     */
+    public static function delete_flagged_records(int $courseid, array $data) {
+        foreach ($data as $module) {
+            $moduleid = $module['id'];
+            // Delete the module.
+            if ($module['deleted'] == true) {
+                $mod = sprogramme_module::get_record(['id' => $moduleid]);
+                if ($mod) {
+                    $mod->delete();
+                    $records = sprogramme::get_all_records_for_module($moduleid);
+                    foreach ($records as $record) {
+                        $record->delete();
+                    }
+                    continue;
+                }
+            }
+            $rows = $module['rows'];
+            foreach ($rows as $row) {
+                // Delete the row.
+                if ($row['deleted'] == true) {
+                    $record = sprogramme::get_record(['id' => $row['id']]);
+                    if ($record) {
+                        $record->delete();
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -653,7 +756,6 @@ class programme {
     private static function update_record(sprogramme $record, array $row, int $courseid): string {
         $context = context_course::instance($courseid);
         $editall = has_capability('customfield/sprogramme:editall', $context);
-        $edit = has_capability('customfield/sprogramme:edit', $context);
         $columns = self::get_column_structure($courseid);
         $changes = false;
         $result = '';
@@ -669,7 +771,6 @@ class programme {
                     if ($cell['value'] == $currentvalue) {
                         continue;
                     }
-
                     // Filter the $columns array, find columns fields with the same group, then see if a value is set
                     // for this fiel in $record. If so, then set the value to null.
                     $group = $column['group'];
@@ -708,6 +809,8 @@ class programme {
         }
         if ($changes) {
             $record->save();
+            // Clear the cache for this course.
+            self::purge_cache($courseid);
         }
         self::set_disciplines($record, $row);
         self::set_competencies($record, $row);
@@ -852,6 +955,9 @@ class programme {
      */
     public static function delete_module($courseid, $moduleid): bool {
         $module = sprogramme_module::get_record(['id' => $moduleid]);
+        if (!$module) {
+            return false;
+        }
         if ($module->get('courseid') == $courseid) {
             // Delete all rows in this module.
             $records = sprogramme::get_all_records_for_module($moduleid);
@@ -863,6 +969,7 @@ class programme {
                 // Delete the module if there are no rows left.
                 $module->delete();
             }
+            self::purge_cache($courseid);
             return true;
         }
         return false;
@@ -896,7 +1003,8 @@ class programme {
             }
         }
         $record->save();
-        self::update_sort_order('row', $moduleid, $record->get('id'), $prevrowid);
+        self::update_sort_order('row', $courseid, $moduleid, $record->get('id'), $prevrowid);
+        self::purge_cache($courseid);
         return $record->get('id');
     }
 
@@ -921,9 +1029,11 @@ class programme {
                     $competency->delete();
                 }
                 $record->delete();
+                self::purge_cache($courseid);
                 return true;
             } else {
                 $result = self::record_change_request($courseid, $rowid, 'row', '', '', -1);
+                self::purge_cache($courseid);
                 if ($result == 'rfclocked') {
                     return false;
                 }
@@ -939,11 +1049,12 @@ class programme {
     /**
      * Update the sort order
      * @param string $type
+     * @param int $courseid
      * @param int $moduleid
      * @param int $id
      * @param int $previd
      */
-    public static function update_sort_order($type, $moduleid, $id, $previd): void {
+    public static function update_sort_order($type, $courseid, $moduleid, $id, $previd): void {
         if ($type == 'row') {
             $newrecord = sprogramme::get_record(['id' => $id]);
             // In case the row is moved to the top.
@@ -985,6 +1096,7 @@ class programme {
                     $record->save();
                 }
             }
+            self::purge_cache($courseid);
         }
     }
 
@@ -1252,5 +1364,16 @@ class programme {
             'modules' => $modules,
             'rfcs' => $rfcdata,
         ];
+    }
+
+    /**
+     * Purge the cache for a given course
+     * @param int $courseid
+     */
+    public static function purge_cache(int $courseid): void {
+        $cache = cache::make('customfield_sprogramme', 'programmedata');
+        $cache->delete($courseid);
+        $cache = cache::make('customfield_sprogramme', 'columntotals');
+        $cache->delete($courseid);
     }
 }

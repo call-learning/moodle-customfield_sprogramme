@@ -138,21 +138,21 @@
     <table>
 {{/mustacheonly}}
 {{#rows}}
-    <tr data-row data-index="{{id}}" draggable="true" class="{{#rowchanges}}hasrowchanges{{/rowchanges}}">
+    <tr data-row data-index="{{id}}" draggable="true" class="{{#deleted}}d-none{{/deleted}}{{#rowchanges}} hasrowchanges{{/rowchanges}}">
         {{#cells}}
             {{#editor}}
                 <td data-cell data-columnid="{{columnid}}"{{#changes}} data-action="showchanges"{{/changes}} class="{{#changes}}haschanges {{/changes}}{{^canedit}}readonly {{/canedit}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
                     {{#int}}
-                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}"/>
+                        <input name="input-{{column}}-{{columnid}}" class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}"/>
                     {{/int}}
                     {{#float}}
-                        <input class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}"/>
+                        <input name="input-{{column}}-{{columnid}}" class="programm-input" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}"/>
                     {{/float}}
                     {{#text}}
-                        <input class="programm-input" data-input="auto" maxlength="{{length}}" type="text" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}" />
+                        <input name="input-{{column}}-{{columnid}}" class="programm-input" data-input="auto" maxlength="{{length}}" type="text" value="{{{value}}}"{{^canedit}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/canedit}} placeholder="{{{sample_value}}}" />
                     {{/text}}
                     {{#select}}
-                        <select data-input="auto" class="programm-input">
+                        <select name="select-{{column}}-{{columnid}}" data-input="auto" class="programm-input">
                             {{#options}}
                                 <option value="{{{name}}}" {{#selected}}selected{{/selected}}>{{{name}}}</option>
                             {{/options}}

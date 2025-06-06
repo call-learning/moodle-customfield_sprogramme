@@ -70,7 +70,13 @@ class update_sort_order extends external_api {
         require_capability('customfield/sprogramme:edit', $context);
 
         $programme = new programme($courseid);
-        $programme->update_sort_order($params['type'], $params['moduleid'], $params['id'], $params['previd']);
+        $programme->update_sort_order(
+            $params['type'],
+            $params['courseid'],
+            $params['moduleid'],
+            $params['id'],
+            $params['previd']
+        );
         return true;
     }
 

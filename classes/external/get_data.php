@@ -158,6 +158,7 @@ class get_data extends external_api {
                                     'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
                                 ]), 'Option', VALUE_OPTIONAL
                             ),
+                            'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                         ])
                     ),
                 ])
