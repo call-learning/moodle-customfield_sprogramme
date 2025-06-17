@@ -61,8 +61,11 @@ class get_columns extends external_api {
         self::validate_context(context_course::instance($courseid));
 
         $columns = programme::get_column_structure($courseid);
+        $canedit = programme::can_edit($courseid);
         return [
             'columns' => $columns,
+            'canedit' => $canedit,
+
         ];
     }
 
@@ -91,14 +94,21 @@ class get_columns extends external_api {
                     'sample_value' => new external_value(PARAM_TEXT, 'Sample value', VALUE_REQUIRED),
                     'min' => new external_value(PARAM_INT, 'Min', VALUE_OPTIONAL),
                     'max' => new external_value(PARAM_INT, 'Max', VALUE_OPTIONAL),
+                    'sum' => new external_value(PARAM_FLOAT, 'Sum', VALUE_OPTIONAL),
+                    'hassum' => new external_value(PARAM_BOOL, 'Has sum', VALUE_OPTIONAL),
+                    'newsum' => new external_value(PARAM_FLOAT, 'New sum', VALUE_OPTIONAL),
+                    'hasnewsum' => new external_value(PARAM_BOOL, 'Has new sum', VALUE_OPTIONAL),
                     'options' => new external_multiple_structure(
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
                             'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
                         ]), 'Option', VALUE_OPTIONAL
                     ),
+                    'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
+
                 ])
-            )]
-        );
+            ),
+            'canedit' => new external_value(PARAM_BOOL, 'Can edit', VALUE_REQUIRED),
+        ]);
     }
 }

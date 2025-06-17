@@ -1,0 +1,51 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template customfield_sprogramme/table/editbuttons
+
+    TODO describe template editbuttons
+
+    Example context (json):
+    {
+    }
+}}
+{{#editbuttons}}
+    {{#canedit}}
+        <div class="editoptions saveconfirm">
+            <button class="btn btn-primary" data-action="saveconfirm">
+                <span class="defaulticon">{{#pix}}i/item, core, {{#str}}save{{/str}}{{/pix}}</span>
+                <span class="savingicon">{{#pix}}i/item, core, {{#str}}saving, customfield_sprogramme{{/str}}{{/pix}}</span>
+                {{#str}}save{{/str}}
+            </button>
+        </div>
+    {{/canedit}}
+    <div class="uploadbutton icon-no-margin ml-2">
+        <button class="btn btn-icon" data-action="programme-upload-form" data-courseid="{{courseid}}">
+            {{#pix}}i/upload, core, {{#str}}upload{{/str}}{{/pix}}
+        </button>
+    </div>
+    <div class="downloadbutton icon-no-margin">
+        <button class="btn btn-icon" data-action="downloadcsv" data-courseid="{{courseid}}">
+            {{#pix}}t/download, core, {{#str}}download{{/str}}{{/pix}}
+        </button>
+    </div>
+    <div class="closebutton icon-no-margin">
+        <button class="btn btn-icon" data-action="closeform">
+            {{#pix}}e/cancel, core, {{#str}}close, admin{{/str}}{{/pix}}
+        </button>
+    </div>
+{{/editbuttons}}

@@ -53,8 +53,10 @@ class programme implements renderable, templatable {
     public function export_for_template(renderer_base $output): array {
         global $CFG;
         $modules = programme_api::get_data($this->courseid);
+        $columns = programme_api::get_column_structure($this->courseid);
         $data = [
             'modulesstatic' => $modules,
+            'columns' => $columns,
             'cssurl' => new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]),
         ];
         return $data;

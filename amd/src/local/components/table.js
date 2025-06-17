@@ -24,8 +24,6 @@
 import State from 'customfield_sprogramme/local/state';
 import Templates from 'core/templates';
 
-
-
 /**
  * Define the user navigation.
  * @param {String} type The type.
@@ -61,4 +59,5 @@ const stateTemplate = (type, templatename = '', root = 'app') => {
 stateTemplate('columns', 'columnsheader');
 stateTemplate('modules');
 stateTemplate('modulesstatic', '', 'static');
-stateTemplate('rfcs');
+stateTemplate('rfc');
+stateTemplate('editbuttons', '', 'modalheader');

@@ -26,6 +26,7 @@
  * Classes can subscribe to this class to get updates.
  */
 class State {
+
     /**
      * Constructor.
      */
@@ -46,6 +47,14 @@ class State {
             this.debug();
             resolve();
         });
+    }
+
+    /**
+     * Return the current state instance.
+     * @return {State} The state instance.
+     */
+    getInstance() {
+        return this.data;
     }
 
     /**

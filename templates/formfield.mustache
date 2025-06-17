@@ -38,20 +38,21 @@
 {{#canedit}}
     <div class="d-none">
         <div class="customfield-sprogramme" data-region="app">
-            <div data-region="rfcs">
+            <div data-region="rfc">
             </div>
-            <div class="test" data-region="columns">
+            <div data-region="columns">
             </div>
             <div data-region="modules">
             </div>
         </div>
-        <div data-region="disciplineform-container">
-            {{> customfield_sprogramme/disciplineform}}
+        <div data-region="modalheader">
+            <div class="editbuttons" data-region="editbuttons">
+            </div>
         </div>
     </div>
     {{#js}}
-    require(['customfield_sprogramme/formfield'], function(formfield) {
-        formfield.init();
+    require(['customfield_sprogramme/programme_actions'], function(action) {
+        action.init();
     });
     {{/js}}
 {{/canedit}}

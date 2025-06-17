@@ -27,17 +27,14 @@
     <div class="changesboxcorner">
     </div>
     <div class="changecontent">
+        <div class="changeheader d-flex justify-content-end">
+            <button type="button" class="btn btn-icon icon-no-margin" data-action="closechanges" aria-label="{{#str}}close, admin{{/str}}">
+                {{#pix}} i/window_close, core, {{#str}} close, admin {{/str }} {{/pix}}
+            </button>
+        </div>
         <div class="change">
             <span class="oldvalue">{{{oldvalue}}}</span>
             <span class="newvalue">{{{newvalue}}}</span>
-        </div>
-        <div class="infogroup">
-            <div class="requestedby">
-                {{#userinfo}}
-                    <span class="fullname">{{{fullname}}}</span>
-                {{/userinfo}}
-                <span class="date">{{#userdate}} {{timemodified}}, {{#str}} strftimedatetimeshort, core_langconfig {{/str}} {{/userdate}}</span>
-            </div>
         </div>
     </div>
 </div>

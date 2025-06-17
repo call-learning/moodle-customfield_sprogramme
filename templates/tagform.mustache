@@ -1,0 +1,79 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template customfield_sprogramme/tagform
+
+    TODO describe template tagform
+
+    Example context (json):
+    {
+        "rowname": "Row 1"
+    }
+}}
+<div class="tag-form" data-region="tagform" data-type="{{tagtype}}" data-rowid="{{rowid}}">
+    <div class="formarrow"></div>
+    <input type="hidden" id="tag-id" value="">
+    <input type="hidden" id="lastids" value="">
+    <div class="d-flex icon-no-margin">
+        <h5 data-region="rownumber">{{rowname}}</h5>
+        <button class="btn btn-secondary ml-auto mb-2 btn-sm" data-action="closetagform">
+            {{#pix}}e/cancel, core{{/pix}}
+            <span class="sr-only">{{#str}}close, admin{{/str}}</span>
+        </button>
+    </div>
+    <div class="form-group d-flex mb-0">
+        <label for="tag-name" class="sr-only">{{#str}}tags, customfield_sprogramme{{/str}}</label>
+        <div class="col-6 p-0">
+            <input type="search" class="form-control" id="tag-name" {{#hasmaxtags}}disabled{{/hasmaxtags}} placeholder="{{#str}}search{{/str}}" >
+        </div>
+        <div class="col-4 p-0">
+            <input type="number" class="form-control" id="tag-value" {{#hasmaxtags}}disabled{{/hasmaxtags}} placeholder="{{#str}}value, customfield_sprogramme{{/str}}" max="100" min="0">
+        </div>
+        <div class="col-2 p-0">
+            <button class="btn btn-secondary" id="tag-confirm" data-action="tag-confirm" {{#hasmaxtags}}disabled{{/hasmaxtags}}>
+                {{#str}}add{{/str}}
+            </button>
+        </div>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-12 p-0">
+            <div data-region="warnings" class="text-danger">{{#hasmaxtags}}{{#str}}maxdisciplines, customfield_sprogramme{{/str}}{{/hasmaxtags}}</div>
+        </div>
+    </div>
+    <hr class="mb-1">
+    <div data-region="selected-tags" class="d-flex flex-wrap">
+    {{#settags}}
+        {{> customfield_sprogramme/table/tag }}
+    {{/settags}}
+    </div>
+    <hr class="mt-1">
+    <div class="list-group tag-list" data-list="data-tags">
+        {{#taglist}}
+            <div class="list-group-item py-1 px-2 bg-light">
+                <div class="strong">{{name}}</div>
+            </div>
+            {{#items}}
+                <a href="#" class="list-group-item list-group-item-action p-2" data-option data-action="selecttag" data-id="{{uniqueid}}">{{name}}</a>
+            {{/items}}
+        {{/taglist}}
+    </div>
+</div>
+{{#js}}
+require(['customfield_sprogramme/tagform'], (tagForm) => {
+    tagForm.init();
+});
+{{/js}}

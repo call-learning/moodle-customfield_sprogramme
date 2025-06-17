@@ -33,15 +33,13 @@ class History {
 
     /**
      * Constructor.
-     * @param {HTMLElement} element The element.
+     * @param {Int} rfcid The rfcid.
      * @param {Int} courseid The courseid.
-     * @param {Int} adminid The adminid.
      * @return {void}
      */
-    constructor(element, courseid, adminid) {
-        this.element = element;
+    constructor(rfcid, courseid) {
+        this.rfcid = rfcid;
         this.courseid = courseid;
-        this.adminid = adminid;
         this.getProgrammeHistory();
     }
 
@@ -50,30 +48,66 @@ class History {
      */
     async getProgrammeHistory() {
         const context = {
+            rfcid: this.rfcid,
             courseid: this.courseid,
-            adminid: this.adminid,
         };
         try {
-            const data = await Repository.getProgrammeHistory(context);
-            if (data.length === 0) {
+            const response = await Repository.getProgrammeHistory(context);
+            if (response.length === 0) {
                 State.setValue('history', []);
             }
-            State.setValue('history', data);
+            const history = {
+                'modules': this.parseModules(response),
+                'columns': response.columns,
+                'rfcs': response.rfcs,
+            };
+            State.setValue('history', history);
         } catch (error) {
             Notification.exception(error);
         }
+    }
+
+    /**
+     * Parse the response, add the correct column properties to each cell.
+     * @param {Array} response The response.
+     * @return {Array} The parsed rows.
+     */
+    parseModules(response) {
+        response.modules.forEach(mod => {
+            mod.rows.map(row => {
+                row.cells = row.cells.map(cell => {
+                    const column = response.columns.find(column => column.column == cell.column);
+                    // Clone the column properties to the cell but keep the cell properties.
+                    cell = Object.assign({}, cell, column);
+                    if (cell.type === 'select') {
+                        // Clone the options array to avoid shared references
+                        cell.options = cell.options.map(option => {
+                            const clonedOption = Object.assign({}, option);
+                            if (clonedOption.name == cell.value) {
+                                clonedOption.selected = true;
+                            }
+                            return clonedOption;
+                        });
+                    }
+                    cell.edit = true;
+                    cell.changed = cell.value !== cell.oldvalue;
+                    return cell;
+                });
+                return row;
+            });
+        });
+        return response.modules;
     }
 }
 
 /*
  * Initialise
  *
- * @param {HTMLElement} element The element.
+ * @param {Int} rfcid The rfcid.
  * @param {Int} courseid The courseid.
- * @
  */
-const init = (element, courseid, adminid) => {
-    new History(element, courseid, adminid);
+const init = (rfcid, courseid) => {
+    new History(rfcid, courseid);
 };
 
 export default {

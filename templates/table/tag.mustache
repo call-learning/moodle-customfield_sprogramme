@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template customfield_sprogramme/table/discipline
+    @template customfield_sprogramme/table/tag
 
-    TODO describe template discipline
+    TODO describe template tag
 
     Example context (json):
     {
@@ -26,10 +26,10 @@
         "percentage": 23
     }
 }}
-<div data-region="discipline" data-action="loaddiscipline" data-id="{{id}}" data-name="{{{name}}}" data-percentage="{{percentage}}" class="badge badge-secondary">
+<div data-region="tag" data-action="loadtag" data-id="{{id}}" data-name="{{{name}}}" data-percentage="{{percentage}}" class="badge badge-secondary">
     <span class="name">{{{name}}}</span>
     <span class="percentage">{{{percentage}}}</span>
-    <button class="btn btn-icon icon-no-margin" data-id="{{id}}" data-action="removedisc">
+    <button class="btn btn-icon icon-no-margin" data-id="{{id}}" data-action="removetag">
         {{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}
     </button>
 </div>

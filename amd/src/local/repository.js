@@ -82,91 +82,6 @@ class Repository {
     }
 
     /**
-     * Create a new row.
-     * @param {Object} args The arguments.
-     * @return {Promise} The promise.
-     */
-    createRow(args) {
-        const request = {
-            methodname: 'customfield_sprogramme_create_row',
-            args: args
-        };
-
-        let promise = Ajax.call([request])[0]
-            .fail(Notification.exception);
-
-        return promise;
-    }
-
-    /**
-     * Create a new module.
-     * @param {Object} args The arguments.
-     * @return {Promise} The promise.
-     */
-    createModule(args) {
-        const request = {
-            methodname: 'customfield_sprogramme_create_module',
-            args: args
-        };
-
-        let promise = Ajax.call([request])[0]
-            .fail(Notification.exception);
-
-        return promise;
-    }
-
-    /**
-     * Delete a module.
-     * @param {Object} args The arguments.
-     * @return {Promise} The promise.
-     */
-    deleteModule(args) {
-        const request = {
-            methodname: 'customfield_sprogramme_delete_module',
-            args: args
-        };
-
-        let promise = Ajax.call([request])[0]
-            .fail(Notification.exception);
-
-        return promise;
-    }
-
-    /**
-     * Delete a row.
-     * @param {Object} args The arguments.
-     * @return {Promise} The promise.
-     */
-    deleteRow(args) {
-        const request = {
-            methodname: 'customfield_sprogramme_delete_row',
-            args: args
-        };
-
-        let promise = Ajax.call([request])[0]
-            .fail(Notification.exception);
-
-        return promise;
-    }
-
-    /**
-     * Update the sort order.
-     * @param {Object} args The arguments.
-     * @return {Promise} The promise.
-     */
-    updateSortOrder(args) {
-        const request = {
-            methodname: 'customfield_sprogramme_update_sort_order',
-            args: args
-        };
-
-        let promise = Ajax.call([request])[0]
-            .fail(Notification.exception);
-
-        return promise;
-    }
-
-    /**
      * Get the CSV data for download.
      * @param {Object} args The arguments.
      * @return {Promise} The promise.
@@ -274,6 +189,22 @@ class Repository {
         const request = {
             methodname: 'customfield_sprogramme_get_programme_history',
             args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+
+    /**
+     * Get the tags.
+     * @return {Promise} The promise.
+     */
+    getTags() {
+        const request = {
+            methodname: 'customfield_sprogramme_get_tags',
+            args: {}
         };
 
         let promise = Ajax.call([request])[0]

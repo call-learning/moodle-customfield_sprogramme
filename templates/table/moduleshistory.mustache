@@ -33,21 +33,19 @@
         </div>
     {{/rfcs}}
 </div>
-{{#modulesstatic.0}}
-    <table class="programm-table editor toprow">
-        <tr>
-            {{#columns}}
-                <th class="{{field}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
-                    <div class="d-flex sumcontainer">
-                        <span class="newsum {{^hasnewsum}}d-none{{/hasnewsum}}{{#hasnewsum}}ml-1{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>
-                        <span class="sum{{#hasnewsum}} strikethrough{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>
-                    </div>
-                </th>
-            {{/columns}}
-        </tr>
-    </table>
-{{/modulesstatic.0}}
-{{#modulesstatic}}
+<table class="programm-table editor toprow">
+    <tr>
+        {{#columns}}
+            <th class="{{field}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
+                <div class="d-flex sumcontainer">
+                    <span class="newsum {{^hasnewsum}}d-none{{/hasnewsum}}{{#hasnewsum}}ml-1{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>
+                    <span class="sum{{#hasnewsum}} strikethrough{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>
+                </div>
+            </th>
+        {{/columns}}
+    </tr>
+</table>
+{{#modules}}
     <div class="modules mb-5" data-region="module" data-id="{{moduleid}}">
         <div class="d-flex mb-1 p-1 align-items-center">
             <h4 class="mb-0">{{{modulename}}}</h4>
@@ -60,20 +58,20 @@
             </thead>
             <tbody data-region="rows">
                 {{#rows}}
-                    <tr data-row >
+                    <tr>
                         {{#cells}}
                             {{#visible}}
-                                <td class="{{type}}">
-                                    {{#changes}}
-                                        <div class="change">
-                                            <span class="oldvalue">{{{oldvalue}}}</span>
-                                            <span class="newvalue">{{{newvalue}}}</span>
-                                        </div>
-                                    {{/changes}}
-                                    {{^changes}}
-                                        {{{value}}}
-                                    {{/changes}}
-                                </td>
+                            <td class="{{#changed}}haschanges {{/changed}}{{type}}">
+                                {{#changes}}
+                                    <div class="change">
+                                        <span class="oldvalue">{{{oldvalue}}}</span>
+                                        <span class="newvalue">{{{newvalue}}}</span>
+                                    </div>
+                                {{/changes}}
+                                {{^changes}}
+                                    {{{value}}}
+                                {{/changes}}
+                            </td>
                             {{/visible}}
                         {{/cells}}
                     </tr>
@@ -81,4 +79,4 @@
             </tbody>
         </table>
     </div>
-{{/modulesstatic}}
+{{/modules}}

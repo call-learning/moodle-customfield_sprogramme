@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template customfield_sprogramme/table/rfcs
+    @template customfield_sprogramme/table/rfc
 
     A dropdown button for each RFC in the table.
     The button shows the RFC name, the dropdown menu show options "Accept" and "Reject", Augment table, and the date of the RFC.
@@ -30,7 +30,7 @@
     }
 }}
 <div class="d-flex align-items-start">
-    {{#rfcs}}
+    {{#rfc}}
         <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.userid}}">
             <div class="rfcinfo">
                 {{#issubmitted}}
@@ -64,7 +64,7 @@
                 </a>
             {{/cansubmit}}
         </div>
-    {{/rfcs}}
+    {{/rfc}}
 
     <button class="btn btn-sm btn-info d-none ml-1" data-action="resetrfc">
         {{#str}}resetrfc, customfield_sprogramme{{/str}}

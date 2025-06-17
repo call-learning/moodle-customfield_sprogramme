@@ -26,7 +26,7 @@
 <table class="programm-table editor toprow">
     <tr>
         {{#columns}}
-            <th class="{{field}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
+            <th class="{{field}}{{#changed}} haschanges{{/changed}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
                 <div class="d-flex sumcontainer">
                     <span class="sum{{#hasnewsum}} strikethrough{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>
                     <span class="newsum {{^hasnewsum}}d-none{{/hasnewsum}}{{#hasnewsum}}ml-1{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>

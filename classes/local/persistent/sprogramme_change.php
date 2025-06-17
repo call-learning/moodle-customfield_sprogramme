@@ -16,12 +16,8 @@
 
 namespace customfield_sprogramme\local\persistent;
 
-use context_course;
 use core\persistent;
 use lang_string;
-use user_picture;
-use core_user;
-use moodle_exception;
 
 /**
  * Class sprogramme_comp
@@ -34,33 +30,56 @@ class sprogramme_change extends persistent {
     /**
      * Current table
      */
-    const TABLE = 'customfield_sprogramme_changes';
+    const TABLE = 'customfield_sprogramme_change';
+
 
     /**
      * Comment types array
      */
-    const CHANGE_TYPES = [
-        self::RFC_REQUESTED => 'requested',
-        self::RFC_SUBMITTED => 'submitted',
-        self::RFC_ACCEPTED => 'accepted',
-        self::RFC_REJECTED => 'rejected',
+    const ACTTION_TYPES = [
+        self::FIELD_CHANGED => 'changed',
+        self::ROW_ADDED => 'rowadded',
+        self::ROW_REMOVED => 'rowremoved',
+        self::ROW_CHANGED => 'rowchanged',
+        self::MODULE_ADDED => 'moduleadded',
+        self::MODULE_REMOVED => 'moduleremoved',
+        self::MODULE_CHANGED => 'modulechanged',
     ];
+
     /**
-     * Request for change submitted.
+     * Field changed.
      */
-    const RFC_REQUESTED = 1;
+    const FIELD_CHANGED = 1;
+
     /**
-     * Request for change submitted.
+     * Row added.
      */
-    const RFC_SUBMITTED = 2;
+    const ROW_ADDED = 2;
+
     /**
-     * Request for change accepted.
+     * Row removed.
      */
-    const RFC_ACCEPTED = 3;
+    const ROW_REMOVED = 3;
+
     /**
-     * Request for change rejected.
+     * Row changed.
      */
-    const RFC_REJECTED = 4;
+    const ROW_CHANGED = 4;
+
+    /**
+     * Module added.
+     */
+    const MODULE_ADDED = 5; 
+
+    /**
+     * Module removed.
+     */
+    const MODULE_REMOVED = 6;
+
+    /**
+     * Module changed.
+     */
+    const MODULE_CHANGED = 7;
 
     /**
      * Return the custom definition of the properties of this model.
@@ -71,135 +90,34 @@ class sprogramme_change extends persistent {
      */
     protected static function define_properties() {
         return [
-            'courseid' => [
+            'rfcid' => [
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:courseid'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:rfcid'),
+            ],
+            'action' => [
+                'type' => PARAM_TEXT,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:action'),
+            ],
+            'moduleid' => [
+                'type' => PARAM_INT,
+                'null' => NULL_ALLOWED,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:pid'),
             ],
             'pid' => [
                 'type' => PARAM_INT,
+                'null' => NULL_ALLOWED,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:pid'),
             ],
-            'newrowid' => [
+            'sortorder' => [
                 'type' => PARAM_INT,
                 'null' => NULL_ALLOWED,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:newrowid'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:prevpid'),
             ],
-            'action' => [
-                'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:action'),
-            ],
-            'field' => [
-                'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:field'),
-            ],
-            'oldvalue' => [
-                'type' => PARAM_TEXT,
-                'null' => NULL_ALLOWED,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:oldvalue'),
-            ],
-            'newvalue' => [
+            'newvalues' => [
                 'type' => PARAM_TEXT,
                 'null' => NULL_ALLOWED,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:newvalue'),
             ],
-            'snapshot' => [
-                'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:snapshot'),
-            ],
-            'adminid' => [
-                'type' => PARAM_INT,
-                'null' => NULL_ALLOWED,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:adminid'),
-            ],
-        ];
-    }
-
-    /**
-     * Get all records for a given programme.
-     * @param int $courseid
-     * @return array
-     */
-    public static function get_all_records_for_course(int $courseid): array {
-        global $USER;
-        $context = context_course::instance($courseid);
-        $editall = has_capability('customfield/sprogramme:editall', $context);
-        if ($editall) {
-            return self::get_records(['courseid' => $courseid, 'action' => self::RFC_SUBMITTED]);
-        } else {
-            $submitted = self::get_records(['courseid' => $courseid, 'action' => self::RFC_REQUESTED, 'usermodified' => $USER->id]);
-            $requested = self::get_records(['courseid' => $courseid, 'action' => self::RFC_SUBMITTED, 'usermodified' => $USER->id]);
-            return array_merge($submitted, $requested);
-        }
-    }
-
-    /**
-     * Get user rfcs.
-     * Users can only provide 1 RFC per course at a time, get the RFCS grouped by user sorted by timecreated.
-     * Each user can have submitted multiple records per course, once these RFCS have self::RFC_SUBMITTED they are send to the
-     * admin for approval. So for each course each user will need to have 1 line returned from this function.
-     * The timemodified should be the latests time modified from this group of rfc records in the table.
-     * If no courseid is provided, all rfcs will be returned.
-     *
-     * @param int $courseid
-     * @param int $status
-     * @param int $adminid
-     * @return array
-     */
-    public static function get_course_rfcs(int $courseid = 0, int $status = self::RFC_SUBMITTED, $adminid = 0): array {
-        $allrfcs = self::get_records(['action' => $status]);
-        $rfcs = [];
-        foreach ($allrfcs as $rfcpersistent) {
-            $rfc = $rfcpersistent->to_record();
-            if ($courseid && $rfc->courseid != $courseid) {
-                continue;
-            }
-            $rfc->userinfo = self::get_user_info($rfc->adminid);
-            $rfc->course = get_course($rfc->courseid);
-            if (!isset($rfcs[$rfc->adminid])) {
-                $rfcs[$rfc->adminid] = $rfc;
-            } else {
-                if ($rfcs[$rfc->adminid]->timemodified < $rfc->timemodified) {
-                    $rfcs[$rfc->adminid] = $rfc;
-                }
-            }
-        }
-        if ($adminid) {
-            if (isset($rfcs[$adminid])) {
-                return [$rfcs[$adminid]];
-            }
-        }
-        return $rfcs;
-    }
-
-    /**
-     * Get user information (picture and fullname) for the given user id.
-     *
-     * @param int $userid The ID of the user.
-     * @return array associative array with id, fullname and userpictureurl.
-     */
-    public static function get_user_info(int $userid): array {
-        global $PAGE;
-        $user = core_user::get_user($userid);
-        if (!$user) {
-            $renderer = $PAGE->get_renderer('core');
-            return [
-                'id' => $userid,
-                'fullname' => get_string('usernotfound', 'customfield_sprogramme'),
-                'userpictureurl' => $renderer->image_url('u/f1')->out(false), // Default image.
-                'firstname' => 'firstname',
-                'lastname' => 'lastname',
-            ];
-        }
-        $userpicture = new user_picture($user);
-        $userpicture->includetoken = true;
-        $userpicture->size = 1; // Size f1.
-        return [
-            'id' => $userid,
-            'fullname' => fullname($user),
-            'email' => $user->email,
-            'userpictureurl' => $userpicture->get_url($PAGE)->out(false),
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
         ];
     }
 }

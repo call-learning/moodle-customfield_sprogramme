@@ -53,7 +53,7 @@ class setup {
         $tempnumbers = [];
         foreach ($data as $item) {
             $disclist = new sprogramme_disclist();
-            $disclist->set('uniqueid', $item['uniqueid'] ?? 0);
+            $disclist->set('uniqueid', Intval($item['uniqueid']) ?? 0);
             $disclist->set('type', $item['type']);
             $disclist->set('parent', $item['parent'] ?? null);
             $disclist->set('name', $item['name']);
@@ -84,7 +84,6 @@ class setup {
         if (empty($data)) {
             throw new \moodle_exception('No data found in: ' . $jsonfile);
         }
-        $tempnumbers = [];
         foreach ($data as $item) {
             $complist = new sprogramme_complist();
             $complist->set('uniqueid', $item['uniqueid'] ?? 0);

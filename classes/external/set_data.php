@@ -43,9 +43,9 @@ class set_data extends external_api {
             'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
             'modules' => new external_multiple_structure(
                 new external_single_structure([
-                    'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
-                    'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
-                    'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                    'moduleid' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
+                    'modulesortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
+                    'modulename' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
                     'deleted' => new external_value(PARAM_BOOL, 'Deleted', VALUE_DEFAULT, false),
                     'rows' => new external_multiple_structure(
                         new external_single_structure([
@@ -57,6 +57,8 @@ class set_data extends external_api {
                                     'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
                                     'value' => new external_value(PARAM_TEXT, 'Value', VALUE_REQUIRED),
                                     'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
+                                    'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
+                                    'oldvalue' => new external_value(PARAM_TEXT, 'Old value', VALUE_OPTIONAL),
                                 ])
                             ),
                             'disciplines' => new external_multiple_structure(
@@ -101,7 +103,7 @@ class set_data extends external_api {
         require_capability('customfield/sprogramme:edit', $context);
         $modules = $params['modules'];
 
-        $result = programme::set_records($courseid, $modules);
+        $result = programme::set_data($courseid, $modules);
 
         $data = [
             'data' => $result,

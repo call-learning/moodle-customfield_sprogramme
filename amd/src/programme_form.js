@@ -24,7 +24,7 @@
 import ModalForm from 'core_form/modalform';
 import {get_string as getString} from 'core/str';
 
-export const init = () => {
+const init = () => {
 
     const submitEventHandler = () => {
         window.location.reload();
@@ -51,3 +51,5 @@ export const init = () => {
         modalForm.show();
     });
 };
+
+init();

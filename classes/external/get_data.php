@@ -68,11 +68,19 @@ class get_data extends external_api {
         }
 
         $modules = programme::get_data($courseid, $showrfc, true, true);
-        $rfcs = programme::get_rfc_data($courseid, $showrfc);
+        $columns = programme::get_column_structure($courseid);
+        $columnstotals = programme::get_column_totals($modules, $columns);
+        $rfc = [];
+        if ($showrfc) {
+            $rfc = programme::get_rfc_data($courseid);
+        }
+        $canedit = programme::can_edit($courseid);
 
         $data = [
             'modules' => $modules,
-            'rfcs' => $rfcs,
+            'columns' => $columnstotals,
+            'rfc' => $rfc,
+            'canedit' => $canedit,
         ];
 
         return $data;
@@ -90,27 +98,19 @@ class get_data extends external_api {
                     'moduleid' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
                     'modulesortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
                     'modulename' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                    'deleted' => new external_value(PARAM_BOOL, 'Deleted', VALUE_DEFAULT, false),
                     'rows' => new external_multiple_structure(
                         new external_single_structure([
                             'id' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
                             'sortorder' => new external_value(PARAM_INT, 'Sort order', VALUE_REQUIRED),
+                            'deleted' => new external_value(PARAM_BOOL, 'Deleted', VALUE_DEFAULT, false),
                             'cells' => new external_multiple_structure(
                                 new external_single_structure([
                                     'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
                                     'value' => new external_value(PARAM_TEXT, 'Value', VALUE_REQUIRED),
                                     'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
                                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
-                                    'changes' => new external_multiple_structure(
-                                        new external_single_structure([
-                                            'oldvalue' => new external_value(PARAM_TEXT, 'Old value', VALUE_OPTIONAL),
-                                            'newvalue' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
-                                            'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
-                                            'userinfo' => new external_single_structure([
-                                                'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
-                                                'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
-                                            ], 'User Info', VALUE_OPTIONAL),
-                                        ])
-                                    ),
+                                    'oldvalue' => new external_value(PARAM_TEXT, 'Old value', VALUE_OPTIONAL),
                                 ])
                             ),
                             'disciplines' => new external_multiple_structure(
@@ -130,52 +130,52 @@ class get_data extends external_api {
                             'rowchanges' => new external_value(PARAM_BOOL, 'Row changes', VALUE_OPTIONAL),
                         ])
                     ),
-                    'columns' => new external_multiple_structure(
-                        new external_single_structure([
-                            'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
-                            'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
-                            'float' => new external_value(PARAM_BOOL, 'Float', VALUE_OPTIONAL),
-                            'int' => new external_value(PARAM_BOOL, 'Int', VALUE_OPTIONAL),
-                            'text' => new external_value(PARAM_BOOL, 'Text', VALUE_OPTIONAL),
-                            'select' => new external_value(PARAM_BOOL, 'Select', VALUE_OPTIONAL),
-                            'visible' => new external_value(PARAM_BOOL, 'Visible', VALUE_REQUIRED),
-                            'canedit' => new external_value(PARAM_BOOL, 'Admin', VALUE_REQUIRED),
-                            'canaddrfc' => new external_value(PARAM_BOOL, 'Can add RFC', VALUE_OPTIONAL),
-                            'label' => new external_value(PARAM_TEXT, 'Label', VALUE_REQUIRED),
-                            'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
-                            'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),
-                            'field' => new external_value(PARAM_TEXT, 'Field', VALUE_REQUIRED),
-                            'sample_value' => new external_value(PARAM_TEXT, 'Sample value', VALUE_REQUIRED),
-                            'min' => new external_value(PARAM_INT, 'Min', VALUE_OPTIONAL),
-                            'max' => new external_value(PARAM_INT, 'Max', VALUE_OPTIONAL),
-                            'sum' => new external_value(PARAM_FLOAT, 'Sum', VALUE_OPTIONAL),
-                            'hassum' => new external_value(PARAM_BOOL, 'Has sum', VALUE_OPTIONAL),
-                            'newsum' => new external_value(PARAM_FLOAT, 'New sum', VALUE_OPTIONAL),
-                            'hasnewsum' => new external_value(PARAM_BOOL, 'Has new sum', VALUE_OPTIONAL),
-                            'options' => new external_multiple_structure(
-                                new external_single_structure([
-                                    'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
-                                    'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
-                                ]), 'Option', VALUE_OPTIONAL
-                            ),
-                            'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
-                        ])
-                    ),
                 ])
             ),
-            'rfcs' => new external_multiple_structure(
+            'columns' => new external_multiple_structure(
                 new external_single_structure([
-                    'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
-                    'issubmitted' => new external_value(PARAM_BOOL, 'Is submitted', VALUE_OPTIONAL),
-                    'canaccept' => new external_value(PARAM_BOOL, 'Can accept', VALUE_OPTIONAL),
-                    'cansubmit' => new external_value(PARAM_BOOL, 'Can submit', VALUE_OPTIONAL),
-                    'cancancel' => new external_value(PARAM_BOOL, 'Can cancel', VALUE_OPTIONAL),
-                    'userinfo' => new external_single_structure([
-                        'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
-                        'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
-                    ], 'User Info', VALUE_OPTIONAL),
+                    'column' => new external_value(PARAM_TEXT, 'Column id', VALUE_REQUIRED),
+                    'type' => new external_value(PARAM_TEXT, 'Type', VALUE_REQUIRED),
+                    'float' => new external_value(PARAM_BOOL, 'Float', VALUE_OPTIONAL),
+                    'int' => new external_value(PARAM_BOOL, 'Int', VALUE_OPTIONAL),
+                    'text' => new external_value(PARAM_BOOL, 'Text', VALUE_OPTIONAL),
+                    'select' => new external_value(PARAM_BOOL, 'Select', VALUE_OPTIONAL),
+                    'visible' => new external_value(PARAM_BOOL, 'Visible', VALUE_REQUIRED),
+                    'canedit' => new external_value(PARAM_BOOL, 'Admin', VALUE_REQUIRED),
+                    'canaddrfc' => new external_value(PARAM_BOOL, 'Can add RFC', VALUE_OPTIONAL),
+                    'protected' => new external_value(PARAM_BOOL, 'Protected', VALUE_OPTIONAL),
+                    'label' => new external_value(PARAM_TEXT, 'Label', VALUE_REQUIRED),
+                    'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
+                    'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),
+                    'field' => new external_value(PARAM_TEXT, 'Field', VALUE_REQUIRED),
+                    'sample_value' => new external_value(PARAM_TEXT, 'Sample value', VALUE_REQUIRED),
+                    'min' => new external_value(PARAM_INT, 'Min', VALUE_OPTIONAL),
+                    'max' => new external_value(PARAM_INT, 'Max', VALUE_OPTIONAL),
+                    'sum' => new external_value(PARAM_FLOAT, 'Sum', VALUE_OPTIONAL),
+                    'hassum' => new external_value(PARAM_BOOL, 'Has sum', VALUE_OPTIONAL),
+                    'newsum' => new external_value(PARAM_FLOAT, 'New sum', VALUE_OPTIONAL),
+                    'hasnewsum' => new external_value(PARAM_BOOL, 'Has new sum', VALUE_OPTIONAL),
+                    'options' => new external_multiple_structure(
+                        new external_single_structure([
+                            'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
+                            'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
+                        ]), 'Option', VALUE_OPTIONAL
+                    ),
+                    'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                 ])
             ),
+            'rfc' => new external_single_structure([
+                'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
+                'issubmitted' => new external_value(PARAM_BOOL, 'Is submitted', VALUE_OPTIONAL),
+                'canaccept' => new external_value(PARAM_BOOL, 'Can accept', VALUE_OPTIONAL),
+                'cansubmit' => new external_value(PARAM_BOOL, 'C an submit', VALUE_OPTIONAL),
+                'cancancel' => new external_value(PARAM_BOOL, 'Can cancel', VALUE_OPTIONAL),
+                'userinfo' => new external_single_structure([
+                    'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
+                    'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
+                ], 'User Info', VALUE_OPTIONAL),
+            ], 'RFC data', VALUE_OPTIONAL),
+            'canedit' => new external_value(PARAM_BOOL, 'Can edit', VALUE_REQUIRED),
         ]);
     }
 }

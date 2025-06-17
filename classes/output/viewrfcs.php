@@ -17,7 +17,7 @@
 namespace customfield_sprogramme\output;
 
 use customfield_sprogramme\local\api\programme;
-use customfield_sprogramme\local\persistent\sprogramme_change;
+use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\api\notifications as notifications_api;
 use core\output\named_templatable;
 use renderable;
@@ -57,20 +57,22 @@ class viewrfcs implements renderable, named_templatable {
         $data['selectcourse'] = array_values($this->get_course_select());
         $data['status'] = $this->get_status_select();
 
-        $rfcs = sprogramme_change::get_course_rfcs($this->courseid, $this->status);
+        $rfcs = sprogramme_rfc::get_course_rfcs($this->courseid, $this->status);
 
         $data['rfcs'] = [];
         $numsubmitted = 0;
         foreach ($rfcs as $rfc) {
 
             $data['rfcs'][] = [
+                'rfcid' => $rfc->id,
                 'timemodified' => $rfc->timemodified,
                 'userinfo' => $rfc->userinfo,
                 'course' => $rfc->course,
                 'courseid' => $rfc->courseid,
                 'adminid' => $rfc->adminid,
-                'status' => get_string('rfc:' . sprogramme_change::CHANGE_TYPES[$rfc->action], 'customfield_sprogramme'),
-                'action' => 'showrfc-' . sprogramme_change::CHANGE_TYPES[$rfc->action]
+                'type' => $rfc->type,
+                'status' => get_string('rfc:' . sprogramme_rfc::CHANGE_TYPES[$rfc->type], 'customfield_sprogramme'),
+                'action' => 'showrfc',
             ];
 
         }
@@ -100,7 +102,15 @@ class viewrfcs implements renderable, named_templatable {
      */
     public function get_course_select(): array {
         global $DB;
-        $allinstances = $DB->get_records('course', ['visible' => 1], 'fullname ASC');
+        $coursewithrfc = sprogramme_rfc::get_all_course_ids($this->status);
+        if (empty($coursewithrfc)) {
+            // No courses with RFCs, return empty array.
+            return [];
+        }
+
+        list($sql, $params) = $DB->get_in_or_equal($coursewithrfc, SQL_PARAMS_NAMED, 'id');
+        $where = 'WHERE id '. $sql;
+        $allinstances = $DB->get_records_sql('SELECT * FROM {course} '. $where, $params);
         $data = [];
         $data[] = [
             'key' => '',
@@ -112,8 +122,8 @@ class viewrfcs implements renderable, named_templatable {
         $courses = array_map(function ($instance) {
             return [
                 'id' => $instance->id,
-                'course' => get_course($instance->id)->fullname,
-                'name' => $instance->fullname,
+                'course' => substr($instance->shortname, 0, 30),
+                'name' => substr($instance->fullname, 0, 30),
                 'selected' => $instance->id == $this->courseid,
                 'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => $instance->id])),
             ];
@@ -133,7 +143,7 @@ class viewrfcs implements renderable, named_templatable {
             'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => $this->courseid])),
             'selected' => ($this->status == 0),
         ];
-        foreach (sprogramme_change::CHANGE_TYPES as $key => $status) {
+        foreach (sprogramme_rfc::CHANGE_TYPES as $key => $status) {
             $data[] = [
                 'key' => $key,
                 'name' => get_string('rfc:' . $status, 'customfield_sprogramme'),
@@ -171,7 +181,7 @@ class viewrfcs implements renderable, named_templatable {
      */
     public function before_render(): void {
         $this->courseid = optional_param('courseid', 0, PARAM_INT);
-        $this->status = optional_param('status', sprogramme_change::RFC_SUBMITTED, PARAM_INT);
+        $this->status = optional_param('status', sprogramme_rfc::RFC_SUBMITTED, PARAM_INT);
         $action = optional_param('action', '', PARAM_ALPHANUMEXT);
         switch ($action) {
             case 'deleteall':
@@ -179,7 +189,7 @@ class viewrfcs implements renderable, named_templatable {
                 if ($this->courseid !== 0) {
                     $params['courseid'] = $this->courseid;
                 }
-                $todelete = sprogramme_change::get_records($params);
+                $todelete = sprogramme_rfc::get_records($params);
                 foreach ($todelete as $rfc) {
                     $rfc->delete();
                 }
@@ -192,13 +202,13 @@ class viewrfcs implements renderable, named_templatable {
 
         $delete = optional_param('delete', null, PARAM_INT);
         if ($delete) {
-            $todelete = sprogramme_change::get_record(['id' => $delete]);
+            $todelete = sprogramme_rfc::get_record(['id' => $delete]);
             $todelete->delete();
         }
 
         $send = optional_param('send', null, PARAM_INT);
         if ($send) {
-            $rfc = sprogramme_change::get_record(['id' => $send]);
+            $rfc = sprogramme_rfc::get_record(['id' => $send]);
             notifications_api::send_email($rfc);
         }
 
@@ -208,7 +218,7 @@ class viewrfcs implements renderable, named_templatable {
             if ($this->task) {
                 $params['notification'] = $this->task;
             }
-            $rfcs = sprogramme_change::get_records($params);
+            $rfcs = sprogramme_rfc::get_records($params);
             foreach ($rfcs as $rfc) {
                 notifications_api::send_email($rfc);
             }
@@ -220,7 +230,7 @@ class viewrfcs implements renderable, named_templatable {
             if ($this->task) {
                 $params['notification'] = $this->task;
             }
-            $rfcs = sprogramme_change::get_records($params);
+            $rfcs = sprogramme_rfc::get_records($params);
             foreach ($rfcs as $rfc) {
                 $rfc->delete();
             }
@@ -247,6 +257,6 @@ class viewrfcs implements renderable, named_templatable {
      * @return string
      */
     public function get_template_name(\renderer_base $renderer): string {
-        return 'customfield_sprogramme/emails/viewrfcs';
+        return 'customfield_sprogramme/viewrfcs';
     }
 }
