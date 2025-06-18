@@ -498,7 +498,8 @@ class Manager {
      */
      createRow() {
         const row = {};
-        row.id = this.rowNumber - 1;
+        this.rowNumber = this.rowNumber - 1;
+        row.id = this.rowNumber;
         const columns = State.getValue('columns');
         // The copy the columns to the row and call them cells.
         row.cells = columns.map(column => structuredClone(column));
@@ -671,17 +672,18 @@ class Manager {
      * Create a new module.
      * @return {Integer} The module id.
      */
-    async createModule() {
-        return this.moduleNumber--;
+    createModule() {
+        this.moduleNumber = this.moduleNumber - 1;
+        return this.moduleNumber;
     }
 
     /**
      * Add a new module.
      * @return {void}
      */
-    async addModule() {
+    addModule() {
         const modules = State.getValue('modules');
-        const moduleid = await this.createModule();
+        const moduleid = this.createModule();
         const row = this.createRow();
         const module = {
             moduleid: moduleid,
