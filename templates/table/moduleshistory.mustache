@@ -33,7 +33,7 @@
         </div>
     {{/rfcs}}
 </div>
-<table class="programm-table editor toprow">
+<table class="programm-table editor toprow history">
     <tr>
         {{#columns}}
             <th class="{{field}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
@@ -60,20 +60,36 @@
                 {{#rows}}
                     <tr>
                         {{#cells}}
-                            {{#visible}}
-                            <td class="{{#changed}}haschanges {{/changed}}{{type}}">
-                                {{#changes}}
-                                    <div class="change">
-                                        <span class="oldvalue">{{{oldvalue}}}</span>
-                                        <span class="newvalue">{{{newvalue}}}</span>
+                            <td class="static {{#changed}}haschanges {{/changed}}{{type}}">
+                                {{#changed}}
+                                    <div class="d-flex change">
+                                        <div class="oldvalue">{{{oldvalue}}}</div>
+                                        <div class="newvalue ml-auto">{{{value}}}</div>
                                     </div>
-                                {{/changes}}
-                                {{^changes}}
-                                    {{{value}}}
-                                {{/changes}}
+                                {{/changed}}
+                                {{^changed}}
+                                    <span class="static">{{{value}}}</div>
+                                {{/changed}}
                             </td>
-                            {{/visible}}
                         {{/cells}}
+                        <td class="disciplines">
+                            <div class="d-flex">
+                                <div class="container-disciplines" data-region="container-disciplines">
+                                    {{#disciplines}}
+                                        {{> customfield_sprogramme/table/tag}}
+                                    {{/disciplines}}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="competencies">
+                            <div class="d-flex">
+                                <div class="container-competencies" data-region="container-competencies">
+                                    {{#competencies}}
+                                        {{> customfield_sprogramme/table/tag}}
+                                    {{/competencies}}
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 {{/rows}}
             </tbody>

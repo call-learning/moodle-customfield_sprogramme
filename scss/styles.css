@@ -1,6 +1,3 @@
-.customfield_sprogramme {
-  height: 100%; }
-
 .customfield-sprogramme {
   overflow: auto;
   height: 100%;
@@ -15,10 +12,6 @@
       max-height: 1rem; }
     .customfield-sprogramme .btn.btn-icon .fa-fw {
       font-size: 0.8rem; }
-  .customfield-sprogramme .editoptions {
-    position: absolute;
-    right: 0;
-    bottom: 0; }
   .customfield-sprogramme .programm-input {
     display: block;
     width: 100%;
@@ -40,14 +33,35 @@
       outline: 1px solid #7fb6f1;
       background-color: #f7f7f7;
       border-radius: 0rem; }
+  .customfield-sprogramme .programm-textarea {
+    display: block;
+    width: 100%;
+    min-width: 70px;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.125rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0;
+    border-radius: 0rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+    .customfield-sprogramme .programm-textarea:focus {
+      outline: 1px solid #7fb6f1;
+      background-color: #f7f7f7;
+      border-radius: 0rem; }
   .customfield-sprogramme .module-input {
     border-radius: 0;
     border-color: #dee2e6; }
   .customfield-sprogramme .float .programm-input,
-  .customfield-sprogramme .int .programm-input {
-    min-width: 50px;
-    width: 50px;
-    max-width: 50px; }
+  .customfield-sprogramme .int .programm-input,
+  .customfield-sprogramme .static.float,
+  .customfield-sprogramme .int {
+    min-width: 52.55px;
+    width: 52.55px;
+    max-width: 52.55px; }
   .customfield-sprogramme .container-disciplines,
   .customfield-sprogramme .container-competencies {
     flex: 1 1 auto;
@@ -61,7 +75,7 @@
     .customfield-sprogramme .competencies .badge {
       display: flex;
       align-items: center;
-      padding: 0.2rem 0.5rem;
+      padding: 0.15rem 0.5rem;
       width: 150px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -85,9 +99,14 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 1.5rem;
-        width: 1.5rem;
-        min-width: 1.5rem; }
+        height: 1.6rem;
+        width: 1.6rem;
+        min-width: 1.6rem; }
+        .customfield-sprogramme .disciplines .badge .percentage::after,
+        .customfield-sprogramme .competencies .badge .percentage::after {
+          content: '%';
+          font-size: 0.6rem;
+          color: #6c757d; }
       .customfield-sprogramme .disciplines .badge .btn,
       .customfield-sprogramme .competencies .badge .btn {
         display: none;
@@ -95,6 +114,7 @@
   .customfield-sprogramme .programm-table {
     max-width: 100%;
     overflow: visible;
+    border-left: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6; }
     .customfield-sprogramme .programm-table input[type="number"] {
       /* For most modern browsers */
@@ -109,28 +129,42 @@
       margin: 0;
       /* Optional: Prevent additional spacing */ }
     .customfield-sprogramme .programm-table .protected,
-    .customfield-sprogramme .programm-table .protected input,
-    .customfield-sprogramme .programm-table .protected select {
-      background-color: #f7f7f7;
-      border: 0; }
-    .customfield-sprogramme .programm-table .haschanges input {
-      color: #ce2626; }
-    .customfield-sprogramme .programm-table .deletepending input {
-      text-decoration: line-through; }
-    .customfield-sprogramme .programm-table tr.hasrowchanges td {
-      text-decoration: line-through; }
+    .customfield-sprogramme .programm-table .protected input {
+      background-color: #f8f8f8; }
+    .customfield-sprogramme .programm-table .deletepending input,
+    .customfield-sprogramme .programm-table .deletepending textarea,
+    .customfield-sprogramme .programm-table .deletepending select,
+    .customfield-sprogramme .programm-table .deletepending .actions button {
+      text-decoration: line-through;
+      background-color: #f8f8f8; }
+    .customfield-sprogramme .programm-table .deletepending .actions button,
+    .customfield-sprogramme .programm-table .deletepending .disciplines button,
+    .customfield-sprogramme .programm-table .deletepending .competencies button {
+      display: none; }
     .customfield-sprogramme .programm-table tr.haserror [data-group="unique"] {
       background-color: #f8d7da;
       color: #721c24; }
-    .customfield-sprogramme .programm-table.editor.toprow {
-      margin-left: 350px; }
-      .customfield-sprogramme .programm-table.editor.toprow th {
+    .customfield-sprogramme .programm-table .oldvalue {
+      color: #c0c0c0; }
+    .customfield-sprogramme .programm-table .newvalue {
+      color: #ce2626; }
+    .customfield-sprogramme .programm-table .haschanges input,
+    .customfield-sprogramme .programm-table .haschanges .staticdata {
+      color: #ce2626; }
+    .customfield-sprogramme .programm-table.toprow {
+      margin-left: 275px; }
+      .customfield-sprogramme .programm-table.toprow th {
         display: none;
         position: relative;
         color: #C6C6C6; }
-        .customfield-sprogramme .programm-table.editor.toprow th.haschanges .sumcontainer {
+        .customfield-sprogramme .programm-table.toprow th.haschanges .sumcontainer {
           color: #ce2626; }
-      .customfield-sprogramme .programm-table.editor.toprow .sumcontainer {
+      .customfield-sprogramme .programm-table.toprow th.float,
+      .customfield-sprogramme .programm-table.toprow th.int {
+        display: table-cell;
+        width: 55.55px;
+        min-width: 55.55px; }
+      .customfield-sprogramme .programm-table.toprow .sumcontainer {
         position: absolute;
         right: 5px;
         bottom: 5px;
@@ -141,110 +175,107 @@
         width: 20px;
         height: 20px;
         color: var(--dark); }
-      .customfield-sprogramme .programm-table.editor.toprow th.float,
-      .customfield-sprogramme .programm-table.editor.toprow th.int {
-        display: table-cell;
-        width: 52.55px; }
-    .customfield-sprogramme .programm-table.editor {
-      border-left: 1px solid #dee2e6; }
-      .customfield-sprogramme .programm-table.editor th {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 170px;
-        padding: 0.4rem; }
-        .customfield-sprogramme .programm-table.editor th.float, .customfield-sprogramme .programm-table.editor th.int {
-          background-color: #f7f7f7;
-          width: 50px;
-          max-width: 52.55px; }
-        .customfield-sprogramme .programm-table.editor th.select {
-          width: 75px;
-          min-width: 75px; }
-        .customfield-sprogramme .programm-table.editor th.text {
-          width: 200px;
-          min-width: 200px;
-          white-space: wrap; }
-        .customfield-sprogramme .programm-table.editor th .thlabel {
-          display: block;
-          width: 100%;
-          white-space: break-spaces; }
-        .customfield-sprogramme .programm-table.editor th .sum:not(:empty) {
-          display: flex;
-          width: 100%;
-          text-align: left;
-          width: auto;
-          height: 20px;
-          justify-content: center;
-          align-items: center;
-          border-radius: 50%; }
-        .customfield-sprogramme .programm-table.editor th .sum.strikethrough {
-          text-decoration: line-through;
-          color: #b5b5b5; }
-        .customfield-sprogramme .programm-table.editor th .newsum:not(:empty) {
-          display: flex;
-          width: 100%;
-          color: #ce2626;
-          text-align: left;
-          width: auto;
-          height: 20px;
-          justify-content: center;
-          align-items: center;
-          border-radius: 50%; }
-      .customfield-sprogramme .programm-table.editor th,
-      .customfield-sprogramme .programm-table.editor td {
-        border-top: 1px solid #dee2e6;
-        border-right: 1px solid #dee2e6;
-        position: relative;
-        vertical-align: top; }
-        .customfield-sprogramme .programm-table.editor th.int,
-        .customfield-sprogramme .programm-table.editor td.int {
-          width: 52px;
-          max-width: 52px; }
-      .customfield-sprogramme .programm-table.editor td.actions {
-        display: flex; }
-      .customfield-sprogramme .programm-table.editor td.haschanges input {
-        background-color: #f4ffff; }
-    .customfield-sprogramme .programm-table.standard {
-      border-right: 1px solid #dee2e6; }
-      .customfield-sprogramme .programm-table.standard td,
-      .customfield-sprogramme .programm-table.standard th {
-        padding: 0.5rem;
-        border-top: 1px solid #dee2e6;
-        border-left: 1px solid #dee2e6;
-        vertical-align: top; }
-        .customfield-sprogramme .programm-table.standard td.text,
-        .customfield-sprogramme .programm-table.standard th.text {
-          width: 300px;
-          white-space: wrap; }
-        .customfield-sprogramme .programm-table.standard td.float, .customfield-sprogramme .programm-table.standard td.int,
-        .customfield-sprogramme .programm-table.standard th.float,
-        .customfield-sprogramme .programm-table.standard th.int {
-          width: 50px; }
-        .customfield-sprogramme .programm-table.standard td:empty,
-        .customfield-sprogramme .programm-table.standard th:empty {
-          height: 50px; }
-      .customfield-sprogramme .programm-table.standard th.float, .customfield-sprogramme .programm-table.standard th.int {
+    .customfield-sprogramme .programm-table th,
+    .customfield-sprogramme .programm-table td {
+      border-top: 1px solid #dee2e6;
+      border-right: 1px solid #dee2e6;
+      position: relative;
+      vertical-align: top; }
+    .customfield-sprogramme .programm-table th {
+      max-width: 170px;
+      padding: 0.4rem; }
+      .customfield-sprogramme .programm-table th.float, .customfield-sprogramme .programm-table th.int {
         background-color: #f7f7f7;
-        width: 50px; }
+        width: 55.55px;
+        max-width: 55.55px; }
+      .customfield-sprogramme .programm-table th.select {
+        width: 75px;
+        min-width: 75px; }
+      .customfield-sprogramme .programm-table th.text {
+        width: 200px;
+        min-width: 200px;
+        white-space: wrap; }
+      .customfield-sprogramme .programm-table th .thlabel {
+        display: block;
+        width: 100%;
+        white-space: break-spaces; }
+        .customfield-sprogramme .programm-table th .thlabel.hashelp {
+          text-decoration: underline;
+          cursor: help; }
+      .customfield-sprogramme .programm-table th .sum:not(:empty) {
+        display: flex;
+        width: 100%;
+        text-align: left;
+        width: auto;
+        height: 20px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%; }
+      .customfield-sprogramme .programm-table th .newsum:not(:empty) {
+        display: flex;
+        width: 100%;
+        color: #ce2626;
+        text-align: left;
+        width: auto;
+        height: 20px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%; }
+    .customfield-sprogramme .programm-table td.actions {
+      display: flex; }
+    .customfield-sprogramme .programm-table td.static {
+      padding: 0.4rem; }
+    .customfield-sprogramme .programm-table td.haschanges input {
+      background-color: #f4ffff; }
+  .customfield-sprogramme.syllabuspage .programm-table {
+    margin-left: 1rem;
+    width: calc(100% - 1rem); }
+    .customfield-sprogramme.syllabuspage .programm-table th.float, .customfield-sprogramme.syllabuspage .programm-table th.int,
+    .customfield-sprogramme.syllabuspage .programm-table td.float,
+    .customfield-sprogramme.syllabuspage .programm-table td.int {
+      width: 30px;
+      max-width: 30px;
+      min-width: 30px; }
+    .customfield-sprogramme.syllabuspage .programm-table th.select,
+    .customfield-sprogramme.syllabuspage .programm-table td.select {
+      display: none; }
+    .customfield-sprogramme.syllabuspage .programm-table tr.tags {
+      display: none; }
+      .customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-disciplines, .customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-competencies {
+        display: table-row; }
+    .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines,
+    .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies {
+      cursor: pointer; }
+      .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines:hover,
+      .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies:hover {
+        background-color: #f7f7f7; }
+      .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines[aria-expanded="true"],
+      .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies[aria-expanded="true"] {
+        border-bottom: initial; }
+      .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines > td.intitule_seance > .staticdata,
+      .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies > td.intitule_seance > .staticdata {
+        padding-left: 1rem; }
+        .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines > td.intitule_seance > .staticdata::before,
+        .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies > td.intitule_seance > .staticdata::before {
+          content: ' + ';
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          top: 50%;
+          left: 0;
+          transform: translateX(-50%) translateY(-50%);
+          width: 1.5rem;
+          height: 1.5rem;
+          background-color: #f7f7f7;
+          border-radius: 50%;
+          box-shadow: inset 0 0 0 1px #dee2e6; }
+  .customfield-sprogramme td.active .changes .changecontent {
+    display: block; }
   .customfield-sprogramme td:focus {
     outline: 1px solid #7fb6f1; }
   .customfield-sprogramme td.disciplines {
     position: relative; }
-  .customfield-sprogramme td .tag-form {
-    display: block;
-    position: absolute;
-    right: 100%;
-    top: -3px;
-    width: 400px;
-    padding: 0.5rem;
-    background-color: #fff;
-    z-index: 1;
-    border: 1px solid var(--light);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-    .customfield-sprogramme td .tag-form .badge .btn {
-      display: block; }
-    .customfield-sprogramme td .tag-form .btn.btn-icon:hover, .customfield-sprogramme td .tag-form .btn.btn-icon:focus {
-      background-color: #ead9d9; }
   .customfield-sprogramme .formarrow {
     display: block;
     top: 0;
@@ -272,7 +303,21 @@
       border-bottom: 13px solid transparent;
       border-left: 13px solid var(--light); }
   .customfield-sprogramme .tag-form {
+    display: block;
+    position: absolute;
+    right: 100%;
+    top: -3px;
+    width: 400px;
+    padding: 0.5rem;
+    background-color: #fff;
+    z-index: 1;
+    border: 1px solid var(--light);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     font-size: 0.8rem; }
+    .customfield-sprogramme .tag-form .badge .btn {
+      display: block; }
+    .customfield-sprogramme .tag-form .btn.btn-icon:hover, .customfield-sprogramme .tag-form .btn.btn-icon:focus {
+      background-color: #ead9d9; }
     .customfield-sprogramme .tag-form input,
     .customfield-sprogramme .tag-form .btn {
       font-size: 0.8rem; }
@@ -307,18 +352,8 @@
 
 .modal .modal-customfield_sprogramme_history {
   max-width: calc(100% - 2rem); }
-  .modal .modal-customfield_sprogramme_history .programm-table.toprow {
-    margin-left: 300px; }
-  .modal .modal-customfield_sprogramme_history .programm-table.standard th.text {
-    width: 300px;
-    min-width: 300px;
-    white-space: wrap; }
-  .modal .modal-customfield_sprogramme_history .programm-table.standard th.int,
-  .modal .modal-customfield_sprogramme_history .programm-table.standard th.float {
-    width: 52.55px;
-    min-width: 52.55px; }
   .modal .modal-customfield_sprogramme_history .oldvalue {
-    text-decoration: line-through; }
+    color: #c0c0c0; }
   .modal .modal-customfield_sprogramme_history .newvalue {
     color: #ce2626; }
 
@@ -359,64 +394,6 @@
       display: none; }
     .modal .modal-customfield_sprogramme_editor .saveconfirm .btn.saving .savingicon {
       display: inline-block; }
-  .modal .modal-customfield_sprogramme_editor .changes .changesboxcorner {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid red;
-    border-bottom: 10px solid transparent; }
-  .modal .modal-customfield_sprogramme_editor .changes .changecontent {
-    position: absolute;
-    display: none;
-    top: 0px;
-    right: -200px;
-    width: 200px;
-    height: 200px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 1; }
-    .modal .modal-customfield_sprogramme_editor .changes .changecontent .change {
-      border: 1px solid #dee2e6;
-      margin: 0 0.5rem;
-      border-radius: 5px; }
-    .modal .modal-customfield_sprogramme_editor .changes .changecontent .newvalue {
-      display: block;
-      min-height: 2rem;
-      padding: 0.2rem 0.5rem;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px; }
-    .modal .modal-customfield_sprogramme_editor .changes .changecontent .oldvalue {
-      background-color: #f7f7f7;
-      padding: 0.2rem 0.5rem;
-      min-height: 2rem;
-      display: block;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px; }
-      .modal .modal-customfield_sprogramme_editor .changes .changecontent .oldvalue:empty {
-        content: '--'; }
-    .modal .modal-customfield_sprogramme_editor .changes .changecontent .accept {
-      color: var(--success); }
-    .modal .modal-customfield_sprogramme_editor .changes .changecontent .reject {
-      color: red; }
-    .modal .modal-customfield_sprogramme_editor .changes .changecontent .infogroup {
-      display: flex; }
-      .modal .modal-customfield_sprogramme_editor .changes .changecontent .infogroup .actions {
-        background-color: #f7f7f7;
-        border-radius: 15px;
-        display: flex; }
-    .modal .modal-customfield_sprogramme_editor .changes .changecontent .requestedby {
-      display: flex;
-      flex: 1 1 auto;
-      flex-direction: column;
-      align-items: flex-end;
-      font-size: 0.7rem;
-      color: #9f9f9f; }
-  .modal .modal-customfield_sprogramme_editor td.active .changes .changecontent {
-    display: block; }
 
 .tablerfcs .userpicture {
   width: 3rem;

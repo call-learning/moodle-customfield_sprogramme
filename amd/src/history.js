@@ -79,17 +79,6 @@ class History {
                     const column = response.columns.find(column => column.column == cell.column);
                     // Clone the column properties to the cell but keep the cell properties.
                     cell = Object.assign({}, cell, column);
-                    if (cell.type === 'select') {
-                        // Clone the options array to avoid shared references
-                        cell.options = cell.options.map(option => {
-                            const clonedOption = Object.assign({}, option);
-                            if (clonedOption.name == cell.value) {
-                                clonedOption.selected = true;
-                            }
-                            return clonedOption;
-                        });
-                    }
-                    cell.edit = true;
                     cell.changed = cell.value !== cell.oldvalue;
                     return cell;
                 });

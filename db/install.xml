@@ -101,24 +101,6 @@
         <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="customfield_sprogramme_change" COMMENT="record change requests">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="rfcid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="action" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="change action"/>
-        <FIELD NAME="moduleid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="module id"/>
-        <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="programme id"/>
-        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="sort order"/>
-        <FIELD NAME="newvalues" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-      </KEYS>
-    </TABLE>
     <TABLE NAME="customfield_sprogramme_notification" COMMENT="Store email notification info">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>

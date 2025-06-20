@@ -148,8 +148,11 @@
                     {{#float}}
                         <input name="input-{{column}}-{{columnid}}" class="programm-input" data-old="{{oldvalue}}" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}"/>
                     {{/float}}
-                    {{#text}}
+                    {{#textold}}
                         <input name="input-{{column}}-{{columnid}}" class="programm-input" data-old="{{oldvalue}}" data-input="auto" maxlength="{{length}}" type="text" value="{{{value}}}"{{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}" />
+                    {{/textold}}
+                    {{#text}}
+                        <textarea name="input-{{column}}-{{columnid}}" class="programm-textarea" data-old="{{oldvalue}}" data-input="auto" maxlength="{{length}}" {{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}" {{#height}}style="height: {{height}}px"{{/height}}>{{{value}}}</textarea>
                     {{/text}}
                     {{#select}}
                         <select name="select-{{column}}-{{columnid}}" data-input="auto" class="programm-input">
@@ -158,21 +161,27 @@
                             {{/options}}
                         </select>
                     {{/select}}
-                    {{#changes}}
-                        {{> customfield_sprogramme/table/changeinfopopup }}
-                    {{/changes}}
                 </td>
             {{/editor}}
             {{^editor}}
-                {{#visible}}
-                    <td class="{{type}}">{{{value}}}</td>
-                {{/visible}}
+                <td class="static {{type}}">
+                    {{#changed}}
+                        <div class="d-flex change">
+                            <div class="oldvalue">{{{oldvalue}}}</div>
+                            <div class="newvalue ml-auto">{{{value}}}</div>
+                        </div>
+                    {{/changed}}
+                    {{^changed}}
+                        <span class="staticdata">{{{value}}}</div>
+                    {{/changed}}
+                </td>
             {{/editor}}
         {{/cells}}
-        {{#editor}}
         <td data-cell data-columnid="{{columnid}}" class="disciplines" data-disciplines data-rowid="{{id}}">
             <div class="d-flex">
+                {{#editor}}
                 <button class="btn btn-icon icon-no-margin jsbutton" data-id="{{id}}" data-action="adddisc">{{#pix}}i/addblock, core, {{#str}}add{{/str}}{{/pix}}</button>
+                {{/editor}}
                 <div class="container-disciplines" data-region="container-disciplines">
                     {{#disciplines}}
                         {{> customfield_sprogramme/table/tag}}
@@ -182,7 +191,9 @@
         </td>
         <td data-cell data-columnid="{{columnid}}" class="competencies" data-competencies data-rowid="{{id}}">
             <div class="d-flex">
+                {{#editor}}
                 <button class="btn btn-icon icon-no-margin jsbutton" data-id="{{id}}" data-action="addcomp">{{#pix}}i/addblock, core, {{#str}}add{{/str}}{{/pix}}</button>
+                {{/editor}}
                 <div class="container-competencies" data-region="container-competencies">
                     {{#competencies}}
                         {{> customfield_sprogramme/table/tag}}
@@ -190,6 +201,7 @@
                 </div>
             </div>
         </td>
+        {{#editor}}
         <td class="actions">
             <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-id="{{id}}" data-action="deleterow">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
             <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-region="dragicon">{{#pix}}i/move_2d, core, {{#str}}move{{/str}}{{/pix}}</button>

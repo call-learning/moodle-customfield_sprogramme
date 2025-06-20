@@ -81,7 +81,6 @@ $string['rfc:accepted'] = 'Accepted';
 $string['rfc:rejected'] = 'Rejected';
 $string['invalidpagetype'] = 'Invalid page type';
 $string['usernotfound'] = 'User not found';
-$string['rfc:showchangerequestby'] = 'Show request for change by {$a}';
 $string['rfc:changerequestby'] = 'Change request by {$a}';
 $string['rfc:rfcblocked'] = 'RFC blocked';
 $string['rfc:rfcblocked:helptext'] = <<<'EOF'
@@ -105,4 +104,15 @@ $string['rfc:helptext'] = <<<'EOF'
 <p>Once the change request is submitted, the site manager will receive an email with a link to the change request.</p>
 <p>Once the change request is accepted, the changes will be applied to the course.</p>
 EOF;
+
 $string['history'] = 'History';
+$string['dd_rse_help'] = 'Décrire comment cette formation s’inscrit dans une démarche de développement durable et de responsabilité sociétale.';
+$string['cm_help'] = 'Nombre d’heures de cours magistral dispensé par un enseignant à un grand groupe d’étudiants.';
+$string['td_help'] = 'Nombre d’heures de travaux dirigés réalisés en petits groupes avec un encadrement pédagogique.';
+$string['tp_help'] = 'Nombre d’heures de travaux pratiques consacrés à des expériences ou à l’apprentissage technique.';
+$string['tpa_help'] = 'Nombre d’heures de travaux pratiques accompagnés avec un encadrement léger, réalisés de manière plus autonome.';
+$string['tc_help'] = 'Nombre d’heures de travaux collectifs effectués en groupe par les étudiants.';
+$string['aas_help'] = 'Nombre d’heures d’activités pédagogiques spécifiques, telles que des conférences, des sorties ou des ateliers.';
+$string['fmp_help'] = 'Nombre d’heures de formation en milieu professionnel (stages, immersions, etc.).';
+$string['perso_av_help'] = 'Estimation du temps de travail personnel attendu avant la séance (préparation, lecture, etc.).';
+$string['perso_ap_help'] = 'Estimation du temps de travail personnel après la séance (exercices, révisions, etc.).';

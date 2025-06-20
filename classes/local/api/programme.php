@@ -26,7 +26,6 @@ use customfield_sprogramme\local\persistent\sprogramme_comp;
 use customfield_sprogramme\local\persistent\sprogramme_complist;
 use customfield_sprogramme\local\persistent\sprogramme_module;
 use customfield_sprogramme\local\persistent\sprogramme_rfc;
-use customfield_sprogramme\local\persistent\sprogramme_change;
 use customfield_sprogramme\local\api\notifications;
 
 require_once($CFG->libdir . '/csvlib.class.php');
@@ -47,33 +46,6 @@ class programme {
      */
     public static function get_table_structure(): array {
         $columns = [
-            [
-                'column' => 'cct_ept',
-                'type' => 'select',
-                'select' => true,
-                'visible' => false,
-                'canedit' => true,
-                'label' => 'CCT / EPT',
-                'columnid' => 6,
-                'length' => 20,
-                'field' => 'select',
-                'sample_value' => '',
-                'options' => [
-                    [
-                        'name' => 'Autre',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'CCT',
-                        'selected' => false,
-                    ],
-                    [
-                        'name' => 'EPT',
-                        'selected' => false,
-                    ],
-                ],
-                'group' => '',
-            ],
             [
                 'column' => 'dd_rse',
                 'type' => 'select',
@@ -121,6 +93,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'CM',
+                'help' => get_string('cm_help', 'customfield_sprogramme'),
                 'columnid' => 20,
                 'length' => 10,
                 'field' => 'float',
@@ -137,6 +110,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'TD',
+                'help' => get_string('td_help', 'customfield_sprogramme'),
                 'columnid' => 21,
                 'length' => 10,
                 'field' => 'float',
@@ -153,6 +127,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'TP',
+                'help' => get_string('tp_help', 'customfield_sprogramme'),
                 'columnid' => 22,
                 'length' => 10,
                 'field' => 'float',
@@ -169,6 +144,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'TPa',
+                'help' => get_string('tpa_help', 'customfield_sprogramme'),
                 'columnid' => 23,
                 'length' => 10,
                 'field' => 'float',
@@ -185,6 +161,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'TC',
+                'help' => get_string('tc_help', 'customfield_sprogramme'),
                 'columnid' => 24,
                 'length' => 10,
                 'field' => 'int',
@@ -201,6 +178,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'AAS',
+                'help' => get_string('aas_help', 'customfield_sprogramme'),
                 'columnid' => 25,
                 'length' => 10,
                 'field' => 'float',
@@ -217,6 +195,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'FMP',
+                'help' => get_string('fmp_help', 'customfield_sprogramme'),
                 'columnid' => 26,
                 'length' => 10,
                 'field' => 'float',
@@ -233,6 +212,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'Perso av',
+                'help' => get_string('perso_av_help', 'customfield_sprogramme'),
                 'columnid' => 27,
                 'length' => 10,
                 'field' => 'float',
@@ -247,6 +227,7 @@ class programme {
                 'visible' => true,
                 'canedit' => false,
                 'label' => 'Perso ap',
+                'help' => get_string('perso_ap_help', 'customfield_sprogramme'),
                 'columnid' => 28,
                 'length' => 10,
                 'field' => 'float',
@@ -294,7 +275,7 @@ class programme {
      * @param bool $showdisc
      * @return array $data
      */
-    public static function get_data(int $courseid, bool $showrfc = false, bool $showcompet = false, bool $showdisc = false): array {
+    public static function get_data(int $courseid, bool $showrfc = false): array {
         if ($showrfc && self::has_submitted_rfc($courseid)) {
             // Note to self: need to ensure there is only ever one submitted RFC per course.
             $rfc = sprogramme_rfc::get_rfc($courseid);
@@ -326,27 +307,23 @@ class programme {
                 }
 
                 $disciplinedata = [];
-                if ($showdisc) {
-                    $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
-                    foreach ($disciplines as $discipline) {
-                        $disciplinedata[] = [
-                            'id' => $discipline->get('did'),
-                            'name' => $discipline->get('discipline'),
-                            'percentage' => $discipline->get('percentage'),
-                        ];
-                    }
+                $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
+                foreach ($disciplines as $discipline) {
+                    $disciplinedata[] = [
+                        'id' => $discipline->get('did'),
+                        'name' => $discipline->get('discipline'),
+                        'percentage' => $discipline->get('percentage'),
+                    ];
                 }
 
                 $competencydata = [];
-                if ($showcompet) {
-                    $competencies = sprogramme_comp::get_all_records_for_programme($record->get('id'));
-                    foreach ($competencies as $competency) {
-                        $competencydata[] = [
-                            'id' => $competency->get('cid'),
-                            'name' => $competency->get('competency'),
-                            'percentage' => $competency->get('percentage'),
-                        ];
-                    }
+                $competencies = sprogramme_comp::get_all_records_for_programme($record->get('id'));
+                foreach ($competencies as $competency) {
+                    $competencydata[] = [
+                        'id' => $competency->get('cid'),
+                        'name' => $competency->get('competency'),
+                        'percentage' => $competency->get('percentage'),
+                    ];
                 }
 
                 $rowchanges = [];
@@ -513,7 +490,7 @@ class programme {
         $table = self::get_table_structure();
         $canedit = self::can_edit($courseid);
         $canaddrfc = self::can_add_rfc($courseid);
-        $editall = has_capability('customfield/sprogramme:editall', context_course::instance($courseid));
+        $editall = $canaddrfc && has_capability('customfield/sprogramme:editall', context_course::instance($courseid));
         $table = array_map(function($column) use ($canedit, $canaddrfc, $editall) {
             if ($column['canedit'] == false) {
                 $column['canaddrfc'] = $canaddrfc;
@@ -1272,7 +1249,7 @@ class programme {
         $columns = [];
 
         // Filter out the numeric columns.
-        $columnstotals = array_filter($columns, function($column) use ($numericcomlumns) {
+        $columns = array_filter($columnstotals, function($column) use ($numericcomlumns) {
             foreach ($numericcomlumns as $numericcolumn) {
                 if ($column['column'] == $numericcolumn['column']) {
                     return true;
@@ -1280,7 +1257,7 @@ class programme {
             }
             return false;
         });
-        return $columnstotals;
+        return $columns;
     }
 
     /**

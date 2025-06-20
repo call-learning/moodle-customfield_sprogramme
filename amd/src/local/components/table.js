@@ -50,8 +50,8 @@ const stateTemplate = (type, templatename = '', root = 'app') => {
         context[type] = State.getValue(type);
         // Clone the context to avoid issues with the same context in multiple templates.
         context = JSON.parse(JSON.stringify(context));
-        context.editor = root == 'app' ? true : false;
-        region.innerHTML = await Templates.render(template, context);
+        const {html, js} = await Templates.renderForPromise(template, context);
+        Templates.replaceNodeContents(region, html, js);
     };
     State.subscribe(type, tableColumns);
 };

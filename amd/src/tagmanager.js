@@ -103,15 +103,38 @@ class TagManager {
             const rowFound = module.rows.find(row => row.id === parseInt(rowId));
             if (rowFound) {
                 const position = module.rows.indexOf(rowFound);
-                if (position < 8) {
+                if (position < 6) {
                     const row = module.rows[0];
                     return row ? row.id : 0;
                 } else {
-                    return module.rows[position - 8].id;
+                    return module.rows[position - 6].id;
                 }
             }
         }
         return 0; // Row not found in any module.
+    }
+
+    /**
+     * Get the number of pixels to shift the arrow downwards.
+     * @param {String} rowId The row id.
+     * @param {Int} position The position of the row the form is attached to.
+     * @param {String} type The type of tag (disciplines or competencies).
+     * @returns {Int} The number of pixels to shift the arrow downwards.
+     */
+    getRowOffset(rowId, position, type) {
+        if (parseInt(rowId) === position || position === 0) {
+            return 0; // No offset needed if the row is the target row.
+        }
+        const target = document.querySelector(`[data-${type}][data-rowid="${position}"]`);
+        const row = document.querySelector(`[data-${type}][data-rowid="${rowId}"]`);
+        if (!target || !row) {
+            return 0; // If the target or row is not found, no offset needed.
+        }
+        const targetRect = target.getBoundingClientRect();
+        const rowRect = row.getBoundingClientRect();
+        // Calculate the offset based on the target and row positions.
+        const offset = rowRect.top - targetRect.top;
+        return offset;
     }
 
     /**
@@ -147,6 +170,7 @@ class TagManager {
      */
     async showDisciplineForm(btn) {
         const rowId = btn.dataset.id;
+        this.closeTagForm();
         this.renderForm(rowId, 'disciplines');
     }
 
@@ -156,6 +180,7 @@ class TagManager {
      */
     async showCompetenciesForm(btn) {
         const rowId = btn.dataset.id;
+        this.closeTagForm();
         this.renderForm(rowId, 'competencies');
     }
 
@@ -168,6 +193,7 @@ class TagManager {
     async renderForm(rowId, type) {
         const setTags = this.getTagsFromRow(rowId, type);
         const position = this.getTargetRow(rowId);
+        const arrowOffset = this.getRowOffset(rowId, position, type);
         const tags = State.getValue('tags');
         const target = document.querySelector(`[data-${type}][data-rowid="${position}"]`);
         const maxTagsReached = this.isMaxTagsReached(rowId, type);
@@ -177,6 +203,7 @@ class TagManager {
             rowid: rowId,
             settags: setTags,
             hasmaxtags: maxTagsReached,
+            arrowoffset: arrowOffset,
         });
         await Templates.appendNodeContents(target, html, js);
     }

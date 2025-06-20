@@ -110,14 +110,20 @@ class Manager {
                 this.changeModule(modulename);
             }
         });
-
+        // Resize the textareas when needed.
+        document.addEventListener('input', function(e) {
+            if (e.target.tagName === 'TEXTAREA') {
+                const textarea = e.target;
+                // Resize the textarea to fit the content.
+                textarea.style.height = 'auto'; // Reset height to auto to shrink if needed.
+                textarea.style.height = `${textarea.scrollHeight + 1}px`; // Set height to scrollHeight to fit content.
+                textarea.dataset.height = textarea.scrollHeight + 1; // Store the height in a data attribute.
+            }
+        });
         // Listen to the arrow down and up keys to navigate to the next or previous row.
         form.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                 this.navigate(e);
-                e.preventDefault();
-            }
-            if (e.key === 'Enter') {
                 e.preventDefault();
             }
         });
@@ -175,11 +181,9 @@ class Manager {
     async getTableData() {
         try {
             const response = await Repository.getData({courseid: this.courseid, showrfc: 1});
-            // Validate the response, the response.date should be a string that can be parsed to a JSON object.
             if (response.modules.length > 0) {
                 const modules = this.parseModules(response);
                 const columns = response.columns;
-                // Now clone this columns array to the state.
 
                 State.setValue('columns', [...columns]);
                 State.setValue('modules', modules);
@@ -207,6 +211,7 @@ class Manager {
      */
     parseModules(response) {
         response.modules.forEach(mod => {
+            mod.editor = response.canedit;
             mod.rows.map(row => {
                 row.cells = row.cells.map(cell => {
                     const column = response.columns.find(column => column.column == cell.column);
@@ -222,7 +227,6 @@ class Manager {
                             return clonedOption;
                         });
                     }
-                    cell.edit = true;
                     cell.changed = cell.value !== cell.oldvalue;
                     return cell;
                 });
@@ -323,6 +327,9 @@ class Manager {
                 module.error = true;
             }
             module.rows.forEach(row => {
+                if (row.deleted) {
+                    return; // Skip deleted rows.
+                }
                 if (row.cells.length === 0) {
                     row.error = true;
                     result = false;
@@ -350,7 +357,7 @@ class Manager {
                 if (!groups[cell.group]) {
                     groups[cell.group] = [];
                 }
-                if (cell.value) {
+                if (cell.value && cell.value > 0) {
                     groups[cell.group].push(cell);
                 }
             }
@@ -362,12 +369,10 @@ class Manager {
                     cell.error = true;
                 });
                 row.error = true;
-                row.message = 'Seules une cellule par groupe peut avoir une valeur.';
                 result = false;
             } else if (groups[group].length === 0) {
                 // No cell in the group has a value.
                 row.error = true;
-                row.message = 'Au moins une cellule par groupe doit avoir une valeur.';
                 result = false;
             } else {
                 row.error = false;
@@ -535,7 +540,7 @@ class Manager {
                     modulefound.rows[rowIndex].deleted = true;
                     // Set the changed attribute to each cell in the row.
                     modulefound.rows[rowIndex].cells.forEach(cell => {
-                        if (cell.value !== null) {
+                        if (cell.value !== null && (cell.type == 'float' || cell.type == 'number')) {
                             cell.changed = true;
                             cell.value = null; // Clear the value.
                         }
@@ -573,12 +578,21 @@ class Manager {
             const cellIndex = module.rows[rowIndex].cells.findIndex(c => c.columnid == columnid);
             const cell = module.rows[rowIndex].cells[cellIndex];
             cell.value = value ? value : null;
+            if (input.dataset.height) {
+                cell.height = input.dataset.height;
+            }
             // Find the other cells with the same group and null the value.
             if (group) {
                 module.rows[rowIndex].cells.forEach(c => {
                     if (c.group === group && c.columnid !== columnid && c.value !== null) {
                         c.value = null;
                     }
+                });
+            }
+            if (cell.type == 'select') {
+                // Find the option that matches the value and set it as selected.
+                cell.options.forEach(option => {
+                    option.selected = (option.name === value);
                 });
             }
         });
@@ -689,6 +703,7 @@ class Manager {
             moduleid: moduleid,
             modulename: ' ',
             deleted: false,
+            editor: true,
             rows: [row],
         };
         modules.push(module);

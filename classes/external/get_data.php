@@ -67,14 +67,14 @@ class get_data extends external_api {
             throw new \invalid_parameter_exception('invalidaccess');
         }
 
-        $modules = programme::get_data($courseid, $showrfc, true, true);
+        $modules = programme::get_data($courseid, $showrfc);
         $columns = programme::get_column_structure($courseid);
         $columnstotals = programme::get_column_totals($modules, $columns);
         $rfc = [];
         if ($showrfc) {
             $rfc = programme::get_rfc_data($courseid);
         }
-        $canedit = programme::can_edit($courseid);
+        $canedit = $showrfc && programme::can_edit($courseid);
 
         $data = [
             'modules' => $modules,
@@ -145,6 +145,7 @@ class get_data extends external_api {
                     'canaddrfc' => new external_value(PARAM_BOOL, 'Can add RFC', VALUE_OPTIONAL),
                     'protected' => new external_value(PARAM_BOOL, 'Protected', VALUE_OPTIONAL),
                     'label' => new external_value(PARAM_TEXT, 'Label', VALUE_REQUIRED),
+                    'help' => new external_value(PARAM_TEXT, 'Help text', VALUE_OPTIONAL),
                     'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
                     'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),
                     'field' => new external_value(PARAM_TEXT, 'Field', VALUE_REQUIRED),

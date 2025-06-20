@@ -16,7 +16,6 @@
 
 namespace customfield_sprogramme\local\persistent;
 
-use customfield_sprogramme\local\persistent\sprogramme_change;
 use context_course;
 use core\persistent;
 use lang_string;

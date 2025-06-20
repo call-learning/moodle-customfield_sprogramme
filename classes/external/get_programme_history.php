@@ -68,12 +68,21 @@ class get_programme_history extends external_api {
 
         // Get the programme history.
         $history = programme::get_programme_history($rfcid, $courseid);
+        $modules = $history['modules'];
+        if (empty($modules)) {
+            throw new \invalid_parameter_exception('No programme history found for this course.');
+        }
+        $rfcs = $history['rfcs'];
+        if (empty($rfcs)) {
+            throw new \invalid_parameter_exception('No programme history found for this course.');
+        }
         $columns = programme::get_column_structure($courseid);
+        $columnstotals = programme::get_column_totals($modules, $columns);
 
         return [
-            'modules' => $history['modules'],
-            'columns' => $columns,
-            'rfcs' => $history['rfcs'],
+            'modules' => $modules,
+            'columns' => $columnstotals,
+            'rfcs' => $rfcs,
         ];
     }
 
@@ -136,6 +145,7 @@ class get_programme_history extends external_api {
                     'canaddrfc' => new external_value(PARAM_BOOL, 'Can add RFC', VALUE_OPTIONAL),
                     'protected' => new external_value(PARAM_BOOL, 'Protected', VALUE_OPTIONAL),
                     'label' => new external_value(PARAM_TEXT, 'Label', VALUE_REQUIRED),
+                    'help' => new external_value(PARAM_TEXT, 'Help text', VALUE_OPTIONAL),
                     'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
                     'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),
                     'field' => new external_value(PARAM_TEXT, 'Field', VALUE_REQUIRED),

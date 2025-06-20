@@ -31,11 +31,42 @@
         <table class="programm-table standard">
             <thead>
                 <tr data-region="columns">
-                   {{> customfield_sprogramme/table/columns}}
+                    {{#columns}}
+                        <th class="{{field}}" data-columnid="{{columnid}}" {{#help}}data-toggle="popover" data-placement="bottom" data-html="true" data-content="{{{help}}}"{{/help}}>
+                            <span class="thlabel {{#help}}hashelp{{/help}}">{{{label}}}</span>
+                        </th>
+                    {{/columns}}
                 </tr>
             </thead>
             <tbody data-region="rows">
-                {{> customfield_sprogramme/table/rows}}
+                {{#rows}}
+                    <tr class="{{#disciplines}}show-disciplines{{/disciplines}} {{#competencies}}show-competencies{{/competencies}}" data-toggle="collapse" data-target="#row-{{id}}" aria-expanded="false" aria-controls="collapseWidthExample">
+                        {{#cells}}
+                            <td class="static {{type}} {{column}}">
+                                <span class="staticdata">{{{value}}}</div>
+                            </td>
+                        {{/cells}}
+                    </tr>
+                    <tr id="row-{{id}}" data-row class="tags collapse {{#disciplines}}has-disciplines{{/disciplines}} {{#competencies}}has-competencies{{/competencies}}">
+                        <td colspan="12" class="tags">
+                            {{#disciplines}}<div><strong>{{#str}}disciplines, customfield_sprogramme{{/str}}</strong></div>{{/disciplines}}
+                            {{#disciplines}}
+                                <div class="mb-1">
+                                    <span class="name">{{{name}}}</span>
+                                    <span class="percentage">{{{percentage}}}%</span>
+                                </div>
+                            {{/disciplines}}
+
+                            {{#competencies}}<div><strong>{{#str}}competencies, customfield_sprogramme{{/str}}</strong></div>{{/competencies}}
+                            {{#competencies}}
+                                <div class="mb-1">
+                                    <span class="name">{{{name}}}</span>
+                                    <span class="percentage">{{{percentage}}}%</span>
+                                </div>
+                            {{/competencies}}
+                        </td>
+                    </tr>
+                {{/rows}}
             </tbody>
         </table>
     </div>

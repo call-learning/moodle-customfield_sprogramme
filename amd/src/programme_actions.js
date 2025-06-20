@@ -92,6 +92,7 @@ const getEditor = async(element, courseid) => {
  * Get the programme.
  * @param {HTMLElement} element The element.
  * @param {String} courseid The courseid.
+ * @param {int} rfcid The Rfc id.
  * @return {Promise} The programme.
  */
 const getProgramme = async(element, courseid) => {

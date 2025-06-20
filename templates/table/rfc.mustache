@@ -34,7 +34,7 @@
         <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.userid}}">
             <div class="rfcinfo">
                 {{#issubmitted}}
-                    <a href="#" data-action="augmenttable" title="{{#str}}augment, customfield_sprogramme{{/str}}">{{#str}}rfc:showchangerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}</a>
+                    {{#str}}rfc:changerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}
                     <p class="mb-0 small">{{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
                 {{/issubmitted}}
                 <div class="actions">

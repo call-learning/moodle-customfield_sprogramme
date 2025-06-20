@@ -415,3 +415,9 @@
 {{#editor}}
     <button class="btn btn-link btn-sm" href="#" data-id="-1" data-action="addmodule">{{#str}}addmodule, customfield_sprogramme{{/str}}</button>
 {{/editor}}
+{{#js}}
+    document.querySelectorAll('.programm-textarea').forEach((textarea) => {
+        textarea.style.height = `${textarea.scrollHeight + 1}px`; // Set height to scrollHeight to fit content.
+        textarea.dataset.height = textarea.scrollHeight + 1; // Store the height in a data attribute.
+    });
+{{/js}}

@@ -15,25 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade steps for Programme customfield
+ * Install script for Programme customfield
  *
  * Documentation: {@link https://moodledev.io/docs/guides/upgrade}
  *
  * @package    customfield_sprogramme
- * @category   upgrade
- * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
+ * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Execute the plugin upgrade steps from the given old version.
+ * Executed on installation of Programme customfield
  *
- * @param int $oldversion
  * @return bool
  */
-function xmldb_customfield_sprogramme_upgrade($oldversion) {
-    global $DB;
-    $dbman = $DB->get_manager();
-
+function xmldb_customfield_sprogramme_install() {
+    \customfield_sprogramme\setup::fill_disclist();
+    \customfield_sprogramme\setup::fill_complist();
     return true;
 }
