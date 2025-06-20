@@ -93,22 +93,17 @@ class sprogramme_rfc extends persistent {
      */
     public static function get_rfc(int $courseid): ?sprogramme_rfc {
         global $USER;
-        $context = context_course::instance($courseid);
-        $editall = has_capability('customfield/sprogramme:editall', $context);
-        if ($editall) {
-            $record =  self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED]);
-            return $record ?: null;
-        } else {
-            $submitted = self::get_record(['courseid' => $courseid, 'type' => self::RFC_REQUESTED, 'usermodified' => $USER->id]);
-            if ($submitted) {
-                return $submitted;
-            }
-            $requested = self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED, 'usermodified' => $USER->id]);
-            if ($requested) {
-                return $requested;
-            }
+
+        $submitted = self::get_record(['courseid' => $courseid, 'type' => self::RFC_REQUESTED, 'usermodified' => $USER->id]);
+        if ($submitted) {
+            return $submitted;
         }
-        return null;
+        $requested = self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED, 'usermodified' => $USER->id]);
+        if ($requested) {
+            return $requested;
+        }
+        $record =  self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED]);
+        return $record ?: null;
     }
 
     /**

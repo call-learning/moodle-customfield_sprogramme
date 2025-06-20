@@ -956,16 +956,7 @@ class programme {
                 $record->delete();
                 self::purge_cache($courseid);
                 return true;
-            } else {
-                $result = '';
-                if ($result == 'rfclocked') {
-                    return false;
-                }
-                if ($result == 'newrfc') {
-                    return true;
-                }
             }
-
         }
         return false;
     }

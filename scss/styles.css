@@ -38,7 +38,7 @@
     width: 100%;
     min-width: 70px;
     height: calc(1.5em + 0.75rem + 2px);
-    padding: 0.125rem;
+    padding: 0.5rem;
     font-size: 0.8rem;
     font-weight: 400;
     line-height: 1.5;
@@ -221,8 +221,6 @@
         justify-content: center;
         align-items: center;
         border-radius: 50%; }
-    .customfield-sprogramme .programm-table td.actions {
-      display: flex; }
     .customfield-sprogramme .programm-table td.static {
       padding: 0.4rem; }
     .customfield-sprogramme .programm-table td.haschanges input {
