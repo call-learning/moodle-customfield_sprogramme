@@ -385,7 +385,7 @@
     }
 }}
 {{#modules}}
-    <div class="{{#deleted}}d-none{{/deleted}} modules mb-5" data-region="module" data-id="{{moduleid}}">
+    <div class="{{#deleted}}deletepending{{/deleted}} modules mb-5" data-region="module" data-id="{{moduleid}}">
         <div class="d-flex mb-1 p-1 align-items-center">
             {{#editor}}
                 <div class="h5 mb-0 d-flex align-items-center">
@@ -412,9 +412,7 @@
         {{/editor}}
     </div>
 {{/modules}}
-{{#editor}}
     <button class="btn btn-link btn-sm" href="#" data-id="-1" data-action="addmodule">{{#str}}addmodule, customfield_sprogramme{{/str}}</button>
-{{/editor}}
 {{#js}}
     document.querySelectorAll('.programm-textarea').forEach((textarea) => {
         textarea.style.height = `${textarea.scrollHeight + 1}px`; // Set height to scrollHeight to fit content.

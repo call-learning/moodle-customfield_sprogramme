@@ -678,6 +678,15 @@ class Manager {
         if (moduleIndex !== -1) {
             // Add the deleted attribute to the module.
             modules[moduleIndex].deleted = true;
+            modules[moduleIndex].rows.forEach(row => {
+                row.deleted = true; // Mark all rows as deleted.
+                row.cells.forEach(cell => {
+                    if (cell.value !== null && (cell.type == 'float' || cell.type == 'number')) {
+                        cell.changed = true;
+                        cell.value = null; // Clear the value.
+                    }
+                });
+            });
             State.setValue('modules', modules);
         }
     }
