@@ -156,7 +156,7 @@ class notifications {
      */
     public static function add_global_context($context, $courseid): array {
         $course = get_course($courseid);
-        $programmelink = new moodle_url('/customfield/field/sprogramme/edit.php', ['id' => $courseid, 'pagetype' => 'viewrfcs']);
+        $programmelink = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $courseid]);
         $context['programmelink'] = $programmelink->out();
         $context['coursename'] = $course->fullname;
         return $context;

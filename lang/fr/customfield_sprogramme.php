@@ -100,4 +100,13 @@ $string['rfc:helptext'] = <<<'EOF'
 EOF;
 
 $string['history'] = 'Historique';
+$string['cm_help'] = 'Nombre d’heures de cours magistral dispensé par un enseignant à un grand groupe d’étudiants.';
+$string['td_help'] = 'Nombre d’heures de travaux dirigés réalisés en petits groupes avec un encadrement pédagogique.';
+$string['tp_help'] = 'Nombre d’heures de travaux pratiques consacrés à des expériences ou à l’apprentissage technique.';
+$string['tpa_help'] = 'Nombre d’heures de travaux pratiques accompagnés avec un encadrement léger, réalisés de manière plus autonome.';
+$string['tc_help'] = 'Nombre d’heures de travaux collectifs effectués en groupe par les étudiants.';
+$string['aas_help'] = 'Nombre d’heures d’activités pédagogiques spécifiques, telles que des conférences, des sorties ou des ateliers.';
+$string['fmp_help'] = 'Nombre d’heures de formation en milieu professionnel (stages, immersions, etc.).';
+$string['perso_av_help'] = 'Estimation du temps de travail personnel attendu avant la séance (préparation, lecture, etc.).';
+$string['perso_ap_help'] = 'Estimation du temps de travail personnel après la séance (exercices, révisions, etc.).';
 $string['notifications'] = 'Notifications';

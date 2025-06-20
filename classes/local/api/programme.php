@@ -360,7 +360,7 @@ class programme {
         if (!self::can_edit($courseid)) {
             throw new \moodle_exception('nopermissions', 'error', '', 'edit programme');
         }
-        if (self::is_rfc_required($courseid)) {
+        if (self::is_rfc_required($courseid) && self::has_protected_data_changes($data)) {
             if (!self::can_add_rfc($courseid)) {
                 throw new \moodle_exception('nopermissions', 'error', '', 'add rfc');
             }
@@ -1067,6 +1067,39 @@ class programme {
             return false; // If the user has the capability to edit all, no rfc is required.
         }
         return true;
+    }
+
+    /**
+     * Are there any data changes for columns that have canedit set to false?
+     * @param array $data
+     * @return bool
+     */
+    public static function has_protected_data_changes(array $data): bool {
+        $columns = self::get_table_structure();
+        foreach ($data as $module) {
+            if ($module['deleted'] == true) {
+                continue; // Skip deleted modules.
+            }
+            foreach ($module['rows'] as $row) {
+                if ($row['deleted'] == true) {
+                    continue; // Skip deleted rows.
+                }
+                foreach ($row['cells'] as $cell) {
+                    $column = array_filter($columns, function($col) use ($cell) {
+                        return $col['column'] === $cell['column'];
+                    });
+                    if (empty($column)) {
+                        continue; // Skip if column not found.
+                    }
+                    $column = reset($column);
+                    if ($column['canedit'] == false && $cell['value'] != $cell['oldvalue']) {
+                        // If the column cannot be edited and the value is not empty, there are data changes.
+                        return true;
+                    }
+                }
+            }
+        }
+        return false; // No data changes found for columns that cannot be edited.
     }
 
     /**

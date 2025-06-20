@@ -100,13 +100,13 @@ $string['rfc:helptext'] = <<<'EOF'
 EOF;
 
 $string['history'] = 'History';
-$string['cm_help'] = 'Nombre d’heures de cours magistral dispensé par un enseignant à un grand groupe d’étudiants.';
-$string['td_help'] = 'Nombre d’heures de travaux dirigés réalisés en petits groupes avec un encadrement pédagogique.';
-$string['tp_help'] = 'Nombre d’heures de travaux pratiques consacrés à des expériences ou à l’apprentissage technique.';
-$string['tpa_help'] = 'Nombre d’heures de travaux pratiques accompagnés avec un encadrement léger, réalisés de manière plus autonome.';
-$string['tc_help'] = 'Nombre d’heures de travaux collectifs effectués en groupe par les étudiants.';
-$string['aas_help'] = 'Nombre d’heures d’activités pédagogiques spécifiques, telles que des conférences, des sorties ou des ateliers.';
-$string['fmp_help'] = 'Nombre d’heures de formation en milieu professionnel (stages, immersions, etc.).';
-$string['perso_av_help'] = 'Estimation du temps de travail personnel attendu avant la séance (préparation, lecture, etc.).';
-$string['perso_ap_help'] = 'Estimation du temps de travail personnel après la séance (exercices, révisions, etc.).';
+$string['cm_help'] = 'Number of lecture hours given by a teacher to a large group of students.';
+$string['td_help'] = 'Number of tutorial hours conducted in small groups with educational support.';
+$string['tp_help'] = 'Number of practical work hours dedicated to experiments or technical learning.';
+$string['tpa_help'] = 'Number of guided practical work hours with light supervision, carried out more independently.';
+$string['tc_help'] = 'Number of group work hours carried out collectively by students.';
+$string['aas_help'] = 'Number of hours for specific educational activities, such as lectures, field trips or workshops.';
+$string['fmp_help'] = 'Number of hours of work experience in a professional environment (internships, placements, etc.).';
+$string['perso_av_help'] = 'Estimated amount of personal preparation time expected before the session (reading, preparation, etc.).';
+$string['perso_ap_help'] = 'Estimated amount of personal study time after the session (exercises, revision, etc.).';
 $string['notifications'] = 'Notifications';
