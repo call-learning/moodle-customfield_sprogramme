@@ -39,6 +39,16 @@ class programme_importer extends base_persistent_importer {
     protected $sortorder;
 
     /**
+     * Persistent class
+     *
+     * @param array|null $options options like unique for the list of fields used to check for existing records
+     * @throws moodle_exception
+     */
+    public function __construct(?array $options = []) {
+        parent::__construct(programme::class, $options);
+    }
+
+    /**
      * Get row content from persistent data
      *
      * This can be used to tweak the data before it is persisted and maybe get some external keys.
@@ -71,7 +81,7 @@ class programme_importer extends base_persistent_importer {
         $programproperties = programme::get_properties();
         foreach ($programproperties as $property => $definition) {
             if ($definition['type'] === PARAM_INT) {
-                if ($data->$property === '') {
+                if (!isset($data->$property) || $data->$property === '') {
                     $data->$property = null;
                 } else {
                     $data->$property = (int) $data->$property;
@@ -103,7 +113,10 @@ class programme_importer extends base_persistent_importer {
      * @return array
      */
     protected function get_list(string $data, string $type): array {
-        $data = explode('|', $data);
+        if (empty(trim($data))) {
+            return [];
+        }
+        $data = explode('|', trim($data));
         // Get the percentage (50%) from the data.
         $data = array_map(function ($item) {
             $item = explode('(', $item);
@@ -116,32 +129,52 @@ class programme_importer extends base_persistent_importer {
 
         if ($type == 'disciplines') {
             $disciplines = programme_api::get_disciplines();
+            $disciplines = $this->flattern_list($disciplines);
+            $disciplinewithid = array_column($disciplines, 'uniqueid', 'name');
+
             foreach ($data as $key => $item) {
-                $matchingdiscipline = array_filter($disciplines, function ($discipline) use ($item) {
-                    return $discipline['name'] == $item['name'];
-                });
-                if (empty($matchingdiscipline)) {
-                    unset($data[$key]);
-                } else {
-                    $item['did'] = array_values($matchingdiscipline)[0]['id'];
+                $itemname = trim($item['name']);
+                if (isset($disciplinewithid[$itemname])) {
+                    $item['did'] = $disciplinewithid[$itemname];
                     $data[$key] = $item;
+                } else {
+                    unset($data[$key]);
                 }
             }
         }
         if ($type == 'competencies') {
             $competencies = programme_api::get_competencies();
+            $competencies = $this->flattern_list($competencies);
+            $competencieswithid = array_column($competencies, 'uniqueid', 'name');
+
             foreach ($data as $key => $item) {
-                $matchingcompetency = array_filter($competencies, function ($competency) use ($item) {
-                    return $competency['name'] == $item['name'];
-                });
-                if (empty($matchingcompetency)) {
-                    unset($data[$key]);
-                } else {
-                    $item['cid'] = array_values($matchingcompetency)[0]['id'];
+                $itemname = trim($item['name']);
+                if (isset($competencieswithid[$itemname])) {
+                    $item['cid'] = $competencieswithid[$itemname];
                     $data[$key] = $item;
+                } else {
+                    unset($data[$key]);
                 }
             }
         }
         return $data;
+    }
+
+    /**
+     * Flatten a list of items with nested items.
+     *
+     * @param array $list
+     * @return array
+     */
+    private function flattern_list(array $list): array {
+        $flatterned = [];
+        foreach ($list as $item) {
+            if (isset($item['items']) && is_array($item['items'])) {
+                $flatterned = array_merge($flatterned, $this->flattern_list($item['items']));
+            } else {
+                $flatterned[] = $item;
+            }
+        }
+        return $flatterned;
     }
 }

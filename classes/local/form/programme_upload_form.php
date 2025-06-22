@@ -55,7 +55,7 @@ class programme_upload_form extends dynamic_form {
             $file->copy_content_to($filepath);
             try {
                 programme::delete_programme($data->courseid);
-                $programimporter = new programme_importer(sprogramme::class, ['courseid' => $data->courseid]);
+                $programimporter = new programme_importer(['courseid' => $data->courseid]);
                 $programimporter->import($filepath, "comma");
             } finally {
                 unlink($filepath);

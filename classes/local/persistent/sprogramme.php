@@ -33,6 +33,35 @@ class sprogramme extends persistent {
     const TABLE = 'customfield_sprogramme';
 
     /**
+     * Disciplines for the sprogramme.
+     */
+    private array $disciplines = [];
+
+    /**
+     * Competencies for the sprogramme.
+     */
+    private array $competencies = [];
+
+    /**
+     * Create an instance of this class.
+     *
+     * @param int $id If set, this is the id of an existing record, used to load the data.
+     * @param stdClass $record If set will be passed to {@link self::from_record()}.
+     */
+    public function __construct($id = 0, ?\stdClass $record = null) {
+        if (isset($record->disciplines)) {
+            $this->disciplines = $record->disciplines;
+            unset($record->disciplines);
+        }
+        if (isset($record->competencies)) {
+            $this->competencies = $record->competencies;
+            unset($record->competencies);
+        }
+
+        parent::__construct($id, $record);
+    }
+
+    /**
      * Return the custom definition of the properties of this model.
      *
      * Each property MUST be listed here.
@@ -299,33 +328,45 @@ class sprogramme extends persistent {
     /**
      * Hook to execute after a create.
      *
-     * As situations are visible when the user (student) belongs to one of the groups, we need to make
-     * sure that we send an event that will be observed so we clear the cache
-     * @param object $data
-     *
      * @return void
      */
-    public function after_create_custom($data) {
-        $disciplines = $data->disciplines;
-        $competencies = $data->competencies;
+    public function after_create() {
         $pid = $this->raw_get('id');
-        foreach ($disciplines as $discipline) {
+        foreach ($this->disciplines as $discipline) {
             $disc = new sprogramme_disc(null, (object) [
-                'pid' => $this->raw_get('id'),
+                'pid' => $pid,
                 'did' => $discipline['did'],
                 'discipline' => $discipline['name'],
                 'percentage' => $discipline['percentage'],
             ]);
             $disc->save();
         }
-        foreach ($competencies as $competency) {
+        foreach ($this->competencies as $competency) {
             $comp = new sprogramme_comp(null, (object) [
-                'pid' => $this->raw_get('id'),
+                'pid' => $pid,
                 'cid' => $competency['cid'],
                 'competency' => $competency['name'],
                 'percentage' => $competency['percentage'],
             ]);
             $comp->save();
+        }
+    }
+
+    /**
+     * Hook to execute before a create.
+     *
+     * This is used to set the sequence number if it is not set.
+     *
+     * @return void
+     */
+    public function before_create() {
+        // Make sure that sequence is not set to null.
+        $sequence = $this->raw_get('sequence');
+        if ($sequence === null) {
+            $count = self::count_records(
+                ['courseid' => $this->raw_get('courseid'), 'moduleid' => $this->raw_get('moduleid')]
+            );
+            $this->raw_set('sequence', $count + 1);
         }
     }
 }

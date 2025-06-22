@@ -110,9 +110,6 @@ abstract class base_persistent_importer {
         $newpersistent = new $this->persistenclass(0, $data);
 
         $newpersistent->create();
-        if (method_exists($newpersistent, 'after_create_custom')) {
-            $newpersistent->after_create_custom($data);
-        }
     }
 
     /**
