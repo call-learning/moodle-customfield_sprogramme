@@ -50,7 +50,7 @@ class data_controller extends \core_customfield\data_controller {
         );
         $renderer = $PAGE->get_renderer('customfield_sprogramme');
         $formfield = new formfield();
-        $mform->addElement('static', 'rendered', 'test', $renderer->render($formfield));
+        $mform->addElement('static', 'rendered', $this->get_field()->get('name'), $renderer->render($formfield));
         $mform->setType('rendered', PARAM_RAW);
     }
 
