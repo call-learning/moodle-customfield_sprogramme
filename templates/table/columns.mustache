@@ -274,8 +274,12 @@
         <span class="thlabel {{#help}}hashelp{{/help}}">{{{label}}}</span>
     </th>
 {{/columns}}
-<th class="attachdisciplineform" data-region="attachdisciplineform">{{#str}}disciplines, customfield_sprogramme {{/str}}</th>
-<th class="attachcompetencyform" data-region="attachcompetencyform">{{#str}}competencies, customfield_sprogramme {{/str}}</th>
+<th class="attachdisciplineform" data-region="attachdisciplineform" data-toggle="popover" data-placement="bottom" data-html="true" data-content="{{#str}}disciplines_help, customfield_sprogramme {{/str}}">
+     <span class="thlabel hashelp">{{#str}}disciplines, customfield_sprogramme {{/str}}</span>
+</th>
+<th class="attachcompetencyform" data-region="attachcompetencyform" data-toggle="popover" data-placement="bottom" data-html="true" data-content="{{#str}}competencies_help, customfield_sprogramme {{/str}}">
+    <span class="thlabel hashelp">{{#str}}competencies, customfield_sprogramme {{/str}}</span>
+</th>
 {{#editor}}
     <th>{{#str}}actions, plugin {{/str}}</th>
 {{/editor}}

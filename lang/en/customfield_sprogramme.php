@@ -100,15 +100,21 @@ $string['rfc:helptext'] = <<<'EOF'
 EOF;
 
 $string['history'] = 'History';
-$string['cm_help'] = 'Number of lecture hours given by a teacher to a large group of students.';
-$string['td_help'] = 'Number of tutorial hours conducted in small groups with educational support.';
-$string['tp_help'] = 'Number of practical work hours dedicated to experiments or technical learning.';
-$string['tpa_help'] = 'Number of guided practical work hours with light supervision, carried out more independently.';
-$string['tc_help'] = 'Number of group work hours carried out collectively by students.';
-$string['aas_help'] = 'Number of hours for specific educational activities, such as lectures, field trips or workshops.';
-$string['fmp_help'] = 'Number of hours of work experience in a professional environment (internships, placements, etc.).';
-$string['perso_av_help'] = 'Estimated amount of personal preparation time expected before the session (reading, preparation, etc.).';
-$string['perso_ap_help'] = 'Estimated amount of personal study time after the session (exercises, revision, etc.).';
+$string['dd_rse_help'] = 'Sustainable Development / Social and Environmental Responsibility: This checkbox indicates whether the session fully or partially addresses concepts related to the SD / SER domain.';
+$string['intitule_seance_help'] = 'The name of the teaching exercise is entered in this field. It must match exactly the memo indicated in Hyperplanning. This title starts with the type of exercise (CM, TD, TP, etc.) and its order in the educational ribbon. For example: "CM03 - Dairy Cow Career 1/2".';
+$string['cm_help'] = 'Main Lecture: Theoretical teaching given to a whole or partial group of students. Teaching can be with or without the aid of teaching materials, demonstration animals, or specimens. The essential characteristic is that there is no practical involvement of students in the material discussed. They listen and do not physically manipulate.';
+$string['td_help'] = 'Directed Work: Teaching sessions where students work alone or in teams on theoretical aspects, prepared from documents, articles, etc. Students reflect and interact on concepts. The session is animated by exercises, discussions, and, if possible, case studies (problem-solving learning for example).';
+$string['tp_help'] = 'Practical Work non-clinical: Teaching sessions where students themselves manipulate teaching resources (software, microscopes, lab experiments, etc.) without handling animals, organs, or mannequins.';
+$string['tpa_help'] = 'Practical Work on healthy animals: Teaching sessions where students work themselves on healthy animals, anatomical parts, mannequins, carcasses, etc. (for example: ante mortem and post mortem inspection, food hygiene, etc.). All VetSims activities are included in this category.';
+$string['tc_help'] = 'Clinical Work: Practical teaching sessions performed by students in a clinical environment (individual or collective medicine) including clinical rotations both in-house and off-site (including ambulatory) under the supervision of a teacher, and autopsy.';
+$string['aas_help'] = 'Supervised Self-Learning: Teaching including sequences of individual autonomous learning where students use available teaching materials (and can obtain, upon request, occasional help from teachers) and self-evaluate (e-learning for example).';
+$string['fmp_help'] = 'Professional Training in the context of a UC: Training periods that are an integral part of the study program, but are followed outside the institution and under the supervision of a non-academic teacher (for example, a practitioner).';
+$string['perso_av_help'] = 'Estimated personal work time needed to prepare in advance for the session/exercise. This work time includes, among other things, the time spent completing prerequisite self-assessments before the session.';
+$string['perso_ap_help'] = 'Estimated personal work time needed to assimilate the session/exercise. This work time includes the time spent revising for the mid-term assessment and/or final exam.';
+$string['consignes_help'] = 'This field indicates everything the student must do to prepare for the session/exercise before attending. Anything not indicated here cannot be required during the session/exercise.';
+$string['supports_help'] = 'This field indicates the essential teaching materials needed for preparing for the session/exercise and for revision. Only the teaching materials listed in this field are considered essential. If it is not essential, it is only optional and complementary.';
+$string['disciplines_help'] = 'This field indicates the AEEEV disciplines (1 to 3 maximum) that are concerned by the session/exercise, and their respective percentages within the session (for example, 10% for "2. Immunology", 60% for "2. Parasitology", and 30% for "4.FPA Preventive medicine". The sum must equal 100%.';
+$string['competencies_help'] = 'This field indicates the competencies (1 to 3 maximum) from the national framework that are concerned by the session/exercise, and their respective percentages within the session. The sum must equal 100%.';
 $string['notifications'] = 'Notifications';
 
 $string['overaltotals'] = 'Overall totals';
