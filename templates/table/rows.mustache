@@ -138,21 +138,18 @@
     <table>
 {{/mustacheonly}}
 {{#rows}}
-    <tr data-row data-index="{{id}}" draggable="true" class="{{#error}} haserror {{/error}}{{#deleted}}deletepending{{/deleted}}{{#rowchanges}} hasrowchanges{{/rowchanges}}">
+    <tr data-row data-index="{{id}}" class="{{#error}} haserror {{/error}}{{#deleted}}deletepending{{/deleted}}{{#rowchanges}} hasrowchanges{{/rowchanges}}">
         {{#cells}}
             {{#editor}}
                 <td data-cell data-columnid="{{columnid}}"{{#changes}} data-action="showchanges"{{/changes}} class="{{#changed}}haschanges {{/changed}}{{#protected}}protected {{/protected}}{{#float}}float{{/float}}{{#int}}int{{/int}}">
                     {{#int}}
-                        <input name="input-{{column}}-{{columnid}}" class="programm-input" data-old="{{oldvalue}}" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}"/>
+                        <input name="input-{{column}}-{{columnid}}" draggable="false" class="programm-input" data-old="{{oldvalue}}" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}"/>
                     {{/int}}
                     {{#float}}
-                        <input name="input-{{column}}-{{columnid}}" class="programm-input" data-old="{{oldvalue}}" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}"/>
+                        <input name="input-{{column}}-{{columnid}}" draggable="false" class="programm-input" data-old="{{oldvalue}}" data-input="auto" {{#group}}data-group="{{group}}"{{/group}} type="number" value="{{{value}}}"{{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}"/>
                     {{/float}}
-                    {{#textold}}
-                        <input name="input-{{column}}-{{columnid}}" class="programm-input" data-old="{{oldvalue}}" data-input="auto" maxlength="{{length}}" type="text" value="{{{value}}}"{{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}" />
-                    {{/textold}}
                     {{#text}}
-                        <textarea name="input-{{column}}-{{columnid}}" class="programm-textarea" data-old="{{oldvalue}}" data-input="auto" maxlength="{{length}}" {{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}" {{#height}}style="height: {{height}}px"{{/height}}>{{{value}}}</textarea>
+                        <textarea name="input-{{column}}-{{columnid}}" draggable="false" class="programm-textarea" rows="5" cols="40" data-old="{{oldvalue}}" data-input="auto" maxlength="{{length}}" {{#protected}}{{^canaddrfc}}disabled {{/canaddrfc}}{{/protected}} placeholder="{{{sample_value}}}" {{#height}}style="height: {{height}}px"{{/height}}>{{{value}}}</textarea>
                     {{/text}}
                     {{#select}}
                         <select name="select-{{column}}-{{columnid}}" data-input="auto" class="programm-input">
@@ -204,7 +201,7 @@
         {{#editor}}
         <td class="actions">
             <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-id="{{id}}" data-action="deleterow">{{#pix}}i/delete, core, {{#str}}delete{{/str}}{{/pix}}</button>
-            <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-region="dragicon">{{#pix}}i/move_2d, core, {{#str}}move{{/str}}{{/pix}}</button>
+            <button class="btn btn-icon icon-no-margin mr-1 jsbutton" draggable="true" data-region="dragicon">{{#pix}}i/move_2d, core, {{#str}}move{{/str}}{{/pix}}</button>
             <button class="btn btn-icon icon-no-margin mr-1 jsbutton" data-id="{{id}}" data-action="addrow">{{#pix}}e/insert, core, {{#str}}add{{/str}}{{/pix}}</button>
         </td>
         {{/editor}}

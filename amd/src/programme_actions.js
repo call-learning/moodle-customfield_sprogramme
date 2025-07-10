@@ -24,6 +24,7 @@ import Manager from 'customfield_sprogramme/manager';
 import History from 'customfield_sprogramme/history';
 import {getString} from 'core/str';
 import Modal from 'core/modal';
+import $ from 'jquery';
 
 /*
  * Initialise
@@ -44,6 +45,15 @@ const init = async() => {
             const courseid = actionBtn.dataset.courseid;
             await showHistory(rfcid, courseid);
             event.preventDefault();
+        }
+        const popOvers = document.querySelectorAll('[data-toggle="popover"]');
+        const currentPopover = event.target.closest('[data-toggle="popover"]');
+        if (popOvers.length > 0) {
+            popOvers.forEach((popover) => {
+                if (popover !== currentPopover) {
+                    $(popover).popover('hide');
+                }
+            });
         }
     });
 };
@@ -92,7 +102,6 @@ const getEditor = async(element, courseid) => {
  * Get the programme.
  * @param {HTMLElement} element The element.
  * @param {String} courseid The courseid.
- * @param {int} rfcid The Rfc id.
  * @return {Promise} The programme.
  */
 const getProgramme = async(element, courseid) => {

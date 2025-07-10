@@ -28,10 +28,17 @@
         {{#columns}}
             <th class="{{field}}{{#changed}} haschanges{{/changed}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
                 <div class="d-flex sumcontainer">
-                    <span class="sum{{#hasnewsum}} strikethrough{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>
-                    <span class="newsum {{^hasnewsum}}d-none{{/hasnewsum}}{{#hasnewsum}}ml-1{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>
+                    <span class="sum" data-columnid="{{columnid}}" data-region="sumtotals">{{#changed}}{{sum}}{{/changed}}</span>
+                    <span class="newsum ml-1" data-columnid="{{columnid}}" data-region="newsumtotals">{{^changed}}{{#newsum}}{{newsum}}{{/newsum}}{{/changed}}{{#changed}}{{newsum}}{{/changed}}</span>
                 </div>
             </th>
         {{/columns}}
+        <th class="float overaltotals {{#columns.0.totalschanged}} haschanges{{/columns.0.totalschanged}}">
+            <span class="thlabel">{{#str}}overaltotals, customfield_sprogramme{{/str}}</span>
+            <div class="d-flex sumcontainer">
+                <span class="sum" data-region="overaltotals">{{#columns.0.totalschanged}}{{columns.0.overaltotals}}{{/columns.0.totalschanged}}</span>
+                <span class="newsum ml-1" data-region="newsumtotals">{{columns.0.newsumtotals}}</span>
+            </div>
+        </th>
     </tr>
 </table>

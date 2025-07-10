@@ -49,7 +49,7 @@
                     </tr>
                     <tr id="row-{{id}}" data-row class="tags collapse {{#disciplines}}has-disciplines{{/disciplines}} {{#competencies}}has-competencies{{/competencies}}">
                         <td colspan="12" class="tags">
-                            {{#disciplines}}<div><strong>{{#str}}disciplines, customfield_sprogramme{{/str}}</strong></div>{{/disciplines}}
+                            <div {{^disciplines.0}}class="d-none"{{/disciplines.0}}><strong>{{#str}}disciplines, customfield_sprogramme{{/str}}</strong></div>
                             {{#disciplines}}
                                 <div class="mb-1">
                                     <span class="name">{{{name}}}</span>
@@ -57,7 +57,7 @@
                                 </div>
                             {{/disciplines}}
 
-                            {{#competencies}}<div><strong>{{#str}}competencies, customfield_sprogramme{{/str}}</strong></div>{{/competencies}}
+                            <div {{^competencies.0}}class="d-none"{{/competencies.0}}><strong>{{#str}}competencies, customfield_sprogramme{{/str}}</strong></div>
                             {{#competencies}}
                                 <div class="mb-1">
                                     <span class="name">{{{name}}}</span>
