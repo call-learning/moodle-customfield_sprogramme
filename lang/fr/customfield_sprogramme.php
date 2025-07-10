@@ -56,16 +56,18 @@ $string['sprogramme:edit'] = 'Modifier le champ personnalisé Programme';
 $string['sprogramme:view'] = 'Afficher le champ personnalisé Programme';
 $string['submitdate'] = 'Date de soumission : ';
 $string['submitrfc'] = 'Soumettre une demande de modification';
-$string['email:rfc:subject'] = '[Programme] Vous avez une demande de modification pour {$a->coursename}';
+$string['email:rfc:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
 $string['email:rfc'] = <<<'EOF'
 
 <p>Bonjour,</p>
 
-<p>Une demande de modification a été soumise pour le programme du cours {$a->coursename}.</p>
+<p>Une demande de modification de programme a été soumise pour l'UC suivante :{$a->coursename}.</p>
 
-<p>Veuillez consulter le lien suivant pour examiner la demande :</p>
-<p><a href="{$a->programmelink}">{$a->programmelink}</a></p>
-<p>Cordialement,</p>
+<p>Le chef de département concerné est invité à examiner ces modifications et à confirmer son accord en répondant à ce message, en copie au directeur des formations et au responsable qualité.</p>
+<p>Une fois cet accord transmis, la direction des formations procédera à la validation finale, puis à la mise à jour de la maquette pédagogique globale.</p>
+<p>Pour consulter les modifications proposées, veuillez suivre ce lien et cliquer sur le bouton "modifier le programme" :
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Bien cordialement</p>
 EOF;
 $string['notification:rfc'] = 'Demande de modification';
 $string['notification:notifications'] = 'Notifications par e-mail';

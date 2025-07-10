@@ -57,16 +57,16 @@ $strign['sprogramme:editall'] = 'Edit all the Programme customfield';
 $string['sprogramme:view'] = 'View the Programme customfield';
 $string['submitdate'] = 'Submit date: ';
 $string['submitrfc'] = 'Submit change request';
-$string['email:rfc:subject'] = '[Programme] You have a change request for {$a->coursename}';
+$string['email:rfc:subject'] = '[Syllabus] Request for programme change for: {$a->coursename}';
 $string['email:rfc'] = <<<'EOF'
 
 <p>Hello,</p>
-
-<p>A change request has been submitted for the programme for {$a->coursename}.</p>
-
-<p>Please visit the following link to review the request:</p>
-<p><a href="{$a->programmelink}">{$a->programmelink}</a></p>
-<p>Best regards,</p>
+<p>A change request has been submitted for the programme of the following course: {$a->coursename}.</p>
+<p>The head of the relevant department is invited to review these changes and confirm their agreement by replying to this message, copying the director of training and the quality manager.</p>
+<p>Once this agreement has been communicated, the director of training will proceed with the final validation and update the overall educational framework.</p>
+<p>To view the proposed changes, please follow this link and click on the "Edit programme" button: 
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Best regards</p>
 EOF;
 $string['notification:rfc'] = 'Request for change';
 $string['notification:notifications'] = 'Email notifications';
