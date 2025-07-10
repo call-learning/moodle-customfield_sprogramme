@@ -101,17 +101,25 @@ $string['rfc:helptext'] = <<<'EOF'
 EOF;
 
 $string['history'] = 'Historique';
-$string['cm_help'] = 'Nombre d’heures de cours magistral dispensé par un enseignant à un grand groupe d’étudiants.';
-$string['td_help'] = 'Nombre d’heures de travaux dirigés réalisés en petits groupes avec un encadrement pédagogique.';
-$string['tp_help'] = 'Nombre d’heures de travaux pratiques consacrés à des expériences ou à l’apprentissage technique.';
-$string['tpa_help'] = 'Nombre d’heures de travaux pratiques accompagnés avec un encadrement léger, réalisés de manière plus autonome.';
-$string['tc_help'] = 'Nombre d’heures de travaux collectifs effectués en groupe par les étudiants.';
-$string['aas_help'] = 'Nombre d’heures d’activités pédagogiques spécifiques, telles que des conférences, des sorties ou des ateliers.';
-$string['fmp_help'] = 'Nombre d’heures de formation en milieu professionnel (stages, immersions, etc.).';
-$string['perso_av_help'] = 'Estimation du temps de travail personnel attendu avant la séance (préparation, lecture, etc.).';
-$string['perso_ap_help'] = 'Estimation du temps de travail personnel après la séance (exercices, révisions, etc.).';
+
+$string['dd_rse_help'] = 'Développement Durable / Responsabilité Sociétale et Environnementale : Cette case indique si la séance traite intégralement ou en partie de notions en lien avec le domaine DD / RSE.';
+$string['intitule_seance_help'] = 'Le nom de l’exercice d’enseignement est renseigné dans cette case. Il doit correspondre exactement au mémo indiqué dans Hyperplanning. Cet intitulé commence par le type d’exercice (CM, TD, TP, …) et son ordre dans le ruban pédagogique. Par exemple : « CM03 - Carrière de la vache laitière 1/2 ».';
+$string['cm_help'] = 'Cours Magistral : Enseignement théorique dispensé à un groupe entier ou partiel d\'étudiants. L\'enseignement peut être avec ou sans l\'aide de matériel pédagogique, d\'animaux de démonstration ou de spécimens. La caractéristique essentielle est qu\'il n\'y a pas d\'implication pratique des étudiants dans le matériel discuté. Ils écoutent et ne manipulent pas physiquement.';
+$string['td_help'] = 'Travaux Dirigés : Séances d’enseignement dirigé au cours desquelles les étudiants travaillent seuls ou en équipe sur des aspects théoriques, préparés à partir de documents, d’articles, etc. Les étudiants réfléchissent et interagissent sur des concepts. La séance est animée par des exercices, des discussions et, si possible, des études de cas (apprentissage par résolution de problèmes par exemple).';
+$string['tp_help'] = 'Travaux Pratiques non cliniques : Séances d’enseignement où les étudiants manipulent eux-mêmes les ressources pédagogiques (logiciels, microscopes, expé en labo, etc) sans manipulation d’animaux, d’organes ou de mannequins.';
+$string['tpa_help'] = 'TP sur animaux sains : Séances d’enseignement où les étudiants travaillent eux-mêmes sur des animaux sains, des pièces anatomiques, des mannequins, des carcasses, etc. (par exemple : inspection ante mortem et post mortem, hygiène alimentaire, etc.). Toutes les activités VetSims sont incluses dans cette catégorie.';
+$string['tc_help'] = 'Travaux Cliniques : Séances d\'enseignement pratique effectuées par les étudiants dans un environnement clinique (médecine individuelle ou collective) incluant les rotations cliniques intra et extra-muros (dont ambulante) sous la supervision d’un enseignant, et l’autopsie.';
+$string['aas_help'] = 'Auto-Apprentissage Supervisé : Enseignement comprenant des séquences d’apprentissage individuel en autonomie où les élèves utilisent un matériel pédagogique disponible (et peuvent obtenir, à leur demande, une aide ponctuelle des enseignants) et s\'auto-évaluent (e-learning par exemple).';
+$string['fmp_help'] = 'Formation en Milieu Professionnel dans le cadre d’une UC : Périodes de formation qui font partie intégrante du programme d’études, mais qui sont suivies en dehors de l’établissement et sous la supervision d’un enseignant non académique (par exemple un praticien).';
+$string['perso_av_help'] = 'Temps de travail personnel estimé nécessaire pour préparer en amont la séance / l’exercice. Ce temps de travail inclut entre autres le temps passé à réaliser des auto-évaluations de pré-requis avant la séance.';
+$string['perso_ap_help'] = 'Temps de travail personnel estimé nécessaire pour assimiler la séance / l’exercice. Ce temps de travail inclut le temps passé à réviser pour l’évaluation intermédiaire et/ou l’examen final.';
+$string['consignes_help'] = 'Cette case renseigne sur tout ce que doit faire l’étudiant pour préparer la séance / l’exercice avant de s’y présenter. Ce qui n’est pas indiqué ici ne peut pas être exigé lors de la séance / l’exercice.';
+$string['supports_help'] = 'Cette case renseigne sur les supports pédagogiques indispensables à la préparation de la séance / l’exercice et à sa révision. Seul le matériel pédagogique listé dans cette case est considéré comme indispensable. S’il ne l’est pas, il n’est que facultatif et complémentaire.';
+$string['disciplines_help'] = 'Cette case indique les disciplines AEEEV (de 1 à 3 maximum) qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance (par exemple, 10% pour « 2. Immunology », 60% pour « 2. Parasitology », et 30% pour « 4.FPA Preventive medicine ». La somme doit faire 100%.';
+$string['competencies_help'] = 'Cette case indique les compétences (de 1 à 3 maximum) du référentiel national qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance. La somme doit faire 100%.';
+
 $string['notifications'] = 'Notifications';
 $string['sprogramme:editall'] = 'Modifier tous les champs personnalisés Programme';
 
-$string['overaltotals'] = 'Totaux généraux';
+$string['overaltotals'] = 'Totaux';
 $string['overaltotals_help'] = 'Total de toutes les colonnes du tableau. Il s’agit de la somme de toutes les colonnes pour chaque ligne.';
