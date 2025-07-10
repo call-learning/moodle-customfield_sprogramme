@@ -60,7 +60,7 @@ class programme {
                 'sample_value' => '',
                 'options' => [
                     [
-                        'name' => 'Autre',
+                        'name' => 'à remplir',
                         'selected' => false,
                     ],
                     [
