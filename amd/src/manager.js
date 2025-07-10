@@ -132,22 +132,15 @@ class Manager {
         });
 
         let dragging = null;
-        let isDraggingAllowed = false;
-        form.addEventListener('mousedown', (e) => {
-            if (e.target.closest('[data-region="dragicon"]')) {
-                isDraggingAllowed = true;
-            } else {
-                isDraggingAllowed = false;
-            }
-        });
+
         form.addEventListener('dragstart', (e) => {
-            if (!isDraggingAllowed) {
+            const handle = e.target.closest('[data-region="dragicon"]');
+            if (!handle) {
                 e.preventDefault();
+                return;
             }
-            if (e.target.tagName === 'TR') {
-                dragging = e.target;
-                e.target.effectAllowed = 'move';
-            }
+            dragging = handle.closest('tr');
+            e.dataTransfer.effectAllowed = 'move';
         });
         form.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -626,17 +619,31 @@ class Manager {
         // Reset the sum for all columns.
         columnsData.forEach(column => {
             column.sum = 0;
+            column.newsum = 0;
+            column.hasnewsum = false;
             column.changed = false;
         });
         const modules = State.getValue('modules');
+        let overaltotals = 0;
+        let newsumtotals = 0;
         modules.forEach(module => {
             module.rows.forEach(row => {
                 row.cells.forEach(cell => {
                     if (cell.type === 'number' || cell.type === 'float') {
                         const column = columnsData.find(c => c.columnid === cell.columnid);
                         if (column) {
-                            if (cell.value) {
+                            if (cell.changed) {
+                                column.sum = (parseFloat(column.sum) || 0) + parseFloat(cell.oldvalue);
+                            } else if (cell.value && cell.value !== null) {
                                 column.sum = (parseFloat(column.sum) || 0) + parseFloat(cell.value);
+                            }
+                            if (cell.value) {
+                                column.newsum = (parseFloat(column.newsum) || 0) + parseFloat(cell.value);
+                                column.hasnewsum = true;
+                            }
+                            if (column.sum == 0 && column.newsum > 0) {
+                                column.hasnewsum = true;
+                                column.sum = " 0"; // If the sum is 0 and the new sum is greater than 0, set the sum to 0.
                             }
                         }
                         if (cell.changed) {
@@ -646,6 +653,17 @@ class Manager {
                 });
             });
         });
+        let totalsChanged = false;
+        columnsData.forEach(column => {
+            if (column.type === 'number' || column.type === 'float') {
+                totalsChanged = totalsChanged || column.changed;
+                overaltotals += parseFloat(column.sum) || 0;
+                newsumtotals += parseFloat(column.newsum) || 0;
+            }
+        });
+        columnsData[0].overaltotals = overaltotals;
+        columnsData[0].newsumtotals = newsumtotals;
+        columnsData[0].totalschanged = totalsChanged;
         State.setValue('columns', columnsData);
     }
 

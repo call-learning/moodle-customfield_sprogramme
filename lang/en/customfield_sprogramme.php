@@ -110,3 +110,6 @@ $string['fmp_help'] = 'Number of hours of work experience in a professional envi
 $string['perso_av_help'] = 'Estimated amount of personal preparation time expected before the session (reading, preparation, etc.).';
 $string['perso_ap_help'] = 'Estimated amount of personal study time after the session (exercises, revision, etc.).';
 $string['notifications'] = 'Notifications';
+
+$string['overaltotals'] = 'Overall totals';
+$string['overaltotals_help'] = 'Total of all columns in the table. This is the sum of all the columns for each row.';

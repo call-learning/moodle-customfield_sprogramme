@@ -34,7 +34,7 @@ class notifications extends \core\task\scheduled_task {
      * @return string Task name shown in admin screens.
      */
     public function get_name() {
-        return get_string('notification:' . $this->taskname, 'customfield_sprogramme');
+        return get_string('notifications', 'customfield_sprogramme');
     }
 
     /**

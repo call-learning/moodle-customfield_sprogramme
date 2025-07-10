@@ -36,23 +36,23 @@
     {{/editrfcs}}
 </div>
 {{#canedit}}
-    <div class="d-none">
-        <div class="customfield-sprogramme" data-region="app">
-            <div data-region="rfc">
-            </div>
-            <div data-region="columns">
-            </div>
-            <div data-region="modules">
-            </div>
+<div class="d-none">
+    <div class="customfield-sprogramme" data-region="app">
+        <div data-region="rfc">
         </div>
-        <div data-region="modalheader">
-            <div class="editbuttons" data-region="editbuttons">
-            </div>
+        <div data-region="columns">
+        </div>
+        <div data-region="modules">
         </div>
     </div>
-    {{#js}}
-    require(['customfield_sprogramme/programme_actions'], function(action) {
-        action.init();
-    });
-    {{/js}}
+    <div data-region="modalheader">
+        <div class="editbuttons" data-region="editbuttons">
+        </div>
+    </div>
+</div>
 {{/canedit}}
+{{#js}}
+require(['customfield_sprogramme/programme_actions'], function(action) {
+    action.init();
+});
+{{/js}}

@@ -53,7 +53,6 @@ $string['row'] = 'Ligne {$a}';
 $string['value'] = 'Valeur';
 $string['saving'] = 'Enregistrement...';
 $string['sprogramme:edit'] = 'Modifier le champ personnalisé Programme';
-$string['sprogramme:editall'] = 'Modifier tous les champs personnalisés Programme';
 $string['sprogramme:view'] = 'Afficher le champ personnalisé Programme';
 $string['submitdate'] = 'Date de soumission : ';
 $string['submitrfc'] = 'Soumettre une demande de modification';
@@ -110,3 +109,7 @@ $string['fmp_help'] = 'Nombre d’heures de formation en milieu professionnel (s
 $string['perso_av_help'] = 'Estimation du temps de travail personnel attendu avant la séance (préparation, lecture, etc.).';
 $string['perso_ap_help'] = 'Estimation du temps de travail personnel après la séance (exercices, révisions, etc.).';
 $string['notifications'] = 'Notifications';
+$string['sprogramme:editall'] = 'Modifier tous les champs personnalisés Programme';
+
+$string['overaltotals'] = 'Totaux généraux';
+$string['overaltotals_help'] = 'Total de toutes les colonnes du tableau. Il s’agit de la somme de toutes les colonnes pour chaque ligne.';

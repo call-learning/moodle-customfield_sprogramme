@@ -348,6 +348,9 @@ class programme {
             ];
         }
 
+        $cache = cache::make('customfield_sprogramme', 'programmedata');
+        $cache->set($courseid, $data);
+
         return $data;
     }
 
@@ -416,6 +419,7 @@ class programme {
                 }
             }
         }
+        self::purge_cache($courseid);
         return true;
     }
 

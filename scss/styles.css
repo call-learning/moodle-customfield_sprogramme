@@ -120,9 +120,9 @@
       /* For most modern browsers */
       -moz-appearance: textfield;
       /* Firefox */
-      -webkit-appearance: none;
+      -webkit-appearance: textfield;
       /* Chrome, Safari, Edge */
-      appearance: none; }
+      appearance: textfield; }
     .customfield-sprogramme .programm-table input[type="number"]::-webkit-inner-spin-button,
     .customfield-sprogramme .programm-table input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -166,13 +166,16 @@
         min-width: 55.55px; }
       .customfield-sprogramme .programm-table.toprow .sumcontainer {
         position: absolute;
-        right: 5px;
+        left: 0;
+        right: 0;
+        background-color: #f7f7f7;
+        padding: 0 10px;
         bottom: 5px;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         border-radius: 50%;
-        width: 20px;
+        width: 100%;
         height: 20px;
         color: var(--dark); }
     .customfield-sprogramme .programm-table th,
@@ -187,7 +190,8 @@
       .customfield-sprogramme .programm-table th.float, .customfield-sprogramme .programm-table th.int {
         background-color: #f7f7f7;
         width: 55.55px;
-        max-width: 55.55px; }
+        max-width: 55.55px;
+        min-width: 55.55px; }
       .customfield-sprogramme .programm-table th.select {
         width: 75px;
         min-width: 75px; }
@@ -202,19 +206,19 @@
         .customfield-sprogramme .programm-table th .thlabel.hashelp {
           text-decoration: underline;
           cursor: help; }
-      .customfield-sprogramme .programm-table th .sum:not(:empty) {
+      .customfield-sprogramme .programm-table th .sum {
         display: flex;
         width: 100%;
         text-align: left;
         width: auto;
         height: 20px;
+        color: #c6c6c6;
         justify-content: center;
         align-items: center;
         border-radius: 50%; }
-      .customfield-sprogramme .programm-table th .newsum:not(:empty) {
+      .customfield-sprogramme .programm-table th .newsum {
         display: flex;
         width: 100%;
-        color: #ce2626;
         text-align: left;
         width: auto;
         height: 20px;
@@ -233,7 +237,8 @@
     .customfield-sprogramme.syllabuspage .programm-table td.int {
       width: 30px;
       max-width: 30px;
-      min-width: 30px; }
+      min-width: 30px;
+      overflow: hidden; }
     .customfield-sprogramme.syllabuspage .programm-table th.select,
     .customfield-sprogramme.syllabuspage .programm-table td.select {
       display: none; }
@@ -359,7 +364,7 @@
   max-width: calc(100% - 2rem);
   height: 100vh; }
   .modal .modal-customfield_sprogramme_editor .sum.strikethrough {
-    display: none !important; }
+    color: #c6c6c6; }
   .modal .modal-customfield_sprogramme_editor .modal-header {
     align-items: center; }
     .modal .modal-customfield_sprogramme_editor .modal-header .close {
