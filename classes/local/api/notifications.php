@@ -158,7 +158,7 @@ class notifications {
         $course = get_course($courseid);
         $programmelink = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $courseid]);
         $context['programmelink'] = $programmelink->out();
-        $context['coursename'] = $course->fullname;
+        $context['coursename'] = $course->shortname . " - " . $course->fullname;
         return $context;
     }
 
