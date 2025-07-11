@@ -71,6 +71,9 @@ class programme_importer extends base_persistent_importer {
         $programproperties = programme::get_properties();
         foreach ($programproperties as $property => $definition) {
             if ($definition['type'] === PARAM_INT) {
+                if (!isset($data->$property)) {
+                    continue;
+                }
                 if ($data->$property === '') {
                     $data->$property = null;
                 } else {
@@ -85,12 +88,50 @@ class programme_importer extends base_persistent_importer {
                 }
             }
         }
-        // Turn competencies and disciplines persistent data.
-        if (isset($data->competencies)) {
-            $data->competencies = $this->get_list($data->competencies, 'competencies');
+
+        $disciplines = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $disciplinekey = 'disciplines_' . $i;
+            $percentagekey = '%_disciplines_' . $i;
+            if (isset($data->$disciplinekey) && !empty($data->$disciplinekey)) {
+                $disciplines[] = [
+                    'name' => $data->$disciplinekey,
+                    'percentage' => isset($data->$percentagekey) ? (float) $data->$percentagekey : 0,
+                ];
+            }
         }
-        if (isset($data->disciplines)) {
-            $data->disciplines = $this->get_list($data->disciplines, 'disciplines');
+        // If the all the percentages are 0, set the percentage to 100 / count($disciplines).
+        if (count($disciplines) && array_sum(array_column($disciplines, 'percentage')) == 0) {
+            $percentage = floor(100 / count($disciplines));
+            foreach ($disciplines as $key => $discipline) {
+                $disciplines[$key]['percentage'] = $percentage;
+            }
+        }
+        if (count($disciplines)) {
+            $data->disciplines = $this->get_list($disciplines, 'disciplines');
+        }
+
+        $competencies = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $competencykey = 'competencies_' . $i;
+            $percentagekey = '%_competencies_' . $i;
+            if (isset($data->$competencykey) && !empty($data->$competencykey)) {
+                $competencies[] = [
+                    'name' => $data->$competencykey,
+                    'percentage' => isset($data->$percentagekey) ? (float) $data->$percentagekey : 0,
+                ];
+            }
+        }
+        // If the all the percentages are 0, set the percentage to 100 / count($competencies).
+        if (count($competencies) && array_sum(array_column($competencies, 'percentage')) == 0) {
+            $percentage = floor(100 / count($competencies));
+
+            foreach ($competencies as $key => $competency) {
+                $competencies[$key]['percentage'] = $percentage;
+            }
+        }
+        if (count($competencies)) {
+            $data->competencies = $this->get_list($competencies, 'competencies');
         }
 
         return $data;
@@ -98,46 +139,47 @@ class programme_importer extends base_persistent_importer {
 
     /**
      * Turn competencies and disciplines persistent data.
-     * @param string $data
+     * @param array $data
      * @param string $type
      * @return array
      */
-    protected function get_list(string $data, string $type): array {
-        $data = explode('|', $data);
-        // Get the percentage (50%) from the data.
-        $data = array_map(function ($item) {
-            $item = explode('(', $item);
-            $item[1] = str_replace(['(', ')', '%'], '', $item[1]);
-            return [
-                'name' => trim($item[0]),
-                'percentage' => (float) $item[1],
-            ];
-        }, $data);
-
+    protected function get_list(array $data, string $type): array {
         if ($type == 'disciplines') {
-            $disciplines = programme_api::get_disciplines();
+            $disciplinecategories = programme_api::get_disciplines();
+            $disciplines = [];
+            foreach ($disciplinecategories as $disciplinecategory) {
+                $disciplines = array_merge($disciplines, $disciplinecategory['items']);
+            }
+
             foreach ($data as $key => $item) {
                 $matchingdiscipline = array_filter($disciplines, function ($discipline) use ($item) {
                     return $discipline['name'] == $item['name'];
                 });
-                if (empty($matchingdiscipline)) {
+                // Get the first match, if any.
+                $match = reset($matchingdiscipline);
+                if (!$match) {
                     unset($data[$key]);
                 } else {
-                    $item['did'] = array_values($matchingdiscipline)[0]['id'];
+                    $item['did'] = $match['id'];
                     $data[$key] = $item;
                 }
             }
         }
         if ($type == 'competencies') {
-            $competencies = programme_api::get_competencies();
+            $competencecategories = programme_api::get_competencies();
+            $competencies = [];
+            foreach ($competencecategories as $competencecategory) {
+                $competencies = array_merge($competencies, $competencecategory['items']);
+            }
             foreach ($data as $key => $item) {
                 $matchingcompetency = array_filter($competencies, function ($competency) use ($item) {
                     return $competency['name'] == $item['name'];
                 });
-                if (empty($matchingcompetency)) {
+                $match = reset($matchingcompetency);
+                if (!$match) {
                     unset($data[$key]);
                 } else {
-                    $item['cid'] = array_values($matchingcompetency)[0]['id'];
+                    $item['cid'] = $match['id'];
                     $data[$key] = $item;
                 }
             }
