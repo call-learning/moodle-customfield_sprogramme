@@ -82,6 +82,7 @@ class sprogramme_complist extends persistent {
             $items = self::get_records(['parent' => $headings->get('uniqueid')], 'sortorder');
             $itemsmap = array_map(function($item) {
                 return [
+                    'id' => $item->get('id'),
                     'uniqueid' => $item->get('uniqueid'),
                     'type' => $item->get('type'),
                     'parent' => $item->get('parent'),

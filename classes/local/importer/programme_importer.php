@@ -81,7 +81,10 @@ class programme_importer extends base_persistent_importer {
         $programproperties = programme::get_properties();
         foreach ($programproperties as $property => $definition) {
             if ($definition['type'] === PARAM_INT) {
-                if (!isset($data->$property) || $data->$property === '') {
+                if (!isset($data->$property)) {
+                    continue;
+                }
+                if ($data->$property === '') {
                     $data->$property = null;
                 } else {
                     $data->$property = (int) $data->$property;
@@ -95,38 +98,60 @@ class programme_importer extends base_persistent_importer {
                 }
             }
         }
-        // Turn competencies and disciplines persistent data.
-        if (isset($data->competencies)) {
-            $data->competencies = $this->get_list($data->competencies, 'competencies');
+        $disciplines = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $disciplinekey = 'disciplines_' . $i;
+            $percentagekey = '%_disciplines_' . $i;
+            if (isset($data->$disciplinekey) && !empty($data->$disciplinekey)) {
+                $disciplines[] = [
+                    'name' => $data->$disciplinekey,
+                    'percentage' => isset($data->$percentagekey) ? (float) $data->$percentagekey : 0,
+                ];
+            }
         }
-        if (isset($data->disciplines)) {
-            $data->disciplines = $this->get_list($data->disciplines, 'disciplines');
+        // If the all the percentages are 0, set the percentage to 100 / count($disciplines).
+        if (count($disciplines) && array_sum(array_column($disciplines, 'percentage')) == 0) {
+            $percentage = floor(100 / count($disciplines));
+            foreach ($disciplines as $key => $discipline) {
+                $disciplines[$key]['percentage'] = $percentage;
+            }
+        }
+        if (count($disciplines)) {
+            $data->disciplines = $this->get_list($disciplines, 'disciplines');
         }
 
+        $competencies = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $competencykey = 'competencies_' . $i;
+            $percentagekey = '%_competencies_' . $i;
+            if (isset($data->$competencykey) && !empty($data->$competencykey)) {
+                $competencies[] = [
+                    'name' => $data->$competencykey,
+                    'percentage' => isset($data->$percentagekey) ? (float) $data->$percentagekey : 0,
+                ];
+            }
+        }
+        // If the all the percentages are 0, set the percentage to 100 / count($competencies).
+        if (count($competencies) && array_sum(array_column($competencies, 'percentage')) == 0) {
+            $percentage = floor(100 / count($competencies));
+
+            foreach ($competencies as $key => $competency) {
+                $competencies[$key]['percentage'] = $percentage;
+            }
+        }
+        if (count($competencies)) {
+            $data->competencies = $this->get_list($competencies, 'competencies');
+        }
         return $data;
     }
 
     /**
      * Turn competencies and disciplines persistent data.
-     * @param string $data
+     * @param array $data
      * @param string $type
      * @return array
      */
-    protected function get_list(string $data, string $type): array {
-        if (empty(trim($data))) {
-            return [];
-        }
-        $data = explode('|', trim($data));
-        // Get the percentage (50%) from the data.
-        $data = array_map(function ($item) {
-            $item = explode('(', $item);
-            $item[1] = str_replace(['(', ')', '%'], '', $item[1]);
-            return [
-                'name' => trim($item[0]),
-                'percentage' => (float) $item[1],
-            ];
-        }, $data);
-
+    protected function get_list(array $data, string $type): array {
         if ($type == 'disciplines') {
             $disciplines = programme_api::get_disciplines();
             $disciplines = $this->flattern_list($disciplines);
@@ -146,7 +171,6 @@ class programme_importer extends base_persistent_importer {
             $competencies = programme_api::get_competencies();
             $competencies = $this->flattern_list($competencies);
             $competencieswithid = array_column($competencies, 'uniqueid', 'name');
-
             foreach ($data as $key => $item) {
                 $itemname = trim($item['name']);
                 if (isset($competencieswithid[$itemname])) {

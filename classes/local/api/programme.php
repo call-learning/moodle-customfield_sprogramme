@@ -1058,7 +1058,15 @@ class programme {
         $columns = self::get_column_structure($courseid);
         // Add the module name to the first item of the columns.
         $columns = array_merge([['column' => 'module']], $columns,
-            [['column' => 'disciplines'], ['column' => 'competencies']]);
+            [
+                ['column' => 'disciplines_1'], ['column' => '%_disciplines_1'],
+                ['column' => 'disciplines_2'], ['column' => '%_disciplines_2'],
+                ['column' => 'disciplines_3'], ['column' => '%_disciplines_3'],
+                ['column' => 'competencies_1'], ['column' => '%_competencies_1'],
+                ['column' => 'competencies_2'], ['column' => '%_competencies_2'],
+                ['column' => 'competencies_3'], ['column' => '%_competencies_3'],
+                ['column' => 'competencies_4'], ['column' => '%_competencies_4'],
+            ]);
         $csvexport->add_data(array_map(function($column) {
             return $column['column'];
         }, $columns));
@@ -1069,16 +1077,26 @@ class programme {
                 foreach ($row['cells'] as $cell) {
                     $cells[] = $cell['value'];
                 }
-                $disciplines = [];
-                foreach ($row['disciplines'] as $discipline) {
-                    $disciplines[] = $discipline['name'] . ' (' . $discipline['percentage'] . '%)';
+                for ($i = 0; $i < 3; $i++) {
+                    if (isset($row['disciplines'][$i])) {
+                        $discipline = $row['disciplines'][$i];
+                        $cells[] = $discipline['name'];
+                        $cells[] = $discipline['percentage'];
+                    } else {
+                        $cells[] = '';
+                        $cells[] = '';
+                    }
                 }
-                $competencies = [];
-                foreach ($row['competencies'] as $competency) {
-                    $competencies[] = $competency['name'] . ' (' . $competency['percentage'] . '%)';
+                for ($i = 0; $i < 4; $i++) {
+                    if (isset($row['competencies'][$i])) {
+                        $competency = $row['competencies'][$i];
+                        $cells[] = $competency['name'];
+                        $cells[] = $competency['percentage'];
+                    } else {
+                        $cells[] = '';
+                        $cells[] = '';
+                    }
                 }
-                $cells[] = implode('| ', $disciplines);
-                $cells[] = implode('| ', $competencies);
                 $csvexport->add_data(array_merge([$name], $cells));
             }
         }
