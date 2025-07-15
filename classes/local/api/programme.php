@@ -1246,7 +1246,8 @@ class programme {
         $record = sprogramme_rfc::get_record(['courseid' => $courseid, 'adminid' => $userid,
             'type' => sprogramme_rfc::RFC_SUBMITTED]);
         if ($record) {
-            $record->delete();
+            $record->set('type', sprogramme_rfc::RFC_REQUESTED);
+            $record->save();
             $result = true;
         }
         return $result;

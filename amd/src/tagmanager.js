@@ -29,6 +29,8 @@ class TagManager {
 
     modules = [];
 
+    tempTags = [];
+
     /**
      * Constructor.
      */
@@ -79,6 +81,7 @@ class TagManager {
             'selecttag': this.selectTag,
             'tag-confirm': this.addTag,
             'loadtag': this.loadTag,
+            'savetags': this.saveTags,
         };
         const action = btn.dataset.action;
         if (actionMap[action]) {
@@ -161,6 +164,10 @@ class TagManager {
         if (!row || !row[type]) {
             return [];
         }
+        // Set all tags to have nopop attribute to avoid popover.
+        row[type].forEach(tag => {
+            tag.nopop = true; // This will prevent the popover from showing.
+        });
         return row[type];
     }
 
@@ -192,16 +199,18 @@ class TagManager {
      */
     async renderForm(rowId, type) {
         const setTags = this.getTagsFromRow(rowId, type);
+        // Clone the setTags to this.tempTags to avoid modifying the original setTags.
+        this.tempTags = [...setTags];
         const position = this.getTargetRow(rowId);
         const arrowOffset = this.getRowOffset(rowId, position, type);
         const tags = State.getValue('tags');
         const target = document.querySelector(`[data-${type}][data-rowid="${position}"]`);
-        const maxTagsReached = this.isMaxTagsReached(rowId, type);
+        const maxTagsReached = this.isMaxTagsReached(type);
         const {html, js} = await Templates.renderForPromise('customfield_sprogramme/tagform', {
             tagtype: type,
             taglist: tags[type],
             rowid: rowId,
-            settags: setTags,
+            settags: this.tempTags,
             hasmaxtags: maxTagsReached,
             arrowoffset: arrowOffset,
         });
@@ -210,20 +219,15 @@ class TagManager {
 
     /**
      * Check if the maximum number of tags is reached for the given type.
-     * @param {Number} rowId The row id.
      * @param {String} type The type of tag to render.
      * @returns {boolean} True if the maximum number of tags is reached, false otherwise
      */
-    isMaxTagsReached(rowId, type) {
-        const row = this.getRow(rowId);
-        if (!row || !row[type]) {
-            return false;
-        }
+    isMaxTagsReached(type) {
         const config = {
             'disciplines': 3,
             'competencies': 100,
         };
-        return row[type].length >= config[type];
+        return this.tempTags.length >= config[type];
     }
 
 
@@ -243,6 +247,7 @@ class TagManager {
      */
     setTagForm(tag) {
         const form = document.querySelector('[data-region="tagform"]');
+        const setTags = this.tempTags;
         if (!form) {
             return;
         }
@@ -255,7 +260,10 @@ class TagManager {
             tagId.value = tag.id;
         }
         const select = form.querySelector('#tag-value');
+        // Get the percentage based on the number of setTags 100 for the first tag, 50 for the second tag, etc.
+        const percentage = setTags.length > 0 ? Math.floor(100 / (setTags.length + 1)) : 100;
         if (select) {
+            select.value = percentage;
             select.focus();
         }
     }
@@ -302,9 +310,9 @@ class TagManager {
      * Add a tag selected in the tagform.
      */
     async addTag() {
-        const modules = State.getValue('modules');
         const form = document.querySelector('[data-region="tagform"]');
         const warnings = form.querySelector('[data-region="warnings"]');
+        warnings.innerHTML = ''; // Clear previous warnings.
         if (!form) {
             return;
         }
@@ -313,8 +321,11 @@ class TagManager {
         const type = form.dataset.type;
         const tagId = parseInt(form.querySelector('#tag-id').value);
         const tagValue = parseInt(form.querySelector('#tag-value').value);
+        const totalTags = this.tempTags.length;
 
-        if (!tagId || !tagValue) {
+        const suggestedPercentage = Math.floor(100 / (totalTags + 1));
+
+        if (!tagId) {
             return;
         }
 
@@ -332,35 +343,74 @@ class TagManager {
         if (!row[type]) {
             row[type] = [];
         }
-
-        // Validate the value, the maximum value is 100 and the total of all tags should not exceed 100.
-        const maxPercentage = 100 - row[type].reduce((acc, tag) => acc + parseInt(tag.percentage), 0);
-        if (parseInt(tagValue) > maxPercentage) {
-            warnings.innerHTML = await getString('maxpercentage', 'customfield_sprogramme', maxPercentage);
-            return;
-        } else {
-            warnings.innerHTML = '';
-        }
-
         // Check if the tag already exists in the row.
-        const existingTags = this.getTagsFromRow(rowId, type);
-        if (!existingTags) {
-            row[type] = [];
+        const existingTags = this.tempTags;
+        if (existingTags.some(tag => tag.id === tagId)) {
+            warnings.innerHTML = await getString('alreadyset', 'customfield_sprogramme');
+            return; // Tag already exists in the row.
         }
-        const existingTag = existingTags.find(tag => tag.id === tagId || tag.uniqueid === tagId);
-        if (existingTag) {
-            existingTag.percentage = tagValue;
-        } else {
-            const tag = {
-                id: tagId,
-                name: selectedTag ? selectedTag.name : 'Unknown',
-                percentage: tagValue,
-            };
-            row[type].push(tag);
+
+        if (this.isMaxTagsReached(type)) {
+            warnings.innerHTML = await getString('maxdisciplines', 'customfield_sprogramme');
+            return;
         }
+
+        const tag = {
+            id: tagId,
+            name: selectedTag ? selectedTag.name : 'Unknown',
+            percentage: tagValue,
+            customPercentage: tagValue !== suggestedPercentage,
+            nopop: true,
+        };
+        this.tempTags.push(tag);
+        this.resetTagPercentages();
 
         // Might need to avoid this. it hides the tag form.
-        State.setValue('modules', modules);
+        this.reRenderSetTags();
+        this.disableFormInput(this.isMaxTagsReached(type));
+    }
+
+    /**
+     * Reset the tag percentages based on the number of tags.
+     */
+    resetTagPercentages() {
+        const totalTags = this.tempTags.length;
+        if (totalTags === 0) {
+            return; // No tags to reset.
+        }
+        // If there are custom percentages, we do not reset them.
+        if (this.tempTags.some(tag => tag.customPercentage)) {
+            return; // Do not reset percentages if any tag has a custom percentage.
+        }
+        const percentage = Math.floor(100 / totalTags);
+        this.tempTags.forEach(tag => {
+            tag.percentage = percentage;
+        });
+
+        // Reset the percentage for the tags.
+        this.tempTags.forEach(tag => {
+            tag.percentage = percentage;
+        });
+    }
+
+    /**
+     * Re-render the setTags in the tag form.
+     */
+    async reRenderSetTags() {
+        const form = document.querySelector('[data-region="tagform"]');
+        if (!form) {
+            return;
+        }
+        const tagRegion = form.querySelector('[data-region="selected-tags"]');
+        if (!tagRegion) {
+            return;
+        }
+        tagRegion.innerHTML = ''; // Clear existing tags.
+
+        for (const tag of this.tempTags) {
+            const {html, js} = await Templates.renderForPromise('customfield_sprogramme/table/tag', tag);
+            await Templates.appendNodeContents(tagRegion, html, js);
+        }
     }
 
     /**
@@ -369,6 +419,8 @@ class TagManager {
      */
     async removeTag(btn) {
         const form = document.querySelector('[data-region="tagform"]');
+        const warnings = form.querySelector('[data-region="warnings"]');
+        warnings.innerHTML = ''; // Clear previous warnings.
         if (!form) {
             return;
         }
@@ -376,15 +428,15 @@ class TagManager {
         const rowId = parseInt(form.dataset.rowid);
         const tagId = parseInt(btn.dataset.id);
 
-        const modules = State.getValue('modules');
         const row = this.getRow(rowId);
         if (!row || !row[type]) {
             return;
         }
-        // Remove the tag from the row.
-        row[type] = row[type].filter(tag => tag.id !== parseInt(tagId));
-        // Update the state.
-        State.setValue('modules', modules);
+        // Remove the tags from the tempTags array.
+        this.tempTags = this.tempTags.filter(tag => tag.id !== parseInt(tagId));
+        this.resetTagPercentages();
+        this.reRenderSetTags();
+        this.disableFormInput(this.isMaxTagsReached(type));
     }
 
 
@@ -404,11 +456,40 @@ class TagManager {
     }
 
     /**
+     * Save the tempTags to the row.
+     */
+    async saveTags() {
+        const modules = State.getValue('modules');
+        const form = document.querySelector('[data-region="tagform"]');
+        const warnings = form.querySelector('[data-region="warnings"]');
+        warnings.innerHTML = ''; // Clear previous warnings.
+        if (!form) {
+            return;
+        }
+        const rowId = form.dataset.rowid;
+        const type = form.dataset.type;
+        const row = this.getRow(rowId);
+        const totalPercentage = this.tempTags.reduce((acc, tag) => acc + tag.percentage, 0);
+        if (totalPercentage !== 100 && totalPercentage !== 99) {
+            warnings.innerHTML = await getString('maxpercentage', 'customfield_sprogramme', (100 - totalPercentage));
+            return; // Total percentage does not equal 100.
+        }
+        if (!row) {
+            return;
+        }
+        row[type] = this.tempTags;
+        // Update the row in the state.
+        State.setValue('modules', modules);
+    }
+
+    /**
      * Disable the form input.
      * @param {boolean} disable Whether to disable the form input.
      */
-    disableFormInput(disable = true) {
+    async disableFormInput(disable = true) {
         const form = document.querySelector('[data-region="tagform"]');
+        const warnings = form.querySelector('[data-region="warnings"]');
+        warnings.innerHTML = ''; // Clear previous warnings.
         if (!form) {
             return;
         }
@@ -423,6 +504,9 @@ class TagManager {
         const submit = form.querySelector('[data-action="tag-confirm"]');
         if (submit) {
             submit.disabled = disable;
+        }
+        if (disable) {
+            warnings.innerHTML = await getString('maxdisciplines', 'customfield_sprogramme');
         }
     }
 }

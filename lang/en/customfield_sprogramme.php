@@ -39,7 +39,7 @@ $string['edit'] = 'Edit';
 $string['editprogramme'] = 'Edit Programme';
 $string['entity:programme'] = 'Programme';
 $string['invaliddata'] = 'Invalid data: {$a}';
-$string['maxdisciplines'] = 'You can not any more, max allowed {$a}';
+$string['maxdisciplines'] = 'You can not any more, max allowed reached';
 $string['maxpercentage'] = 'Max allowed {$a} The sum of the percentages must be 100';
 $string['pluginname'] = 'Programme customfield';
 $string['programme:courseid'] = 'Course id';
@@ -119,3 +119,9 @@ $string['notifications'] = 'Notifications';
 
 $string['overaltotals'] = 'Overall totals';
 $string['overaltotals_help'] = 'Total of all columns in the table. This is the sum of all the columns for each row.';
+
+$string['confirm'] = 'Confirm';
+$string['unsavedchanges'] = 'You have unsaved changes. Do you want to close the form without saving?';
+$string['closewithoutsaving'] = 'Close without saving';
+$string['cancel'] = 'Cancel';
+$string['alreadyset'] = 'Already set for this row.';
