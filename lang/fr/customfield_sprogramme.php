@@ -39,7 +39,7 @@ $string['edit'] = 'Modifier';
 $string['editprogramme'] = 'Modifier le programme';
 $string['entity:programme'] = 'Programme';
 $string['invaliddata'] = 'Données non valides : {$a}';
-$string['maxdisciplines'] = 'Vous ne pouvez pas en ajouter davantage, maximum autorisé : {$a}';
+$string['maxdisciplines'] = 'Vous ne pouvez pas en ajouter davantage';
 $string['maxpercentage'] = 'Maximum autorisé : {$a} La somme des pourcentages doit être égale à 100';
 $string['pluginname'] = 'Champ personnalisé Programme';
 $string['programme:courseid'] = 'Identifiant du cours';
@@ -123,3 +123,9 @@ $string['sprogramme:editall'] = 'Modifier tous les champs personnalisés Program
 
 $string['overaltotals'] = 'Totaux';
 $string['overaltotals_help'] = 'Total de toutes les colonnes du tableau. Il s’agit de la somme de toutes les colonnes pour chaque ligne.';
+
+$string['confirm'] = 'Confirmer';
+$string['unsavedchanges'] = 'Vous avez des modifications non enregistrées. Voulez-vous fermer le formulaire sans enregistrer ?';
+$string['closewithoutsaving'] = 'Fermer sans enregistrer';
+$string['cancel'] = 'Annuler';
+$string['alreadyset'] = 'Déjà définie pour cette ligne.';

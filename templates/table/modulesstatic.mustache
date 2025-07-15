@@ -40,14 +40,14 @@
             </thead>
             <tbody data-region="rows">
                 {{#rows}}
-                    <tr class="{{#disciplines}}show-disciplines{{/disciplines}} {{#competencies}}show-competencies{{/competencies}}" data-toggle="collapse" data-target="#row-{{id}}" aria-expanded="false" aria-controls="collapseWidthExample">
+                    <tr class="{{#disciplines}}show-disciplines {{/disciplines}} {{#competencies}}show-competencies {{/competencies}}" data-toggle="collapse" data-target="#row-{{id}}" aria-expanded="false" aria-controls="collapseWidthExample">
                         {{#cells}}
                             <td class="static {{type}} {{column}}">
                                 <span class="staticdata">{{{value}}}</div>
                             </td>
                         {{/cells}}
                     </tr>
-                    <tr id="row-{{id}}" data-row class="tags collapse {{#disciplines}}has-disciplines{{/disciplines}} {{#competencies}}has-competencies{{/competencies}}">
+                    <tr id="row-{{id}}" data-row class="tags collapse {{#disciplines}}has-disciplines {{/disciplines}} {{#competencies}}has-competencies {{/competencies}}">
                         <td colspan="12" class="tags">
                             <div {{^disciplines.0}}class="d-none"{{/disciplines.0}}><strong>{{#str}}disciplines, customfield_sprogramme{{/str}}</strong></div>
                             {{#disciplines}}

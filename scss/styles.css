@@ -345,7 +345,7 @@
       border-color: var(--gray);
       border-left: 0; }
     .customfield-sprogramme .tag-form .tag-list {
-      height: 200px;
+      height: 450px;
       overflow-y: auto;
       border-bottom: 1px solid var(--light); }
     .customfield-sprogramme .tag-form.data-tags .competences-list {

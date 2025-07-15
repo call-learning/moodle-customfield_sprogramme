@@ -30,7 +30,11 @@
     <input type="hidden" id="lastids" value="">
     <div class="d-flex icon-no-margin">
         <h5 data-region="rownumber">{{rowname}}</h5>
-        <button class="btn btn-secondary ml-auto mb-2 btn-sm" data-action="closetagform">
+        <button class="btn btn-success ml-auto mb-2 btn-sm" data-action="savetags">
+            {{#pix}}e/save, core, {{#str}}save{{/str}}{{/pix}}
+            <span class="sr-only">{{#str}}save, admin{{/str}}</span>
+        </button>
+        <button class="btn btn-secondary ml-1 mb-2 btn-sm" data-action="closetagform">
             {{#pix}}e/cancel, core{{/pix}}
             <span class="sr-only">{{#str}}close, admin{{/str}}</span>
         </button>

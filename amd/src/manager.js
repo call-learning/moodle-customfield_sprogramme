@@ -24,6 +24,7 @@
 import State from 'customfield_sprogramme/local/state';
 import Repository from 'customfield_sprogramme/local/repository';
 import Notification from 'core/notification';
+import {getStrings} from 'core/str';
 import {debounce} from 'core/utils';
 import './local/components/table';
 import './tagmanager';
@@ -958,12 +959,49 @@ class Manager {
      * Send a closeform custom event.
      * @return {void}
      */
-    closeForm() {
+    async closeForm() {
+        // Check if there are unsaved changes.
+        const modules = State.getValue('modules');
+        const rfc = State.getValue('rfc');
         const event = new CustomEvent('closeform', {
             bubbles: true,
             composed: true,
         });
-        document.dispatchEvent(event);
+
+        const confirmationStrings = await getStrings([
+            {
+                key: 'confirm',
+                component: 'customfield_sprogramme',
+            },
+            {
+                key: 'unsavedchanges',
+                component: 'customfield_sprogramme',
+            },
+            {
+                key: 'closewithoutsaving',
+                component: 'customfield_sprogramme',
+            },
+            {
+                key: 'cancel',
+                component: 'customfield_sprogramme',
+            },
+        ]);
+
+        const hasChanges = modules.some(module => module.rows.some(row => row.cells.some(cell => cell.changed)));
+        if (hasChanges && rfc.issubmitted == false) {
+            Notification.confirm(
+                ...confirmationStrings,
+                () => {
+                    document.dispatchEvent(event);
+                },
+                () => {
+                    // Do nothing, the user cancelled the action.
+                },
+            );
+            return;
+        } else {
+            document.dispatchEvent(event);
+        }
     }
 
     /**
