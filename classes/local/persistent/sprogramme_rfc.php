@@ -40,11 +40,13 @@ class sprogramme_rfc extends persistent {
      * Comment types array
      */
     const CHANGE_TYPES = [
+        self::RFC_CANCELLED => 'cancelled',
         self::RFC_REQUESTED => 'requested',
         self::RFC_SUBMITTED => 'submitted',
         self::RFC_ACCEPTED => 'accepted',
         self::RFC_REJECTED => 'rejected',
     ];
+    const RFC_CANCELLED = 0;
     /**
      * Request for change submitted.
      */
@@ -101,6 +103,10 @@ class sprogramme_rfc extends persistent {
         $requested = self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED, 'usermodified' => $USER->id]);
         if ($requested) {
             return $requested;
+        }
+        $cancelled = self::get_record(['courseid' => $courseid, 'type' => self::RFC_CANCELLED, 'usermodified' => $USER->id]);
+        if ($cancelled) {
+            return $cancelled;
         }
         $record =  self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED]);
         return $record ?: null;
