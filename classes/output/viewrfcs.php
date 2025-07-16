@@ -20,6 +20,7 @@ use customfield_sprogramme\local\api\programme;
 use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\api\notifications as notifications_api;
 use core\output\named_templatable;
+use paging_bar;
 use renderable;
 use renderer_base;
 use stdClass;
@@ -44,6 +45,11 @@ class viewrfcs implements renderable, named_templatable {
     protected $status;
 
     /**
+     * @var int $page The page number.
+     */
+    protected $page;
+
+    /**
      * Export this data so it can be used in a mustache template.
      *
      * @param renderer_base $output
@@ -54,10 +60,16 @@ class viewrfcs implements renderable, named_templatable {
 
         $this->before_render();
 
-        $data['selectcourse'] = array_values($this->get_course_select());
-        $data['status'] = $this->get_status_select();
+        $data['status'] = $this->get_status_tabs();
+        $numrfcs = sprogramme_rfc::count_course_rfcs($this->courseid, $this->status);
+        $limit = 20;
+        $start = $this->page * $limit;
+        $url = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params([]));
+        $paging = new paging_bar($numrfcs, $this->page, $limit, $url);
+        $data['htmlpagingbar'] = $output->render($paging);
 
-        $rfcs = sprogramme_rfc::get_course_rfcs($this->courseid, $this->status);
+
+        $rfcs = sprogramme_rfc::get_course_rfcs($this->courseid, $this->status, 0, $start, $limit);
 
         $data['rfcs'] = [];
         $numsubmitted = 0;
@@ -76,19 +88,6 @@ class viewrfcs implements renderable, named_templatable {
             ];
 
         }
-        if ($numsubmitted) {
-            $data['numsubmitted'] = $numsubmitted;
-            $data['acceptall'] = new moodle_url('/customfield/field/sprogramme/edit.php',
-            $this->get_url_params(['acceptall' => 1]));
-        }
-        $data['numrfcs'] = count($rfcs);
-        if (count($rfcs) > 0) {
-            $data['deleteallurl'] = new moodle_url('/customfield/field/sprogramme/edit.php',
-            $this->get_url_params(['action' => 'deleteall']));
-        }
-        $data['disciplines'] = programme::get_disciplines();
-        $data['competences'] = programme::get_competencies();
-
         $data['version'] = time();
         $data['debug'] = $CFG->debugdisplay;
         $data['cssurl'] = new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]);
@@ -97,53 +96,16 @@ class viewrfcs implements renderable, named_templatable {
     }
 
     /**
-     * Get the competvet selector
-     * @return array
-     */
-    public function get_course_select(): array {
-        global $DB;
-        $coursewithrfc = sprogramme_rfc::get_all_course_ids($this->status);
-        if (empty($coursewithrfc)) {
-            // No courses with RFCs, return empty array.
-            return [];
-        }
-
-        list($sql, $params) = $DB->get_in_or_equal($coursewithrfc, SQL_PARAMS_NAMED, 'id');
-        $where = 'WHERE id '. $sql;
-        $allinstances = $DB->get_records_sql('SELECT * FROM {course} '. $where, $params);
-        $data = [];
-        $data[] = [
-            'key' => '',
-            'name' => get_string('all'),
-            'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => 0])),
-            'selected' => ($this->courseid == 0),
-        ];
-        // Map these instances to an array with the id as key, the course and the name as value.
-        $courses = array_map(function ($instance) {
-            return [
-                'id' => $instance->id,
-                'course' => substr($instance->shortname, 0, 30),
-                'name' => substr($instance->fullname, 0, 30),
-                'selected' => $instance->id == $this->courseid,
-                'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => $instance->id])),
-            ];
-        }, $allinstances);
-        return array_merge($data, $courses);
-    }
-
-    /**
      * Get the status selector
      * @return array
      */
-    public function get_status_select(): array {
+    public function get_status_tabs(): array {
         $data = [];
-        $data[] = [
-            'key' => '',
-            'name' => get_string('all'),
-            'url' => new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params(['courseid' => $this->courseid])),
-            'selected' => ($this->status == 0),
+        $allowed = [
+            sprogramme_rfc::RFC_ACCEPTED => 'accepted',
+            sprogramme_rfc::RFC_REJECTED => 'rejected',
         ];
-        foreach (sprogramme_rfc::CHANGE_TYPES as $key => $status) {
+        foreach ($allowed as $key => $status) {
             $data[] = [
                 'key' => $key,
                 'name' => get_string('rfc:' . $status, 'customfield_sprogramme'),
@@ -165,6 +127,7 @@ class viewrfcs implements renderable, named_templatable {
             'pagetype' => 'viewrfcs',
             'courseid' => $this->courseid,
             'status' => $this->status,
+            'page' => $this->page,
         ];
         // Params overwrite defaults.
         $params = array_merge($defaults, $params);
@@ -181,7 +144,8 @@ class viewrfcs implements renderable, named_templatable {
      */
     public function before_render(): void {
         $this->courseid = optional_param('courseid', 0, PARAM_INT);
-        $this->status = optional_param('status', sprogramme_rfc::RFC_SUBMITTED, PARAM_INT);
+        $this->status = optional_param('status', sprogramme_rfc::RFC_ACCEPTED, PARAM_INT);
+        $this->page = optional_param('page', 0, PARAM_INT);
         $action = optional_param('action', '', PARAM_ALPHANUMEXT);
         switch ($action) {
             case 'deleteall':

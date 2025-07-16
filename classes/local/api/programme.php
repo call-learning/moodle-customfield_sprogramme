@@ -595,6 +595,23 @@ class programme {
     }
 
     /**
+     * Check if there are accepted or rejected rfcs for a course
+     * @param int $courseid
+     * @return bool
+     */
+    public static function has_history(int $courseid): bool {
+        $changerecords = sprogramme_rfc::get_records(['courseid' => $courseid, 'type' => sprogramme_rfc::RFC_ACCEPTED]);
+        if (!empty($changerecords)) {
+            return true; // If there are accepted rfcs, return true.
+        }
+        $changerecords = sprogramme_rfc::get_records(['courseid' => $courseid, 'type' => sprogramme_rfc::RFC_REJECTED]);
+        if (!empty($changerecords)) {
+            return true; // If there are rejected rfcs, return true.
+        }
+        return false; // No history found.
+    }
+
+    /**
      * Check if a user can add a new rfc for a course
      * (there shoubld be no submitted rfcs yet) and the user has the capability to edit
      * @param int $courseid

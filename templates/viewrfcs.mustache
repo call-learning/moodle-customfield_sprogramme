@@ -25,33 +25,16 @@
 }}
 <link rel="stylesheet" type="text/css" href="{{{cssurl}}}">
 <div class="d-flex mb-3">
-    <div class="select-instance">
-        <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
-                {{#str}}rfc:selectcourse, customfield_sprogramme{{/str}}
-            </button>
-            <div class="dropdown-menu">
-                {{#selectcourse}}
-                    <a href="{{{url}}}" class="dropdown-item  {{#selected}}active{{/selected}}">
-                        {{{course}}} {{name}}
-                    </a>
-                {{/selectcourse}}
-            </div>
-        </div>
-    </div>
     <div class="select-status ml-2">
-        <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-toggle="dropdown" aria-expanded="false">
-                {{#str}}rfc:selectstatus, customfield_sprogramme{{/str}}
-            </button>
-            <div class="dropdown-menu">
-                {{#status}}
-                    <a href="{{{url}}}" class="dropdown-item {{#selected}}active{{/selected}}">
+        <ul class="nav nav-tabs" id="rfcstatustabs" role="tablist">
+            {{#status}}
+                <li class="nav-item">
+                    <a class="nav-link {{#selected}}active{{/selected}}" id="{{key}}-tab" href="{{{url}}}" aria-selected="{{#selected}}true{{/selected}}{{^selected}}false{{/selected}}">
                         {{name}}
                     </a>
-                {{/status}}
-            </div>
-        </div>
+                </li>
+            {{/status}}
+        </ul>
     </div>
 </div>
 <table class="table table-striped tablerfcs">
@@ -85,6 +68,7 @@
         {{/rfcs}}
     </tbody>
 </table>
+{{{htmlpagingbar}}}
 <div class="d-none">
     <div class="customfield-sprogramme" data-region="app">
         <div data-region="rfcs">

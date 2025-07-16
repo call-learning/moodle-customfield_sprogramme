@@ -123,9 +123,12 @@ class sprogramme_rfc extends persistent {
      * @param int $courseid
      * @param int $type
      * @param int $adminid
+     * @param int $start
+     * @param int $limit
      * @return array
      */
-    public static function get_course_rfcs(int $courseid = 0, int $type = self::RFC_SUBMITTED, $adminid = 0): array {
+    public static function get_course_rfcs(int $courseid = 0, int $type = self::RFC_SUBMITTED, $adminid = 0,
+        int $start = 0, int $limit = 0): array {
         $params = [];
         if ($courseid) {
             $params['courseid'] = $courseid;
@@ -136,7 +139,7 @@ class sprogramme_rfc extends persistent {
         if ($adminid) {
             $params['adminid'] = $adminid;
         }
-        $allrfcs = self::get_records($params);
+        $allrfcs = self::get_records($params, 'timecreated', 'DESC', $start, $limit);
         $rfcs = [];
         foreach ($allrfcs as $rfcpersistent) {
             $rfc = $rfcpersistent->to_record();
@@ -145,6 +148,28 @@ class sprogramme_rfc extends persistent {
             $rfcs[] = $rfc;
         }
         return $rfcs;
+    }
+
+    /**
+     * Count the number of RFCs for a course.
+     *
+     * @param int $courseid
+     * @param int $type
+     * @param int $adminid
+     * @return int
+     */
+    public static function count_course_rfcs(int $courseid = 0, int $type = self::RFC_SUBMITTED, $adminid = 0): int {
+        $params = [];
+        if ($courseid) {
+            $params['courseid'] = $courseid;
+        }
+        if ($type) {
+            $params['type'] = $type;
+        }
+        if ($adminid) {
+            $params['adminid'] = $adminid;
+        }
+        return self::count_records($params);
     }
 
     /**
