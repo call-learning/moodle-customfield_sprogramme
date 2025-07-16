@@ -280,12 +280,16 @@ class programme {
      * @return array $data
      */
     public static function get_data(int $courseid, bool $showrfc = false): array {
+
         if ($showrfc && self::has_submitted_rfc($courseid)) {
             // Note to self: need to ensure there is only ever one submitted RFC per course.
             $rfc = sprogramme_rfc::get_rfc($courseid);
             if ($rfc) {
                 $data = $rfc->get('snapshot');
                 $data = json_decode($data, true);
+                if ($rfc->get('type') == sprogramme_rfc::RFC_CANCELLED) {
+                    $rfc->delete();
+                }
                 return $data;
             }
         }
@@ -1228,7 +1232,7 @@ class programme {
         $record = sprogramme_rfc::get_record(['courseid' => $courseid, 'adminid' => $userid,
             'type' => sprogramme_rfc::RFC_SUBMITTED]);
         if ($record) {
-            $record->set('type', sprogramme_rfc::RFC_REQUESTED);
+            $record->set('type', sprogramme_rfc::RFC_CANCELLED);
             $record->save();
             $result = true;
         }

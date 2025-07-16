@@ -967,6 +967,10 @@ class Manager {
             bubbles: true,
             composed: true,
         });
+        if (rfc && rfc.issubmitted) {
+            document.dispatchEvent(event);
+            return;
+        }
 
         const confirmationStrings = await getStrings([
             {
@@ -988,7 +992,7 @@ class Manager {
         ]);
 
         const hasChanges = modules.some(module => module.rows.some(row => row.cells.some(cell => cell.changed)));
-        if (hasChanges && rfc.issubmitted == false) {
+        if (hasChanges) {
             Notification.confirm(
                 ...confirmationStrings,
                 () => {
