@@ -31,9 +31,9 @@
     {{#canedit}}
         <a href="#" class="btn btn-primary" data-action="editprogramme" data-courseid="{{courseid}}">{{#str}}editprogramme, customfield_sprogramme{{/str}}</a>
     {{/canedit}}
-    {{#editrfcs}}
-        <a href="{{{rfcsurl}}}" class="btn btn-secondary ml-1">{{#str}}rfcs, customfield_sprogramme, {{#numrfcs}}({{numrfcs}}){{/numrfcs}}{{/str}}</a>
-    {{/editrfcs}}
+    {{#hashistory}}
+        <a href="{{{rfcsurl}}}" class="btn btn-secondary ml-1">{{#str}}history, customfield_sprogramme, {{#numrfcs}}({{numrfcs}}){{/numrfcs}}{{/str}}</a>
+    {{/hashistory}}
 </div>
 {{#canedit}}
 <div class="d-none">
