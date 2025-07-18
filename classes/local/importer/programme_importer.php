@@ -100,8 +100,8 @@ class programme_importer extends base_persistent_importer {
         }
         $disciplines = [];
         for ($i = 1; $i <= 3; $i++) {
-            $disciplinekey = 'disciplines_' . $i;
-            $percentagekey = '%_disciplines_' . $i;
+            $disciplinekey = 'disciplines' . $i;
+            $percentagekey = '%_disciplines' . $i;
             if (isset($data->$disciplinekey) && !empty($data->$disciplinekey)) {
                 $disciplines[] = [
                     'name' => $data->$disciplinekey,
@@ -122,8 +122,8 @@ class programme_importer extends base_persistent_importer {
 
         $competencies = [];
         for ($i = 1; $i <= 4; $i++) {
-            $competencykey = 'competencies_' . $i;
-            $percentagekey = '%_competencies_' . $i;
+            $competencykey = 'competencies' . $i;
+            $percentagekey = '%_competencies' . $i;
             if (isset($data->$competencykey) && !empty($data->$competencykey)) {
                 $competencies[] = [
                     'name' => $data->$competencykey,
