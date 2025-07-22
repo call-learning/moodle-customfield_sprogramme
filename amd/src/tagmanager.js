@@ -225,7 +225,7 @@ class TagManager {
     isMaxTagsReached(type) {
         const config = {
             'disciplines': 3,
-            'competencies': 100,
+            'competencies': 5,
         };
         return this.tempTags.length >= config[type];
     }
