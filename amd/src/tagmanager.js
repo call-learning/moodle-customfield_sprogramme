@@ -387,10 +387,10 @@ class TagManager {
             tag.percentage = percentage;
         });
 
-        // Reset the percentage for the tags.
-        this.tempTags.forEach(tag => {
-            tag.percentage = percentage;
-        });
+        // The total should always be 100, so we adjust the last tag's percentage.
+        if (totalTags > 0) {
+            this.tempTags[totalTags - 1].percentage = 100 - (percentage * (totalTags - 1));
+        }
     }
 
     /**
