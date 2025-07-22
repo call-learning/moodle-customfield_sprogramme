@@ -47,7 +47,6 @@ class formfield implements renderable, templatable {
         $data->editrfcs = has_capability('customfield/sprogramme:editall', $PAGE->context);
         $data->rfcsurl = new \moodle_url('/customfield/field/sprogramme/edit.php', ['courseid' => $data->courseid, 'pagetype' => 'viewrfcs']);
         $data->hashistory = programme::has_history($data->courseid) ? 1 : 0;
-        $data->cssurl = new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]);
         return $data;
     }
 }

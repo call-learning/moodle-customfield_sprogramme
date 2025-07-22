@@ -90,7 +90,6 @@ class viewrfcs implements renderable, named_templatable {
         }
         $data['version'] = time();
         $data['debug'] = $CFG->debugdisplay;
-        $data['cssurl'] = new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]);
 
         return $data;
     }

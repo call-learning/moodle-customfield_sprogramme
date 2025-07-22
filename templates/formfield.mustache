@@ -22,11 +22,9 @@
     Example context (json):
     {
         "courseid": 1,
-        "cssurl": "http://example.com/customfield/sprogramme/styles.css",
         "rowname": "Row 1"
     }
 }}
-<link rel="stylesheet" type="text/css" href="{{{cssurl}}}">
 <div class="d-flex w-100 justify-content-end mt-4">
     {{#canedit}}
         <a href="#" class="btn btn-primary" data-action="editprogramme" data-courseid="{{courseid}}">{{#str}}editprogramme, customfield_sprogramme{{/str}}</a>

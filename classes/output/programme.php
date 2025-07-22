@@ -57,7 +57,6 @@ class programme implements renderable, templatable {
         $data = [
             'modulesstatic' => $modules,
             'columns' => $columns,
-            'cssurl' => new \moodle_url('/customfield/field/sprogramme/scss/styles.css', ['cache' => time()]),
         ];
         return $data;
     }
