@@ -1,582 +1,492 @@
 .customfield-sprogramme {
-    overflow: auto;
-    height: 100%;
-    font-size: 0.8rem;
-    position: relative;
+  overflow: auto;
+  height: 100%;
+  font-size: 0.8rem;
+  position: relative;
 }
-
 .customfield-sprogramme .btn.btn-icon {
-    height: 2rem;
-    width: 2rem;
-    font-size: 1rem;
+  height: 2rem;
+  width: 2rem;
+  font-size: 1rem;
 }
-
 .customfield-sprogramme .btn.btn-icon .icon {
-    max-width: 1rem;
-    max-height: 1rem;
+  max-width: 1rem;
+  max-height: 1rem;
 }
-
 .customfield-sprogramme .btn.btn-icon .fa-fw {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }
-
 .customfield-sprogramme .programm-input {
-    display: block;
-    width: 100%;
-    min-width: 70px;
-    height: calc(1.5em + 0.75rem + 2px);
-    padding: 0.125rem;
-    font-size: 0.8rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 0;
-    border-radius: 0rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  display: block;
+  width: 100%;
+  min-width: 70px;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.125rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 0;
+  border-radius: 0rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-
 .customfield-sprogramme .programm-input::placeholder, .customfield-sprogramme .programm-input::-webkit-input-placeholder {
-    color: #d7d7d8;
+  color: #d7d7d8;
 }
-
 .customfield-sprogramme .programm-input:focus {
-    outline: 1px solid #7fb6f1;
-    background-color: #f7f7f7;
-    border-radius: 0rem;
+  outline: 1px solid #7fb6f1;
+  background-color: #f7f7f7;
+  border-radius: 0rem;
 }
-
 .customfield-sprogramme .programm-textarea {
-    display: block;
-    width: 100%;
-    min-width: 70px;
-    height: calc(1.5em + 0.75rem + 2px);
-    padding: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 0;
-    border-radius: 0rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  display: block;
+  width: 100%;
+  min-width: 70px;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 0;
+  border-radius: 0rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-
 .customfield-sprogramme .programm-textarea:focus {
-    outline: 1px solid #7fb6f1;
-    background-color: #f7f7f7;
-    border-radius: 0rem;
+  outline: 1px solid #7fb6f1;
+  background-color: #f7f7f7;
+  border-radius: 0rem;
 }
-
 .customfield-sprogramme .module-input {
-    border-radius: 0;
-    border-color: #dee2e6;
+  border-radius: 0;
+  border-color: #dee2e6;
 }
-
 .customfield-sprogramme .float .programm-input,
 .customfield-sprogramme .int .programm-input,
 .customfield-sprogramme .static.float,
 .customfield-sprogramme .int {
-    min-width: 52.55px;
-    width: 52.55px;
-    max-width: 52.55px;
+  min-width: 52.55px;
+  width: 52.55px;
+  max-width: 52.55px;
 }
-
 .customfield-sprogramme .container-disciplines,
 .customfield-sprogramme .container-competencies {
-    flex: 1 1 auto;
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 170px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 170px;
 }
-
 .customfield-sprogramme .disciplines,
 .customfield-sprogramme .competencies {
-    min-width: 205px;
+  min-width: 205px;
 }
-
 .customfield-sprogramme .disciplines .badge,
 .customfield-sprogramme .competencies .badge {
-    display: flex;
-    align-items: center;
-    padding: 0.15rem 0.5rem;
-    width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-bottom: 0.125rem;
-    margin-top: 0.125rem;
-    margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 0.125rem;
+  margin-top: 0.125rem;
+  margin-right: 0.5rem;
 }
-
 .customfield-sprogramme .disciplines .badge .name,
 .customfield-sprogramme .competencies .badge .name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 120px;
-    margin-right: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  margin-right: 0.5rem;
 }
-
 .customfield-sprogramme .disciplines .badge .percentage,
 .customfield-sprogramme .competencies .badge .percentage {
-    background-color: #fff;
-    margin-left: 0.5rem;
-    border-radius: 1.5rem;
-    margin-left: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 1.6rem;
-    width: 1.6rem;
-    min-width: 1.6rem;
+  background-color: #fff;
+  margin-left: 0.5rem;
+  border-radius: 1.5rem;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.6rem;
+  width: 1.6rem;
+  min-width: 1.6rem;
 }
-
 .customfield-sprogramme .disciplines .badge .percentage::after,
 .customfield-sprogramme .competencies .badge .percentage::after {
-    content: '%';
-    font-size: 0.6rem;
-    color: #6c757d;
+  content: "%";
+  font-size: 0.6rem;
+  color: #6c757d;
 }
-
 .customfield-sprogramme .disciplines .badge .btn,
 .customfield-sprogramme .competencies .badge .btn {
-    display: none;
-    margin-left: 0.25rem;
+  display: none;
+  margin-left: 0.25rem;
 }
-
 .customfield-sprogramme .programm-table {
-    max-width: 100%;
-    overflow: visible;
-    border-left: 1px solid #dee2e6;
-    border-bottom: 1px solid #dee2e6;
+  max-width: 100%;
+  overflow: visible;
+  border-left: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
 }
-
-.customfield-sprogramme .programm-table input[type="number"] {
-    /* For most modern browsers */
-    -moz-appearance: textfield;
-    /* Firefox */
-    -webkit-appearance: textfield;
-    /* Chrome, Safari, Edge */
-    appearance: textfield;
+.customfield-sprogramme .programm-table input[type=number] {
+  /* For most modern browsers */
+  -moz-appearance: textfield; /* Firefox */
+  -webkit-appearance: textfield; /* Chrome, Safari, Edge */
+  appearance: textfield;
 }
-
-.customfield-sprogramme .programm-table input[type="number"]::-webkit-inner-spin-button,
-.customfield-sprogramme .programm-table input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    /* Optional: Prevent additional spacing */
+.customfield-sprogramme .programm-table input[type=number]::-webkit-inner-spin-button,
+.customfield-sprogramme .programm-table input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0; /* Optional: Prevent additional spacing */
 }
-
 .customfield-sprogramme .programm-table .protected,
 .customfield-sprogramme .programm-table .protected input {
-    background-color: #f8f8f8;
+  background-color: #f8f8f8;
 }
-
 .customfield-sprogramme .programm-table .deletepending input,
 .customfield-sprogramme .programm-table .deletepending textarea,
 .customfield-sprogramme .programm-table .deletepending select,
 .customfield-sprogramme .programm-table .deletepending .actions button {
-    text-decoration: line-through;
-    background-color: #f8f8f8;
+  text-decoration: line-through;
+  background-color: #f8f8f8;
 }
-
 .customfield-sprogramme .programm-table .deletepending .actions button,
 .customfield-sprogramme .programm-table .deletepending .disciplines button,
 .customfield-sprogramme .programm-table .deletepending .competencies button {
-    display: none;
+  display: none;
 }
-
-.customfield-sprogramme .programm-table tr.haserror [data-group="unique"] {
-    background-color: #f8d7da;
-    color: #721c24;
+.customfield-sprogramme .programm-table tr.haserror [data-group=unique] {
+  background-color: #f8d7da;
+  color: #721c24;
 }
-
 .customfield-sprogramme .programm-table .oldvalue {
-    color: #c0c0c0;
+  color: #c0c0c0;
 }
-
 .customfield-sprogramme .programm-table .newvalue {
-    color: #ce2626;
+  color: rgb(206, 38, 38);
 }
-
 .customfield-sprogramme .programm-table .haschanges input,
 .customfield-sprogramme .programm-table .haschanges .staticdata {
-    color: #ce2626;
+  color: rgb(206, 38, 38);
 }
-
 .customfield-sprogramme .programm-table.toprow {
-    margin-left: 275px;
+  margin-left: 275px;
 }
-
 .customfield-sprogramme .programm-table.toprow th {
-    display: none;
-    position: relative;
-    color: #C6C6C6;
+  display: none;
+  position: relative;
+  color: #C6C6C6;
 }
-
 .customfield-sprogramme .programm-table.toprow th.haschanges .sumcontainer {
-    color: #ce2626;
+  color: rgb(206, 38, 38);
 }
-
 .customfield-sprogramme .programm-table.toprow th.float,
 .customfield-sprogramme .programm-table.toprow th.int {
-    display: table-cell;
-    width: 55.55px;
-    min-width: 55.55px;
+  display: table-cell;
+  width: 55.55px;
+  min-width: 55.55px;
 }
-
 .customfield-sprogramme .programm-table.toprow .sumcontainer {
-    position: absolute;
-    left: 0;
-    right: 0;
-    background-color: #f7f7f7;
-    padding: 0 10px;
-    bottom: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 50%;
-    width: 100%;
-    height: 20px;
-    color: var(--dark);
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-color: #f7f7f7;
+  padding: 0 10px;
+  bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 50%;
+  width: 100%;
+  height: 20px;
+  color: var(--dark);
 }
-
 .customfield-sprogramme .programm-table th,
 .customfield-sprogramme .programm-table td {
-    border-top: 1px solid #dee2e6;
-    border-right: 1px solid #dee2e6;
-    position: relative;
-    vertical-align: top;
+  border-top: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  position: relative;
+  vertical-align: top;
 }
-
 .customfield-sprogramme .programm-table th {
-    max-width: 170px;
-    padding: 0.4rem;
+  max-width: 170px;
+  padding: 0.4rem;
 }
-
 .customfield-sprogramme .programm-table th.float, .customfield-sprogramme .programm-table th.int {
-    background-color: #f7f7f7;
-    width: 55.55px;
-    max-width: 55.55px;
-    min-width: 55.55px;
+  background-color: #f7f7f7;
+  width: 55.55px;
+  max-width: 55.55px;
+  min-width: 55.55px;
 }
-
 .customfield-sprogramme .programm-table th.select {
-    width: 75px;
-    min-width: 75px;
+  width: 75px;
+  min-width: 75px;
 }
-
 .customfield-sprogramme .programm-table th.text {
-    width: 200px;
-    min-width: 200px;
-    white-space: wrap;
+  width: 200px;
+  min-width: 200px;
+  white-space: wrap;
 }
-
 .customfield-sprogramme .programm-table th .thlabel {
-    display: block;
-    width: 100%;
-    white-space: break-spaces;
+  display: block;
+  width: 100%;
+  white-space: break-spaces;
 }
-
 .customfield-sprogramme .programm-table th .thlabel.hashelp {
-    text-decoration: underline;
-    cursor: help;
+  text-decoration: underline;
+  cursor: help;
 }
-
 .customfield-sprogramme .programm-table th .sum {
-    display: flex;
-    width: 100%;
-    text-align: left;
-    width: auto;
-    height: 20px;
-    color: #c6c6c6;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
+  display: flex;
+  width: 100%;
+  text-align: left;
+  width: auto;
+  height: 20px;
+  color: #c6c6c6;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
 }
-
 .customfield-sprogramme .programm-table th .newsum {
-    display: flex;
-    width: 100%;
-    text-align: left;
-    width: auto;
-    height: 20px;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
+  display: flex;
+  width: 100%;
+  text-align: left;
+  width: auto;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
 }
-
 .customfield-sprogramme .programm-table td.static {
-    padding: 0.4rem;
+  padding: 0.4rem;
 }
-
 .customfield-sprogramme .programm-table td.haschanges input {
-    background-color: #f4ffff;
+  background-color: #f4ffff;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table {
-    margin-left: 1rem;
-    width: calc(100% - 1rem);
+  margin-left: 1rem;
+  width: calc(100% - 1rem);
 }
-
 .customfield-sprogramme.syllabuspage .programm-table th.float, .customfield-sprogramme.syllabuspage .programm-table th.int,
 .customfield-sprogramme.syllabuspage .programm-table td.float,
 .customfield-sprogramme.syllabuspage .programm-table td.int {
-    width: 30px;
-    max-width: 30px;
-    min-width: 30px;
-    overflow: hidden;
+  width: 30px;
+  max-width: 30px;
+  min-width: 30px;
+  overflow: hidden;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table th.select,
 .customfield-sprogramme.syllabuspage .programm-table td.select {
-    display: none;
+  display: none;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table tr.tags {
-    display: none;
+  display: none;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-disciplines, .customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-competencies {
-    display: table-row;
+  display: table-row;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines,
 .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies {
-    cursor: pointer;
+  cursor: pointer;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines:hover,
 .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies:hover {
-    background-color: #f7f7f7;
+  background-color: #f7f7f7;
 }
-
-.customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines[aria-expanded="true"],
-.customfield-sprogramme.syllabuspage .programm-table tr.show-competencies[aria-expanded="true"] {
-    border-bottom: initial;
+.customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines[aria-expanded=true],
+.customfield-sprogramme.syllabuspage .programm-table tr.show-competencies[aria-expanded=true] {
+  border-bottom: initial;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines > td.intitule_seance > .staticdata,
 .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies > td.intitule_seance > .staticdata {
-    padding-left: 1rem;
+  padding-left: 1rem;
 }
-
 .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines > td.intitule_seance > .staticdata::before,
 .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies > td.intitule_seance > .staticdata::before {
-    content: ' + ';
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateX(-50%) translateY(-50%);
-    width: 1.5rem;
-    height: 1.5rem;
-    background-color: #f7f7f7;
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 1px #dee2e6;
+  content: " + ";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateX(-50%) translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #f7f7f7;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px #dee2e6;
 }
-
 .customfield-sprogramme td.active .changes .changecontent {
-    display: block;
+  display: block;
 }
-
 .customfield-sprogramme td:focus {
-    outline: 1px solid #7fb6f1;
+  outline: 1px solid #7fb6f1;
 }
-
 .customfield-sprogramme td.disciplines {
-    position: relative;
+  position: relative;
 }
-
 .customfield-sprogramme .formarrow {
-    display: block;
-    top: 0;
-    right: 0;
-    position: absolute;
+  display: block;
+  top: 0;
+  right: 0;
+  position: absolute;
 }
-
 .customfield-sprogramme .formarrow::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    right: -12px;
-    width: 0;
-    height: 0;
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent;
-    border-left: 12px solid #ffffff;
-    z-index: 2;
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: -12px;
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 12px solid #ffffff;
+  z-index: 2;
 }
-
 .customfield-sprogramme .formarrow::after {
-    content: '';
-    position: absolute;
-    top: 7px;
-    right: -13px;
-    width: 0;
-    height: 0;
-    border-top: 13px solid transparent;
-    border-bottom: 13px solid transparent;
-    border-left: 13px solid var(--light);
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: -13px;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 13px solid var(--light);
 }
-
 .customfield-sprogramme .tag-form {
-    display: block;
-    position: absolute;
-    right: 100%;
-    top: -3px;
-    width: 400px;
-    padding: 0.5rem;
-    background-color: #fff;
-    z-index: 1;
-    border: 1px solid var(--light);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    font-size: 0.8rem;
+  display: block;
+  position: absolute;
+  right: 100%;
+  top: -3px;
+  width: 400px;
+  padding: 0.5rem;
+  background-color: #fff;
+  z-index: 1;
+  border: 1px solid var(--light);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 0.8rem;
 }
-
 .customfield-sprogramme .tag-form .badge .btn {
-    display: block;
+  display: block;
 }
-
 .customfield-sprogramme .tag-form .btn.btn-icon:hover, .customfield-sprogramme .tag-form .btn.btn-icon:focus {
-    background-color: #ead9d9;
+  background-color: #ead9d9;
 }
-
 .customfield-sprogramme .tag-form input,
 .customfield-sprogramme .tag-form .btn {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }
-
 .customfield-sprogramme .tag-form .list-group {
-    border-top: 1px solid var(--light);
-    border-radius: 0;
+  border-top: 1px solid var(--light);
+  border-radius: 0;
 }
-
 .customfield-sprogramme .tag-form .list-group-item {
-    border-radius: 0;
+  border-radius: 0;
 }
-
 .customfield-sprogramme .tag-form #tag-name {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
-
 .customfield-sprogramme .tag-form #tag-value {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-left: -1px;
 }
-
 .customfield-sprogramme .tag-form #tag-confirm {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    margin-left: -1px;
-    border-color: var(--gray);
-    border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+  border-color: var(--gray);
+  border-left: 0;
 }
-
 .customfield-sprogramme .tag-form .tag-list {
-    height: 450px;
-    overflow-y: auto;
-    border-bottom: 1px solid var(--light);
+  height: 450px;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--light);
 }
-
 .customfield-sprogramme .tag-form.data-tags .competences-list {
-    display: none;
+  display: none;
 }
-
 .customfield-sprogramme .tag-form.data-competencies .tag-list {
-    display: none;
+  display: none;
 }
 
 .modal .modal-customfield_sprogramme_history {
-    max-width: calc(100% - 2rem);
+  max-width: calc(100% - 2rem);
 }
-
 .modal .modal-customfield_sprogramme_history .oldvalue {
-    color: #c0c0c0;
+  color: #c0c0c0;
 }
-
 .modal .modal-customfield_sprogramme_history .newvalue {
-    color: #ce2626;
+  color: rgb(206, 38, 38);
 }
 
 .modal .modal-customfield_sprogramme_editor {
-    max-width: calc(100% - 2rem);
-    height: 100vh;
+  max-width: calc(100% - 2rem);
+  height: 100vh;
 }
-
 .modal .modal-customfield_sprogramme_editor .sum.strikethrough {
-    color: #c6c6c6;
+  color: #c6c6c6;
 }
-
 .modal .modal-customfield_sprogramme_editor .modal-header {
-    align-items: center;
+  align-items: center;
 }
-
 .modal .modal-customfield_sprogramme_editor .modal-header .close {
-    display: none;
+  display: none;
 }
-
 .modal .modal-customfield_sprogramme_editor .close {
-    margin-left: -0.5px;
+  margin-left: -0.5px;
 }
-
 .modal .modal-customfield_sprogramme_editor .editbuttons {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-right: 1rem;
-    margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm {
-    margin-left: auto;
+  margin-left: auto;
 }
-
 .modal .modal-customfield_sprogramme_editor .downloadbutton .icon,
 .modal .modal-customfield_sprogramme_editor .closebutton .icon,
 .modal .modal-customfield_sprogramme_editor .uploadbutton .icon {
-    color: #9f9f9f;
+  color: #9f9f9f;
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm {
-    margin-top: -1.5px;
+  margin-top: -1.5px;
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm .savingicon .icon {
-    color: var(--warning);
+  color: var(--warning);
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm .defaulticon .icon {
-    color: var(--success);
+  color: var(--success);
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm .icon {
-    color: #9f9f9f;
+  color: #9f9f9f;
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm .btn .savingicon {
-    display: none;
+  display: none;
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm .btn.saving .defaulticon {
-    display: none;
+  display: none;
 }
-
 .modal .modal-customfield_sprogramme_editor .saveconfirm .btn.saving .savingicon {
-    display: inline-block;
+  display: inline-block;
 }
 
 .tablerfcs .userpicture {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 100%;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
 }
