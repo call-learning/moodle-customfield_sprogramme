@@ -95,7 +95,7 @@ class Manager {
             let btn = e.target.closest('.modal-customfield_sprogramme_editor [data-action]');
             if (btn) {
                 e.preventDefault();
-                this.actions(btn);
+                this.actions(btn.dataset.action, btn);
             }
 
         });
@@ -437,9 +437,10 @@ class Manager {
 
     /**
      * Actions.
-     * @param {object} btn The button that was clicked.
+     * @param {string} action The button that was clicked.
+     * @param {HTMLElement|null} element The element that was clicked.
      */
-    actions(btn) {
+    actions(action, element) {
         const actionMap = {
             'addrow': this.addRow,
             'deleterow': this.deleteRow,
@@ -455,12 +456,12 @@ class Manager {
             'removerfc': this.removeRfc,
             'resetrfc': this.resetRfc,
             'closeform': this.closeForm,
+            'hide': this.closeForm,
             'downloadcsv': this.downloadCsv,
             'augmenttable': this.augmentTable,
         };
-        const action = btn.dataset.action;
         if (actionMap[action]) {
-            actionMap[action].call(this, btn);
+            actionMap[action].call(this, element);
         }
     }
 

@@ -72,12 +72,26 @@ const showHistory = async(rfcid, courseid) => {
     modalElement.classList.add('modal-customfield_sprogramme_history');
 };
 
+class CustomModal extends Modal {
+    constructor(root, canCloseCallback) {
+        super(root);
+        this.canCloseCallback = canCloseCallback;
+    }
+
+    hide() {
+        // Do not close the modal unless we do it explicitly.
+    }
+    close() {
+        super.hide();
+    }
+}
+
 const getEditor = async(element, courseid) => {
     await getProgramme(element, courseid);
     const modalContent = document.querySelector('[data-region="app"]');
     const modalHeader = document.querySelector('[data-region="modalheader"]');
 
-    const modal = await Modal.create({
+    const modal = await CustomModal.create({
         large: true,
         title: getString('editprogramme', 'customfield_sprogramme'),
         body: modalContent,
@@ -94,7 +108,9 @@ const getEditor = async(element, courseid) => {
     }
 
     document.addEventListener('closeform', () => {
-        modal.hide();
+        modal.close();
+        // Reload the page to show the changes.
+        window.location.reload();
     });
 };
 
