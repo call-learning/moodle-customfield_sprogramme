@@ -104,7 +104,7 @@ class sprogramme_rfc extends persistent {
         if ($requested) {
             return $requested;
         }
-        $cancelled = self::get_record(['courseid' => $courseid, 'type' => self::RFC_CANCELLED, 'usermodified' => $USER->id]);
+        $cancelled = self::get_record(['courseid' => $courseid, 'type' => self::RFC_CANCELLED, 'adminid' => $USER->id]);
         if ($cancelled) {
             return $cancelled;
         }

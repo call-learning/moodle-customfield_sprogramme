@@ -862,7 +862,7 @@ class Manager {
      */
     async rejectRfc(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.rejectRfc({courseid: this.courseid, userid: userid});
+        const response = await Repository.cancelRfc({courseid: this.courseid, userid: userid});
         if (response) {
             this.getTableData();
         }
