@@ -41,11 +41,8 @@
     </div>
     <div class="form-group d-flex mb-0">
         <label for="tag-name" class="sr-only">{{#str}}tags, customfield_sprogramme{{/str}}</label>
-        <div class="col-6 p-0">
+        <div class="col-10 p-0">
             <input type="search" class="form-control" id="tag-name" {{#hasmaxtags}}disabled{{/hasmaxtags}} placeholder="{{#str}}search{{/str}}" >
-        </div>
-        <div class="col-4 p-0">
-            <input type="number" class="form-control" id="tag-value" {{#hasmaxtags}}disabled{{/hasmaxtags}} placeholder="{{#str}}value, customfield_sprogramme{{/str}}" max="100" min="0">
         </div>
         <div class="col-2 p-0">
             <button class="btn btn-secondary" id="tag-confirm" data-action="tag-confirm" {{#hasmaxtags}}disabled{{/hasmaxtags}}>

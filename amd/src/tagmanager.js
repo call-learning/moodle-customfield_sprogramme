@@ -247,7 +247,6 @@ class TagManager {
      */
     setTagForm(tag) {
         const form = document.querySelector('[data-region="tagform"]');
-        const setTags = this.tempTags;
         if (!form) {
             return;
         }
@@ -258,13 +257,6 @@ class TagManager {
         const tagId = form.querySelector('#tag-id');
         if (tagId) {
             tagId.value = tag.id;
-        }
-        const select = form.querySelector('#tag-value');
-        // Get the percentage based on the number of setTags 100 for the first tag, 50 for the second tag, etc.
-        const percentage = setTags.length > 0 ? Math.floor(100 / (setTags.length + 1)) : 100;
-        if (select) {
-            select.value = percentage;
-            select.focus();
         }
     }
 
@@ -320,10 +312,6 @@ class TagManager {
         const rowId = form.dataset.rowid;
         const type = form.dataset.type;
         const tagId = parseInt(form.querySelector('#tag-id').value);
-        const tagValue = parseInt(form.querySelector('#tag-value').value);
-        const totalTags = this.tempTags.length;
-
-        const suggestedPercentage = Math.floor(100 / (totalTags + 1));
 
         if (!tagId) {
             return;
@@ -358,8 +346,6 @@ class TagManager {
         const tag = {
             id: tagId,
             name: selectedTag ? selectedTag.name : 'Unknown',
-            percentage: tagValue,
-            customPercentage: tagValue !== suggestedPercentage,
             nopop: true,
         };
         this.tempTags.push(tag);
@@ -378,10 +364,7 @@ class TagManager {
         if (totalTags === 0) {
             return; // No tags to reset.
         }
-        // If there are custom percentages, we do not reset them.
-        if (this.tempTags.some(tag => tag.customPercentage)) {
-            return; // Do not reset percentages if any tag has a custom percentage.
-        }
+
         const percentage = Math.floor(100 / totalTags);
         this.tempTags.forEach(tag => {
             tag.percentage = percentage;
