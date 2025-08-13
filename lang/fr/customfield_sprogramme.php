@@ -92,12 +92,14 @@ $string['rfc:selectcourse'] = 'Sélectionner un cours';
 $string['rfc:selectstatus'] = 'Sélectionner un statut';
 $string['rfc:view'] = 'Voir';
 $string['rfc:help'] = 'Aide';
+
 $string['rfc:helptext'] = <<<'EOF'
-<h3>Procédure de soumission d’une demande</h3>
-<p>Pour soumettre une demande de modification, commencez par modifier les champs grisés. Une fois terminé, cliquez sur le bouton "Soumettre une demande de modification".</p>
-<p>Pour annuler une demande, cliquez sur "Annuler la demande de modification" dans le menu déroulant.</p>
-<p>Une fois la demande soumise, le responsable du site recevra un e-mail avec un lien vers la demande.</p>
-<p>Une fois la demande acceptée, les modifications seront appliquées au cours.</p>
+<strong>Soumettre une demande de modification</strong><br>
+Les champs éditables du tableau peuvent être modifiés librement (intitulés, consignes, supports, etc.). pour permettre des mises à jour régulières.
+Les champs grisés (volumes horaires) ne sont modifiables qu’après validation par la DEVE, en lien avec les chefs de département, afin de garder une bonne traçabilité sur les mises à jour des volumes horaires.
+Pour proposer une modification, saisissez la nouvelle valeur (en rouge), puis cliquez sur "Soumettre une demande de modification".
+La DEVE recevra une notification et vous contactera si nécessaire.
+Les changements horaires ne seront visibles des étudiants qu’après validation.
 EOF;
 
 $string['history'] = 'Historique';

@@ -64,7 +64,7 @@ $string['email:rfc'] = <<<'EOF'
 <p>A change request has been submitted for the programme of the following course: {$a->coursename}.</p>
 <p>The head of the relevant department is invited to review these changes and confirm their agreement by replying to this message, copying the director of training and the quality manager.</p>
 <p>Once this agreement has been communicated, the director of training will proceed with the final validation and update the overall educational framework.</p>
-<p>To view the proposed changes, please follow this link and click on the "Edit programme" button: 
+<p>To view the proposed changes, please follow this link and click on the "Edit programme" button:
 <a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Best regards</p>
 EOF;
@@ -91,12 +91,14 @@ $string['rfc:selectcourse'] = 'Select course';
 $string['rfc:selectstatus'] = 'Select status';
 $string['rfc:view'] = 'View';
 $string['rfc:help'] = 'Help';
+
 $string['rfc:helptext'] = <<<'EOF'
-<h3>The submit request process</h3>
-<p>To submit a change request, start changing the grayed fields. When you are done, click on the "Submit change request" button.</p>
-<p>To cancel a change request, click on the "Cancel change request" button in the dropdown menu.</p>
-<p>Once the change request is submitted, the site manager will receive an email with a link to the change request.</p>
-<p>Once the change request is accepted, the changes will be applied to the course.</p>
+<strong><br>Submit a change request</strong><br>
+The editable fields in the table can be freely modified (titles, instructions, supports, etc.) to allow for regular updates.
+The grayed-out fields (hourly volumes) can only be modified after validation by the DEVE, in conjunction with the department heads, in order to maintain good traceability of updates to the hourly volumes.
+To propose a modification, enter the new value (in red), then click on "Submit a change request".
+The DEVE will receive a notification and will contact you if necessary.
+The schedule changes will only be visible to students after validation.
 EOF;
 
 $string['history'] = 'History';
