@@ -73,11 +73,6 @@ const showHistory = async(rfcid, courseid) => {
 };
 
 class CustomModal extends Modal {
-    constructor(root, canCloseCallback) {
-        super(root);
-        this.canCloseCallback = canCloseCallback;
-    }
-
     hide() {
         // Do not close the modal unless we do it explicitly.
     }

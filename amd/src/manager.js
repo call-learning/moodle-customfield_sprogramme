@@ -992,7 +992,9 @@ class Manager {
             },
         ]);
 
-        const hasChanges = modules.some(module => module.rows.some(row => row.cells.some(cell => cell.changed)));
+        const hasChanges = modules.some(module => module.rows.some(
+            row => row.cells.some(cell => cell.changed && (cell.edit ?? false)))
+        );
         if (hasChanges) {
             Notification.confirm(
                 ...confirmationStrings,
