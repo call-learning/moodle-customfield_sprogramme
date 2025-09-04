@@ -104,7 +104,9 @@ class set_data extends external_api {
         $modules = $params['modules'];
 
         $result = programme::set_data($courseid, $modules);
-
+        // Invalidate the cache for this course.
+        // TODO see if we can limit this to just if the programme has changed.
+        \cache_helper::invalidate_by_event('customfield_sprogramme/changesinsprogramme', [$courseid]);
         $data = [
             'data' => $result,
         ];
