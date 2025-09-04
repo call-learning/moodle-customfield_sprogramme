@@ -505,7 +505,7 @@ class Manager {
         row.cells = columns.map(column => structuredClone(column));
         // Set the correct types for the cells.
         row.cells.forEach(cell => {
-            cell.edit = true;
+            cell.isnewcell = true;
             cell.value = null;
             cell[cell.type] = true;
             cell.oldvalue = null;
@@ -993,8 +993,8 @@ class Manager {
         ]);
 
         const hasChanges = modules.some(module => module.rows.some(
-            row => row.cells.some(cell => cell.changed && (cell.edit ?? false)))
-        );
+            row => row.cells.some(cell => cell.changed || (cell.isnewcell ?? false))
+        ));
         if (hasChanges) {
             Notification.confirm(
                 ...confirmationStrings,
