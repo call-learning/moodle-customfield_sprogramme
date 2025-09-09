@@ -127,3 +127,20 @@ $string['unsavedchanges'] = 'You have unsaved changes. Do you want to close the 
 $string['closewithoutsaving'] = 'Close without saving';
 $string['cancel'] = 'Cancel';
 $string['alreadyset'] = 'Already set for this row.';
+
+$string['competency:uniqueid'] = 'Unique ID';
+$string['competency:type'] = 'Type';
+$string['competency:parent'] = 'Parent';
+$string['competency:name'] = 'Name';
+$string['competency:sortorder'] = 'Sort order';
+$string['entity:competency'] = 'Competency';
+$string['report:competencies'] = 'Competencies Report';
+
+
+$string['discipline:uniqueid'] = 'Unique ID';
+$string['discipline:type'] = 'Type';
+$string['discipline:parent'] = 'Parent';
+$string['discipline:name'] = 'Name';
+$string['discipline:sortorder'] = 'Sort order';
+$string['entity:discipline'] = 'Discipline';
+$string['report:disciplines'] = 'Disciplines Report';

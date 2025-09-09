@@ -19,10 +19,7 @@ declare(strict_types=1);
 namespace customfield_sprogramme\reportbuilder\local\entities;
 use lang_string;
 use core_reportbuilder\local\entities\base;
-use core_reportbuilder\local\filters\date;
-use core_reportbuilder\local\filters\number;
 use core_reportbuilder\local\filters\text;
-use core_reportbuilder\local\helpers\format;
 use core_reportbuilder\local\report\{column, filter};
 
 /**
