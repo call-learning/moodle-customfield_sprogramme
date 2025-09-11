@@ -25,9 +25,9 @@ namespace customfield_sprogramme;
  */
 class field_controller extends \core_customfield\field_controller {
     /**
-     * Plugin type text
+     * Plugin type sprogramme.
      */
-    const TYPE = 'text';
+    const TYPE = 'sprogramme';
 
     /**
      * Add fields for editing a text field.
@@ -35,19 +35,13 @@ class field_controller extends \core_customfield\field_controller {
      * @param \MoodleQuickForm $mform
      */
     public function config_form_definition(\MoodleQuickForm $mform) {
-    }
-
-    /**
-     * Validate the data on the field configuration form
-     *
-     * @param array $data from the add/edit profile field form
-     * @param array $files
-     * @return array associative array of error messages
-     */
-    public function config_form_validation(array $data, $files = []): array {
-        global $CFG;
-        $errors = parent::config_form_validation($data, $files);
-        return $errors;
+        $mform->addElement(
+            'checkbox',
+            'configdata[enabledbydefault]',
+            get_string('programme:enabledbydefault', 'customfield_sprogramme')
+        );
+        $mform->setType('configdata[enabledbydefault]', PARAM_BOOL);
+        $mform->setDefault('configdata[enabledbydefault]', 1);
     }
 
     /**
@@ -57,5 +51,12 @@ class field_controller extends \core_customfield\field_controller {
      */
     public function supports_course_grouping(): bool {
         return false;
+    }
+
+    /**
+     * Before delete bulk actions
+     */
+    public function delete(): bool {
+        return parent::delete();
     }
 }

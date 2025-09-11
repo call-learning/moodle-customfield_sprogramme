@@ -24,6 +24,7 @@
  * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+use customfield_sprogramme\setup;
 
 /**
  * Execute the plugin upgrade steps from the given old version.
@@ -35,5 +36,22 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
+    if ($oldversion < 2025091100) {
+        setup::add_datafield_id_and_fk('customfield_sprogramme');
+        setup::add_datafield_id_and_fk('customfield_sprogramme_module');
+        setup::add_datafield_id_and_fk('customfield_sprogramme_rfc');
+        setup::add_datafield_id_and_fk('customfield_sprogramme_notification');
+        // Now we need to migrate all data from courseid to fieldid.
+        // We will do this in a scheduled task to avoid timeouts.
+        setup::migrate_courseid_to_datafieldid();
+        upgrade_plugin_savepoint(true, 2025091100, 'customfield', 'sprogramme');
+    }
+    //if ($oldversion < 2025091000) {
+    //    setup::drop_courseid_column('customfield_sprogramme');
+    //    setup::drop_courseid_column('customfield_sprogramme_module');
+    //    setup::drop_courseid_column('customfield_sprogramme_rfc');
+    //    setup::drop_courseid_column('customfield_sprogramme_notification');
+    //    upgrade_plugin_savepoint(true, 2025091000, 'customfield', 'sprogramme');
+    //}
     return true;
 }

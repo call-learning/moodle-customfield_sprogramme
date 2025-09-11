@@ -25,38 +25,38 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['aas_help'] = 'Auto-Apprentissage Supervisé : Enseignement comprenant des séquences d’apprentissage individuel en autonomie où les élèves utilisent un matériel pédagogique disponible (et peuvent obtenir, à leur demande, une aide ponctuelle des enseignants) et s\'auto-évaluent (e-learning par exemple).';
 $string['accept'] = 'Accepter';
 $string['addmodule'] = 'Ajouter un module';
 $string['addrow'] = 'Ajouter une ligne';
+$string['alreadyset'] = 'Déjà définie pour cette ligne.';
 $string['approvalemail'] = 'Adresse e-mail d’approbation';
 $string['approvalemail_desc'] = 'Adresse e-mail à laquelle envoyer les demandes d’approbation. Utilisez une liste séparée par des virgules.';
-$string['cancelrfc'] = 'Annuler la demande de modification';
-$string['cachedef_programmedata'] = 'Cache des données du programme';
-$string['competencies'] = 'Compétences';
 $string['cachedef_columntotals'] = 'Totaux des colonnes';
+$string['cachedef_programmedata'] = 'Cache des données du programme';
+$string['cancel'] = 'Annuler';
+$string['cancelrfc'] = 'Annuler la demande de modification';
+$string['closewithoutsaving'] = 'Fermer sans enregistrer';
+$string['cm_help'] = 'Cours Magistral : Enseignement théorique dispensé à un groupe entier ou partiel d\'étudiants. L\'enseignement peut être avec ou sans l\'aide de matériel pédagogique, d\'animaux de démonstration ou de spécimens. La caractéristique essentielle est qu\'il n\'y a pas d\'implication pratique des étudiants dans le matériel discuté. Ils écoutent et ne manipulent pas physiquement.';
+$string['competencies'] = 'Compétences';
+$string['competencies_help'] = 'Cette case indique les compétences (de 1 à 3 maximum) du référentiel national qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance. La somme doit faire 100%.';
+$string['competency:name'] = 'Nom';
+$string['competency:parent'] = 'Parent';
+$string['competency:sortorder'] = 'Ordre de tri';
+$string['competency:type'] = 'Type';
+$string['competency:uniqueid'] = 'Identifiant unique';
+$string['confirm'] = 'Confirmer';
+$string['consignes_help'] = 'Cette case renseigne sur tout ce que doit faire l’étudiant pour préparer la séance / l’exercice avant de s’y présenter. Ce qui n’est pas indiqué ici ne peut pas être exigé lors de la séance / l’exercice.';
+$string['dd_rse_help'] = 'Développement Durable / Responsabilité Sociétale et Environnementale : Cette case indique si la séance traite intégralement ou en partie de notions en lien avec le domaine DD / RSE.';
+$string['discipline:name'] = 'Nom';
+$string['discipline:parent'] = 'Parent';
+$string['discipline:sortorder'] = 'Ordre de tri';
+$string['discipline:type'] = 'Type';
+$string['discipline:uniqueid'] = 'Identifiant unique';
 $string['disciplines'] = 'Disciplines';
+$string['disciplines_help'] = 'Cette case indique les disciplines AEEEV (de 1 à 3 maximum) qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance (par exemple, 10% pour « 2. Immunology », 60% pour « 2. Parasitology », et 30% pour « 4.FPA Preventive medicine ». La somme doit faire 100%.';
 $string['edit'] = 'Modifier';
 $string['editprogramme'] = 'Modifier le programme';
-$string['entity:programme'] = 'Programme';
-$string['invaliddata'] = 'Données non valides : {$a}';
-$string['maxdisciplines'] = 'Vous ne pouvez pas en ajouter davantage';
-$string['maxpercentage'] = 'Maximum autorisé : {$a} La somme des pourcentages doit être égale à 100';
-$string['pluginname'] = 'Champ personnalisé Programme';
-$string['programme:courseid'] = 'Identifiant du cours';
-$string['programme:intitule_seance'] = 'Intitulé de la séance';
-$string['reject'] = 'Rejeter';
-$string['removerfc'] = 'Réinitialiser toutes les modifications';
-$string['report:programme'] = 'Programme';
-$string['resetrfc'] = 'Masquer les modifications proposées';
-$string['rfcs'] = 'Demandes {$a}';
-$string['row'] = 'Ligne {$a}';
-$string['value'] = 'Valeur';
-$string['saving'] = 'Enregistrement...';
-$string['sprogramme:edit'] = 'Modifier le champ personnalisé Programme';
-$string['sprogramme:view'] = 'Afficher le champ personnalisé Programme';
-$string['submitdate'] = 'Date de soumission : ';
-$string['submitrfc'] = 'Soumettre une demande de modification';
-$string['email:rfc:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
 $string['email:rfc'] = <<<'EOF'
 
 <p>Bonjour,</p>
@@ -69,30 +69,40 @@ $string['email:rfc'] = <<<'EOF'
 <a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Bien cordialement</p>
 EOF;
-$string['notification:rfc'] = 'Demande de modification';
-$string['notification:notifications'] = 'Notifications par e-mail';
-$string['rfc:requested'] = 'Demandée';
-$string['rfc:submitted'] = 'Soumise';
-$string['rfc:accepted'] = 'Acceptée';
-$string['rfc:rejected'] = 'Rejetée';
+$string['email:rfc:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
+$string['entity:competency'] = 'Compétence';
+$string['entity:discipline'] = 'Discipline';
+$string['entity:programme'] = 'Programme';
+$string['fmp_help'] = 'Formation en Milieu Professionnel dans le cadre d’une UC : Périodes de formation qui font partie intégrante du programme d’études, mais qui sont suivies en dehors de l’établissement et sous la supervision d’un enseignant non académique (par exemple un praticien).';
+$string['history'] = 'Historique';
+$string['intitule_seance_help'] = 'Le nom de l’exercice d’enseignement est renseigné dans cette case. Il doit correspondre exactement au mémo indiqué dans Hyperplanning. Cet intitulé commence par le type d’exercice (CM, TD, TP, …) et son ordre dans le ruban pédagogique. Par exemple : « CM03 - Carrière de la vache laitière 1/2 ».';
+$string['invaliddata'] = 'Données non valides : {$a}';
 $string['invalidpagetype'] = 'Type de page non valide';
-$string['usernotfound'] = 'Utilisateur non trouvé';
-$string['rfc:changerequestby'] = 'Demande de modification par {$a}';
-$string['rfc:rfcblocked'] = 'Demande bloquée';
-$string['rfc:rfcblocked:helptext'] = <<<'EOF'
-Une demande de modification a déjà été soumise pour ce programme. Une seule demande peut être active à la fois.
-Si vous souhaitez proposer une autre modification, veuillez d’abord en discuter avec la personne concernée.
-EOF;
-$string['rfc:user'] = 'Utilisateur';
-$string['rfc:course'] = 'Cours';
-$string['rfc:timecreated'] = 'Date de création';
-$string['rfc:status'] = 'Statut';
+$string['maxdisciplines'] = 'Vous ne pouvez pas en ajouter davantage';
+$string['maxpercentage'] = 'Maximum autorisé : {$a} La somme des pourcentages doit être égale à 100';
+$string['notification:notifications'] = 'Notifications par e-mail';
+$string['notification:rfc'] = 'Demande de modification';
+$string['notifications'] = 'Notifications';
+$string['overaltotals'] = 'Totaux';
+$string['overaltotals_help'] = 'Total de toutes les colonnes du tableau. Il s’agit de la somme de toutes les colonnes pour chaque ligne.';
+$string['perso_ap_help'] = 'Temps de travail personnel estimé nécessaire pour assimiler la séance / l’exercice. Ce temps de travail inclut le temps passé à réviser pour l’évaluation intermédiaire et/ou l’examen final.';
+$string['perso_av_help'] = 'Temps de travail personnel estimé nécessaire pour préparer en amont la séance / l’exercice. Ce temps de travail inclut entre autres le temps passé à réaliser des auto-évaluations de pré-requis avant la séance.';
+$string['pluginname'] = 'Champ personnalisé Programme';
+$string['programme:courseid'] = 'Identifiant du cours';
+$string['programme:enabled'] = 'Programme activé';
+$string['programme:enabledbydefault'] = 'Programme activé par défaut';
+$string['programme:intitule_seance'] = 'Intitulé de la séance';
+$string['reject'] = 'Rejeter';
+$string['removerfc'] = 'Réinitialiser toutes les modifications';
+$string['report:competencies'] = 'Rapport des compétences';
+$string['report:disciplines'] = 'Rapport des disciplines';
+$string['report:programme'] = 'Programme';
+$string['resetrfc'] = 'Masquer les modifications proposées';
+$string['rfc:accepted'] = 'Acceptée';
 $string['rfc:actions'] = 'Actions';
-$string['rfc:selectcourse'] = 'Sélectionner un cours';
-$string['rfc:selectstatus'] = 'Sélectionner un statut';
-$string['rfc:view'] = 'Voir';
+$string['rfc:changerequestby'] = 'Demande de modification par {$a}';
+$string['rfc:course'] = 'Cours';
 $string['rfc:help'] = 'Aide';
-
 $string['rfc:helptext'] = <<<'EOF'
 <strong>Soumettre une demande de modification</strong><br>
 Les champs éditables du tableau peuvent être modifiés librement (intitulés, consignes, supports, etc.). pour permettre des mises à jour régulières.
@@ -101,33 +111,34 @@ Pour proposer une modification, saisissez la nouvelle valeur (en rouge), puis cl
 La DEVE recevra une notification et vous contactera si nécessaire.
 Les changements horaires ne seront visibles des étudiants qu’après validation.
 EOF;
-
-$string['history'] = 'Historique';
-
-$string['dd_rse_help'] = 'Développement Durable / Responsabilité Sociétale et Environnementale : Cette case indique si la séance traite intégralement ou en partie de notions en lien avec le domaine DD / RSE.';
-$string['intitule_seance_help'] = 'Le nom de l’exercice d’enseignement est renseigné dans cette case. Il doit correspondre exactement au mémo indiqué dans Hyperplanning. Cet intitulé commence par le type d’exercice (CM, TD, TP, …) et son ordre dans le ruban pédagogique. Par exemple : « CM03 - Carrière de la vache laitière 1/2 ».';
-$string['cm_help'] = 'Cours Magistral : Enseignement théorique dispensé à un groupe entier ou partiel d\'étudiants. L\'enseignement peut être avec ou sans l\'aide de matériel pédagogique, d\'animaux de démonstration ou de spécimens. La caractéristique essentielle est qu\'il n\'y a pas d\'implication pratique des étudiants dans le matériel discuté. Ils écoutent et ne manipulent pas physiquement.';
+$string['rfc:rejected'] = 'Rejetée';
+$string['rfc:requested'] = 'Demandée';
+$string['rfc:rfcblocked'] = 'Demande bloquée';
+$string['rfc:rfcblocked:helptext'] = <<<'EOF'
+Une demande de modification a déjà été soumise pour ce programme. Une seule demande peut être active à la fois.
+Si vous souhaitez proposer une autre modification, veuillez d’abord en discuter avec la personne concernée.
+EOF;
+$string['rfc:selectcourse'] = 'Sélectionner un cours';
+$string['rfc:selectstatus'] = 'Sélectionner un statut';
+$string['rfc:status'] = 'Statut';
+$string['rfc:submitted'] = 'Soumise';
+$string['rfc:timecreated'] = 'Date de création';
+$string['rfc:user'] = 'Utilisateur';
+$string['rfc:view'] = 'Voir';
+$string['rfcs'] = 'Demandes {$a}';
+$string['row'] = 'Ligne {$a}';
+$string['saving'] = 'Enregistrement...';
+$string['sprogramme:edit'] = 'Modifier le champ personnalisé Programme';
+$string['sprogramme:editall'] = 'Modifier tous les champs personnalisés Programme';
+$string['sprogramme:view'] = 'Afficher le champ personnalisé Programme';
+$string['submitdate'] = 'Date de soumission : ';
+$string['submitrfc'] = 'Soumettre une demande de modification';
+$string['supports_help'] = 'Cette case renseigne sur les supports pédagogiques indispensables à la préparation de la séance / l’exercice et à sa révision. Seul le matériel pédagogique listé dans cette case est considéré comme indispensable. S’il ne l’est pas, il n’est que facultatif et complémentaire.';
+$string['tc_help'] = 'Travaux Cliniques : Séances d\'enseignement pratique effectuées par les étudiants dans un environnement clinique (médecine individuelle ou collective) incluant les rotations cliniques intra et extra-muros (dont ambulante) sous la supervision d’un enseignant, et l’autopsie.';
 $string['td_help'] = 'Travaux Dirigés : Séances d’enseignement dirigé au cours desquelles les étudiants travaillent seuls ou en équipe sur des aspects théoriques, préparés à partir de documents, d’articles, etc. Les étudiants réfléchissent et interagissent sur des concepts. La séance est animée par des exercices, des discussions et, si possible, des études de cas (apprentissage par résolution de problèmes par exemple).';
 $string['tp_help'] = 'Travaux Pratiques non cliniques : Séances d’enseignement où les étudiants manipulent eux-mêmes les ressources pédagogiques (logiciels, microscopes, expé en labo, etc) sans manipulation d’animaux, d’organes ou de mannequins.';
 $string['tpa_help'] = 'TP sur animaux sains : Séances d’enseignement où les étudiants travaillent eux-mêmes sur des animaux sains, des pièces anatomiques, des mannequins, des carcasses, etc. (par exemple : inspection ante mortem et post mortem, hygiène alimentaire, etc.). Toutes les activités VetSims sont incluses dans cette catégorie.';
-$string['tc_help'] = 'Travaux Cliniques : Séances d\'enseignement pratique effectuées par les étudiants dans un environnement clinique (médecine individuelle ou collective) incluant les rotations cliniques intra et extra-muros (dont ambulante) sous la supervision d’un enseignant, et l’autopsie.';
-$string['aas_help'] = 'Auto-Apprentissage Supervisé : Enseignement comprenant des séquences d’apprentissage individuel en autonomie où les élèves utilisent un matériel pédagogique disponible (et peuvent obtenir, à leur demande, une aide ponctuelle des enseignants) et s\'auto-évaluent (e-learning par exemple).';
-$string['fmp_help'] = 'Formation en Milieu Professionnel dans le cadre d’une UC : Périodes de formation qui font partie intégrante du programme d’études, mais qui sont suivies en dehors de l’établissement et sous la supervision d’un enseignant non académique (par exemple un praticien).';
-$string['perso_av_help'] = 'Temps de travail personnel estimé nécessaire pour préparer en amont la séance / l’exercice. Ce temps de travail inclut entre autres le temps passé à réaliser des auto-évaluations de pré-requis avant la séance.';
-$string['perso_ap_help'] = 'Temps de travail personnel estimé nécessaire pour assimiler la séance / l’exercice. Ce temps de travail inclut le temps passé à réviser pour l’évaluation intermédiaire et/ou l’examen final.';
-$string['consignes_help'] = 'Cette case renseigne sur tout ce que doit faire l’étudiant pour préparer la séance / l’exercice avant de s’y présenter. Ce qui n’est pas indiqué ici ne peut pas être exigé lors de la séance / l’exercice.';
-$string['supports_help'] = 'Cette case renseigne sur les supports pédagogiques indispensables à la préparation de la séance / l’exercice et à sa révision. Seul le matériel pédagogique listé dans cette case est considéré comme indispensable. S’il ne l’est pas, il n’est que facultatif et complémentaire.';
-$string['disciplines_help'] = 'Cette case indique les disciplines AEEEV (de 1 à 3 maximum) qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance (par exemple, 10% pour « 2. Immunology », 60% pour « 2. Parasitology », et 30% pour « 4.FPA Preventive medicine ». La somme doit faire 100%.';
-$string['competencies_help'] = 'Cette case indique les compétences (de 1 à 3 maximum) du référentiel national qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance. La somme doit faire 100%.';
-
-$string['notifications'] = 'Notifications';
-$string['sprogramme:editall'] = 'Modifier tous les champs personnalisés Programme';
-
-$string['overaltotals'] = 'Totaux';
-$string['overaltotals_help'] = 'Total de toutes les colonnes du tableau. Il s’agit de la somme de toutes les colonnes pour chaque ligne.';
-
-$string['confirm'] = 'Confirmer';
 $string['unsavedchanges'] = 'Vous avez des modifications non enregistrées. Voulez-vous fermer le formulaire sans enregistrer ?';
-$string['closewithoutsaving'] = 'Fermer sans enregistrer';
-$string['cancel'] = 'Annuler';
-$string['alreadyset'] = 'Déjà définie pour cette ligne.';
+$string['usernotfound'] = 'Utilisateur non trouvé';
+$string['value'] = 'Valeur';
+$string['mutatecourseidtofieldid'] = 'Changer courseid en fieldid';

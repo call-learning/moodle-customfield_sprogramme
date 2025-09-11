@@ -19,6 +19,7 @@ namespace customfield_sprogramme\local\api;
 defined('MOODLE_INTERNAL') || die();
 
 use cache;
+use context;
 use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\persistent\sprogramme_disc;
 use customfield_sprogramme\local\persistent\sprogramme_disclist;
@@ -1373,5 +1374,21 @@ class programme {
         $cache->delete($courseid);
         $cache = cache::make('customfield_sprogramme', 'columntotals');
         $cache->delete($courseid);
+    }
+
+    /**
+     * Get the context from a datafieldid
+     *
+     * @param int $datafieldid
+     * @return context|null
+     */
+    public static function get_context_from_datafieldi(int $datafieldid): ?context {
+        global $DB;
+        $datafield = $DB->get_record('customfield_data', ['id' => $datafieldid]);
+        if (!$datafield) {
+            return null;
+        }
+        $context = context_course::instance_by_id($datafield->instanceid, IGNORE_MISSING);
+        return $context ?: null;
     }
 }

@@ -23,23 +23,25 @@
  */
 
 require('../../../config.php');
+
+global $PAGE, $OUTPUT;
 use customfield_sprogramme\output\formfield;
 use customfield_sprogramme\output\programme;
 use customfield_sprogramme\output\viewrfcs;
 use customfield_sprogramme\setup;
 
-$courseid = optional_param('courseid', 0, PARAM_INT);
+$datafieldid = optional_param('datafieldid', 0, PARAM_INT);
 $pagetype = optional_param('pagetype', 'course', PARAM_ALPHANUMEXT);
 
-if ($courseid) {
-    $context = context_course::instance($courseid);
-    $course = get_course($courseid);
+if ($datafieldid) {
+    $context = \customfield_sprogramme\local\api\programme::get_context_from_datafieldi($datafieldid);
+    $course = get_course($context->instanceid);
 } else {
     $context = context_system::instance();
     $course = get_site();
 }
 require_login($course);
-$url = new moodle_url('/customfield/field/sprogramme/edit.php', ['courseid' => $courseid]);
+$url = new moodle_url('/customfield/field/sprogramme/edit.php', ['datafieldid' => $datafieldid]);
 $PAGE->set_url($url);
 $PAGE->set_context($context);
 $PAGE->set_heading($course->fullname);
@@ -52,7 +54,7 @@ switch ($pagetype) {
     case 'course':
         $formfield = new formfield();
         echo $renderer->render($formfield);
-        $programm = new programme($courseid);
+        $programm = new programme($datafieldid);
         echo $renderer->render($programm);
         break;
     case 'viewrfcs':

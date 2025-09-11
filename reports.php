@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Display information about all the mod_competvet modules in the requested course.
+ * Display information about all the customfield_sprogramme field
  *
- * @package   mod_competvet
- * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @package   customfield_sprogramme
+ * @copyright 2025 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
