@@ -22,8 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_competvet\local\persistent\situation;
-use mod_competvet\reportbuilder\local\systemreports\situations;
 require('../../../config.php');
 global $PAGE, $DB, $OUTPUT, $USER;
 

@@ -16,14 +16,13 @@
 
 namespace customfield_sprogramme\external;
 
-use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
-use core_external\external_value;
-use core_external\external_single_structure;
 use core_external\external_multiple_structure;
-
-use customfield_sprogramme\local\api\programme;
+use core_external\external_single_structure;
+use core_external\external_value;
+use customfield_sprogramme\local\persistent\sprogramme_complist;
+use customfield_sprogramme\local\persistent\sprogramme_disclist;
 
 /**
  * Class get_tags
@@ -33,7 +32,6 @@ use customfield_sprogramme\local\api\programme;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_tags extends external_api {
-
     /**
      * Returns description of method parameters.
      *
@@ -50,8 +48,8 @@ class get_tags extends external_api {
      * @return array
      */
     public static function execute(): array {
-        $disciplines = programme::get_disciplines();
-        $competencies = programme::get_competencies();
+        $disciplines = sprogramme_disclist::get_sorted();
+        $competencies = sprogramme_complist::get_sorted();
         $tags = [
             'disciplines' => $disciplines,
             'competencies' => $competencies,

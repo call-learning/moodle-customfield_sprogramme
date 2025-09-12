@@ -34,12 +34,12 @@ class History {
     /**
      * Constructor.
      * @param {Int} rfcid The rfcid.
-     * @param {Int} courseid The courseid.
+     * @param {Int} datafieldid The datafieldid.
      * @return {void}
      */
-    constructor(rfcid, courseid) {
+    constructor(rfcid, datafieldid) {
         this.rfcid = rfcid;
-        this.courseid = courseid;
+        this.datafieldid = datafieldid;
         this.getProgrammeHistory();
     }
 
@@ -49,7 +49,7 @@ class History {
     async getProgrammeHistory() {
         const context = {
             rfcid: this.rfcid,
-            courseid: this.courseid,
+            datafieldid: this.datafieldid,
         };
         try {
             const response = await Repository.getProgrammeHistory(context);
@@ -93,10 +93,10 @@ class History {
  * Initialise
  *
  * @param {Int} rfcid The rfcid.
- * @param {Int} courseid The courseid.
+ * @param {Int} datafieldid The datafieldid.
  */
-const init = (rfcid, courseid) => {
-    new History(rfcid, courseid);
+const init = (rfcid, datafieldid) => {
+    new History(rfcid, datafieldid);
 };
 
 export default {

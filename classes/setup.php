@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme;
-use core_course\customfield\course_handler;
 use core_php_time_limit;
-use customfield_sprogramme\local\persistent\sprogramme_disclist;
 use customfield_sprogramme\local\persistent\sprogramme_complist;
+use customfield_sprogramme\local\persistent\sprogramme_disclist;
 use xmldb_field;
 use xmldb_key;
 use xmldb_table;

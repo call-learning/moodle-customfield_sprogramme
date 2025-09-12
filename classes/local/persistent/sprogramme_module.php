@@ -44,6 +44,11 @@ class sprogramme_module extends persistent {
             'courseid' => [
                 'type' => PARAM_INT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_module:courseid'),
+                'default' => 0,
+            ],
+            'datafieldid' => [
+                'type' => PARAM_INT,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:datafieldid'),
             ],
             'sortorder' => [
                 'default' => '',
@@ -59,11 +64,12 @@ class sprogramme_module extends persistent {
     }
 
     /**
-     * Get all records for a given course
-     * @param int $courseid
+     * Get all records for a given datafieldid.
+     *
+     * @param int $datafieldid
      * @return array
      */
-    public static function get_all_records_for_course(int $courseid): array {
-        return self::get_records(['courseid' => $courseid], 'sortorder');
+    public static function get_all_records_for_datafieldid(int $datafieldid): array {
+        return self::get_records(['datafieldid' => $datafieldid], 'sortorder');
     }
 }

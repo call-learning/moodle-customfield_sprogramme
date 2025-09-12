@@ -15,11 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme\output;
-use customfield_sprogramme\local\api\programme as programme_api;
+use customfield_sprogramme\local\programme_manager;
 use renderable;
-use templatable;
 use renderer_base;
-use stdClass;
+use templatable;
 
 /**
  * Renderable for programme
@@ -29,19 +28,17 @@ use stdClass;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class programme implements renderable, templatable {
-
-    /**
-     * @var int $courseid.
-     */
-    private $courseid;
-
     /**
      * Construct this renderable.
      *
-     * @param int $courseid The course id.
+     * @param int $datafieldid The datafield id.
      */
-    public function __construct(int $courseid) {
-        $this->courseid = $courseid;
+    public function __construct(
+        /**
+         * @var int $datafieldid.
+         */
+        private int $datafieldid
+    ) {
     }
 
     /**
@@ -51,9 +48,9 @@ class programme implements renderable, templatable {
      * @return array
      */
     public function export_for_template(renderer_base $output): array {
-        global $CFG;
-        $modules = programme_api::get_data($this->courseid);
-        $columns = programme_api::get_column_structure($this->courseid);
+        $programmemanager = new programme_manager($this->datafieldid);
+        $modules = $programmemanager->get_data();
+        $columns = $programmemanager->get_column_structure();
         $data = [
             'modulesstatic' => $modules,
             'columns' => $columns,

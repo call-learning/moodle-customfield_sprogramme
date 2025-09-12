@@ -16,14 +16,14 @@
 
 namespace customfield_sprogramme\external;
 
-use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
-use core_external\external_value;
-use core_external\external_single_structure;
 use core_external\external_multiple_structure;
-
-use customfield_sprogramme\local\api\programme;
+use core_external\external_single_structure;
+use core_external\external_value;
+use customfield_sprogramme\local\programme_manager;
+use customfield_sprogramme\local\rfc_manager;
+use customfield_sprogramme\utils;
 
 /**
  * Class set_data
@@ -40,7 +40,7 @@ class set_data extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT, 'courseid', VALUE_DEFAULT, ''),
+            'datafieldid' => new external_value(PARAM_INT, 'datafieldid', VALUE_DEFAULT, ''),
             'modules' => new external_multiple_structure(
                 new external_single_structure([
                     'moduleid' => new external_value(PARAM_INT, 'Id', VALUE_REQUIRED),
@@ -85,28 +85,40 @@ class set_data extends external_api {
     /**
      * Execute and return json data.
      *
-     * @param int $courseid - The course id
+     * @param int $datafieldid - The course id
      * @param array $modules - The modules to update
      * @return array The data in JSON format
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseid, array $modules): array {
+    public static function execute(int $datafieldid, array $modules): array {
         $params = self::validate_parameters(self::execute_parameters(),
             [
-                'courseid' => $courseid,
+                'datafieldid' => $datafieldid,
                 'modules' => $modules,
             ]
         );
-        $courseid = $params['courseid'];
-        $context = context_course::instance($courseid);
+        $datafieldid = $params['datafieldid'];
+        $context = utils::get_context_from_datafieldid($datafieldid);
         self::validate_context($context);
         require_capability('customfield/sprogramme:edit', $context);
         $modules = $params['modules'];
 
-        $result = programme::set_data($courseid, $modules);
-        // Invalidate the cache for this course.
-        // TODO see if we can limit this to just if the programme has changed.
-        \cache_helper::invalidate_by_event('customfield_sprogramme/changesinsprogramme', [$courseid]);
+        $programmemanager = new programme_manager($datafieldid);
+
+        if (!$programmemanager->can_edit()) {
+            throw new \moodle_exception('nopermissions', 'error', '', 'edit programme');
+        }
+
+        $rfc = new rfc_manager($datafieldid);
+        if ($rfc->is_required() && $programmemanager->has_protected_data_changes($modules)) {
+            if ($rfc->can_add()) {
+                throw new \moodle_exception('nopermissions', 'error', '', 'add rfc');
+            }
+            $rfc->create($modules);
+            $result = 'newrfc';
+        } else {
+            $result = $programmemanager->set_data($modules);
+        }
         $data = [
             'data' => $result,
         ];

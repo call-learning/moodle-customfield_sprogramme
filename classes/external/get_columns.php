@@ -16,14 +16,13 @@
 
 namespace customfield_sprogramme\external;
 
-use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
-use core_external\external_value;
-use core_external\external_single_structure;
 use core_external\external_multiple_structure;
-
-use customfield_sprogramme\local\api\programme;
+use core_external\external_single_structure;
+use core_external\external_value;
+use customfield_sprogramme\local\programme_manager;
+use customfield_sprogramme\utils;
 
 /**
  * Class get_columns
@@ -40,28 +39,27 @@ class get_columns extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT, 'Courseid', VALUE_DEFAULT, ''),
+            'datafieldid' => new external_value(PARAM_INT, 'Datafieldid', VALUE_DEFAULT, ''),
         ]);
     }
 
     /**
      * Execute and return json data.
      *
-     * @param int $courseid - The course module id
+     * @param int $datafieldid - The course module id
      * @return array $data - The plannings list
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseid): array {
+    public static function execute(int $datafieldid): array {
         $params = self::validate_parameters(self::execute_parameters(),
             [
-                'courseid' => $courseid,
+                'datafieldid' => $datafieldid,
             ]
         );
-        $courseid = $params['courseid'];
-        self::validate_context(context_course::instance($courseid));
-
-        $columns = programme::get_column_structure($courseid);
-        $canedit = programme::can_edit($courseid);
+        self::validate_context(utils::get_context_from_datafieldid($params['datafieldid']));
+        $programmemanger = new programme_manager($datafieldid);
+        $columns = $programmemanger->get_column_structure();
+        $canedit = $programmemanger->can_edit();
         return [
             'columns' => $columns,
             'canedit' => $canedit,

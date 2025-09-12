@@ -47,10 +47,10 @@ class Manager {
     moduleNumber = 0;
 
     /**
-     * The courseid.
+     * The datafieldid.
      * @type {Number}
      */
-    courseid;
+    datafieldid;
 
     /**
      * The element.
@@ -72,15 +72,15 @@ class Manager {
     /**
      * Constructor.
      * @param {HTMLElement} element The element.
-     * @param {String} courseid The courseid.
+     * @param {String} datafieldid The datafieldid.
      * @return {void}
      */
-    constructor(element, courseid) {
+    constructor(element, datafieldid) {
         this.element = element;
         if (this.element.dataset.inintialized) {
             return;
         }
-        this.courseid = parseInt(courseid);
+        this.datafieldid = parseInt(datafieldid);
         this.addEventListeners();
         this.getTableData();
         this.element.dataset.inintialized = true;
@@ -174,7 +174,7 @@ class Manager {
      */
     async getTableData() {
         try {
-            const response = await Repository.getData({courseid: this.courseid, showrfc: 1});
+            const response = await Repository.getData({datafieldid: this.datafieldid, showrfc: 1});
             if (response.modules.length > 0) {
                 const modules = this.parseModules(response);
                 const columns = response.columns;
@@ -182,15 +182,15 @@ class Manager {
                 State.setValue('columns', [...columns]);
                 State.setValue('modules', modules);
                 State.setValue('rfc', response.rfc);
-                State.setValue('editbuttons', {courseid: this.courseid, canedit: response.canedit});
+                State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.sumtotals();
             } else {
-                const response = await Repository.getColumns({courseid: this.courseid});
+                const response = await Repository.getColumns({datafieldid: this.datafieldid});
                 const columns = response.columns;
                 State.setValue('columns', [...columns]);
                 State.setValue('modules', []);
                 State.setValue('rfc', []);
-                State.setValue('editbuttons', {courseid: this.courseid, canedit: response.canedit});
+                State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.addModule();
             }
         } catch (error) {
@@ -419,12 +419,12 @@ class Manager {
             }
             const modules = State.getValue('modules');
             const cleanedModules = this.cleanModules(modules);
-            const response = await Repository.setData({courseid: this.courseid, modules: cleanedModules});
+            const response = await Repository.setData({datafieldid: this.datafieldid, modules: cleanedModules});
             if (!response) {
                 Notification.exception('No response from the server');
             } else {
                 this.getTableData();
-                const update = await Repository.getData({courseid: this.courseid, showrfc: 0});
+                const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
                 const modulesStatic = this.parseModules(update);
                 State.setValue('modulesstatic', modulesStatic);
             }
@@ -846,10 +846,10 @@ class Manager {
      */
     async acceptRfc(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.acceptRfc({courseid: this.courseid, userid: userid});
+        const response = await Repository.acceptRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
             this.getTableData();
-            const update = await Repository.getData({courseid: this.courseid, showrfc: 0});
+            const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
             const modulesStatic = this.parseModules(update);
             State.setValue('modulesstatic', modulesStatic);
         }
@@ -862,7 +862,7 @@ class Manager {
      */
     async rejectRfc(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.cancelRfc({courseid: this.courseid, userid: userid});
+        const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
             this.getTableData();
         }
@@ -875,7 +875,7 @@ class Manager {
      */
     async submitRfc(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.submitRfc({courseid: this.courseid, userid: userid});
+        const response = await Repository.submitRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
             this.getTableData();
         }
@@ -888,7 +888,7 @@ class Manager {
      */
     async cancelRfc(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.cancelRfc({courseid: this.courseid, userid: userid});
+        const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
             this.getTableData();
         }
@@ -901,7 +901,7 @@ class Manager {
      */
     async removeRfc(btn) {
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.removeRfc({courseid: this.courseid, userid: userid});
+        const response = await Repository.removeRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
             this.getTableData();
         }
@@ -1016,7 +1016,7 @@ class Manager {
      * @return {void}
      */
     async downloadCsv() {
-        const csv = await Repository.csvData({courseid: this.courseid});
+        const csv = await Repository.csvData({datafieldid: this.datafieldid});
         const blob = new Blob([csv.csv], {type: 'text/csv'});
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1070,10 +1070,10 @@ class Manager {
 /*
  * Initialise
  * @param {HTMLElement} element The element.
- * @param {String} courseid The courseid.
+ * @param {String} datafieldid The datafieldid.
  */
-const init = (element, courseid) => {
-    new Manager(element, courseid);
+const init = (element, datafieldid) => {
+    new Manager(element, datafieldid);
 };
 
 export default {

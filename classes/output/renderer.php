@@ -17,7 +17,6 @@
 namespace customfield_sprogramme\output;
 
 use plugin_renderer_base;
-use renderable;
 
 /**
  * Class data

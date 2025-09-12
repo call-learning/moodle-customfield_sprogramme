@@ -19,6 +19,7 @@ namespace customfield_sprogramme\local\importer;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/csvlib.class.php');
+
 use csv_import_reader;
 use Iterator;
 

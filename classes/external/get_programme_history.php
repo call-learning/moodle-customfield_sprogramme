@@ -18,12 +18,11 @@ namespace customfield_sprogramme\external;
 
 use core_external\external_api;
 use core_external\external_function_parameters;
-use core_external\external_value;
-use core_external\external_single_structure;
 use core_external\external_multiple_structure;
-use customfield_sprogramme\local\persistent\sprogramme_rfc;
-use \customfield_sprogramme\local\api\programme;
-use context_course;
+use core_external\external_single_structure;
+use core_external\external_value;
+use customfield_sprogramme\local\programme_manager;
+use customfield_sprogramme\utils;
 
 /**
  * Class get_programme_history
@@ -42,7 +41,7 @@ class get_programme_history extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'rfcid' => new external_value(PARAM_INT, 'Rfc id', VALUE_DEFAULT, false),
-            'courseid' => new external_value(PARAM_INT, 'Course id', VALUE_DEFAULT, false),
+            'datafieldid' => new external_value(PARAM_INT, 'Datafieldid id', VALUE_DEFAULT, false),
         ]);
     }
 
@@ -50,24 +49,23 @@ class get_programme_history extends external_api {
      * Get the programme history
      *
      * @param int $rfcid
-     * @param int $courseid
+     * @param int $datafieldid
      * @return array
      */
-    public static function execute($rfcid, $courseid): array {
+    public static function execute($rfcid, $datafieldid): array {
         $params = self::validate_parameters(self::execute_parameters(),
             [
                 'rfcid' => $rfcid,
-                'courseid' => $courseid,
+                'datafieldid' => $datafieldid,
             ]);
         $rfcid = $params['rfcid'];
-        $courseid = $params['courseid'];
+        $datafieldid = $params['datafieldid'];
 
         // Validate course context.
-        $context = context_course::instance($courseid);
-        self::validate_context($context);
-
+        self::validate_context(utils::get_context_from_datafieldid($datafieldid));
         // Get the programme history.
-        $history = programme::get_programme_history($rfcid, $courseid);
+        $programmemanager = new programme_manager($datafieldid);
+        $history = $programmemanager->get_history($rfcid);
         $modules = $history['modules'];
         if (empty($modules)) {
             throw new \invalid_parameter_exception('No programme history found for this course.');
@@ -76,8 +74,8 @@ class get_programme_history extends external_api {
         if (empty($rfcs)) {
             throw new \invalid_parameter_exception('No programme history found for this course.');
         }
-        $columns = programme::get_column_structure($courseid);
-        $columnstotals = programme::get_column_totals($modules, $columns);
+        $columns = $programmemanager->get_column_structure();
+        $columnstotals = $programmemanager->get_column_totals($modules, $columns);
 
         return [
             'modules' => $modules,
@@ -160,7 +158,7 @@ class get_programme_history extends external_api {
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
                             'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
-                        ]), 'Option', VALUE_OPTIONAL
+                        ]), 'Option', VALUE_OPTIONAL,
                     ),
                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                 ])

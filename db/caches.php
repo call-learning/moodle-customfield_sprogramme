@@ -31,11 +31,16 @@ $definitions = [
     'programmedata' => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
-        'invalidationevents' => ['changesincourse', 'changesincoursecat', 'changesinprogramme'],
+        'invalidationevents' => ['changesincourse', 'changesincoursecat', 'customfield_sprogramme/changesinprogramme'],
     ],
     'columntotals' => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
-        'invalidationevents' => ['changesincourse', 'changesincoursecat', 'changesinprogramme'],
+        'invalidationevents' => ['changesincourse', 'changesincoursecat', 'customfield_sprogramme/changesinprogramme'],
+    ],
+    'instancebdatafieldid' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'invalidationevents' => ['customfield_sprogramme/changesincoursefieldinstance'],
     ],
 ];

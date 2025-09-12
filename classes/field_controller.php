@@ -16,6 +16,8 @@
 
 namespace customfield_sprogramme;
 
+use core_customfield\data;
+
 /**
  * Class field
  *
@@ -57,6 +59,13 @@ class field_controller extends \core_customfield\field_controller {
      * Before delete bulk actions
      */
     public function delete(): bool {
+        // Delete programme attached to this field.
+        $datarecords = data::get_records(['fieldid' => $this->field->get('id')]);
+        foreach ($datarecords as $data) {
+            $programmemanager = new local\programme_manager($data->get('id'));
+            $programmemanager->delete_programme();
+        }
+        // Cleanup attached data tables.
         return parent::delete();
     }
 }

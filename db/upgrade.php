@@ -24,6 +24,7 @@
  * @copyright  2024 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 use customfield_sprogramme\setup;
 
 /**
@@ -46,12 +47,30 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         setup::migrate_courseid_to_datafieldid();
         upgrade_plugin_savepoint(true, 2025091100, 'customfield', 'sprogramme');
     }
-    //if ($oldversion < 2025091000) {
-    //    setup::drop_courseid_column('customfield_sprogramme');
-    //    setup::drop_courseid_column('customfield_sprogramme_module');
-    //    setup::drop_courseid_column('customfield_sprogramme_rfc');
-    //    setup::drop_courseid_column('customfield_sprogramme_notification');
-    //    upgrade_plugin_savepoint(true, 2025091000, 'customfield', 'sprogramme');
-    //}
+    if ($oldversion < 2025091300) {
+        // We no longer need the courseid column, drop it.
+        setup::drop_courseid_column('customfield_sprogramme');
+        setup::drop_courseid_column('customfield_sprogramme_module');
+        setup::drop_courseid_column('customfield_sprogramme_rfc');
+        setup::drop_courseid_column('customfield_sprogramme_notification');
+
+        // We also need to drop the competency field as we now use a separate table for that.
+        $dbman = $DB->get_manager();
+        $table = new xmldb_table('customfield_sprogramme_competencies');
+        $field = new xmldb_field('competency');
+
+        // Conditionally launch drop field competency.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+        $table = new xmldb_table('customfield_sprogramme_disc');
+        $field = new xmldb_field('discipline');
+
+        // Conditionally launch drop field discipline.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2025091300, 'customfield', 'sprogramme');
+    }
     return true;
 }

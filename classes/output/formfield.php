@@ -16,11 +16,13 @@
 
 namespace customfield_sprogramme\output;
 
-use customfield_sprogramme\local\api\programme;
+use customfield_sprogramme\local\persistent\sprogramme_complist;
+use customfield_sprogramme\local\persistent\sprogramme_disclist;
+use customfield_sprogramme\local\programme_manager;
 use renderable;
-use templatable;
 use renderer_base;
 use stdClass;
+use templatable;
 
 /**
  * Class formfield
@@ -31,6 +33,19 @@ use stdClass;
  */
 class formfield implements renderable, templatable {
     /**
+     * Construct this renderable.
+     *
+     * @param int $datafieldid The datafield id.
+     */
+    public function __construct(
+        /**
+         * @var int $datafieldid.
+         */
+        private int $datafieldid
+    ) {
+
+    }
+    /**
      * Export data for the template
      *
      * @param renderer_base $output
@@ -39,14 +54,22 @@ class formfield implements renderable, templatable {
     public function export_for_template(renderer_base $output): stdClass {
         global $PAGE, $CFG;
         $data = new stdClass();
-        $data->courseid = $PAGE->context->instanceid;
+        $data->datafieldid = $this->datafieldid; // New field.
         $data->debug = $CFG->debugdisplay;
-        $data->disciplines = programme::get_disciplines();
-        $data->competences = programme::get_competencies();
+        $programmemanager = new programme_manager($this->datafieldid);
+        $data->disciplines = sprogramme_disclist::get_sorted();
+        $data->competences = sprogramme_complist::get_sorted();
         $data->canedit = has_capability('customfield/sprogramme:edit', $PAGE->context);
         $data->editrfcs = has_capability('customfield/sprogramme:editall', $PAGE->context);
-        $data->rfcsurl = new \moodle_url('/customfield/field/sprogramme/edit.php', ['courseid' => $data->courseid, 'pagetype' => 'viewrfcs']);
-        $data->hashistory = programme::has_history($data->courseid) ? 1 : 0;
+
+        $data->rfcsurl =
+            new \moodle_url('/customfield/field/sprogramme/edit.php',
+                [
+                    'datafieldid' => $data->datafieldid,
+                    'pagetype' => 'viewrfcs',
+                ]
+            );
+        $data->hashistory = $programmemanager->has_history() ? 1 : 0;
         return $data;
     }
 }

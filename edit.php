@@ -25,6 +25,7 @@
 require('../../../config.php');
 
 global $PAGE, $OUTPUT;
+
 use customfield_sprogramme\output\formfield;
 use customfield_sprogramme\output\programme;
 use customfield_sprogramme\output\viewrfcs;
@@ -34,8 +35,9 @@ $datafieldid = optional_param('datafieldid', 0, PARAM_INT);
 $pagetype = optional_param('pagetype', 'course', PARAM_ALPHANUMEXT);
 
 if ($datafieldid) {
-    $context = \customfield_sprogramme\local\api\programme::get_context_from_datafieldi($datafieldid);
-    $course = get_course($context->instanceid);
+    $courseid = \customfield_sprogramme\utils::get_instanceid_from_datafieldid($datafieldid);
+    $context = context_course::instance($courseid);
+    $course = get_course($courseid);
 } else {
     $context = context_system::instance();
     $course = get_site();
@@ -52,13 +54,13 @@ $renderer = $PAGE->get_renderer('customfield_sprogramme');
 
 switch ($pagetype) {
     case 'course':
-        $formfield = new formfield();
+        $formfield = new formfield($datafieldid);
         echo $renderer->render($formfield);
         $programm = new programme($datafieldid);
         echo $renderer->render($programm);
         break;
     case 'viewrfcs':
-        $viewnotification = new viewrfcs();
+        $viewnotification = new viewrfcs($datafieldid);
         echo $renderer->render($viewnotification);
         break;
     case 'setup':

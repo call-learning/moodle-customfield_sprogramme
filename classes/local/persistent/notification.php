@@ -64,37 +64,43 @@ class notification extends persistent {
             'notifid' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'competvet', 'notifid'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:notifid'),
             ],
             'courseid' => [
+                'null' => NULL_ALLOWED,
+                'type' => PARAM_INT,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:courseid'),
+                'default' => 0,
+            ],
+            'datafieldid' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'competvet', 'competvetid'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification;datafieldid'),
             ],
             'recipient' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'competvet', 'recipientid'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:recipient'),
             ],
             'notification' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'competvet', 'notification'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:notification'),
             ],
             'subject' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'competvet', 'subject'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:subject'),
             ],
             'body' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_RAW,
-                'message' => new lang_string('invaliddata', 'competvet', 'body'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:body'),
             ],
             'status' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'competvet', 'status'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:status'),
             ],
         ];
     }

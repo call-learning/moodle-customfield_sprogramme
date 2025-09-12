@@ -16,15 +16,15 @@
 
 namespace customfield_sprogramme\output;
 
-use customfield_sprogramme\local\api\programme;
-use customfield_sprogramme\local\persistent\sprogramme_rfc;
-use customfield_sprogramme\api\notifications as notifications_api;
 use core\output\named_templatable;
+use customfield_sprogramme\local\api\notifications;
+use customfield_sprogramme\local\persistent\sprogramme_rfc;
+use customfield_sprogramme\utils;
+use moodle_url;
 use paging_bar;
 use renderable;
 use renderer_base;
 use stdClass;
-use moodle_url;
 
 /**
  * Generic renderable for the view.
@@ -35,11 +35,6 @@ use moodle_url;
  */
 class viewrfcs implements renderable, named_templatable {
     /**
-     * @var int $courseid The course id.
-     */
-    protected $courseid;
-
-    /**
      * @var int $status The status to display.
      */
     protected $status;
@@ -49,6 +44,16 @@ class viewrfcs implements renderable, named_templatable {
      */
     protected $page;
 
+    /**
+     * Construct this renderable.
+     */
+    public function __construct(
+        /**
+         * @var int $datafieldid.
+         */
+        private int $datafieldid,
+    ) {
+    }
     /**
      * Export this data so it can be used in a mustache template.
      *
@@ -61,7 +66,7 @@ class viewrfcs implements renderable, named_templatable {
         $this->before_render();
 
         $data['status'] = $this->get_status_tabs();
-        $numrfcs = sprogramme_rfc::count_course_rfcs($this->courseid, $this->status);
+        $numrfcs = sprogramme_rfc::count_rfc($this->datafieldid, $this->status);
         $limit = 20;
         $start = $this->page * $limit;
         $url = new moodle_url('/customfield/field/sprogramme/edit.php', $this->get_url_params([]));
@@ -69,18 +74,18 @@ class viewrfcs implements renderable, named_templatable {
         $data['htmlpagingbar'] = $output->render($paging);
 
 
-        $rfcs = sprogramme_rfc::get_course_rfcs($this->courseid, $this->status, 0, $start, $limit);
+        $rfcs = sprogramme_rfc::get_rfcs($this->datafieldid, $this->status, 0, $start, $limit);
 
         $data['rfcs'] = [];
-        $numsubmitted = 0;
         foreach ($rfcs as $rfc) {
-
+            $courseid = utils::get_instanceid_from_datafieldid($rfc->datafieldid);
+            $course = get_course($courseid);
             $data['rfcs'][] = [
                 'rfcid' => $rfc->id,
                 'timemodified' => $rfc->timemodified,
                 'userinfo' => $rfc->userinfo,
-                'course' => $rfc->course,
-                'courseid' => $rfc->courseid,
+                'course' => $course,
+                'datafieldid' => $rfc->datafieldid,
                 'adminid' => $rfc->adminid,
                 'type' => $rfc->type,
                 'status' => get_string('rfc:' . sprogramme_rfc::CHANGE_TYPES[$rfc->type], 'customfield_sprogramme'),
@@ -108,8 +113,10 @@ class viewrfcs implements renderable, named_templatable {
             $data[] = [
                 'key' => $key,
                 'name' => get_string('rfc:' . $status, 'customfield_sprogramme'),
-                'url' => new moodle_url('/customfield/field/sprogramme/edit.php',
-                    $this->get_url_params(['status' => $key])),
+                'url' => new moodle_url(
+                    '/customfield/field/sprogramme/edit.php',
+                    $this->get_url_params(['status' => $key])
+                ),
                 'selected' => $key == $this->status,
             ];
         }
@@ -123,8 +130,8 @@ class viewrfcs implements renderable, named_templatable {
      */
     public function get_url_params($params): array {
         $defaults = [
+            'datafieldid' => $this->datafieldid,
             'pagetype' => 'viewrfcs',
-            'courseid' => $this->courseid,
             'status' => $this->status,
             'page' => $this->page,
         ];
@@ -142,15 +149,14 @@ class viewrfcs implements renderable, named_templatable {
      * @return void
      */
     public function before_render(): void {
-        $this->courseid = optional_param('courseid', 0, PARAM_INT);
         $this->status = optional_param('status', sprogramme_rfc::RFC_ACCEPTED, PARAM_INT);
         $this->page = optional_param('page', 0, PARAM_INT);
         $action = optional_param('action', '', PARAM_ALPHANUMEXT);
         switch ($action) {
             case 'deleteall':
                 $params = ['action' => $this->status];
-                if ($this->courseid !== 0) {
-                    $params['courseid'] = $this->courseid;
+                if ($this->datafieldid !== 0) {
+                    $params['datafieldid'] = $this->datafieldid;
                 }
                 $todelete = sprogramme_rfc::get_records($params);
                 foreach ($todelete as $rfc) {
@@ -172,24 +178,24 @@ class viewrfcs implements renderable, named_templatable {
         $send = optional_param('send', null, PARAM_INT);
         if ($send) {
             $rfc = sprogramme_rfc::get_record(['id' => $send]);
-            notifications_api::send_email($rfc);
+            notifications::send_email($rfc);
         }
 
         $sendall = optional_param('sendall', null, PARAM_INT);
         if ($sendall) {
-            $params = ['courseid' => $this->courseid];
+            $params = ['datafieldid' => $this->datafieldid];
             if ($this->task) {
                 $params['notification'] = $this->task;
             }
             $rfcs = sprogramme_rfc::get_records($params);
             foreach ($rfcs as $rfc) {
-                notifications_api::send_email($rfc);
+                notifications::send_email($rfc);
             }
         }
 
         $deleteall = optional_param('deleteall', null, PARAM_INT);
         if ($deleteall) {
-            $params = ['courseid' => $this->courseid];
+            $params = ['datafieldid' => $this->datafieldid];
             if ($this->task) {
                 $params['notification'] = $this->task;
             }

@@ -13,9 +13,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-use \core_customfield\category_controller;
-use \core_customfield\field_controller;
-use \core_customfield\api;
+
+use customfield_sprogramme\local\persistent\sprogramme;
+use customfield_sprogramme\local\persistent\sprogramme_module;
+use customfield_sprogramme\local\persistent\sprogramme_rfc;
+use customfield_sprogramme\local\rfc_manager;
 
 /**
  * Sprogramme customfield data generator.
@@ -27,65 +29,11 @@ use \core_customfield\api;
  */
 class customfield_sprogramme_generator extends component_generator_base {
     /**
-     * Create a new sprogramme field.
+     * Create a new discipline entry.
      *
-     * @param array|stdClass $record
+     * @param array $record
      * @return stdClass
      */
-    public function create_sprogramme($record): stdClass {
-        global $DB;
-
-        $record = (object) $record;
-
-        // Create category if not provided.
-        if (empty($record->categoryid)) {
-            $category = $this->create_category();
-            $record->categoryid = $category->get('id');
-        } else {
-            $category = category_controller::get($record->categoryid);
-        }
-
-        // Set default values.
-        if (empty($record->name)) {
-            static $i = 0;
-            $i++;
-            $record->name = "Programme $i";
-        }
-        if (empty($record->description)) {
-            $record->description = "Description of {$record->name}";
-        }
-        if (empty($record->descriptionformat)) {
-            $record->descriptionformat = FORMAT_HTML;
-        }
-        if (empty($record->sortorder)) {
-            $maxsortorder = $DB->get_field_sql('SELECT MAX(sortorder) FROM {customfield_sprogramme} WHERE categoryid = ?', [$record->categoryid]);
-            $record->sortorder = $maxsortorder + 1;
-        }
-        if (!isset($record->timecreated)) {
-            $record->timecreated = time();
-        }
-        if (!isset($record->timemodified)) {
-            $record->timemodified = time();
-        }
-
-        // Create field.
-        $field = field_controller::create(
-            (object) [
-                'type' => 'sprogramme',
-                'name' => $record->name,
-                'categoryid' => $record->categoryid,
-                'description' => $record->description,
-                'descriptionformat' => $record->descriptionformat,
-                'sortorder' => $record->sortorder,
-                'configdata' => [],
-                'timecreated' => $record->timecreated,
-                'timemodified' => $record->timemodified,
-            ]
-        );
-
-        return api::get_instance_fields_data([$field], $field->get('id'));
-    }
-
     public function create_discipline(array $record): stdClass {
         global $DB;
         static $i = 0;
@@ -119,6 +67,12 @@ class customfield_sprogramme_generator extends component_generator_base {
         return $DB->get_record('customfield_sprogramme_disclist', ['id' => $discipline->get('id')], '*', MUST_EXIST);
     }
 
+    /**
+     * Create a new competency entry.
+     *
+     * @param array $record
+     * @return stdClass
+     */
     public function create_competency(array $record): stdClass {
         global $DB;
         static $i = 0;
@@ -152,7 +106,14 @@ class customfield_sprogramme_generator extends component_generator_base {
         return $DB->get_record('customfield_sprogramme_complist', ['id' => $competency->get('id')], '*', MUST_EXIST);
     }
 
-    public function create_sprogramme_disciplines(int $fieldid, array $disciplineids): void {
+    /**
+     * Assign disciplines to a sprogramme field.
+     *
+     * @param int $fieldid
+     * @param array $disciplineids
+     * @return void
+     */
+    public function assign_disciplines(int $fieldid, array $disciplineids): void {
         global $DB;
         foreach ($disciplineids as $disciplineid) {
             $record = new stdClass();
@@ -162,7 +123,14 @@ class customfield_sprogramme_generator extends component_generator_base {
         }
     }
 
-    public function create_sprogramme_competencies(int $fieldid, array $competencyids): void {
+    /**
+     * Assign competencies to a sprogramme field.
+     *
+     * @param int $fieldid
+     * @param array $competencyids
+     * @return void
+     */
+    public function assign_competencies(int $fieldid, array $competencyids): void {
         global $DB;
         foreach ($competencyids as $competencyid) {
             $record = new stdClass();
@@ -172,19 +140,76 @@ class customfield_sprogramme_generator extends component_generator_base {
         }
     }
 
-    public function create_sprogrammme_rfc(int $fieldid, int $rfcvalue): void {
-        global $DB;
-        $record = new stdClass();
-        $record->fieldid = $fieldid;
-        $record->rfc = $rfcvalue;
-        $DB->insert_record('customfield_sprogramme_rfc', $record);
+    /**
+     * Create a new RFC setting for a sprogramme field.
+     *
+     * @param int $datafieldid  the data field id
+     * @param int $userid the user id (default to admin)
+     * @param int $type the type of rfc
+     * @param string $snapshot the snapshot data (json)
+     * @return stdClass
+     */
+    public function create_rfc(
+        int $datafieldid,
+        int $userid = 0,
+        int $type = sprogramme_rfc::RFC_REQUESTED,
+        string $snapshot = '{}',
+    ): stdClass {
+        $rfc = new sprogramme_rfc(0);
+        $rfc->set('datafieldid', $datafieldid);
+        $rfc->set('type', $type);
+        $rfc->set('snapshot', $snapshot);
+        $rfc->set('adminid', $userid ?: get_admin()->id);
+        $rfc->save();
+        return $rfc->to_record();
     }
 
-    public function create_sprogramme_notification(int $fieldid, int $notificationvalue): void {
-        global $DB;
-        $record = new stdClass();
-        $record->fieldid = $fieldid;
-        $record->notification = $notificationvalue;
-        $DB->insert_record('customfield_sprogramme_notif', $record);
+    public function create_notification(int $fieldid, int $notificationvalue): void {
+    }
+
+    /**
+     * Create a new programme entry.
+     *
+     * @param int $fieldid
+     * @param array $data
+     * @return void
+     */
+    public function create_programme($fieldid, $data): void {
+        $dc = \core_customfield\data_controller::create($fieldid);
+        foreach ($data as $moduledata) {
+            $rows = $moduledata['rows'];
+            $module = new sprogramme_module();
+            $module->set('datafieldid', $fieldid);
+            $module->set('name', $moduledata['modulename']);
+            $module->set('sortorder', $moduledata['modulesortorder']);
+            $module->save();
+            foreach ($rows as $row) {
+                $record = new sprogramme();
+                $record->set('uc', $dc->get('instanceid'));
+                $record->set('datafieldid', $fieldid);
+                $record->set('moduleid', $module->get('id'));
+                $record->set('sortorder', $row['sortorder']);
+                foreach ($row['cells'] as $cell) {
+                    $record->set($cell['column'], $cell['value']);
+                }
+                $record->save();
+                $pid = $record->get('id');
+                foreach ($row['disciplines'] as $discipline) {
+                    $record = new \customfield_sprogramme\local\persistent\sprogramme_disc();
+                    $record->set('pid', $pid);
+                    $record->set('did', $discipline['id']);
+                    $record->set('percentage', $discipline['percentage']);
+                    $record->save();
+                }
+                foreach ($row['competencies'] as $competencies) {
+                    $record = new \customfield_sprogramme\local\persistent\sprogramme_comp();
+                    $record->set('pid', $pid);
+                    $record->set('cid', $competencies['id']);
+                    $record->set('percentage', $competencies['percentage']);
+                    $record->save();
+                }
+                ;
+            }
+        }
     }
 }

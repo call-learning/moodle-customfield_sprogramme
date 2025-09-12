@@ -21,6 +21,39 @@
 
     Example context (json):
     {
+        "datafieldid": 1,
+        "rfcsurl": "http://example.com",
+        "status": [
+            {
+                "key": "all",
+                "name": "All",
+                "url": "http://example.com/all",
+                "selected": true
+            },
+            {
+                "key": "pending",
+                "name": "Pending",
+                "url": "http://example.com/pending",
+                "selected": false
+            }
+        ],
+        "rfcs": [
+            {
+                "rfcid": 1,
+                "timemodified": 1672531199,
+                "status": "Pending",
+                "action": "viewrfc",
+                "type": "view",
+                "userinfo": {
+                    "id": 2,
+                    "fullname": "John Doe",
+                    "firstname": "John",
+                    "lastname": "Doe",
+                    "email": "
+                    "userpictureurl": "http://example.com/pix/u/f1.png"
+                },
+            }
+        ]
     }
 }}
 <div class="d-flex mb-3">
@@ -59,7 +92,7 @@
             <td>{{course.fullname}}</td>
             <td>{{status}}</td>
             <td>
-                <a href="#" class="btn btn-sm btn-primary" data-action="{{action}}" data-type="{{type}}" data-rfcid="{{rfcid}}" data-courseid="{{courseid}}">
+                <a href="#" class="btn btn-sm btn-primary" data-action="{{action}}" data-type="{{type}}" data-rfcid="{{rfcid}}" data-datafieldid="{{datafieldid}}">
                     {{#str}}rfc:view, customfield_sprogramme{{/str}}
                 </a>
             </td>

@@ -14,25 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace customfield_sprogramme;
-
 /**
- * Tests for Programme customfield
+ * All event observers are defined here.
  *
- * @package    customfield_sprogramme
- * @category   test
- * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   customfield_sprogramme
+ * @copyright 2025 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class lib_test extends \advanced_testcase {
+defined('MOODLE_INTERNAL') || die();
 
-    /**
-     * Example of a unittest
-     *
-     * TODO change the 'covers' tag to the class or function in the plugin.
-     * @covers ::get_config
-     */
-    public function test_plugin_installed(): void {
-        $this->assertNotEmpty(get_config('customfield_sprogramme', 'version'));
-    }
-}
+$observers = [
+    [
+        'eventname'   => '\customfield_sprogramme\event\rfc_created',
+        'callback'    => \customfield_sprogramme\local\observers\rfc_observer::class . '::rfc_created',
+    ],
+    [
+        'eventname'   => '\customfield_sprogramme\event\rfc_submitted',
+        'callback'    => \customfield_sprogramme\local\observers\rfc_observer::class . '::rfc_submitted',
+    ],
+];

@@ -16,9 +16,12 @@
 
 namespace customfield_sprogramme\local\importer;
 
+use core\exception\moodle_exception;
 use customfield_sprogramme\local\persistent\sprogramme as programme;
+use customfield_sprogramme\local\persistent\sprogramme_complist;
+use customfield_sprogramme\local\persistent\sprogramme_disclist;
 use customfield_sprogramme\local\persistent\sprogramme_module as module;
-use customfield_sprogramme\local\api\programme as programme_api;
+
 /**
  * Class programme_importer
  *
@@ -58,24 +61,24 @@ class programme_importer extends base_persistent_importer {
      * @return object
      */
     protected function to_persistent_data(array $row, csv_iterator $reader): object {
-        $courseid = $this->options['courseid'];
+        $datafieldid = $this->options['datafieldid'];
         $data = parent::to_persistent_data($row, $reader);
         $modulename = $data->module;
         if (!isset($this->modulecache[$modulename])) {
-            $module = module::get_record(['name' => $modulename, 'courseid' => $courseid]);
+            $module = module::get_record(['name' => $modulename, 'datafieldid' => $datafieldid]);
             $sortorder = module::count_records() + 1;
             if (!$module) {
                 $module = new module(null, (object) [
                     'name' => $modulename,
-                    'courseid' => $courseid,
+                    'datafieldid' => $datafieldid,
                     'sortorder' => $sortorder,
                 ]);
                 $module->save();
             }
             $this->modulecache[$modulename] = $module->get('id');
         }
-        $data->uc = $courseid;
-        $data->courseid = $courseid;
+        $data->uc = $datafieldid;
+        $data->datafieldid = $datafieldid;
         $data->moduleid = $this->modulecache[$modulename];
         $data->sortorder = $this->sortorder++;
         $programproperties = programme::get_properties();
@@ -153,7 +156,7 @@ class programme_importer extends base_persistent_importer {
      */
     protected function get_list(array $data, string $type): array {
         if ($type == 'disciplines') {
-            $disciplines = programme_api::get_disciplines();
+            $disciplines = sprogramme_disclist::get_sorted();
             $disciplines = $this->flattern_list($disciplines);
             $disciplinewithid = array_column($disciplines, 'uniqueid', 'name');
 
@@ -168,7 +171,7 @@ class programme_importer extends base_persistent_importer {
             }
         }
         if ($type == 'competencies') {
-            $competencies = programme_api::get_competencies();
+            $competencies = sprogramme_complist::get_sorted();
             $competencies = $this->flattern_list($competencies);
             $competencieswithid = array_column($competencies, 'uniqueid', 'name');
             foreach ($data as $key => $item) {

@@ -17,10 +17,12 @@
 declare(strict_types=1);
 
 namespace customfield_sprogramme\reportbuilder\local\entities;
-use lang_string;
 use core_reportbuilder\local\entities\base;
+use core_reportbuilder\local\filters\date;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\local\report\{column, filter};
+use core_reportbuilder\local\filters\user;
+use lang_string;
 
 /**
  * Class programme
@@ -30,14 +32,13 @@ use core_reportbuilder\local\report\{column, filter};
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class programme extends base {
-    /**
-     * Database tables that this entity uses and their default aliases
-     *
-     * @return array
-     */
+    #[\Override]
     protected function get_default_table_aliases(): array {
         return [
             'customfield_sprogramme' => 'programme',
+            'customfield_data' => 'cfdata',
+            'customfield_field' => 'cffield',
+            'user' => 'user',
         ];
     }
 
@@ -50,11 +51,7 @@ class programme extends base {
         return new lang_string('entity:programme', 'customfield_sprogramme');
     }
 
-    /**
-     * Initialise the entity
-     *
-     * @return base
-     */
+    #[\Override]
     public function initialise(): base {
         $columns = $this->get_all_columns();
         foreach ($columns as $column) {
@@ -72,13 +69,59 @@ class programme extends base {
         return $this;
     }
 
-    /**
-     * Returns list of all available columns
-     *
-     * @return column[]
-     */
+    #[\Override]
     protected function get_all_columns(): array {
         $programmealias = $this->get_table_alias('customfield_sprogramme');
+
+        $columns[] = (new column(
+            'sortorder',
+            new lang_string('programme:sortorder', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_INTEGER)
+            ->add_fields("{$programmealias}.sortorder")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'cct_ept',
+            new lang_string('programme:cct_ept', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->add_fields("{$programmealias}.cct_ept")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'dd_rse',
+            new lang_string('programme:dd_rse', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->add_fields("{$programmealias}.dd_rse")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'type_ae',
+            new lang_string('programme:type_ae', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->add_fields("{$programmealias}.type_ae")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'sequence',
+            new lang_string('programme:sequence', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_INTEGER)
+            ->add_fields("{$programmealias}.sequence")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'intitule_seance',
@@ -89,23 +132,140 @@ class programme extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$programmealias}.intitule_seance")
             ->set_is_sortable(true);
+
         $columns[] = (new column(
-            'courseid',
-            new lang_string('programme:courseid', 'customfield_sprogramme'),
+            'cm',
+            new lang_string('programme:cm', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.cm")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'td',
+            new lang_string('programme:td', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.td")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'tp',
+            new lang_string('programme:tp', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.tp")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'tpa',
+            new lang_string('programme:tpa', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.tpa")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'tc',
+            new lang_string('programme:tc', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.tc")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'aas',
+            new lang_string('programme:aas', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.aas")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'fmp',
+            new lang_string('programme:fmp', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.fmp")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'perso_av',
+            new lang_string('programme:perso_av', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.perso_av")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'perso_ap',
+            new lang_string('programme:perso_ap', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$programmealias}.perso_ap")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'consignes',
+            new lang_string('programme:consignes', 'customfield_sprogramme'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$programmealias}.courseid")
+            ->add_fields("{$programmealias}.consignes")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'supports',
+            new lang_string('programme:supports', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TEXT)
+            ->add_fields("{$programmealias}.supports")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'timecreated',
+            new lang_string('programme:timecreated', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->add_fields("{$programmealias}.timecreated")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'timemodified',
+            new lang_string('programme:timemodified', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->add_fields("{$programmealias}.timemodified")
             ->set_is_sortable(true);
         return $columns;
     }
 
-    /**
-     * Return list of all available filters
-     *
-     * @return filter[]
-     */
+    #[\Override]
     protected function get_all_filters(): array {
         $programmealias = $this->get_table_alias('customfield_sprogramme');
 
@@ -119,11 +279,151 @@ class programme extends base {
 
         $filters[] = (new filter(
             text::class,
-            'courseid',
-            new lang_string('programme:courseid', 'customfield_sprogramme'),
+            'cct_ept',
+            new lang_string('programme:cct_ept', 'customfield_sprogramme'),
             $this->get_entity_name(),
-            "{$programmealias}.courseid"
+            "{$programmealias}.cct_ept"
         ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'dd_rse',
+            new lang_string('programme:dd_rse', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.dd_rse"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'type_ae',
+            new lang_string('programme:type_ae', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.type_ae"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'sequence',
+            new lang_string('programme:sequence', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.sequence"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'cm',
+            new lang_string('programme:cm', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.cm"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'td',
+            new lang_string('programme:td', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.td"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'tp',
+            new lang_string('programme:tp', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.tp"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'tpa',
+            new lang_string('programme:tpa', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.tpa"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'tc',
+            new lang_string('programme:tc', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.tc"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'aas',
+            new lang_string('programme:aas', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.aas"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'fmp',
+            new lang_string('programme:fmp', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.fmp"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'perso_av',
+            new lang_string('programme:perso_av', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.perso_av"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'perso_ap',
+            new lang_string('programme:perso_ap', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.perso_ap"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'consignes',
+            new lang_string('programme:consignes', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.consignes"
+        ))->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'supports',
+            new lang_string('programme:supports', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.supports"
+        ))->add_joins($this->get_joins());
+
+
+        $filters[] = (new filter(
+            user::class,
+            'usermodified',
+            new lang_string('programme:usermodified', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.usermodified"
+        ))
+            ->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            date::class,
+            'timecreated',
+            new lang_string('programme:timecreated', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.timecreated"
+        ))
+            ->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            date::class,
+            'timemodified',
+            new lang_string('programme:timemodified', 'customfield_sprogramme'),
+            $this->get_entity_name(),
+            "{$programmealias}.timemodified"
+        ))
+            ->add_joins($this->get_joins());
 
         return $filters;
     }

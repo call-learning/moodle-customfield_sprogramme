@@ -16,12 +16,9 @@
 
 namespace customfield_sprogramme\local\persistent;
 
-use context_course;
 use core\persistent;
+use customfield_sprogramme\utils;
 use lang_string;
-use user_picture;
-use core_user;
-use moodle_exception;
 
 /**
  * Class sprogramme_rfc
@@ -70,6 +67,11 @@ class sprogramme_rfc extends persistent {
             'courseid' => [
                 'type' => PARAM_INT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:courseid'),
+                'default' => 0,
+            ],
+            'datafieldid' => [
+                'type' => PARAM_INT,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:datafieldid'),
             ],
             'type' => [
                 'type' => PARAM_INT,
@@ -88,50 +90,57 @@ class sprogramme_rfc extends persistent {
         ];
     }
 
-        /**
+    /**
      * Get all records for a given programme.
-     * @param int $courseid
+     *
+     * @param int $datafieldid
      * @return sprogramme_rfc|null
      */
-    public static function get_rfc(int $courseid): ?sprogramme_rfc {
+    public static function get_rfc(int $datafieldid): ?sprogramme_rfc {
         global $USER;
 
-        $submitted = self::get_record(['courseid' => $courseid, 'type' => self::RFC_REQUESTED, 'usermodified' => $USER->id]);
-        if ($submitted) {
-            return $submitted;
+        $types = [
+            ['type' => self::RFC_REQUESTED, 'usermodified' => $USER->id],
+            ['type' => self::RFC_SUBMITTED, 'usermodified' => $USER->id],
+            ['type' => self::RFC_CANCELLED, 'adminid' => $USER->id],
+            ['type' => self::RFC_SUBMITTED],
+        ];
+
+        foreach ($types as $params) {
+            $params['datafieldid'] = $datafieldid;
+            $records = self::get_records($params, 'timecreated', 'DESC', 0, 1);
+            if ($records) {
+                return array_shift($records);
+            }
         }
-        $requested = self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED, 'usermodified' => $USER->id]);
-        if ($requested) {
-            return $requested;
-        }
-        $cancelled = self::get_record(['courseid' => $courseid, 'type' => self::RFC_CANCELLED, 'adminid' => $USER->id]);
-        if ($cancelled) {
-            return $cancelled;
-        }
-        $record =  self::get_record(['courseid' => $courseid, 'type' => self::RFC_SUBMITTED]);
-        return $record ?: null;
+        return null;
     }
 
     /**
      * Get user rfcs.
-     * Users can only provide 1 RFC per course at a time, get the RFCS grouped by user sorted by timecreated.
-     * Each user can have submitted multiple records per course, once these RFCS have self::RFC_SUBMITTED they are send to the
-     * admin for approval. So for each course each user will need to have 1 line returned from this function.
+     * Users can only provide 1 RFC per datafield at a time, get the RFCS grouped by user sorted by timecreated.
+     * Each user can have submitted multiple records per datafield, once these RFCS have self::RFC_SUBMITTED they are send to the
+     * admin for approval. So for each datafield each user will need to have 1 line returned from this function.
      * The timemodified should be the latests time modified from this group of rfc records in the table.
-     * If no courseid is provided, all rfcs will be returned.
+     * If no datafieldid is provided, all rfcs will be returned.
      *
-     * @param int $courseid
+     * @param int $datafieldid
      * @param int $type
      * @param int $adminid
      * @param int $start
      * @param int $limit
      * @return array
      */
-    public static function get_course_rfcs(int $courseid = 0, int $type = self::RFC_SUBMITTED, $adminid = 0,
-        int $start = 0, int $limit = 0): array {
+    public static function get_rfcs(
+        int $datafieldid = 0,
+        int $type = self::RFC_SUBMITTED,
+        $adminid = 0,
+        int $start = 0,
+        int $limit = 0
+    ): array {
         $params = [];
-        if ($courseid) {
-            $params['courseid'] = $courseid;
+        if ($datafieldid) {
+            $params['datafieldid'] = $datafieldid;
         }
         if ($type) {
             $params['type'] = $type;
@@ -143,25 +152,24 @@ class sprogramme_rfc extends persistent {
         $rfcs = [];
         foreach ($allrfcs as $rfcpersistent) {
             $rfc = $rfcpersistent->to_record();
-            $rfc->userinfo = self::get_user_info($rfc->adminid);
-            $rfc->course = get_course($rfc->courseid);
+            $rfc->userinfo = utils::get_user_info($rfc->adminid);
             $rfcs[] = $rfc;
         }
         return $rfcs;
     }
 
     /**
-     * Count the number of RFCs for a course.
+     * Count the number of RFCs for a datafield.
      *
-     * @param int $courseid
+     * @param int $datafieldid
      * @param int $type
      * @param int $adminid
      * @return int
      */
-    public static function count_course_rfcs(int $courseid = 0, int $type = self::RFC_SUBMITTED, $adminid = 0): int {
+    public static function count_rfc(int $datafieldid = 0, int $type = self::RFC_SUBMITTED, $adminid = 0): int {
         $params = [];
-        if ($courseid) {
-            $params['courseid'] = $courseid;
+        if ($datafieldid) {
+            $params['datafieldid'] = $datafieldid;
         }
         if ($type) {
             $params['type'] = $type;
@@ -170,53 +178,5 @@ class sprogramme_rfc extends persistent {
             $params['adminid'] = $adminid;
         }
         return self::count_records($params);
-    }
-
-    /**
-     * Get user information (picture and fullname) for the given user id.
-     *
-     * @param int $userid The ID of the user.
-     * @return array associative array with id, fullname and userpictureurl.
-     */
-    public static function get_user_info(int $userid): array {
-        global $PAGE;
-        $user = core_user::get_user($userid);
-        if (!$user) {
-            $renderer = $PAGE->get_renderer('core');
-            return [
-                'id' => $userid,
-                'fullname' => get_string('usernotfound', 'customfield_sprogramme'),
-                'userpictureurl' => $renderer->image_url('u/f1')->out(false), // Default image.
-                'firstname' => 'firstname',
-                'lastname' => 'lastname',
-            ];
-        }
-        $userpicture = new user_picture($user);
-        $userpicture->includetoken = true;
-        $userpicture->size = 1; // Size f1.
-        return [
-            'id' => $userid,
-            'fullname' => fullname($user),
-            'email' => $user->email,
-            'userpictureurl' => $userpicture->get_url($PAGE)->out(false),
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
-        ];
-    }
-
-    /**
-     * Get all unique course ids from the RFCs.
-     * @param int $status
-     * @return array
-     */
-    public static function get_all_course_ids(int $status = self::RFC_SUBMITTED): array {
-        $records = self::get_records(['type' => $status]);
-        $courseids = [];
-        foreach ($records as $record) {
-            if (!in_array($record->get('courseid'), $courseids)) {
-                $courseids[] = $record->get('courseid');
-            }
-        }
-        return $courseids;
     }
 }

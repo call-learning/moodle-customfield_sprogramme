@@ -13,7 +13,7 @@
     {"uniqueid": 11, "type": "item", "parent": 7, "name": "Animal welfare", "sortorder": 4},
     {"uniqueid": 12, "type": "item", "parent": 7, "name": "Biochemistry", "sortorder": 5},
     {"uniqueid": 13, "type": "item", "parent": 7, "name": "Animal health economics, practice management", "sortorder": 6},
-    {"uniqueid": 14, "type": "item", "parent": 7, "name": "Epnumberemiology", "sortorder": 7},
+    {"uniqueid": 14, "type": "item", "parent": 7, "name": "Epidemiology", "sortorder": 7},
     {"uniqueid": 15, "type": "item", "parent": 7, "name": "General & molecular genetics", "sortorder": 8},
     {"uniqueid": 16, "type": "item", "parent": 7, "name": "Immunology", "sortorder": 9},
     {"uniqueid": 17, "type": "item", "parent": 7, "name": "Information literacy, data management", "sortorder": 10},

@@ -16,14 +16,14 @@
 
 namespace customfield_sprogramme\external;
 
-use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
-use core_external\external_value;
-use core_external\external_single_structure;
 use core_external\external_multiple_structure;
-
-use customfield_sprogramme\local\api\programme;
+use core_external\external_single_structure;
+use core_external\external_value;
+use customfield_sprogramme\local\programme_manager;
+use customfield_sprogramme\local\rfc_manager;
+use customfield_sprogramme\utils;
 
 /**
  * Class get_data
@@ -41,7 +41,7 @@ class get_data extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT, 'Courseid', VALUE_DEFAULT, ''),
+            'datafieldid' => new external_value(PARAM_INT, 'Datafieldid', VALUE_DEFAULT, ''),
             'showrfc' => new external_value(PARAM_BOOL, 'Show Change request', VALUE_DEFAULT, false),
         ]);
     }
@@ -49,32 +49,33 @@ class get_data extends external_api {
     /**
      * Execute and return json data.
      *
-     * @param int $courseid - The course id.
+     * @param int $datafieldid - The course id.
      * @param bool $showrfc - Show change request.
      * @return array $data - The data in JSON format
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseid, bool $showrfc): array {
+    public static function execute(int $datafieldid, bool $showrfc): array {
         $params = self::validate_parameters(self::execute_parameters(),
-            ['courseid' => $courseid, 'showrfc' => $showrfc]
+            ['datafieldid' => $datafieldid, 'showrfc' => $showrfc]
         );
-        $courseid = $params['courseid'];
+        $datafieldid = $params['datafieldid'];
         $showrfc = $params['showrfc'];
 
-        $coursecontext = context_course::instance($courseid);
-        self::validate_context($coursecontext);
-        if (!has_capability('moodle/course:update', $coursecontext)) {
+        $context = utils::get_context_from_datafieldid($datafieldid);
+        self::validate_context($context);
+        if (!has_capability('moodle/course:update', $context)) {
             throw new \invalid_parameter_exception('invalidaccess');
         }
-
-        $modules = programme::get_data($courseid, $showrfc);
-        $columns = programme::get_column_structure($courseid);
-        $columnstotals = programme::get_column_totals($modules, $columns);
+        $programmemanger = new programme_manager($datafieldid);
+        $modules = $programmemanger->get_data($showrfc);
+        $columns = $programmemanger->get_column_structure();
+        $columnstotals = $programmemanger->get_column_totals($modules, $columns);
         $rfc = [];
         if ($showrfc) {
-            $rfc = programme::get_rfc_data($courseid);
+            $rfcmanager = new rfc_manager($datafieldid);
+            $rfc = $rfcmanager->get_data();
         }
-        $canedit = $showrfc && programme::can_edit($courseid);
+        $canedit = $showrfc && $programmemanger->can_edit($datafieldid);
 
         $data = [
             'modules' => $modules,
@@ -160,7 +161,7 @@ class get_data extends external_api {
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
                             'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
-                        ]), 'Option', VALUE_OPTIONAL
+                        ]), 'Option', VALUE_OPTIONAL,
                     ),
                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                 ])

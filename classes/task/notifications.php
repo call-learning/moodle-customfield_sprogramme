@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme\task;
-use customfield_sprogramme\local\persistent\notification;
 use customfield_sprogramme\local\api\notifications as notificationsapi;
+use customfield_sprogramme\local\persistent\notification;
+
 /**
  * Class notifications
  *

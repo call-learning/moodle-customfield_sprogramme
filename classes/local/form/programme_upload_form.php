@@ -20,9 +20,9 @@ use context;
 use context_course;
 use context_user;
 use core_form\dynamic_form;
-use customfield_sprogramme\local\api\programme;
-use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\importer\programme_importer;
+use customfield_sprogramme\local\programme_manager;
+use customfield_sprogramme\utils;
 use moodle_exception;
 use moodle_url;
 
@@ -49,13 +49,16 @@ class programme_upload_form extends dynamic_form {
         $fs = get_file_storage();
         $files = $fs->get_area_files($usercontext->id, 'user', 'draft', $this->get_data()->csvfile, 'itemid, filepath,
             filename', false);
+        $instanceid = utils::get_instanceid_from_datafieldid($data->datafieldid);
+
         if (!empty($files)) {
             $file = reset($files);
             $filepath = make_request_directory() . '/' . $file->get_filename();
             $file->copy_content_to($filepath);
             try {
-                programme::delete_programme($data->courseid);
-                $programimporter = new programme_importer(['courseid' => $data->courseid]);
+                $programmemanger = new programme_manager($data->datafieldid);
+                $programmemanger->delete_programme();
+                $programimporter = new programme_importer(['datafieldid' => $data->datafieldid]);
                 $programimporter->import($filepath, "comma");
             } finally {
                 unlink($filepath);
@@ -63,7 +66,7 @@ class programme_upload_form extends dynamic_form {
         }
         return [
             'result' => true,
-            'returnurl' => new moodle_url('/course/edit.php', ['id' => $data->courseid]),
+            'returnurl' => new moodle_url('/course/edit.php', ['id' => $instanceid]),
         ];
     }
 
@@ -73,8 +76,9 @@ class programme_upload_form extends dynamic_form {
      * @return context
      */
     protected function get_context_for_dynamic_submission(): context {
-        $courseid = $this->optional_param('courseid', null, PARAM_INT);
-        $context = context_course::instance($courseid);
+        $datafieldid = $this->optional_param('datafieldid', null, PARAM_INT);
+        $instanceid = utils::get_instanceid_from_datafieldid($datafieldid);
+        $context = context_course::instance($instanceid);
         return $context;
     }
 
@@ -107,8 +111,8 @@ class programme_upload_form extends dynamic_form {
      */
     protected function definition() {
         $mform = $this->_form;
-        $courseid = $this->optional_param('courseid', null, PARAM_INT);
-        $mform->addElement('hidden', 'courseid', $courseid);
+        $datafieldid = $this->optional_param('datafieldid', null, PARAM_INT);
+        $mform->addElement('hidden', 'datafieldid', $datafieldid);
         // Upload the CSV file.
         $mform->addElement('filepicker', 'csvfile', get_string('csvfile', 'mod_data'), null, [
             'maxbytes' => 0,
@@ -123,7 +127,7 @@ class programme_upload_form extends dynamic_form {
      */
     public function set_data_for_dynamic_submission(): void {
         $data = [
-            'courseid' => $this->optional_param('courseid', 0, PARAM_INT),
+            'datafieldid' => $this->optional_param('datafieldid', 0, PARAM_INT),
         ];
         parent::set_data((object) $data);
     }

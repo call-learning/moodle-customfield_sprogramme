@@ -7,7 +7,6 @@
         <TABLE NAME="customfield_sprogramme" COMMENT="Combined information for the programme">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="moduleid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
@@ -43,7 +42,6 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
                 <FIELD NAME="did" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
-                <FIELD NAME="discipline" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Discipline name"/>
                 <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
                 <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -60,7 +58,6 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
                 <FIELD NAME="cid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
-                <FIELD NAME="competency" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Discipline name"/>
                 <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
                 <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -75,7 +72,6 @@
         <TABLE NAME="customfield_sprogramme_module" COMMENT="Default comment for the table, please edit me">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="name" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false"/>
@@ -92,7 +88,6 @@
         <TABLE NAME="customfield_sprogramme_rfc" COMMENT="request for change">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="type id"/>
                 <FIELD NAME="snapshot" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
@@ -111,7 +106,6 @@
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="notifid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="recipient" TYPE="char" LENGTH="254" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD NAME="notification" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false"/>

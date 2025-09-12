@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme\external;
-use context_course;
 use core_external\external_api;
 use core_external\external_function_parameters;
-use core_external\external_value;
 use core_external\external_single_structure;
+use core_external\external_value;
+use customfield_sprogramme\local\programme_manager;
+use customfield_sprogramme\utils;
 
-use customfield_sprogramme\local\api\programme;
 /**
  * Class csv_data
  *
@@ -38,27 +38,30 @@ class csv_data  extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT, 'Courseid', VALUE_DEFAULT, ''),
+            'datafieldid' => new external_value(PARAM_INT, 'Datafieldid', VALUE_DEFAULT, ''),
         ]);
     }
 
     /**
      * Execute and return the data in CSV format.
      *
-     * @param int $courseid - The course id.
+     * @param int $datafieldid - The course id.
      * @return array $data - The data in JSON format
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseid): array {
-        $params = self::validate_parameters(self::execute_parameters(),
-            ['courseid' => $courseid]
+    public static function execute(int $datafieldid): array {
+        $params = self::validate_parameters(
+            self::execute_parameters(),
+            ['datafieldid' => $datafieldid]
         );
-        $courseid = $params['courseid'];
-        $course = get_course($courseid);
-        $context = context_course::instance($courseid);
+        $datafieldid = $params['datafieldid'];
+        $context = utils::get_context_from_datafieldid($datafieldid);
         require_capability('customfield/sprogramme:view', $context);
         $data = [];
-        $data['csv'] = programme::get_csv_data($courseid);
+        $programmemanager = new programme_manager($datafieldid);
+        $data['csv'] = $programmemanager->get_csv_data();
+        $courseid = utils::get_instanceid_from_datafieldid($datafieldid);
+        $course = get_course($courseid);
         $data['filename'] = $course->shortname . '-' . date('Y-m-d') . '_programme.csv';
         return $data;
     }

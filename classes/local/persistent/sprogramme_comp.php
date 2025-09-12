@@ -49,10 +49,6 @@ class sprogramme_comp extends persistent {
                 'type' => PARAM_INT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_disc:did'),
             ],
-            'competency' => [
-                'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_disc:discipline'),
-            ],
             'percentage' => [
                 'default' => '',
                 'null' => NULL_ALLOWED,
@@ -69,5 +65,18 @@ class sprogramme_comp extends persistent {
      */
     public static function get_all_records_for_programme(int $pid): array {
         return self::get_records(['pid' => $pid]);
+    }
+
+    /**
+     * Get the name of the competency
+     * @return string
+     */
+    public function get_name(): string {
+        $comp = sprogramme_complist::get_record(['id' => $this->raw_get('cid')], IGNORE_MISSING);
+        if ($comp) {
+            return $comp->get('name');
+        } else {
+            return '';
+        }
     }
 }

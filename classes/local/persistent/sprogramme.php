@@ -73,6 +73,11 @@ class sprogramme extends persistent {
             'courseid' => [
                 'type' => PARAM_INT,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:courseid'),
+                'default' => 0,
+            ],
+            'datafieldid' => [
+                'type' => PARAM_INT,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme:datafieldid'),
             ],
             'moduleid' => [
                 'type' => PARAM_INT,
@@ -195,15 +200,6 @@ class sprogramme extends persistent {
      */
     public static function get_properties() {
         return self::define_properties();
-    }
-
-    /**
-     * Get all records for a given course
-     * @param int $courseid
-     * @return array
-     */
-    public static function get_all_records_for_course(int $courseid): array {
-        return self::get_records(['courseid' => $courseid], 'sortorder');
     }
 
     /**
@@ -364,7 +360,7 @@ class sprogramme extends persistent {
         $sequence = $this->raw_get('sequence');
         if ($sequence === null) {
             $count = self::count_records(
-                ['courseid' => $this->raw_get('courseid'), 'moduleid' => $this->raw_get('moduleid')]
+                ['datafieldid' => $this->raw_get('datafieldid'), 'moduleid' => $this->raw_get('moduleid')]
             );
             $this->raw_set('sequence', $count + 1);
         }

@@ -29,21 +29,21 @@ import $ from 'jquery';
 /*
  * Initialise
  * @param {HTMLElement} element The element.
- * @param {String} courseid The courseid.
+ * @param {String} datafieldid The datafieldid.
  */
 const init = async() => {
     document.addEventListener('click', async(event) => {
         const editaction = event.target.closest('[data-action="editprogramme"]');
         if (editaction) {
-            const courseid = editaction.dataset.courseid;
-            await getEditor(editaction, courseid);
+            const datafieldid = editaction.dataset.datafieldid;
+            await getEditor(editaction, datafieldid);
             event.preventDefault();
         }
         const actionBtn = event.target.closest('[data-action="showrfc"]');
         if (actionBtn) {
             const rfcid = parseInt(actionBtn.dataset.rfcid);
-            const courseid = actionBtn.dataset.courseid;
-            await showHistory(rfcid, courseid);
+            const datafieldid = actionBtn.dataset.datafieldid;
+            await showHistory(rfcid, datafieldid);
             event.preventDefault();
         }
         const popOvers = document.querySelectorAll('[data-toggle="popover"]');
@@ -58,8 +58,15 @@ const init = async() => {
     });
 };
 
-const showHistory = async(rfcid, courseid) => {
-    await getProgrammeHistory(rfcid, courseid);
+/**
+ * Show the history modal.
+ *
+ * @param {Number} rfcid
+ * @param {Number} datafieldid
+ * @return {Promise<void>}
+ */
+const showHistory = async(rfcid, datafieldid) => {
+    await getProgrammeHistory(rfcid, datafieldid);
     const modalContent = document.querySelector('[data-region="history"]');
 
     const modal = await Modal.create({
@@ -81,8 +88,14 @@ class CustomModal extends Modal {
     }
 }
 
-const getEditor = async(element, courseid) => {
-    await getProgramme(element, courseid);
+/**
+ * Get the editor modal.
+ * @param {HTMLElement} element
+ * @param {Number} datafieldid
+ * @return {Promise<void>}
+ */
+const getEditor = async(element, datafieldid) => {
+    await getProgramme(element, datafieldid);
     const modalContent = document.querySelector('[data-region="app"]');
     const modalHeader = document.querySelector('[data-region="modalheader"]');
 
@@ -112,20 +125,20 @@ const getEditor = async(element, courseid) => {
 /**
  * Get the programme.
  * @param {HTMLElement} element The element.
- * @param {String} courseid The courseid.
+ * @param {String} datafieldid The datafieldid.
  * @return {Promise} The programme.
  */
-const getProgramme = async(element, courseid) => {
-    Manager.init(element, courseid);
+const getProgramme = async(element, datafieldid) => {
+    Manager.init(element, datafieldid);
 };
 
 /**
  * Get the programme history.
- * @param {int} rfcid The Rfc id.
- * @param {int} courseid The course id.
+ * @param {Number} rfcid The Rfc id.
+ * @param {Number} datafieldid The course id.
  */
-const getProgrammeHistory = async(rfcid, courseid) => {
-    History.init(rfcid, courseid);
+const getProgrammeHistory = async(rfcid, datafieldid) => {
+    History.init(rfcid, datafieldid);
 };
 
 export default {

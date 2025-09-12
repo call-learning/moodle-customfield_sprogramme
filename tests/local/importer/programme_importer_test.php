@@ -31,6 +31,11 @@ use customfield_sprogramme\local\persistent\sprogramme_disc;
 final class programme_importer_test extends \advanced_testcase {
 
     /**
+     * @var int $cfdid The custom field instance data.
+     */
+    protected int $cfdid;
+
+    /**
      * Set up the test environment.
      */
     public function setUp(): void {
@@ -44,7 +49,7 @@ final class programme_importer_test extends \advanced_testcase {
             'contextid' => \context_system::instance()->id,
         ];
         $category = $customfieldgenerator->create_category($options);
-        $customfieldgenerator->create_field(
+        $cf = $customfieldgenerator->create_field(
             [
                 'name' => 'Programme',
                 'shortname' => 'programme',
@@ -53,6 +58,9 @@ final class programme_importer_test extends \advanced_testcase {
                 'categoryid' => $category->get('id'),
             ]
         );
+        $course = $this->getDataGenerator()->create_course('Test course');
+        $cfd = $customfieldgenerator->add_instance_data($cf, $course->id, 1);
+        $this->cfdid = $cfd->get('id');
     }
 
     /**
@@ -64,10 +72,9 @@ final class programme_importer_test extends \advanced_testcase {
         global $CFG;
         $this->resetAfterTest();
         $filepath = $CFG->dirroot . '/customfield/field/sprogramme/tests/fixtures/programme_importer.csv';
-        $course = $this->getDataGenerator()->create_course();
-        $programimporter = new programme_importer(['courseid' => $course->id]);
+        $programimporter = new programme_importer(['datafieldid' => $this->cfdid]);
         $programimporter->import($filepath, "comma");
-        $records = sprogramme::get_records(['courseid' => $course->id]);
+        $records = sprogramme::get_records(['datafieldid' => $this->cfdid]);
         $this->assertCount(2, $records);
         $firstrecord = reset($records);
         $this->assertEquals('CM - phénomènes de transports', $firstrecord->get('intitule_seance'));
@@ -81,8 +88,8 @@ final class programme_importer_test extends \advanced_testcase {
             'Medical physics' => 50,
         ];
         foreach ($disciplines as $discipline) {
-            $this->assertArrayHasKey($discipline->get('discipline'), $expecteddisciplines);
-            $this->assertEquals($expecteddisciplines[$discipline->get('discipline')], $discipline->get('percentage'));
+            $this->assertArrayHasKey($discipline->get_name(), $expecteddisciplines);
+            $this->assertEquals($expecteddisciplines[$discipline->get_name()], $discipline->get('percentage'));
         }
         $competencies = sprogramme_comp::get_all_records_for_programme($firstrecord->get('id'));
         $this->assertCount(2, $competencies);
@@ -91,8 +98,8 @@ final class programme_importer_test extends \advanced_testcase {
            "ST3 - Pratiquer en toute sécurité une sédation, une anesthésie générale et une anesthésie loco-régionale" => 90,
         ];
         foreach ($competencies as $competency) {
-            $this->assertArrayHasKey($competency->get('competency'), $expectedcompetencies);
-            $this->assertEquals($expectedcompetencies[$competency->get('competency')], $competency->get('percentage'));
+            $this->assertArrayHasKey($competency->get_name(), $expectedcompetencies);
+            $this->assertEquals($expectedcompetencies[$competency->get_name()], $competency->get('percentage'));
         }
     }
 }
