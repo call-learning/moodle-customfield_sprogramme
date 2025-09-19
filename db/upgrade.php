@@ -72,5 +72,11 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2025091300, 'customfield', 'sprogramme');
     }
+    if ($oldversion < 2025091301) {
+        // We need to update the disclist and complist tables.
+        setup::fill_disclist();
+        upgrade_plugin_savepoint(true, 2025091301, 'customfield', 'sprogramme');
+    }
+
     return true;
 }

@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'customfield_sprogramme';
 $plugin->release = '1.2.0';
-$plugin->version = 2025091300;
+$plugin->version = 2025091301;
 $plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_BETA;
