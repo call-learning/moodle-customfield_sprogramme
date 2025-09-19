@@ -77,6 +77,18 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         setup::fill_disclist();
         upgrade_plugin_savepoint(true, 2025091301, 'customfield', 'sprogramme');
     }
-
+    if ($oldversion < 2025091302) {
+        // Make sure we have the field with the right type.
+        $existingprogrammefields = $DB->get_records('customfield_field', ['shortname' => 'programme'], 'id ASC');
+        foreach ($existingprogrammefields as $field) {
+            if ($field->type === 'sprogramme') {
+                // This is the correct field, we can delete all others.
+                continue;
+            }
+            $field->type = 'sprogramme';
+            $DB->update_record('customfield_field', $field);
+        }
+        upgrade_plugin_savepoint(true, 2025091302, 'customfield', 'sprogramme');
+    }
     return true;
 }
