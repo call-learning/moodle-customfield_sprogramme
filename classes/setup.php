@@ -33,15 +33,18 @@ class setup {
     /**
      * Fill the table customfield_sprogramme_disclist
      * using a json file.
+     * @param bool $delete Whether to delete existing records first.
      * @return void
      */
-    public static function fill_disclist(): void {
+    public static function fill_disclist(bool $delete=true): void {
         global $CFG;
 
-        // Clear the table first.
-        $records = sprogramme_disclist::get_records();
-        foreach ($records as $record) {
-            $record->delete();
+        if ($delete) {
+            // Clear the table first.
+            $records = sprogramme_disclist::get_records();
+            foreach ($records as $record) {
+                $record->delete();
+            }
         }
 
         $jsonfile = $CFG->dirroot . '/customfield/field/sprogramme/data/disclist.json';
@@ -54,8 +57,19 @@ class setup {
         if (empty($data)) {
             throw new \moodle_exception('No data found in: ' . $jsonfile);
         }
-        $tempnumbers = [];
         foreach ($data as $item) {
+            if (!$delete) {
+                $existing = sprogramme_disclist::get_record(['uniqueid' => intval($item['uniqueid'])]);
+                if ($existing) {
+                    continue;
+                }
+                $existing->set('type', $item['type']);
+                $existing->set('parent', $item['parent'] ?? null);
+                $existing->set('name', $item['name']);
+                $existing->set('sortorder', $item['sortorder'] ?? 0);
+                $existing->save();
+                continue;
+            }
             $disclist = new sprogramme_disclist();
             $disclist->set('uniqueid', intval($item['uniqueid']) ?? 0);
             $disclist->set('type', $item['type']);
@@ -157,6 +171,12 @@ class setup {
         raise_memory_limit(MEMORY_HUGE);
         core_php_time_limit::raise(HOURSECS);
         $currentprogrammefieldid = $DB->get_field('customfield_field', 'id', ['type' => 'sprogramme']);
+        if (!$currentprogrammefieldid) {
+            $currentprogrammefieldid = $DB->get_field('customfield_field', 'id', ['shortname' => 'programme', 'type' => 'text'], IGNORE_MISSING);
+        }
+        if (!$currentprogrammefieldid) {
+            throw new \moodle_exception('No sprogramme field found, cannot migrate data.');
+        }
         // Now migrate all data from courseid to fieldid.
         $transaction = $DB->start_delegated_transaction();
         self::update_records('customfield_sprogramme', $currentprogrammefieldid);
