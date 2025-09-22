@@ -27,6 +27,7 @@ import Notification from 'core/notification';
 import {getStrings} from 'core/str';
 import {debounce} from 'core/utils';
 import componentInit from './local/components/table';
+import Pending from 'core/pending'; // For Behat to make sure that async calls are finished.
 import './tagmanager';
 import './programme_form';
 
@@ -208,7 +209,7 @@ class Manager {
                     // Clone the column properties to the cell but keep the cell properties.
                     cell = Object.assign({}, cell, column);
                     if (cell.type === 'select') {
-                        // Clone the options array to avoid shared references
+                        // Clone the options array to avoid shared references.
                         cell.options = cell.options.map(option => {
                             const clonedOption = Object.assign({}, option);
                             if (clonedOption.name == cell.value) {
@@ -366,6 +367,7 @@ class Manager {
                 result = false;
             } else {
                 row.error = false;
+                row.error = false;
             }
         });
         return result;
@@ -407,10 +409,12 @@ class Manager {
      * @return {void}
      */
     async setTableData() {
+        const pending = new Pending('customfield_sprogramme/manager:setTableData');
         const set = debounce(async() => {
             const saveConfirmButton = document.querySelector('[data-action="saveconfirm"]');
             saveConfirmButton.classList.add('saving');
             if (!this.validateModules()) {
+                pending.resolve();
                 return '';
             }
             const modules = State.getValue('modules');
@@ -419,11 +423,12 @@ class Manager {
             if (!response) {
                 Notification.exception('No response from the server');
             } else {
-                this.getTableData();
+                await this.getTableData();
                 const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
                 const modulesStatic = this.parseModules(update);
                 State.setValue('modulesstatic', modulesStatic);
             }
+            pending.resolve();
             setTimeout(() => {
                 saveConfirmButton.classList.remove('saving');
             }, 200);

@@ -16,6 +16,8 @@
 
 namespace customfield_sprogramme\reportbuilder\datasource;
 
+use core_reportbuilder\tests\core_reportbuilder_testcase;
+
 /**
  * Tests for competencies datasource
  *
@@ -24,27 +26,18 @@ namespace customfield_sprogramme\reportbuilder\datasource;
  * @copyright  2025 Laurent David <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class competencies_test extends \core_reportbuilder_testcase {
+final class competencies_test extends core_reportbuilder_testcase {
     /**
      * Test default datasource
      */
     public function test_datasource_default(): void {
         $this->resetAfterTest();
 
-        $category = $this->getDataGenerator()->create_category(['name' => 'Zoo', 'idnumber' => 'Z01']);
-        $course = $this->getDataGenerator()->create_course(['category' => $category->id]);
-
-        /** @var core_reportbuilder_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('core_reportbuilder');
-        $report = $generator->create_report(['name' => 'My report', 'source' => categories::class, 'default' => 1]);
+
+        $report = $generator->create_report(['name' => 'My report', 'source' => competencies::class, 'default' => 1]);
 
         $content = $this->get_custom_report_content($report->get('id'));
-        $this->assertCount(2, $content);
-
-        // Default columns are name, idnumber, coursecount. Sorted by name ascending.
-        $this->assertEquals([
-            [get_string('defaultcategoryname'), '', 0],
-            [$category->get_formatted_name(), $category->idnumber, 1],
-        ], array_map('array_values', $content));
+        $this->assertCount(30, $content);
     }
 }

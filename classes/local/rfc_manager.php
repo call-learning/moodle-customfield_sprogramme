@@ -134,26 +134,9 @@ class rfc_manager {
      * @param int $userid The user id that created the rfc
      * @return bool
      */
-    public function can_cancel(int $userid = 0) {
-        global $USER;
-        if (!$userid) {
-            $userid = $USER->id;
-        }
-        if (has_capability('customfield/sprogramme:editall', $this->context)) {
-            return true; // If the user has the capability to edit all, they can cancel any rfc.
-        }
-        $rfc = sprogramme_rfc::get_record(
-            [
-                'datafieldid' => $this->datafieldid,
-                'adminid' => $userid,
-                'type' => sprogramme_rfc::RFC_SUBMITTED,
-            ],
-            IGNORE_MULTIPLE // We get the first one we find (there should be only one anyway).
-        );
-        if ($rfc) {
-            return true;
-        }
-        return false;
+    public function can_cancel() {
+        $data = $this->get_data();
+        return $data['cancancel'] ?? false;
     }
 
     /**
@@ -202,11 +185,11 @@ class rfc_manager {
      */
     public function can_remove(int $userid): bool {
         global $USER;
-        if (!$userid) {
-            $userid = $USER->id;
-        }
         if (has_capability('customfield/sprogramme:editall', $this->context)) {
             return true; // If the user has the capability to edit all, they can cancel any rfc.
+        }
+        if ($USER->id != $userid) {
+            return false; // If the user is not the one who created the rfc, they cannot remove it.
         }
         $rfc = sprogramme_rfc::get_record(
             [
@@ -227,7 +210,8 @@ class rfc_manager {
      * @return bool
      */
     public function can_submit() {
-        return has_capability('customfield/sprogramme:edit', $this->context);
+        $data = $this->get_data();
+        return $data['cansubmit'] ?? false;
     }
     /**
      * Get the rfc for a given datafield and user

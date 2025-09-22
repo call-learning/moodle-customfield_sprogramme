@@ -18,6 +18,7 @@ namespace external;
 
 use core_external\external_api;
 use customfield_sprogramme\external\accept_rfc;
+use customfield_sprogramme\external\get_tags;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -25,13 +26,13 @@ global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
- * Tests for the update_course class.
+ * Tests for the get_tags class.
  *
  * @package    customfield_sprogramme
  * @category   test
  * @copyright  2025 Laurent David <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \customfield_sprogramme\external\accept_rfc
+ * @covers \customfield_sprogramme\external\get_tags
  */
 final class get_tags_test extends \externallib_advanced_testcase {
     /**
@@ -40,8 +41,8 @@ final class get_tags_test extends \externallib_advanced_testcase {
      * @param mixed ...$params
      * @return mixed
      */
-    protected function accept_rfc(...$params) {
-        $acceptrfc = accept_rfc::execute(...$params);
-        return external_api::clean_returnvalue(accept_rfc::execute_returns(), $acceptrfc);
+    protected function get_tags(...$params) {
+        $acceptrfc = get_tags::execute(...$params);
+        return external_api::clean_returnvalue(get_tags::execute_returns(), $acceptrfc);
     }
 }

@@ -84,8 +84,8 @@ final class programme_importer_test extends \advanced_testcase {
         $disciplines = sprogramme_disc::get_all_records_for_programme($firstrecord->get('id'));
         $this->assertCount(2, $disciplines);
         $expecteddisciplines = [
-            'Animal biology, zoology and cell biology' => 50,
-            'Medical physics' => 50,
+            '1. Animal biology, zoology and cell biology' => 50,
+            '1. Medical physics' => 50,
         ];
         foreach ($disciplines as $discipline) {
             $this->assertArrayHasKey($discipline->get_name(), $expecteddisciplines);

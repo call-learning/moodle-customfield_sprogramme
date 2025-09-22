@@ -59,13 +59,27 @@ final class submit_rfc_test extends \externallib_advanced_testcase {
             'users' => $users,
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
-        $this->setUser($users[0]);
-        $submitted = $this->submit_rfc($cfdataid, $users[0]->id);
-        $this->assertFalse($submitted);
+        $this->setUser($users[1]);
         $submitted = $this->submit_rfc($cfdataid, $users[1]->id);
         $this->assertTrue($submitted);
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_SUBMITTED]));
     }
+
+    /**
+     * Test execute with correct parameters
+     */
+    public function test_execute_wrong_user(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        [
+            'users' => $users,
+            'cfdataid' => $cfdataid,
+        ] = $this->setup_course_and_rfc();
+        $this->expectExceptionMessage('customfield_sprogramme/rfcsubmissionnotallowed');
+        $this->setUser($users[0]);
+        $this->submit_rfc($cfdataid, $users[1]->id);
+    }
+
 
     /**
      * Test execute with correct parameters

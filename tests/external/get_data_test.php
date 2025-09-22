@@ -74,14 +74,15 @@ final class get_data_test extends \externallib_advanced_testcase {
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
         $data = $this->get_data($cfdataid);
-        $this->assertEquals('Test Module 1', $data[0]['modulename']);
-        $this->assertEquals(15, $data[0]['rows'][0]['cells'][2]['value']);
+        $this->assertEquals('Test Module 1', $data['modules'][0]['modulename']);
+        $this->assertEquals(15, $data['modules'][0]['rows'][0]['cells'][2]['value']);
 
+        $this->setAdminUser(); // We need to be admin to see all the rfc data.
         $data = $this->get_data($cfdataid, true);
         $this->assertNotEmpty($data['modules']); // We get the data from the rfc.
         $this->assertNotEmpty($data['rfc']);
-        $this->assertEquals('Test Module 1', $data[0]['modulename']);
-        $this->assertEquals(18, $data[0]['rows'][0]['cells'][2]['value']);
+        $this->assertEquals('A different title', $data['modules'][0]['modulename']);
+        $this->assertEquals(18, $data['modules'][0]['rows'][0]['cells'][2]['value']);
     }
 
     /**
@@ -118,7 +119,8 @@ final class get_data_test extends \externallib_advanced_testcase {
         $pgenerator->create_rfc(
             $cfdata->get('id'),
             userid: $users[1]->id,
-            snapshot: json_encode($data)
+            snapshot: json_encode($data),
+            type: sprogramme_rfc::RFC_SUBMITTED,
         );
         return [
             'course' => $course,

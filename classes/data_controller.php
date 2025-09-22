@@ -65,10 +65,11 @@ class data_controller extends \core_customfield\data_controller {
     public function instance_form_definition(\MoodleQuickForm $mform) {
         global $PAGE;
         $elementname = $this->get_form_element_name();
+        $fieldname = $this->get_field()->get('name');
         $mform->addElement(
             'advcheckbox',
             $elementname,
-            get_string('programme:enabled', 'customfield_sprogramme')
+            get_string('programme:enabled', 'customfield_sprogramme', $fieldname)
         );
         $mform->setDefault($elementname, $this->get_default_value());
         $mform->setType($elementname, PARAM_BOOL);

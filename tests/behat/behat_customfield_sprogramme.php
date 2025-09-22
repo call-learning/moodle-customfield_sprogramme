@@ -18,6 +18,7 @@
 
 require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 
+use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 
@@ -42,70 +43,71 @@ class behat_customfield_sprogramme extends behat_base {
      * @throws ExpectationException
      */
     public function set_cell_value_to($modulenr, $rownr, $columnname, $value) {
-        // App
-        $app = $this->find('css', '[data-region="app"]');
+        $cell = $this->find_cell($modulenr, $rownr, $columnname);
+        $cellinput = $cell->find('css', 'input, select, textarea');
+        $fieldinstance = behat_field_manager::get_field_instance('field', $cellinput, $this->getSession());
+        // Set the value.
+        $fieldinstance->set_value($value);
+    }
+
+    /**
+     * Find an element in the app table.
+     *
+     * @param $modulenr
+     * @param $rownr
+     * @param $columnname
+     * @return NodeElement
+     * @throws ElementNotFoundException|ExpectationException
+     */
+    private function find_cell($modulenr, $rownr, $columnname) {
         // There can be multiple modules in the app identified by [data-region="module"].
-        // The modulenr corresponds with the order of the modules in the app.
-        $modules = $app->findAll('css', '[data-region="module"]');
-        if (empty($modules)) {
-            throw new ElementNotFoundException($this->getSession(), 'module', 'css', '[data-region="module"]');
-        }
-        if ($modulenr > count($modules)) {
-            throw new ExpectationException('Module number ' . $modulenr . ' is out of range. There are only ' . count($modules) . ' modules.', $this->getSession());
-        }
-        // Find the module.
-        $module = $modules[$modulenr - 1];
-        if (empty($module)) {
-            throw new ElementNotFoundException($this->getSession(), 'module', 'css', '[data-region="module"]');
-        }
+        $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
+        $baseelement = $this->find('xpath', $baselocator);
+        $column  = $this->find(
+            'xpath',
+            "//*[@data-region = 'columns']/th/*[text() = '$columnname']",
+            new ExpectationException('Column name ' . $columnname . ' not found.', $this->getSession()),
+            $baseelement,
+        );
+        // Get the attribute data-column of the column.
+        $columnnr = $column->getParent()->getAttribute('data-columnid');
 
         // Find the row in the modules rows in [data-region="rows"].
-        $rows = $module->findAll('css', '[data-region="rows"] tr');
-        if (empty($rows)) {
-            throw new ElementNotFoundException($this->getSession(), 'rows', 'css', '[data-region="rows"]');
-        }
-        if ($rownr > count($rows)) {
-            throw new ExpectationException('Row number ' . $rownr . ' is out of range. There are only ' . count($rows) . ' rows.', $this->getSession());
-        }
-        // Find the row.
-        // The rownr corresponds with the order of the rows in the module.
-        $row = $rows[$rownr - 1];
-        if (empty($row)) {
-            throw new ElementNotFoundException($this->getSession(), 'row', 'css', '[data-region="rows"]');
-        }
-
-        // Find the column with columnname.
-        $columnrow = $module->find('css', '[data-region="columns"]');
-        $columns = $columnrow->findAll('css', 'th');
-        if (empty($columns)) {
-            throw new ElementNotFoundException($this->getSession(), 'columns', 'css', '[data-region="columns"]');
-        }
-        $column = null;
-        foreach ($columns as $col) {
-            if ($col->getText() == $columnname) {
-                $column = $col;
-                break;
-            }
-        }
-        if (empty($column)) {
-            throw new ElementNotFoundException($this->getSession(), 'column', 'css', '[data-region="columns"]');
-        }
-        // Get the attribute data-column of the column.
-        $columnnr = $column->getAttribute('data-columnid');
-
+        $row = $this->find_row($modulenr, $rownr);
 
         // Find the cell.
-        $cell = $row->find('css', 'td[data-columnid="' . $columnnr . '"] input');
-        if (empty($cell)) {
-            throw new ElementNotFoundException($this->getSession(), 'cell', 'css', 'td:nth-child(' . $columnnr . ')');
-        }
-        // Set the value.
-        $cell->setValue($value);
-        // Check if the value is set.
-        $cellvalue = $cell->getValue();
-        if ($cellvalue != $value) {
-            throw new ExpectationException('Cell value ' . $cellvalue . ' is not set to ' . $value, $this->getSession());
-        }
+        $cell = $this->find(
+            'css',
+            'td[data-columnid="' . $columnnr . '"]',
+            new ExpectationException('Cell not found in row ' . $rownr . ' and column ' . $columnname, $this->getSession()),
+            $row
+        );
+        return $cell;
+    }
+
+    /**
+     * Find an element in the app table.
+     *
+     * @param $modulenr
+     * @param $rownr
+     * @param $columnname
+     * @return NodeElement
+     * @throws ElementNotFoundException|ExpectationException
+     */
+    private function find_row($modulenr, $rownr) {
+        // There can be multiple modules in the app identified by [data-region="module"].
+        $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
+        $baseelement = $this->find('xpath', $baselocator);
+
+        // Find the row in the modules rows in [data-region="rows"].
+        $row  = $this->find(
+            'xpath',
+            "//*[@data-region = 'rows']/tr[$rownr]",
+            new ExpectationException('Row number ' . $rownr . ' not found.', $this->getSession()),
+            $baseelement,
+        );
+
+        return $row;
     }
 
     /**
@@ -119,63 +121,20 @@ class behat_customfield_sprogramme extends behat_base {
      * @throws ExpectationException
      */
     public function check_cell_value($modulenr, $rownr, $columnname, $value) {
-        // App
-        $app = $this->find('css', '[data-region="app"]');
-        // There can be multiple modules in the app identified by [data-region="module"].
-        // The modulenr corresponds with the order of the modules in the app.
-        $modules = $app->findAll('css', '[data-region="module"]');
-        if (empty($modules)) {
-            throw new ElementNotFoundException($this->getSession(), 'module', 'css', '[data-region="module"]');
-        }
-        if ($modulenr > count($modules)) {
-            throw new ExpectationException('Module number ' . $modulenr . ' is out of range. There are only ' . count($modules) . ' modules.', $this->getSession());
-        }
-        // Find the module.
-        $module = $modules[$modulenr - 1];
-        if (empty($module)) {
-            throw new ElementNotFoundException($this->getSession(), 'module', 'css', '[data-region="module"]');
-        }
-
-        // Find the row in the modules rows in [data-region="rows"].
-        $rows = $module->findAll('css', '[data-region="rows"] tr');
-        if (empty($rows)) {
-            throw new ElementNotFoundException($this->getSession(), 'rows', 'css', '[data-region="rows"]');
-        }
-        if ($rownr > count($rows)) {
-            throw new ExpectationException('Row number ' . $rownr . ' is out of range. There are only ' . count($rows) . ' rows.', $this->getSession());
-        }
-        // Find the row.
-        // The rownr corresponds with the order of the rows in the module.
-        $row = $rows[$rownr - 1];
-        if (empty($row)) {
-            throw new ElementNotFoundException($this->getSession(), 'row', 'css', '[data-region="rows"]');
-        }
-
-        // Find the column with columnname.
-        $columnrow = $module->find('css', '[data-region="columns"]');
-        $columns = $columnrow->findAll('css', 'th');
-        if (empty($columns)) {
-            throw new ElementNotFoundException($this->getSession(), 'columns', 'css', '[data-region="columns"]');
-        }
-        $column = null;
-        foreach ($columns as $col) {
-            if ($col->getText() == $columnname) {
-                $column = $col;
-                break;
+        $cell = $this->find_cell($modulenr, $rownr, $columnname);
+        $cellinput = $cell->find('css', 'input, select, textarea');
+        if (!$cellinput) {
+            // Maybe it is a readonly field, so just check the text.
+            if ($newvalue = $cell->find('css', '.newvalue')) {
+                $cellvalue = trim($newvalue->getText());
+            } else {
+                $cellvalue = trim($value);
             }
+        } else {
+            $fieldinstance = behat_field_manager::get_field_instance('field', $cellinput, $this->getSession());
+            // Check if the value is set.
+            $cellvalue = $fieldinstance->get_value();
         }
-        if (empty($column)) {
-            throw new ElementNotFoundException($this->getSession(), 'column', 'css', '[data-region="columns"]');
-        }
-        // Get the attribute data-column of the column.
-        $columnnr = $column->getAttribute('data-columnid');
-        // Find the cell.
-        $cell = $row->find('css', 'td[data-columnid="' . $columnnr . '"] input');
-        if (empty($cell)) {
-            throw new ElementNotFoundException($this->getSession(), 'cell', 'css', 'td:nth-child(' . $columnnr . ')');
-        }
-        // Check if the value is set.
-        $cellvalue = $cell->getValue();
         if ($cellvalue != $value) {
             throw new ExpectationException('Cell value ' . $cellvalue . ' is not set to ' . $value, $this->getSession());
         }
@@ -215,5 +174,90 @@ class behat_customfield_sprogramme extends behat_base {
         }
         // Click the add button.
         $addbutton->click();
+    }
+
+    /**
+     * Adds a new row to the module by clicking the add button (data-action="addrow").
+     *
+     * @Given /^I click on mod "(?P<modulenr_string>(?:[^"]|\\")*)" row "(?P<rownr_string>(?:[^"]|\\")*)" "(?P<element_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)"$/
+     * @param string $modulenr The module number
+     * @param string $rownr The row number
+     * @param string $locator The locator to find the element
+     * @param string $selector The selector type (css or xpath)
+     * @throws ExpectationException
+     */
+    public function click_on_mod_row($modulenr, $rownr, $locator, $selector) {
+        $row = $this->find_row($modulenr, $rownr);
+        $element = $this->find($selector, $locator, new ExpectationException('Element ' . $locator . ' not found in row ' . $rownr, $this->getSession()), $row);
+        if (empty($element)) {
+            throw new ElementNotFoundException($this->getSession(), 'element', $selector, $locator);
+        }
+        // Click the element.
+        $element->click();
+    }
+
+    /**
+     * Return the list of partial named selectors.
+     *
+     * @return array
+     */
+    public static function get_partial_named_selectors(): array {
+        return [
+            new behat_component_named_selector(
+                'Competencies Form', [
+                    "//*[@data-region=%locator%][@data-type='competencies']"
+                ],
+            ),
+        ];
+    }
+
+    /**
+     * Edits the course programme.
+     *
+     * @Given /^I edit the course programme for "(?P<coursename_string>(?:[^"]|\\")*)"$/
+     * @param string $coursename The course name
+     */
+    public function i_edit_the_course_programme($coursename) {
+        $this->execute('behat_general::i_am_on_course_homepage', [$coursename]);
+
+        // Naviguer vers "Paramètres" dans l'administration de la page courante.
+        $this->execute('behat_navigation::i_navigate_to_in_current_page_administration', ['Settings']);
+
+        // Déplier tous les fieldsets.
+        $this->execute('behat_general::i_expand_all_fieldsets');
+
+        // Cliquer sur le lien "Edit Programme".
+        $this->getSession()->getPage()->clickLink('Edit Programme');
+    }
+
+    /**
+     * Enables the programme custom field for a course.
+     * @Given /^the programme custom field "(?P<customfieldname_string>(?:[^"]|\\")*)" is enabled for course "(?P<coursename_string>(?:[^"]|\\")*)"$/
+     *
+     * @param $customfieldname
+     * @param $coursename
+     *
+     * @return void
+     * @throws ElementNotFoundException
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
+    public function i_enable_programme($customfieldname, $coursename) {
+        $courseid = $this->get_course_id($coursename);
+        $handler = \core_customfield\handler::get_handler('core_course', 'course');
+        $cfdata = $handler->get_instance_data($courseid, true);
+        $fieldcontroller = null;
+        foreach ($cfdata as $data) {
+            if ($data->get_field()->get('shortname') === $customfieldname) {
+                $fieldcontroller = $data;
+                break;
+            }
+        }
+        if (!$fieldcontroller) {
+            throw new ElementNotFoundException('Custom field ' . $customfieldname . ' not found.');
+        }
+        $fieldcontroller->set($fieldcontroller->datafield(), 1);
+        $fieldcontroller->set('contextid', context_course::instance($courseid)->id);
+        $fieldcontroller->save();
     }
 }

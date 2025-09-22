@@ -79,7 +79,7 @@ class get_data extends external_api {
             $rfc = $rfcmanager->get_current();
             if (!empty($rfc)) {
                 $rfcdata = $rfc->get('snapshot');
-                $modules = json_decode($rfcdata, true);
+                $data['modules'] = json_decode($rfcdata, true);
                 $data['rfc'] = $rfcmanager->get_data();
             }
         }

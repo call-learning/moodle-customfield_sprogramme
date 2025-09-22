@@ -19,12 +19,13 @@ namespace customfield_sprogramme\local;
 use cache_helper;
 use context_system;
 use core_cache\cache;
-use core_customfield\data_controller;
 use csv_export_writer;
 use customfield_sprogramme\local\helpers\programme_table_structure;
 use customfield_sprogramme\local\persistent\sprogramme;
 use customfield_sprogramme\local\persistent\sprogramme_comp;
+use customfield_sprogramme\local\persistent\sprogramme_complist;
 use customfield_sprogramme\local\persistent\sprogramme_disc;
+use customfield_sprogramme\local\persistent\sprogramme_disclist;
 use customfield_sprogramme\local\persistent\sprogramme_module;
 use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\utils;
@@ -64,7 +65,32 @@ class programme_manager {
         $this->context = utils::get_context_from_datafieldid($this->datafieldid) ?? context_system::instance();
         // We fetch the course id from the custom field instance directly.
         // This means if we use this field in another context than a course, this will fail.
-        $this->courseid  = $DB->get_field('customfield_data', 'instanceid', ['id' => $this->datafieldid], MUST_EXIST);
+        $this->courseid = $DB->get_field('customfield_data', 'instanceid', ['id' => $this->datafieldid], MUST_EXIST);
+    }
+
+    /**
+     * Get the table structure for the custom field
+     *
+     * @return array $table
+     */
+    public static function get_table_structure(): array {
+        return programme_table_structure::get();
+    }
+
+    /**
+     * Get the numeric columns
+     *
+     * @return array $columns
+     */
+    public static function get_numeric_columns(): array {
+        $columns = [];
+        $table = self::get_table_structure();
+        foreach ($table as $column) {
+            if (isset($column['sum'])) {
+                $columns[] = $column;
+            }
+        }
+        return $columns;
     }
 
     /**
@@ -109,6 +135,472 @@ class programme_manager {
         }
         $this->invalidate_cache();
         return true;
+    }
+
+    /**
+     * Get the column structure for the custom field
+     *
+     * @return array $columns
+     */
+    public function get_column_structure(): array {
+        $table = self::get_table_structure();
+        $canedit = $this->can_edit();
+        $rfc = new rfc_manager($this->datafieldid);
+        $canaddrfc = $rfc->can_add();
+        $editall =
+            $canaddrfc && has_capability('customfield/sprogramme:editall', utils::get_context_from_datafieldid($this->datafieldid));
+
+        $table = array_map(function($column) use ($canedit, $canaddrfc, $editall) {
+            if (!$column['canedit']) {
+                $column['canaddrfc'] = $canaddrfc;
+                $column['canedit'] = $canedit;
+                $column['protected'] = $editall ? false : true; // If the user can edit all, the column is not protected.
+            }
+            return $column;
+        }, $table);
+        return array_values($table);
+    }
+
+    /**
+     * Check to see if a user can edit the programme
+     *
+     * @return bool
+     * */
+    public function can_edit(): bool {
+        $rfc = new rfc_manager($this->datafieldid);
+        if ($rfc->has_submitted()) {
+            // If there is a submitted RFC, the user cannot edit the programme.
+            return false;
+        }
+        if (has_capability('customfield/sprogramme:editall', $this->context)) {
+            return true; // If the user has the capability to edit all, they can edit the programme.
+        }
+        if (has_capability('customfield/sprogramme:edit', $this->context)) {
+            return true; // If the user has the capability to edit, they can edit the programme.
+        }
+        return false; // Otherwise, the user cannot edit the programme.
+    }
+
+    /**
+     * Validate the data for a given course
+     *
+     * @param array $data
+     * @return array $errors
+     */
+    public function validate_data(array $data): array {
+        $errors = [];
+        $columns = $this->get_column_structure();
+        foreach ($data as $module) {
+            $moduledeleted = $module['deleted'] ?? false;
+            if ($moduledeleted) {
+                continue; // Skip deleted modules.
+            }
+            foreach ($module['rows'] as $row) {
+                $rowdeleted = $row['deleted'] ?? false;
+                if ($rowdeleted) {
+                    continue; // Skip deleted rows.
+                }
+                $rowchecked = false;
+                foreach ($row['cells'] as $cell) {
+                    $column = array_filter($columns, function($col) use ($cell) {
+                        return $col['column'] === $cell['column'];
+                    });
+                    if (empty($column)) {
+                        continue; // Skip if column not found.
+                    }
+                    $column = reset($column);
+                    if ($cell['value'] === '' && !$column['canedit']) {
+                        continue; // Skip empty values for non-editable columns.
+                    }
+                    if (!$this->validate_cell_value($cell['value'], $column)) {
+                        $errors[] = [
+                            'module' => $module['modulename'],
+                            'row' => $row['sortorder'],
+                            'column' => $column['label'],
+                            'error' => get_string(
+                                'invalidvalue',
+                                'customfield_sprogramme',
+                                [
+                                    'column' => $column['label'],
+                                    'value' => $cell['value'],
+                                ],
+                            ),
+                        ];
+                    }
+                }
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * Check if there are accepted or rejected rfcs for a course
+     *
+     * @return bool
+     */
+    public function has_history(): bool {
+        return sprogramme_rfc::record_exists_select(
+            "datafieldid = :datafieldid AND (type = :accepted OR type = :rejected)",
+            [
+                'datafieldid' => $this->datafieldid,
+                'accepted' => sprogramme_rfc::RFC_ACCEPTED,
+                'rejected' => sprogramme_rfc::RFC_REJECTED,
+            ]
+        );
+    }
+
+    /**
+     * Check if there is any data in the programme for a given course
+     * d
+     *
+     * @return bool
+     */
+    public function has_data(): bool {
+        $cache = cache::make('customfield_sprogramme', 'programmedata');
+        if ($data = $cache->get($this->datafieldid)) {
+            if (is_array($data) && !empty($data) && isset($data[0]) && isset($data[0]['rows']) && !empty($data[0]['rows'])) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        $modules = sprogramme_module::get_all_records_for_datafieldid($this->datafieldid);
+        if (empty($modules)) {
+            return false;
+        }
+        foreach ($modules as $module) {
+            $records = sprogramme::get_all_records_for_module($module->get('id'));
+            if (!empty($records)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Delete a programme for a given course
+     *
+     */
+    public function delete_programme(): void {
+        $modules = sprogramme_module::get_all_records_for_datafieldid($this->datafieldid);
+        foreach ($modules as $module) {
+            $this->delete_module($module->get('id'));
+        }
+    }
+
+    /**
+     * Update the sort order
+     *
+     * @param string $type
+     * @param int $moduleid
+     * @param int $id
+     * @param int $previd
+     */
+    public function update_sort_order($type, $moduleid, $id, $previd): void {
+        if ($type == 'row') {
+            $newrecord = sprogramme::get_record(['id' => $id]);
+            // In case the row is moved to the top.
+            if (!$previd) {
+                $newrecord->set('sortorder', 0);
+                $newrecord->set('moduleid', $moduleid);
+                $newrecord->save();
+                $records = sprogramme::get_all_records_for_module($moduleid);
+                $sortorder = 0;
+                foreach ($records as $record) {
+                    if ($record->get('id') == $id) {
+                        continue;
+                    }
+                    $sortorder++;
+                    $record->set('sortorder', $sortorder);
+                    $record->save();
+                }
+                return;
+            }
+            $prevrecord = sprogramme::get_record(['id' => $previd]);
+            $records = sprogramme::get_all_records_for_module($prevrecord->get('moduleid'));
+            $sortorder = 0;
+            foreach ($records as $record) {
+                if ($record->get('id') == $id) {
+                    continue;
+                }
+                if ($record->get('id') == $previd) {
+                    $sortorder = $record->get('sortorder');
+                    // Update the remaining records, depending on the action.
+                    $sortorder++;
+                    $newrecord->set('sortorder', $sortorder);
+                    $newrecord->set('moduleid', $moduleid);
+                    $newrecord->save();
+                    continue;
+                }
+                if ($sortorder) {
+                    $sortorder++;
+                    $record->set('sortorder', $sortorder);
+                    $record->save();
+                }
+            }
+            $this->invalidate_cache();
+        }
+    }
+
+    /**
+     * Get the data in csv format
+     *
+     * @return string $csv
+     */
+    public function get_csv_data(): string {
+        global $CFG;
+        require_once($CFG->libdir . '/csvlib.class.php');
+        $data = $this->get_data();
+        $csvexport = new csv_export_writer('comma', '"');
+        $course = get_course($this->courseid);
+        $filename = 'programme_' . $course->shortname . '_' . date('Ymd_His') . '.txt';
+        $csvexport->set_filename($filename);
+        $columns = $this->get_column_structure();
+        // Add the module name to the first item of the columns.
+        $columns = array_merge(
+            [
+                ['column' => 'module']
+            ],
+            $columns,
+            [
+                ['column' => 'disciplines1'], ['column' => '%_disciplines1'],
+                ['column' => 'disciplines2'], ['column' => '%_disciplines2'],
+                ['column' => 'disciplines3'], ['column' => '%_disciplines3'],
+                ['column' => 'competencies1'], ['column' => '%_competencies1'],
+                ['column' => 'competencies2'], ['column' => '%_competencies2'],
+                ['column' => 'competencies3'], ['column' => '%_competencies3'],
+                ['column' => 'competencies4'], ['column' => '%_competencies4'],
+            ]
+        );
+        $csvexport->add_data(array_map(function($column) {
+            return $column['column'];
+        }, $columns));
+        foreach ($data as $module) {
+            $name = $module['modulename'];
+            foreach ($module['rows'] as $row) {
+                $cells = [];
+                foreach ($row['cells'] as $cell) {
+                    $cells[] = $cell['value'];
+                }
+                for ($i = 0; $i < 3; $i++) {
+                    if (isset($row['disciplines'][$i])) {
+                        $discipline = $row['disciplines'][$i];
+                        $disc = sprogramme_disclist::get_record(['uniqueid' => $discipline['id']]);
+                        $cells[] = $disc->get('name');
+                        $cells[] = $discipline['percentage'];
+                    } else {
+                        $cells[] = '';
+                        $cells[] = '';
+                    }
+                }
+                for ($i = 0; $i < 4; $i++) {
+                    if (isset($row['competencies'][$i])) {
+                        $competency = $row['competencies'][$i];
+                        $comp = sprogramme_complist::get_record(['uniqueid' => $competency['id']]);
+                        $cells[] = $comp->get('name');
+                        $cells[] = $competency['percentage'];
+                    } else {
+                        $cells[] = '';
+                        $cells[] = '';
+                    }
+                }
+                $csvexport->add_data(array_merge([$name], $cells));
+            }
+        }
+        return $csvexport->print_csv_data(true);
+    }
+
+    /**
+     * Get the data for a given course
+     *
+     * @return array $data
+     */
+    public function get_data(): array {
+        $modules = sprogramme_module::get_all_records_for_datafieldid($this->datafieldid);
+        $columns = self::get_column_structure();
+        $data = [];
+        foreach ($modules as $module) {
+            $records = sprogramme::get_all_records_for_module($module->get('id'));
+            $modulerows = [];
+            foreach ($records as $record) {
+                $cells = [];
+                foreach ($columns as $key => $column) {
+                    $value = $record->get($column['column']);
+                    $cells[] = ['column' => $column['column'], 'value' => $value, 'type' => $column['type'],
+                        'visible' => $column['visible'], 'group' => $column['group'], 'oldvalue' => $value,
+                        // This should be the original value before any changes.
+                    ];
+                }
+
+                $disciplinedata = [];
+                $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
+                foreach ($disciplines as $discipline) {
+                    $disciplinedata[] = [
+                        'id' => $discipline->get('did'),
+                        'name' => $discipline->get_name(),
+                        'percentage' => $discipline->get('percentage'),
+                    ];
+                }
+
+                $competencydata = [];
+                $competencies = sprogramme_comp::get_all_records_for_programme($record->get('id'));
+                foreach ($competencies as $competency) {
+                    $competencydata[] = [
+                        'id' => $competency->get('cid'),
+                        'name' => $competency->get_name(),
+                        'percentage' => $competency->get('percentage'),
+                    ];
+                }
+
+                $rowchanges = [];
+                if ($rowchanges) {
+                    $cells[2]['changes'] = $rowchanges;
+                }
+                $modulerows[] = [
+                    'id' => $record->get('id'),
+                    'sortorder' => $record->get('sortorder'),
+                    'cells' => $cells,
+                    'disciplines' => $disciplinedata,
+                    'competencies' => $competencydata,
+                    'rowchanges' => $rowchanges ? true : false,
+                ];
+            }
+            $data[] = [
+                'moduleid' => $module->get('id'),
+                'modulename' => $module->get('name'),
+                'modulesortorder' => $module->get('sortorder'),
+                'rows' => $modulerows,
+            ];
+        }
+
+        $cache = cache::make('customfield_sprogramme', 'programmedata');
+        $cache->set($this->datafieldid, $data);
+
+        return $data;
+    }
+
+    /**
+     * Are there any data changes for columns that have canedit set to false?
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function has_protected_data_changes(array $data): bool {
+        $columns = self::get_table_structure();
+        foreach ($data as $module) {
+            $moduledeleted = $module['deleted'] ?? false;
+            if ($moduledeleted) {
+                continue; // Skip deleted modules.
+            }
+            foreach ($module['rows'] as $row) {
+                $rowdeleted = $row['deleted'] ?? false;
+                if ($rowdeleted) {
+                    continue; // Skip deleted rows.
+                }
+                foreach ($row['cells'] as $cell) {
+                    $column = array_filter($columns, function($col) use ($cell) {
+                        return $col['column'] === $cell['column'];
+                    });
+                    if (empty($column)) {
+                        continue; // Skip if column not found.
+                    }
+                    $column = reset($column);
+                    $oldvalue = $cell['oldvalue'] ?? '';
+                    if ($column['canedit'] == false && $cell['value'] != $oldvalue) {
+                        // If the column cannot be edited and the value is not empty, there are data changes.
+                        return true;
+                    }
+                }
+            }
+        }
+        return false; // No data changes found for columns that cannot be edited.
+    }
+
+    /**
+     * Get the sums of the numerice column values for a given courseid
+     *
+     * @return array $columns
+     */
+    public function get_sums(): array {
+        $numericcomlumns = self::get_numeric_columns();
+        $data = self::get_data();
+        $columnstructure = self::get_column_structure();
+        $columnstotals = self::get_column_totals($data, $columnstructure);
+        // Sums are found in the first module.
+        $columns = [];
+
+        // Filter out the numeric columns.
+        $columns = array_filter($columnstotals, function($column) use ($numericcomlumns) {
+            foreach ($numericcomlumns as $numericcolumn) {
+                if ($column['column'] == $numericcolumn['column']) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        return $columns;
+    }
+
+    /**
+     * Get the column totals for a given course
+     *
+     * @param array $modules
+     * @param array $columns
+     * @return array $columns
+     */
+    public function get_column_totals(array $modules, array $columns): array {
+        $totals = [];
+        foreach ($modules as $module) {
+            foreach ($module['rows'] as $row) {
+                foreach ($row['cells'] as $cell) {
+                    if (isset($cell['value']) && ($cell['type'] == PARAM_FLOAT || $cell['type'] == PARAM_INT)) {
+                        if (!isset($totals[$cell['column']])) {
+                            $totals[$cell['column']] = 0;
+                        }
+
+                        $totals[$cell['column']] += $cell['type'] == PARAM_FLOAT ? (float) $cell['value'] : (int) $cell['value'];
+                    }
+                }
+            }
+        }
+        // Add the totals to the columns.
+        foreach ($columns as &$column) {
+            if (isset($totals[$column['column']])) {
+                $column['sum'] = $totals[$column['column']];
+            } else {
+                $column['sum'] = 0;
+            }
+        }
+        return $columns;
+    }
+
+    /**
+     * Get the programme history for a given rfc record.
+     *
+     * @param int $rfcid
+     * @return array $history
+     */
+    public function get_history(int $rfcid): array {
+        $rfcrecord = sprogramme_rfc::get_record(['id' => $rfcid, 'datafieldid' => $this->datafieldid]);
+        if (!$rfcrecord) {
+            return [];
+        }
+        $snapshot = $rfcrecord->get('snapshot');
+        if (!$snapshot) {
+            return [];
+        }
+        $modules = json_decode($snapshot, true);
+        if (!$modules) {
+            return [];
+        }
+        $rfcdata = [];
+        $rfcdata[] = [
+            'action' => $rfcrecord->get('type'),
+            'userinfo' => utils::get_user_info($rfcrecord->get('adminid')),
+            'timecreated' => $rfcrecord->get('timecreated'),
+            'timemodified' => $rfcrecord->get('timemodified'),
+        ];
+        return ['modules' => $modules, 'rfcs' => $rfcdata];
     }
 
     /**
@@ -263,30 +755,6 @@ class programme_manager {
     }
 
     /**
-     * Get the column structure for the custom field
-     *
-     * @return array $columns
-     */
-    public function get_column_structure(): array {
-        $table = self::get_table_structure();
-        $canedit = $this->can_edit();
-        $rfc = new rfc_manager($this->datafieldid);
-        $canaddrfc = $rfc->can_add();
-        $editall =
-            $canaddrfc && has_capability('customfield/sprogramme:editall', utils::get_context_from_datafieldid($this->datafieldid));
-
-        $table = array_map(function ($column) use ($canedit, $canaddrfc, $editall) {
-            if (!$column['canedit']) {
-                $column['canaddrfc'] = $canaddrfc;
-                $column['canedit'] = $canedit;
-                $column['protected'] = $editall ? false : true; // If the user can edit all, the column is not protected.
-            }
-            return $column;
-        }, $table);
-        return array_values($table);
-    }
-
-    /**
      * Set the disciplines
      *
      * @param sprogramme $record
@@ -381,87 +849,6 @@ class programme_manager {
     }
 
     /**
-     * Get the table structure for the custom field
-     *
-     * @return array $table
-     */
-    public static function get_table_structure(): array {
-        return programme_table_structure::get();
-    }
-
-    /**
-     * Check to see if a user can edit the programme
-     *
-     * @return bool
-     * */
-    public function can_edit(): bool {
-        $rfc = new rfc_manager($this->datafieldid);
-        if ($rfc->has_submitted()) {
-            // If there is a submitted RFC, the user cannot edit the programme.
-            return false;
-        }
-        if (has_capability('customfield/sprogramme:editall', $this->context)) {
-            return true; // If the user has the capability to edit all, they can edit the programme.
-        }
-        if (has_capability('customfield/sprogramme:edit', $this->context)) {
-            return true; // If the user has the capability to edit, they can edit the programme.
-        }
-        return false; // Otherwise, the user cannot edit the programme.
-    }
-
-    /**
-     * Validate the data for a given course
-     *
-     * @param array $data
-     * @return array $errors
-     */
-    public function validate_data(array $data): array {
-        $errors = [];
-        $columns = $this->get_column_structure();
-        foreach ($data as $module) {
-            $moduledeleted = $module['deleted'] ?? false;
-            if ($moduledeleted) {
-                continue; // Skip deleted modules.
-            }
-            foreach ($module['rows'] as $row) {
-                $rowdeleted = $row['deleted'] ?? false;
-                if ($rowdeleted) {
-                    continue; // Skip deleted rows.
-                }
-                $rowchecked = false;
-                foreach ($row['cells'] as $cell) {
-                    $column = array_filter($columns, function ($col) use ($cell) {
-                        return $col['column'] === $cell['column'];
-                    });
-                    if (empty($column)) {
-                        continue; // Skip if column not found.
-                    }
-                    $column = reset($column);
-                    if ($cell['value'] === '' && !$column['canedit']) {
-                        continue; // Skip empty values for non-editable columns.
-                    }
-                    if (!$this->validate_cell_value($cell['value'], $column)) {
-                        $errors[] = [
-                            'module' => $module['modulename'],
-                            'row' => $row['sortorder'],
-                            'column' => $column['label'],
-                            'error' => get_string(
-                                'invalidvalue',
-                                'customfield_sprogramme',
-                                [
-                                    'column' => $column['label'],
-                                    'value' => $cell['value'],
-                                ],
-                            ),
-                        ];
-                    }
-                }
-            }
-        }
-        return $errors;
-    }
-
-    /**
      * Validate a cell value against its column definition
      *
      * @param mixed $value
@@ -499,61 +886,6 @@ class programme_manager {
                 return in_array($value, array_column($column['options'], 'name'));
         }
         return true;
-    }
-
-    /**
-     * Check if there are accepted or rejected rfcs for a course
-     *
-     * @return bool
-     */
-    public function has_history(): bool {
-        return sprogramme_rfc::record_exists_select(
-            "datafieldid = :datafieldid AND (type = :accepted OR type = :rejected)",
-            [
-                'datafieldid' => $this->datafieldid,
-                'accepted' => sprogramme_rfc::RFC_ACCEPTED,
-                'rejected' => sprogramme_rfc::RFC_REJECTED,
-            ]
-        );
-    }
-
-    /**
-     * Check if there is any data in the programme for a given course
-     * d
-     *
-     * @return bool
-     */
-    public function has_data(): bool {
-        $cache = cache::make('customfield_sprogramme', 'programmedata');
-        if ($data = $cache->get($this->datafieldid)) {
-            if (is_array($data) && !empty($data) && isset($data[0]) && isset($data[0]['rows']) && !empty($data[0]['rows'])) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        $modules = sprogramme_module::get_all_records_for_datafieldid($this->datafieldid);
-        if (empty($modules)) {
-            return false;
-        }
-        foreach ($modules as $module) {
-            $records = sprogramme::get_all_records_for_module($module->get('id'));
-            if (!empty($records)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Delete a programme for a given course
-     *
-     */
-    public function delete_programme(): void {
-        $modules = sprogramme_module::get_all_records_for_datafieldid($this->datafieldid);
-        foreach ($modules as $module) {
-            $this->delete_module($module->get('id'));
-        }
     }
 
     /**
@@ -602,315 +934,5 @@ class programme_manager {
             return $module->get('id');
         }
         return $this->create_module($name, $sortorder);
-    }
-
-    /**
-     * Update the sort order
-     *
-     * @param string $type
-     * @param int $moduleid
-     * @param int $id
-     * @param int $previd
-     */
-    public function update_sort_order($type, $moduleid, $id, $previd): void {
-        if ($type == 'row') {
-            $newrecord = sprogramme::get_record(['id' => $id]);
-            // In case the row is moved to the top.
-            if (!$previd) {
-                $newrecord->set('sortorder', 0);
-                $newrecord->set('moduleid', $moduleid);
-                $newrecord->save();
-                $records = sprogramme::get_all_records_for_module($moduleid);
-                $sortorder = 0;
-                foreach ($records as $record) {
-                    if ($record->get('id') == $id) {
-                        continue;
-                    }
-                    $sortorder++;
-                    $record->set('sortorder', $sortorder);
-                    $record->save();
-                }
-                return;
-            }
-            $prevrecord = sprogramme::get_record(['id' => $previd]);
-            $records = sprogramme::get_all_records_for_module($prevrecord->get('moduleid'));
-            $sortorder = 0;
-            foreach ($records as $record) {
-                if ($record->get('id') == $id) {
-                    continue;
-                }
-                if ($record->get('id') == $previd) {
-                    $sortorder = $record->get('sortorder');
-                    // Update the remaining records, depending on the action.
-                    $sortorder++;
-                    $newrecord->set('sortorder', $sortorder);
-                    $newrecord->set('moduleid', $moduleid);
-                    $newrecord->save();
-                    continue;
-                }
-                if ($sortorder) {
-                    $sortorder++;
-                    $record->set('sortorder', $sortorder);
-                    $record->save();
-                }
-            }
-            $this->invalidate_cache();
-        }
-    }
-
-    /**
-     * Get the data in csv format
-     *
-     * @return string $csv
-     */
-    public function get_csv_data(): string {
-        global $CFG;
-        require_once($CFG->libdir . '/csvlib.class.php');
-        $data = $this->get_data();
-        $csvexport = new csv_export_writer('comma', '"');
-        $course = get_course($this->courseid);
-        $filename = 'programme_' . $course->shortname . '_' . date('Ymd_His') . '.txt';
-        $csvexport->set_filename($filename);
-        $columns = $this->get_column_structure();
-        // Add the module name to the first item of the columns.
-        $columns = array_merge(
-            [['column' => 'module']],
-            $columns,
-            [['column' => 'disciplines_1'], ['column' => '%_disciplines_1'], ['column' => 'disciplines_2'],
-                ['column' => '%_disciplines_2'], ['column' => 'disciplines_3'], ['column' => '%_disciplines_3'],
-                ['column' => 'competencies_1'], ['column' => '%_competencies_1'], ['column' => 'competencies_2'],
-                ['column' => '%_competencies_2'], ['column' => 'competencies_3'], ['column' => '%_competencies_3'],
-            ['column' => 'competencies_4'],
-            ['column' => '%_competencies_4'],
-            ]
-        );
-        $csvexport->add_data(array_map(function ($column) {
-            return $column['column'];
-        }, $columns));
-        foreach ($data as $module) {
-            $name = $module['modulename'];
-            foreach ($module['rows'] as $row) {
-                $cells = [];
-                foreach ($row['cells'] as $cell) {
-                    $cells[] = $cell['value'];
-                }
-                for ($i = 0; $i < 3; $i++) {
-                    if (isset($row['disciplines'][$i])) {
-                        $discipline = $row['disciplines'][$i];
-                        $cells[] = $discipline['name'];
-                        $cells[] = $discipline['percentage'];
-                    } else {
-                        $cells[] = '';
-                        $cells[] = '';
-                    }
-                }
-                for ($i = 0; $i < 4; $i++) {
-                    if (isset($row['competencies'][$i])) {
-                        $competency = $row['competencies'][$i];
-                        $cells[] = $competency['name'];
-                        $cells[] = $competency['percentage'];
-                    } else {
-                        $cells[] = '';
-                        $cells[] = '';
-                    }
-                }
-                $csvexport->add_data(array_merge([$name], $cells));
-            }
-        }
-        return $csvexport->print_csv_data(true);
-    }
-
-    /**
-     * Get the data for a given course
-     *
-     * @return array $data
-     */
-    public function get_data(): array {
-        $modules = sprogramme_module::get_all_records_for_datafieldid($this->datafieldid);
-        $columns = self::get_column_structure();
-        $data = [];
-        foreach ($modules as $module) {
-            $records = sprogramme::get_all_records_for_module($module->get('id'));
-            $modulerows = [];
-            foreach ($records as $record) {
-                $cells = [];
-                foreach ($columns as $key => $column) {
-                    $value = $record->get($column['column']);
-                    $cells[] = ['column' => $column['column'], 'value' => $value, 'type' => $column['type'],
-                        'visible' => $column['visible'], 'group' => $column['group'], 'oldvalue' => $value,
-                        // This should be the original value before any changes.
-                    ];
-                }
-
-                $disciplinedata = [];
-                $disciplines = sprogramme_disc::get_all_records_for_programme($record->get('id'));
-                foreach ($disciplines as $discipline) {
-                    $disciplinedata[] = ['id' => $discipline->get('did'), 'name' => $discipline->get_name(),
-                        'percentage' => $discipline->get('percentage'), ];
-                }
-
-                $competencydata = [];
-                $competencies = sprogramme_comp::get_all_records_for_programme($record->get('id'));
-                foreach ($competencies as $competency) {
-                    $competencydata[] = ['id' => $competency->get('cid'), 'name' => $competency->get_name(),
-                        'percentage' => $competency->get('percentage'), ];
-                }
-
-                $rowchanges = [];
-                if ($rowchanges) {
-                    $cells[2]['changes'] = $rowchanges;
-                }
-                $modulerows[] = ['id' => $record->get('id'), 'sortorder' => $record->get('sortorder'), 'cells' => $cells,
-                    'disciplines' => $disciplinedata, 'competencies' => $competencydata,
-                    'rowchanges' => $rowchanges ? true : false, ];
-            }
-            $data[] = ['moduleid' => $module->get('id'), 'modulename' => $module->get('name'),
-                'modulesortorder' => $module->get('sortorder'), 'rows' => $modulerows, ];
-        }
-
-        $cache = cache::make('customfield_sprogramme', 'programmedata');
-        $cache->set($this->datafieldid, $data);
-
-        return $data;
-    }
-
-    /**
-     * Are there any data changes for columns that have canedit set to false?
-     *
-     * @param array $data
-     * @return bool
-     */
-    public function has_protected_data_changes(array $data): bool {
-        $columns = self::get_table_structure();
-        foreach ($data as $module) {
-            $moduledeleted = $module['deleted'] ?? false;
-            if ($moduledeleted) {
-                continue; // Skip deleted modules.
-            }
-            foreach ($module['rows'] as $row) {
-                $rowdeleted = $row['deleted'] ?? false;
-                if ($rowdeleted) {
-                    continue; // Skip deleted rows.
-                }
-                foreach ($row['cells'] as $cell) {
-                    $column = array_filter($columns, function ($col) use ($cell) {
-                        return $col['column'] === $cell['column'];
-                    });
-                    if (empty($column)) {
-                        continue; // Skip if column not found.
-                    }
-                    $column = reset($column);
-                    $oldvalue = $cell['oldvalue'] ?? '';
-                    if ($column['canedit'] == false && $cell['value'] != $oldvalue) {
-                        // If the column cannot be edited and the value is not empty, there are data changes.
-                        return true;
-                    }
-                }
-            }
-        }
-        return false; // No data changes found for columns that cannot be edited.
-    }
-
-    /**
-     * Get the sums of the numerice column values for a given courseid
-     *
-     * @return array $columns
-     */
-    public function get_sums(): array {
-        $numericcomlumns = self::get_numeric_columns();
-        $data = self::get_data();
-        $columnstructure = self::get_column_structure();
-        $columnstotals = self::get_column_totals($data, $columnstructure);
-        // Sums are found in the first module.
-        $columns = [];
-
-        // Filter out the numeric columns.
-        $columns = array_filter($columnstotals, function ($column) use ($numericcomlumns) {
-            foreach ($numericcomlumns as $numericcolumn) {
-                if ($column['column'] == $numericcolumn['column']) {
-                    return true;
-                }
-            }
-            return false;
-        });
-        return $columns;
-    }
-
-    /**
-     * Get the numeric columns
-     *
-     * @return array $columns
-     */
-    public static function get_numeric_columns(): array {
-        $columns = [];
-        $table = self::get_table_structure();
-        foreach ($table as $column) {
-            if (isset($column['sum'])) {
-                $columns[] = $column;
-            }
-        }
-        return $columns;
-    }
-
-    /**
-     * Get the column totals for a given course
-     *
-     * @param array $modules
-     * @param array $columns
-     * @return array $columns
-     */
-    public function get_column_totals(array $modules, array $columns): array {
-        $totals = [];
-        foreach ($modules as $module) {
-            foreach ($module['rows'] as $row) {
-                foreach ($row['cells'] as $cell) {
-                    if (isset($cell['value']) && ($cell['type'] == PARAM_FLOAT || $cell['type'] == PARAM_INT)) {
-                        if (!isset($totals[$cell['column']])) {
-                            $totals[$cell['column']] = 0;
-                        }
-
-                        $totals[$cell['column']] += $cell['type'] == PARAM_FLOAT ? (float) $cell['value'] : (int) $cell['value'];
-                    }
-                }
-            }
-        }
-        // Add the totals to the columns.
-        foreach ($columns as &$column) {
-            if (isset($totals[$column['column']])) {
-                $column['sum'] = $totals[$column['column']];
-            } else {
-                $column['sum'] = 0;
-            }
-        }
-        return $columns;
-    }
-
-    /**
-     * Get the programme history for a given rfc record.
-     *
-     * @param int $rfcid
-     * @return array $history
-     */
-    public function get_history(int $rfcid): array {
-        $rfcrecord = sprogramme_rfc::get_record(['id' => $rfcid, 'datafieldid' => $this->datafieldid]);
-        if (!$rfcrecord) {
-            return [];
-        }
-        $snapshot = $rfcrecord->get('snapshot');
-        if (!$snapshot) {
-            return [];
-        }
-        $modules = json_decode($snapshot, true);
-        if (!$modules) {
-            return [];
-        }
-        $rfcdata = [];
-        $rfcdata[] = [
-            'action' => $rfcrecord->get('type'),
-            'userinfo' => utils::get_user_info($rfcrecord->get('adminid')),
-            'timecreated' => $rfcrecord->get('timecreated'),
-            'timemodified' => $rfcrecord->get('timemodified'),
-        ];
-        return ['modules' => $modules, 'rfcs' => $rfcdata];
     }
 }

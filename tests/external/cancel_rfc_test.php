@@ -44,8 +44,8 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
      * @return mixed
      */
     protected function cancel_rfc(...$params) {
-        $acceptrfc = cancel_rfc::execute(...$params);
-        return external_api::clean_returnvalue(cancel_rfc::execute_returns(), $acceptrfc);
+        $cancelrfc = cancel_rfc::execute(...$params);
+        return external_api::clean_returnvalue(cancel_rfc::execute_returns(), $cancelrfc);
     }
 
     /**
@@ -70,12 +70,26 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
             'users' => $users,
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
-        $this->setUser($users[0]);
-        $cancelled = $this->cancel_rfc($cfdataid, $users[0]->id);
-        $this->assertFalse($cancelled);
+        $this->setUser($users[1]);
         $cancelled = $this->cancel_rfc($cfdataid, $users[1]->id);
         $this->assertTrue($cancelled);
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_CANCELLED]));
+    }
+
+
+    /**
+     * Test execute with correct parameters
+     */
+    public function test_execute_wrong_user(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        [
+            'users' => $users,
+            'cfdataid' => $cfdataid,
+        ] = $this->setup_course_and_rfc();
+        $this->setUser($users[0]);
+        $this->expectExceptionMessage('customfield_sprogramme/rfccancellationnotallowed');
+        $this->cancel_rfc($cfdataid, $users[1]->id);
     }
 
     /**

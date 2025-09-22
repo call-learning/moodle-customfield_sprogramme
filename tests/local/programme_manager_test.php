@@ -297,7 +297,7 @@ final class programme_manager_test extends \advanced_testcase {
         $this->assertEquals(
             [
                 'module' => 'Test Module 1',
-                'row' => 0,
+                'row' => 1,
                 'column' => 'CM',
                 'error' => 'Invalid value for column CM: -5A',
             ],
@@ -372,18 +372,18 @@ final class programme_manager_test extends \advanced_testcase {
         );
         $data = $pm->get_data();
         $originalrowids = array_column($data[0]['rows'], 'id');
-        $expectedroworder = array_combine($originalrowids, [0, 1]); // Original sort order.
+        $expectedroworder = array_combine($originalrowids, [1, 2]); // Original sort order.
         $this->assertEquals($expectedroworder, array_column($data[0]['rows'], 'sortorder', 'id'));
         // Now update the sort order.
         $data[0]['rows'][0]['sortorder'] = 5;
         $pm->set_data($data);
         $data = $pm->get_data();
-        $expectedroworder = array_combine($originalrowids, [5, 1]); // Sort order not updated yet.
+        $expectedroworder = array_combine($originalrowids, [5, 2]); // Sort order not updated yet.
         $this->assertEquals($expectedroworder, array_column($data[0]['rows'], 'sortorder', 'id'));
-        $pm->update_sort_order('row', 0, $data[0]['rows'][1]['id'], $data[0]['rows'][1]['id']);
+        $pm->update_sort_order('row', $data[0]['moduleid'], $data[0]['rows'][1]['id'], $data[0]['rows'][0]['id']);
         $data = $pm->get_data();
         $originalrowids = array_column($data[0]['rows'], 'id');
-        $expectedroworder = array_combine($originalrowids, [1, 5]);
+        $expectedroworder = array_combine($originalrowids, [2, 3]); // Row 1 was 2, so next is 3.
         $this->assertEquals($expectedroworder, array_column($data[0]['rows'], 'sortorder', 'id'));
     }
 
@@ -419,20 +419,20 @@ final class programme_manager_test extends \advanced_testcase {
                 "perso_ap",
                 "consignes",
                 "supports",
-                "disciplines_1",
-                "%_disciplines_1",
-                "disciplines_2",
-                "%_disciplines_2",
-                "disciplines_3",
-                "%_disciplines_3",
-                "competencies_1",
-                "%_competencies_1",
-                "competencies_2",
-                "%_competencies_2",
-                "competencies_3",
-                "%_competencies_3",
-                "competencies_4",
-                "%_competencies_4",
+                "disciplines1",
+                "%_disciplines1",
+                "disciplines2",
+                "%_disciplines2",
+                "disciplines3",
+                "%_disciplines3",
+                "competencies1",
+                "%_competencies1",
+                "competencies2",
+                "%_competencies2",
+                "competencies3",
+                "%_competencies3",
+                "competencies4",
+                "%_competencies4",
             ],
             [
                 "Test Module 1",
@@ -479,14 +479,14 @@ final class programme_manager_test extends \advanced_testcase {
                 "",
                 "",
                 "",
+                "Basic subjects",
+                "50",
+                "1. Animal biology, zoology and cell biology",
+                "50",
                 "",
                 "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
+                "Competences",
+                "100",
                 "",
                 "",
                 "",
