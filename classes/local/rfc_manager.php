@@ -57,7 +57,7 @@ class rfc_manager {
         $records = sprogramme_rfc::get_records(
             [
                 'datafieldid' => $this->datafieldid,
-                'usermodified' => $userid,
+                'adminid' => $userid,
             ]
         );
         foreach ($records as $record) {

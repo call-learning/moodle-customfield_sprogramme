@@ -100,8 +100,8 @@ class sprogramme_rfc extends persistent {
         global $USER;
 
         $types = [
-            ['type' => self::RFC_REQUESTED, 'usermodified' => $USER->id],
-            ['type' => self::RFC_SUBMITTED, 'usermodified' => $USER->id],
+            ['type' => self::RFC_REQUESTED, 'adminid' => $USER->id],
+            ['type' => self::RFC_SUBMITTED, 'adminid' => $USER->id],
             ['type' => self::RFC_CANCELLED, 'adminid' => $USER->id],
             ['type' => self::RFC_SUBMITTED],
         ];

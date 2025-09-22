@@ -57,7 +57,8 @@ class get_programme_history extends external_api {
             [
                 'rfcid' => $rfcid,
                 'datafieldid' => $datafieldid,
-            ]);
+            ]
+        );
         $rfcid = $params['rfcid'];
         $datafieldid = $params['datafieldid'];
 
@@ -158,7 +159,9 @@ class get_programme_history extends external_api {
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
                             'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
-                        ]), 'Option', VALUE_OPTIONAL,
+                        ]),
+                        'Option',
+                        VALUE_OPTIONAL,
                     ),
                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                 ])
@@ -169,7 +172,7 @@ class get_programme_history extends external_api {
                     'timecreated' => new external_value(PARAM_INT, 'Time created', VALUE_OPTIONAL),
                     'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
                     'userinfo' => new external_single_structure([
-                        'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
+                        'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
                         'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
                     ], 'User Info', VALUE_OPTIONAL),
                 ])
