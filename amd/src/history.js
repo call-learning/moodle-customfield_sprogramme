@@ -97,7 +97,7 @@ class History {
  */
 const init = (rfcid, datafieldid) => {
     componentInit();
-    new History(rfcid, datafieldid);
+    return new History(rfcid, datafieldid);
 };
 
 export default {

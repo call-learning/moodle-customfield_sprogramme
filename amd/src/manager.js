@@ -177,7 +177,7 @@ class Manager {
 
                 State.setValue('columns', [...columns]);
                 State.setValue('modules', modules);
-                State.setValue('rfc', response.rfc);
+                State.setValue('rfc', response.rfc ?? []);
                 State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.sumtotals();
             } else {
@@ -886,7 +886,7 @@ class Manager {
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
-            this.getTableData();
+            await this.getTableData();
         }
     }
 
@@ -1066,11 +1066,12 @@ class Manager {
 /*
  * Initialise
  * @param {HTMLElement} element The element.
- * @param {String} datafieldid The datafieldid.
+ * @param {String} datafieldid The datafieldid
+ * @return {Manager} The manager instance.
  */
 const init = (element, datafieldid) => {
     componentInit();
-    new Manager(element, datafieldid);
+    return new Manager(element, datafieldid);
 };
 
 export default {

@@ -26,6 +26,19 @@ import {getString} from 'core/str';
 import Modal from 'core/modal';
 import $ from 'jquery';
 
+/**
+ * The current programme manager instance.
+ *
+ * @type {Object|null}
+ */
+let currentProgrammeManager = null;
+
+/**
+ * The current history manager instances indexed by id.
+ * @type {Array}
+ */
+let currentHistoryManagers = [];
+
 /*
  * Initialise
  * @param {HTMLElement} element The element.
@@ -127,7 +140,12 @@ const getEditor = async(element, datafieldid) => {
  * @return {Promise} The programme.
  */
 const getProgramme = async(element, datafieldid) => {
-    Manager.init(element, datafieldid);
+    if (currentProgrammeManager) {
+        currentProgrammeManager.getTableData();
+    } else {
+        currentProgrammeManager = Manager.init(element, datafieldid);
+    }
+    return currentProgrammeManager;
 };
 
 /**
@@ -136,7 +154,12 @@ const getProgramme = async(element, datafieldid) => {
  * @param {Number} datafieldid The course id.
  */
 const getProgrammeHistory = async(rfcid, datafieldid) => {
-    History.init(rfcid, datafieldid);
+    if (currentHistoryManagers[rfcid]) {
+        currentHistoryManagers[rfcid].getProgrammeHistory();
+    } else {
+        currentHistoryManagers[rfcid] = History.init(rfcid, datafieldid);
+    }
+    return currentHistoryManagers[rfcid];
 };
 
 export default {
