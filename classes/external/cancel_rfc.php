@@ -60,7 +60,10 @@ class cancel_rfc extends external_api {
         $datafieldid = $params['datafieldid'];
         $context = utils::get_context_from_datafieldid($datafieldid);
         self::validate_context($context);
-        require_capability('customfield/sprogramme:edit', $context);
+        $rfc = new rfc_manager($datafieldid);
+        if (!$rfc->can_cancel()) {
+            throw new \moodle_exception('rfccancellationnotallowed', 'customfield_sprogramme');
+        }
         $rfcmanager = new rfc_manager($datafieldid);
         return $rfcmanager->cancel($params['userid']);
     }

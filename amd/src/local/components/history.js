@@ -43,4 +43,8 @@ const stateTemplate = () => {
     State.subscribe('history', tableColumns);
 };
 
-stateTemplate();
+const componentInit = () => {
+    stateTemplate();
+};
+
+export default componentInit;

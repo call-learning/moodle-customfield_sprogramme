@@ -46,7 +46,10 @@ class remove_rfc extends external_api {
         );
         $context = utils::get_context_from_datafieldid($datafieldid);
         self::validate_context($context);
-        require_capability('customfield/sprogramme:edit', $context);
+        $rfc = new rfc_manager($datafieldid);
+        if (!$rfc->can_remove($params['userid'])) {
+            throw new \moodle_exception('rfcremovalnotallowed', 'customfield_sprogramme');
+        }
         $rfcmanager = new rfc_manager($params['datafieldid']);
         return $rfcmanager->remove($params['userid']);
     }

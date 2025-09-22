@@ -16,7 +16,7 @@
 
 namespace customfield_sprogramme\local;
 
-use customfield_sprogramme\local\api\notifications;
+use context_system;
 use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\utils;
 
@@ -28,6 +28,9 @@ use customfield_sprogramme\utils;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rfc_manager {
+    /** @var \context $context The context of the datafield. */
+    private \context $context;
+
     /**
      * Constructor
      *
@@ -37,6 +40,10 @@ class rfc_manager {
         /** @var int $datafieldid */
         private int $datafieldid,
     ) {
+        if (!$datafieldid) {
+            throw new \moodle_exception('invaliddatafieldid', 'customfield_sprogramme');
+        }
+        $this->context = utils::get_context_from_datafieldid($datafieldid) ?? context_system::instance();
     }
 
     /**
@@ -51,7 +58,6 @@ class rfc_manager {
             [
                 'datafieldid' => $this->datafieldid,
                 'usermodified' => $userid,
-                'type' => sprogramme_rfc::RFC_REQUESTED,
             ]
         );
         foreach ($records as $record) {
@@ -113,14 +119,51 @@ class rfc_manager {
     }
 
     /**
+     * Check if a user can accept a rfc for a course (if they have the capability to edit all and can edit)
+     *
+     * @return bool
+     */
+    public function can_accept(): bool {
+        return
+            has_capability('customfield/sprogramme:editall', $this->context);
+    }
+
+    /**
+     * Check if a user can cancel a rfc for a course
+     *
+     * @param int $userid The user id that created the rfc
+     * @return bool
+     */
+    public function can_cancel(int $userid = 0) {
+        global $USER;
+        if (!$userid) {
+            $userid = $USER->id;
+        }
+        if (has_capability('customfield/sprogramme:editall', $this->context)) {
+            return true; // If the user has the capability to edit all, they can cancel any rfc.
+        }
+        $rfc = sprogramme_rfc::get_record(
+            [
+                'datafieldid' => $this->datafieldid,
+                'adminid' => $userid,
+                'type' => sprogramme_rfc::RFC_SUBMITTED,
+            ],
+            IGNORE_MULTIPLE // We get the first one we find (there should be only one anyway).
+        );
+        if ($rfc) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Check if a user can add a new rfc for a course
      * (there shoubld be no submitted rfcs yet) and the user has the capability to edit
      *
      * @return bool
      */
     public function can_add(): bool {
-        $context = utils::get_context_from_datafieldid($this->datafieldid);
-        if (!has_capability('customfield/sprogramme:edit', $context)) {
+        if (!has_capability('customfield/sprogramme:edit', $this->context)) {
             return false;
         }
         if ($this->has_submitted()) {
@@ -142,6 +185,50 @@ class rfc_manager {
         return false;
     }
 
+    /**
+     * Check if a user can reject a rfc for a course (if they have the capability to edit all)
+     *
+     * @return bool
+     */
+    public function can_reject(): bool {
+        return has_capability('customfield/sprogramme:editall', $this->context);
+    }
+
+
+    /**
+     * Check if a user can remove a rfc for a course (if they have the capability to edit all)
+     *
+     * @return bool
+     */
+    public function can_remove(int $userid): bool {
+        global $USER;
+        if (!$userid) {
+            $userid = $USER->id;
+        }
+        if (has_capability('customfield/sprogramme:editall', $this->context)) {
+            return true; // If the user has the capability to edit all, they can cancel any rfc.
+        }
+        $rfc = sprogramme_rfc::get_record(
+            [
+                'datafieldid' => $this->datafieldid,
+                'adminid' => $userid,
+            ],
+            IGNORE_MULTIPLE // We get the first one we find (there should be only one anyway).
+        );
+        if ($rfc) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if a user can submit a rfc for a course
+     *
+     * @return bool
+     */
+    public function can_submit() {
+        return has_capability('customfield/sprogramme:edit', $this->context);
+    }
     /**
      * Get the rfc for a given datafield and user
      *
@@ -204,21 +291,14 @@ class rfc_manager {
      * @return bool true if submitted
      */
     public function submit(int $userid): bool {
-        $result = false;
-        $record = sprogramme_rfc::get_record(
-            [
-                'datafieldid' => $this->datafieldid,
-                'adminid' => $userid,
-                'type' => sprogramme_rfc::RFC_REQUESTED,
-            ], IGNORE_MULTIPLE
-        );
+        $record = $this->get_current();
         if ($record) {
             $record->set('type', sprogramme_rfc::RFC_SUBMITTED);
             $record->save();
             $result = true;
             $event = \customfield_sprogramme\event\rfc_submitted::create(
                 [
-                    'context' => utils::get_context_from_datafieldid($this->datafieldid),
+                    'context' => $this->context,
                     'objectid' => $record->get('id'),
                     'other' => [
                         'datafieldid' => $this->datafieldid,
@@ -247,10 +327,9 @@ class rfc_manager {
         }
         $data = [];
 
-        $context = utils::get_context_from_datafieldid($this->datafieldid);
         $userid = $changerecord->get('adminid');
-        $cansumit = has_capability('customfield/sprogramme:edit', $context) && $userid == $USER->id;
-        $canaccept = has_capability('customfield/sprogramme:editall', $context);
+        $cansumit = has_capability('customfield/sprogramme:edit', $this->context) && $userid == $USER->id;
+        $canaccept = has_capability('customfield/sprogramme:editall', $this->context);
         $issubmitted = $changerecord->get('type') == sprogramme_rfc::RFC_SUBMITTED;
 
         $data['issubmitted'] = $issubmitted;
@@ -290,8 +369,7 @@ class rfc_manager {
      * @return bool
      */
     public function is_required(): bool {
-        $context = utils::get_context_from_datafieldid($this->datafieldid);
-        if (has_capability('customfield/sprogramme:editall', $context)) {
+        if (has_capability('customfield/sprogramme:editall', $this->context)) {
             return false; // If the user has the capability to edit all, no rfc is required.
         }
         return true;
@@ -304,16 +382,5 @@ class rfc_manager {
      */
     public function get_current(): ?sprogramme_rfc {
         return sprogramme_rfc::get_rfc($this->datafieldid);
-    }
-
-    /**
-     * Add a row to the rfc
-     *
-     * @param int $moduleid
-     * @param int $sortorder
-     * @param array $cells
-     */
-    public function add_row(int $moduleid, int $sortorder, array $cells): void {
-        // Not sure what to do here yet.
     }
 }

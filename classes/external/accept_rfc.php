@@ -38,7 +38,7 @@ class accept_rfc extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'datafieldid' => new external_value(PARAM_INT, 'datafieldid', VALUE_DEFAULT, ''),
-            'userid' => new external_value(PARAM_INT, 'user id', VALUE_REQUIRED),
+            'userid' => new external_value(PARAM_INT, 'The user id that created the RFC', VALUE_REQUIRED),
         ]);
     }
 
@@ -60,10 +60,9 @@ class accept_rfc extends external_api {
         $datafieldid = $params['datafieldid'];
         $context = utils::get_context_from_datafieldid($datafieldid);
         self::validate_context($context);
-        require_capability('customfield/sprogramme:editall', $context);
         $rfc = new rfc_manager($datafieldid);
-        if (!$rfc->can_edit()) {
-            throw new \moodle_exception('rfceditnotallowed', 'customfield_sprogramme');
+        if (!$rfc->can_accept()) {
+            throw new \moodle_exception('rfcacceptancenotallowed', 'customfield_sprogramme');
         }
         return $rfc->accept($params['userid']);
     }

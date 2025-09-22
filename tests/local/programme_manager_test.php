@@ -252,7 +252,6 @@ final class programme_manager_test extends \advanced_testcase {
         foreach (array_keys($expected) as $flag) {
             $this->assertEquals($expected[$flag], $columns[0][$flag], "Flag {$flag} does not match");
         }
-
     }
 
     /**

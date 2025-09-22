@@ -58,8 +58,11 @@ class submit_rfc extends external_api {
         $datafieldid = $params['datafieldid'];
         $context = utils::get_context_from_datafieldid($datafieldid);
         self::validate_context($context);
-        require_capability('customfield/sprogramme:edit', $context);
         $rfcmanager = new rfc_manager($datafieldid);
+        $rfc = new rfc_manager($datafieldid);
+        if (!$rfc->can_submit()) {
+            throw new \moodle_exception('rfcsubmissionnotallowed', 'customfield_sprogramme');
+        }
         return $rfcmanager->submit($params['userid']);
     }
     /**

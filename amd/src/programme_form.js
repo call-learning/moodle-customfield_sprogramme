@@ -25,10 +25,6 @@ import ModalForm from 'core_form/modalform';
 import {get_string as getString} from 'core/str';
 
 const init = () => {
-
-    const submitEventHandler = () => {
-        window.location.reload();
-    };
     document.addEventListener('click', (event) => {
         if (!event.target.closest('[data-action="programme-upload-form"]')) {
             return;
@@ -47,7 +43,6 @@ const init = () => {
             },
             saveButtonText: getString('save'),
         });
-        modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, submitEventHandler);
         modalForm.show();
     });
 };

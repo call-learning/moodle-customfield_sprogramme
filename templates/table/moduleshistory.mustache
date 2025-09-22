@@ -25,7 +25,7 @@
 }}
 <div class="d-flex align-items-start">
     {{#rfcs}}
-        <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.userid}}">
+        <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.id}}">
             <div class="rfcinfo">
                 <div>{{#str}}rfc:changerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}</div>
                 <p class="mb-0 small">{{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timecreated}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
@@ -46,7 +46,7 @@
     </tr>
 </table>
 {{#modules}}
-    <div class="modules mb-5" data-region="module" data-id="{{moduleid}}">
+    <span class="modules mb-5" data-region="module" data-id="{{moduleid}}">
         <div class="d-flex mb-1 p-1 align-items-center">
             <h4 class="mb-0">{{{modulename}}}</h4>
         </div>
@@ -68,7 +68,7 @@
                                     </div>
                                 {{/changed}}
                                 {{^changed}}
-                                    <span class="static">{{{value}}}</div>
+                                    <span class="static">{{{value}}}</span>
                                 {{/changed}}
                             </td>
                         {{/cells}}
@@ -94,5 +94,5 @@
                 {{/rows}}
             </tbody>
         </table>
-    </div>
+    </span>
 {{/modules}}

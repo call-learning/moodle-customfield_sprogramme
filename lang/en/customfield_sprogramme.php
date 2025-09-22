@@ -170,5 +170,3 @@ $string['tpa_help'] = 'Practical Work on healthy animals: Teaching sessions wher
 $string['unsavedchanges'] = 'You have unsaved changes. Do you want to close the form without saving?';
 $string['usernotfound'] = 'User not found';
 $string['value'] = 'Value';
-$string['report:competency'] = 'Syllabus Competencies Report';
-$string['report:discipline'] = 'Syllabus Disciplines Report';

@@ -56,8 +56,12 @@ const stateTemplate = (type, templatename = '', root = 'app') => {
     State.subscribe(type, tableColumns);
 };
 
-stateTemplate('columns', 'columnsheader');
-stateTemplate('modules');
-stateTemplate('modulesstatic', '', 'static');
-stateTemplate('rfc');
-stateTemplate('editbuttons', '', 'modalheader');
+const componentInit = () => {
+    stateTemplate('columns', 'columnsheader');
+    stateTemplate('modules');
+    stateTemplate('modulesstatic', '', 'static');
+    stateTemplate('rfc');
+    stateTemplate('editbuttons', '', 'modalheader');
+};
+
+export default componentInit;

@@ -24,14 +24,14 @@
     {
         "userinfo": {
             "fullname": "John Doe",
-            "userid": 1
+            "id": 1
         },
         "timemodified": 1633036800,
     }
 }}
 <div class="d-flex align-items-start">
     {{#rfc}}
-        <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.userid}}">
+        <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.id}}">
             <div class="rfcinfo">
                 {{#issubmitted}}
                     {{#str}}rfc:changerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}

@@ -26,7 +26,7 @@ import Repository from 'customfield_sprogramme/local/repository';
 import Notification from 'core/notification';
 import {getStrings} from 'core/str';
 import {debounce} from 'core/utils';
-import './local/components/table';
+import componentInit from './local/components/table';
 import './tagmanager';
 import './programme_form';
 
@@ -77,13 +77,9 @@ class Manager {
      */
     constructor(element, datafieldid) {
         this.element = element;
-        if (this.element.dataset.inintialized) {
-            return;
-        }
         this.datafieldid = parseInt(datafieldid);
         this.addEventListeners();
         this.getTableData();
-        this.element.dataset.inintialized = true;
     }
 
     /**
@@ -1073,6 +1069,7 @@ class Manager {
  * @param {String} datafieldid The datafieldid.
  */
 const init = (element, datafieldid) => {
+    componentInit();
     new Manager(element, datafieldid);
 };
 

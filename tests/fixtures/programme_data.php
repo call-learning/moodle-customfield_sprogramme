@@ -18,11 +18,15 @@ function get_sample_programme_data(): array {
     $programmedata[] =
         [
             [
+                'moduleid' => -1,
                 'modulesortorder' => 0,
                 'modulename' => 'Test Module 1',
+                'deleted' => false,
                 'rows' =>
                     [
                         [
+                            'id' => -1,
+                            'deleted' => false,
                             'sortorder' => 0,
                             'cells' =>
                                 [
@@ -128,6 +132,8 @@ function get_sample_programme_data(): array {
                                 ],
                         ],
                         [
+                            'id' => -1,
+                            'deleted' => false,
                             'sortorder' => 1,
                             'cells' =>
                                 [

@@ -153,7 +153,7 @@ class customfield_sprogramme_generator extends component_generator_base {
         int $datafieldid,
         int $userid = 0,
         int $type = sprogramme_rfc::RFC_REQUESTED,
-        string $snapshot = '{}',
+        string $snapshot = '{}'
     ): stdClass {
         $rfc = new sprogramme_rfc(0);
         $rfc->set('datafieldid', $datafieldid);
@@ -208,7 +208,6 @@ class customfield_sprogramme_generator extends component_generator_base {
                     $record->set('percentage', $competencies['percentage']);
                     $record->save();
                 }
-                ;
             }
         }
     }

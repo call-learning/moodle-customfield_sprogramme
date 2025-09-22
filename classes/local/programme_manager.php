@@ -17,6 +17,7 @@
 namespace customfield_sprogramme\local;
 
 use cache_helper;
+use context_system;
 use core_cache\cache;
 use core_customfield\data_controller;
 use csv_export_writer;
@@ -41,37 +42,39 @@ use customfield_sprogramme\utils;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class programme_manager {
+    /** @var \context $context The context of the datafield. */
+    private \context $context;
+
+    /** @var int $courseid The course id. */
+    private int $courseid;
+
     /**
      * Constructor
      *
      * @param int $datafieldid
-     * @param data_controller|null $datacontroller
      */
     public function __construct(
         /** @var int $datafieldid */
         private int $datafieldid,
-        /** @var int $datacontroller */
-        private ?data_controller $datacontroller = null,
     ) {
-        if (empty($this->datafieldid) && empty($datacontroller)) {
+        global $DB;
+        if (empty($this->datafieldid)) {
             throw new \coding_exception('Datafieldid or datacontroller must be provided to the programme manager.');
         }
-        if (empty($this->datafieldid)) {
-            $this->datafieldid = $datacontroller->get('id');
-        }
-        if (empty($datacontroller)) {
-            $this->datacontroller = data_controller::create($datafieldid);
-        }
+        $this->context = utils::get_context_from_datafieldid($this->datafieldid) ?? context_system::instance();
+        // We fetch the course id from the custom field instance directly.
+        // This means if we use this field in another context than a course, this will fail.
+        $this->courseid  = $DB->get_field('customfield_data', 'instanceid', ['id' => $this->datafieldid], MUST_EXIST);
     }
 
     /**
      * Set the data.
      *
      * @param array $data
+     * @return bool true on success
      */
-    public function set_data(array $data): string {
+    public function set_data(array $data): bool {
         $this->delete_flagged_records($data);
-        $courseid = $this->datacontroller->get('instanceid');
         foreach ($data as $module) {
             $ismoduledeleted = $module['deleted'] ?? false;
             if ($ismoduledeleted) {
@@ -79,7 +82,7 @@ class programme_manager {
             }
             $moduleid = $module['moduleid'] ?? null;
             $rows = $module['rows'];
-            if (!$moduleid) {
+            if ($moduleid <= 0) { // If we have negative id, it means it is a new module.
                 // Create the module if it does not exist.
                 $moduleid = $this->create_module($module['modulename'], $module['modulesortorder']);
             } else {
@@ -89,38 +92,19 @@ class programme_manager {
                 $mod->save();
                 $moduleid = $mod->get('id');
             }
-            $records = sprogramme::get_all_records_for_module($moduleid);
             foreach ($rows as $row) {
                 $isrowdeleted = $row['deleted'] ?? false;
                 $rowid = $row['id'] ?? null;
                 if ($isrowdeleted) {
                     continue; // Skip deleted rows.
                 }
-                $updated = false;
-                foreach ($records as $record) {
-                    if (!$rowid) {
-                        continue; // Skip if no id as it means it has not yet been created.
-                    }
-                    if ($record->get('id') == $rowid) {
-                        $record->set('sortorder', $row['sortorder']);
-                        $record->save();
-                        $this->update($record, $row);
-                        $updated = true;
-                    }
+                if ($rowid <= 0) { // If we have negative id, it means it is a new row.
+                    // Create the row if it does not exist.
+                    $rowid = $this->create_row($moduleid, abs($rowid) - 1);
+                    $row['id'] = $rowid;
                 }
-                if (!$updated) {
-                    $record = new sprogramme();
-                    $record->set('uc', $courseid);
-                    $record->set('datafieldid', $this->datafieldid);
-                    $record->set('moduleid', $moduleid);
-                    $record->set('sortorder', $row['sortorder']);
-                    foreach ($row['cells'] as $cell) {
-                        $record->set($cell['column'], null);
-                    }
-                    $record->save();
-                    $row['id'] = $record->get('id');
-                    $this->update($record, $row);
-                }
+                $record = sprogramme::get_record(['id' => $rowid]);
+                $this->update_row($record, $row);
             }
         }
         $this->invalidate_cache();
@@ -177,12 +161,12 @@ class programme_manager {
     }
 
     /**
-     * Update a record
+     * Update a row
      *
      * @param sprogramme $programme
      * @param array $row
      */
-    private function update(sprogramme $programme, array $row) {
+    private function update_row(sprogramme $programme, array $row) {
         $columns = $this->get_column_structure();
         $changes = false;
 
@@ -208,6 +192,10 @@ class programme_manager {
                     $changes = true;
                 }
             }
+        }
+        if ($programme->get('sortorder') != ($row['sortorder'] ?? 0)) {
+            $programme->set('sortorder', $row['sortorder'] ?? 0);
+            $changes = true;
         }
         if ($changes) {
             $programme->save();
@@ -407,16 +395,15 @@ class programme_manager {
      * @return bool
      * */
     public function can_edit(): bool {
-        $context = utils::get_context_from_datafieldid($this->datafieldid);
         $rfc = new rfc_manager($this->datafieldid);
         if ($rfc->has_submitted()) {
             // If there is a submitted RFC, the user cannot edit the programme.
             return false;
         }
-        if (has_capability('customfield/sprogramme:editall', $context)) {
+        if (has_capability('customfield/sprogramme:editall', $this->context)) {
             return true; // If the user has the capability to edit all, they can edit the programme.
         }
-        if (has_capability('customfield/sprogramme:edit', $context)) {
+        if (has_capability('customfield/sprogramme:edit', $this->context)) {
             return true; // If the user has the capability to edit, they can edit the programme.
         }
         return false; // Otherwise, the user cannot edit the programme.
@@ -474,7 +461,14 @@ class programme_manager {
         return $errors;
     }
 
-    private function validate_cell_value($value, $column): bool {
+    /**
+     * Validate a cell value against its column definition
+     *
+     * @param mixed $value
+     * @param array $column
+     * @return bool
+     */
+    private function validate_cell_value(mixed $value, array $column): bool {
         if ($value === '' || $value === null) {
             return true; // Empty values are always valid.
         }
@@ -573,9 +567,8 @@ class programme_manager {
         if (!$moduleid) {
             $moduleid = $this->get_or_create_module('Module', 0);
         }
-        $courseid = $this->datacontroller->get('instanceid');
         $record = new sprogramme();
-        $record->set('uc', $courseid);
+        $record->set('uc', $this->courseid);
         $record->set('moduleid', $moduleid);
         $record->set('datafieldid', $this->datafieldid);
         $record->set('sortorder', 0);
@@ -673,12 +666,12 @@ class programme_manager {
     public function get_csv_data(): string {
         global $CFG;
         require_once($CFG->libdir . '/csvlib.class.php');
-        $data = $this->get_data($this->datafieldid);
+        $data = $this->get_data();
         $csvexport = new csv_export_writer('comma', '"');
-        $course = get_course($this->datacontroller->get('instanceid'));
+        $course = get_course($this->courseid);
         $filename = 'programme_' . $course->shortname . '_' . date('Ymd_His') . '.txt';
         $csvexport->set_filename($filename);
-        $columns = self::get_column_structure($this->datafieldid);
+        $columns = $this->get_column_structure();
         // Add the module name to the first item of the columns.
         $columns = array_merge(
             [['column' => 'module']],
@@ -730,25 +723,9 @@ class programme_manager {
     /**
      * Get the data for a given course
      *
-     * @param bool $showrfc
      * @return array $data
      */
-    public function get_data(bool $showrfc = false): array {
-        $rfc = new rfc_manager($this->datafieldid);
-
-        if ($showrfc && $rfc->has_submitted()) {
-            // Note to self: need to ensure there is only ever one submitted RFC per course.
-            $rfc = $rfc->get_current();
-            if ($rfc) {
-                $data = $rfc->get('snapshot');
-                $data = json_decode($data, true);
-                if ($rfc->get('type') == sprogramme_rfc::RFC_CANCELLED) {
-                    $rfc->delete();
-                }
-                return $data;
-            }
-        }
-
+    public function get_data(): array {
         $modules = sprogramme_module::get_all_records_for_datafieldid($this->datafieldid);
         $columns = self::get_column_structure();
         $data = [];
@@ -841,8 +818,8 @@ class programme_manager {
      */
     public function get_sums(): array {
         $numericcomlumns = self::get_numeric_columns();
-        $data = self::get_data($this->datafieldid);
-        $columnstructure = self::get_column_structure($this->datafieldid);
+        $data = self::get_data();
+        $columnstructure = self::get_column_structure();
         $columnstotals = self::get_column_totals($data, $columnstructure);
         // Sums are found in the first module.
         $columns = [];

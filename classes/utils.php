@@ -66,15 +66,23 @@ class utils {
      * @return ?int instancedid the instance id attached to this datafield
      */
     public static function get_instanceid_from_datafieldid(int $datafieldid): ?int {
+        global $DB;
+        if (!$datafieldid) {
+            return null;
+        }
         $cache = \cache::make('customfield_sprogramme', 'instancebdatafieldid');
         if ($cache->has($datafieldid)) {
             return $cache->get($datafieldid) ?: null;
         }
-        $cfd = \core_customfield\data_controller::create($datafieldid);
-        $instanceid = $cfd ? $cfd->get('instanceid') : 0;
-        $cache->set($datafieldid, $instanceid);
+        try {
+            // Do not call any constructor of customfield classes, they may call other code recursively.
+            $datafield = $DB->get_record('customfield_data', ['id' => $datafieldid], 'id, instanceid', MUST_EXIST);
+        } catch (\dml_missing_record_exception $e) {
+            return null;
+        }
+        $cache->set($datafield->id, $datafield->instanceid ?? 0);
 
-        return $instanceid ?: null;
+        return $datafield->instanceid ?: null;
     }
 
     /**
@@ -84,6 +92,9 @@ class utils {
      * @return ?\context the context attached to this datafield
      */
     public static function get_context_from_datafieldid(int $datafieldid): ?\context {
+        if (!$datafieldid) {
+            return null;
+        }
         $instanceid = self::get_instanceid_from_datafieldid($datafieldid);
         if ($instanceid) {
             return \context_course::instance($instanceid);

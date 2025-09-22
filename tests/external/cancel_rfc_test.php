@@ -17,7 +17,10 @@
 namespace external;
 
 use core_external\external_api;
+use customfield_sprogramme\external\accept_rfc;
 use customfield_sprogramme\external\cancel_rfc;
+use customfield_sprogramme\local\persistent\sprogramme_rfc;
+use customfield_sprogramme\local\programme_manager;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -50,10 +53,88 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
      */
     public function test_execute_wrong_parameters(): void {
         $this->resetAfterTest();
-        $cancelrfc = $this->cancel_rfc(1234, 5678);
-        $this->assertEquals(false, $cancelrfc);
+        $this->expectException(\invalid_parameter_exception::class);
+        $this->cancel_rfc(1234, 5678);
         $this->setAdminUser();
-        $cancelrfc = $this->cancel_rfc(1234, get_admin()->id);
-        $this->assertEquals(false, $cancelrfc);
+        $this->expectException(\invalid_parameter_exception::class);
+        $this->cancel_rfc(1234, get_admin()->id);
+    }
+
+    /**
+     * Test execute with correct parameters
+     */
+    public function test_execute(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        [
+            'users' => $users,
+            'cfdataid' => $cfdataid,
+        ] = $this->setup_course_and_rfc();
+        $this->setUser($users[0]);
+        $cancelled = $this->cancel_rfc($cfdataid, $users[0]->id);
+        $this->assertFalse($cancelled);
+        $cancelled = $this->cancel_rfc($cfdataid, $users[1]->id);
+        $this->assertTrue($cancelled);
+        $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_CANCELLED]));
+    }
+
+    /**
+     * Test execute with correct parameters
+     */
+    public function test_with_wrong_role(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/customfield/field/sprogramme/tests/fixtures/programme_data.php');
+        ['course' => $course, 'cfdataid' => $cfdataid, 'users' => $users] = $this->setup_course_and_rfc();
+        $user3 = $this->getDataGenerator()->create_and_enrol($course);
+        $this->expectExceptionMessage('customfield_sprogramme/rfccancellationnotallowed');
+        $this->setUser($user3);
+        $this->cancel_rfc($cfdataid, $users[1]->id);
+    }
+
+    /**
+     * Helper
+     *
+     * @param mixed ...$params
+     * @return mixed
+     */
+    protected function accept_rfc(...$params) {
+        $acceptrfc = accept_rfc::execute(...$params);
+        return external_api::clean_returnvalue(accept_rfc::execute_returns(), $acceptrfc);
+    }
+
+    /**
+     * Setup a course with a sprogramme field and a rfc
+     *
+     * @return array
+     */
+    private function setup_course_and_rfc() {
+        global $CFG;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        require_once($CFG->dirroot . '/customfield/field/sprogramme/tests/fixtures/programme_data.php');
+        $cfgenerator = $this->getDataGenerator()->get_plugin_generator('core_customfield');
+        $cfcat = $cfgenerator->create_category();
+
+        $cfield = $cfgenerator->create_field(
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'sprogramme']
+        );
+        $sampleprogrammedata = get_sample_programme_data();
+        $course = $this->getDataGenerator()->create_course();
+        $cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
+        $users[] = $this->getDataGenerator()->create_and_enrol($course, 'manager');
+        $users[] = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
+        $pgenerator->create_rfc(
+            $cfdata->get('id'),
+            userid: $users[1]->id,
+            type: sprogramme_rfc::RFC_SUBMITTED,
+            snapshot: json_encode($sampleprogrammedata[0])
+        );
+        return [
+            'course' => $course,
+            'users' => $users,
+            'sampleprogrammedata' => $sampleprogrammedata[0],
+            'cfdataid' => $cfdata->get('id'),
+        ];
     }
 }

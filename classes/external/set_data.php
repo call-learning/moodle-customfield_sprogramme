@@ -106,13 +106,19 @@ class set_data extends external_api {
         $programmemanager = new programme_manager($datafieldid);
 
         if (!$programmemanager->can_edit()) {
-            throw new \moodle_exception('nopermissions', 'error', '', 'edit programme');
+            return [
+                'data' => "notallowed", // Deal with this better (like a proper exception).
+            ];
         }
 
         $rfc = new rfc_manager($datafieldid);
-        if ($rfc->is_required() && $programmemanager->has_protected_data_changes($modules)) {
-            if ($rfc->can_add()) {
-                throw new \moodle_exception('nopermissions', 'error', '', 'add rfc');
+        if ($rfc->is_required()
+            && $programmemanager->has_protected_data_changes($modules)
+        ) {
+            if (!$rfc->can_add()) {
+                return [
+                    'data' => "cannotaddrfc", // Deal with this better (like a proper exception).
+                ];
             }
             $rfc->create($modules);
             $result = 'newrfc';

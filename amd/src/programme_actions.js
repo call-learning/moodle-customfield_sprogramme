@@ -117,8 +117,6 @@ const getEditor = async(element, datafieldid) => {
 
     document.addEventListener('closeform', () => {
         modal.close();
-        // Reload the page to show the changes.
-        window.location.reload();
     });
 };
 

@@ -17,6 +17,7 @@
 namespace customfield_sprogramme;
 use backup;
 use backup_final_element;
+use context_course;
 use customfield_sprogramme\local\backup\restore_customfield_sprogramme_step;
 use customfield_sprogramme\local\programme_manager;
 use customfield_sprogramme\output\formfield;
@@ -42,7 +43,9 @@ class data_controller extends \core_customfield\data_controller {
      */
     public function __construct(int $id, \stdClass $record) {
         parent::__construct($id, $record);
-        $this->programmemanger = new programme_manager($this->data->get('id'), $this);
+        if ($this->data->get('id')) {
+            $this->programmemanger = new programme_manager($this->data->get('id'));
+        }
     }
 
 
@@ -304,7 +307,7 @@ class data_controller extends \core_customfield\data_controller {
      * @return array The programme data array.
      */
     public function get_programme_data(): array {
-        return  $this->get_programme_manager()->get_data() ?? [];
+        return  $this->get_programme_manager()?->get_data() ?? [];
     }
 
     /**
@@ -313,7 +316,7 @@ class data_controller extends \core_customfield\data_controller {
      * @return array The column structure array.
      */
     public function get_column_structure(): array {
-        return $this->get_programme_manager()->get_column_structure() ?? [];
+        return $this->get_programme_manager()?->get_column_structure() ?? [];
     }
     /**
      * Get the column totals for the current instance.
@@ -323,7 +326,7 @@ class data_controller extends \core_customfield\data_controller {
     public function get_column_totals(): array {
         $columns = $this->get_column_structure();
         $data = $this->get_programme_data();
-        return  $this->get_programme_manager()->get_column_totals($data, $columns);
+        return  $this->get_programme_manager()?->get_column_totals($data, $columns) ?? [];
     }
 
     /**
@@ -350,9 +353,10 @@ class data_controller extends \core_customfield\data_controller {
      * Get or create the programme manager for the current instance.
      *
      * We cannot call it in the constructor because programme manager needs the datacontroller also.
-     * @return programme_manager The programme manager instance.
+     *
+     * @return programme_manager|null The programme manager instance.
      */
-    private function get_programme_manager(): programme_manager {
+    private function get_programme_manager(): ?programme_manager {
         return $this->programmemanger;
     }
 
@@ -363,6 +367,6 @@ class data_controller extends \core_customfield\data_controller {
      */
     public function delete() {
         parent::delete();
-        $this->get_programme_manager()->delete_programme();
+        $this->get_programme_manager()?->delete_programme();
     }
 }

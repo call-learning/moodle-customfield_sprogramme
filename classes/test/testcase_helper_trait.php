@@ -49,6 +49,11 @@ trait testcase_helper_trait {
                     $row['sortorder'],
                     "Row sortorder does not match for module({$module['modulename']}) row({$rowindex})"
                 );
+                $this->assertCount(
+                    count($expectedrow['disciplines']),
+                    $row['disciplines'],
+                    "Discipline count does not match for module({$module['modulename']}) row({$rowindex})"
+                );
                 foreach ($row['disciplines'] as $discindex => $disc) {
                     $this->assertEquals(
                         $expectedrow['disciplines'][$discindex]['id'],
@@ -63,6 +68,11 @@ trait testcase_helper_trait {
                         . " discipline {$disc['id']})"
                     );
                 }
+                $this->assertCount(
+                    count($expectedrow['competencies']),
+                    $row['competencies'],
+                    "Competencies count does not match for module({$module['modulename']}) row({$rowindex})"
+                );
                 foreach ($row['competencies'] as $compindex => $comp) {
                     $this->assertEquals(
                         $expectedrow['competencies'][$compindex]['id'],

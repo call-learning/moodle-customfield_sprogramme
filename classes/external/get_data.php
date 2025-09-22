@@ -42,7 +42,7 @@ class get_data extends external_api {
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'datafieldid' => new external_value(PARAM_INT, 'Datafieldid', VALUE_DEFAULT, ''),
-            'showrfc' => new external_value(PARAM_BOOL, 'Show Change request', VALUE_DEFAULT, false),
+            'showrfc' => new external_value(PARAM_BOOL, 'Show Change request data instead of actual data', VALUE_DEFAULT, false),
         ]);
     }
 
@@ -50,11 +50,10 @@ class get_data extends external_api {
      * Execute and return json data.
      *
      * @param int $datafieldid - The course id.
-     * @param bool $showrfc - Show change request.
+     * @param bool $showrfc - Show change request instead of programme data.
      * @return array $data - The data in JSON format
-     * @throws \invalid_parameter_exception
      */
-    public static function execute(int $datafieldid, bool $showrfc): array {
+    public static function execute(int $datafieldid, bool $showrfc = false): array {
         $params = self::validate_parameters(self::execute_parameters(),
             ['datafieldid' => $datafieldid, 'showrfc' => $showrfc]
         );
@@ -67,23 +66,24 @@ class get_data extends external_api {
             throw new \invalid_parameter_exception('invalidaccess');
         }
         $programmemanger = new programme_manager($datafieldid);
-        $modules = $programmemanger->get_data($showrfc);
         $columns = $programmemanger->get_column_structure();
-        $columnstotals = $programmemanger->get_column_totals($modules, $columns);
-        $rfc = [];
-        if ($showrfc) {
-            $rfcmanager = new rfc_manager($datafieldid);
-            $rfc = $rfcmanager->get_data();
-        }
-        $canedit = $showrfc && $programmemanger->can_edit($datafieldid);
 
+        $rfc = [];
+        $modules = $programmemanger->get_data();
         $data = [
             'modules' => $modules,
-            'columns' => $columnstotals,
-            'rfc' => $rfc,
-            'canedit' => $canedit,
+            'canedit' => $showrfc && $programmemanger->can_edit(),
         ];
-
+        if ($showrfc) {
+            $rfcmanager = new rfc_manager($datafieldid);
+            $rfc = $rfcmanager->get_current();
+            if (!empty($rfc)) {
+                $rfcdata = $rfc->get('snapshot');
+                $modules = json_decode($rfcdata, true);
+                $data['rfc'] = $rfcmanager->get_data();
+            }
+        }
+        $data['columns'] = $programmemanger->get_column_totals($modules, $columns);
         return $data;
     }
 
@@ -173,7 +173,7 @@ class get_data extends external_api {
                 'cansubmit' => new external_value(PARAM_BOOL, 'C an submit', VALUE_OPTIONAL),
                 'cancancel' => new external_value(PARAM_BOOL, 'Can cancel', VALUE_OPTIONAL),
                 'userinfo' => new external_single_structure([
-                    'userid' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
+                    'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
                     'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
                 ], 'User Info', VALUE_OPTIONAL),
             ], 'RFC data', VALUE_OPTIONAL),

@@ -24,7 +24,7 @@
 import State from 'customfield_sprogramme/local/state';
 import Repository from 'customfield_sprogramme/local/repository';
 import Notification from 'core/notification';
-import './local/components/history';
+import componentInit from './local/components/history';
 
 /**
  * Initialise the history module.
@@ -96,6 +96,7 @@ class History {
  * @param {Int} datafieldid The datafieldid.
  */
 const init = (rfcid, datafieldid) => {
+    componentInit();
     new History(rfcid, datafieldid);
 };
 
