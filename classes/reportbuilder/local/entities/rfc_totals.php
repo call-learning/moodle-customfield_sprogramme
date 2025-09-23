@@ -106,9 +106,8 @@ class rfc_totals extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.cm, {$rfcalias}.o_cm AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
+            ->add_fields("{$rfcalias}.cm")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'td',
@@ -117,9 +116,8 @@ class rfc_totals extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.td, {$rfcalias}.o_td AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
+            ->add_fields("{$rfcalias}.td")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'tp',
@@ -128,9 +126,8 @@ class rfc_totals extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.tp, {$rfcalias}.o_tp AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
+            ->add_fields("{$rfcalias}.tp")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'tpa',
@@ -139,9 +136,8 @@ class rfc_totals extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.tpa, {$rfcalias}.o_tpa AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
+            ->add_fields("{$rfcalias}.tpa")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'tc',
@@ -150,9 +146,8 @@ class rfc_totals extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.tc, {$rfcalias}.o_tc AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
+            ->add_fields("{$rfcalias}.tc")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'aas',
@@ -161,9 +156,8 @@ class rfc_totals extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.aas, {$rfcalias}.o_aas AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
+            ->add_fields("{$rfcalias}.aas")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'fmp',
@@ -172,9 +166,8 @@ class rfc_totals extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.fmp, {$rfcalias}.o_fmp AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
+            ->add_fields("{$rfcalias}.fmp")
+            ->set_is_sortable(true);
 
         $columns[] = (new column(
             'timecreated',
@@ -202,7 +195,7 @@ class rfc_totals extends base {
 
     #[\Override]
     protected function get_all_filters(): array {
-        $rfcalias = $this->get_table_alias('rfc');
+        $rfcalias = $this->get_table_alias('rfc_totals');
 
         $filters[] = (new filter(
             text::class,
@@ -365,8 +358,9 @@ class rfc_totals extends base {
             if (!is_array($rfcinfos)) {
                 continue;
             }
-            $pm = new programme_manager($rfcitem->datafieldid);
+            $pm = new programme_manager(intval($rfcitem->datafieldid));
             $sums = $pm->get_sums($rfcinfos);
+            $cf = \core_customfield\data_controller::create(intval($rfcitem->datafieldid));
             $rfcobject = (object)[
                 'datafieldid' => $rfcitem->datafieldid,
                 'type' => $rfcitem->type,
@@ -375,18 +369,12 @@ class rfc_totals extends base {
                 'timecreated' => $rfcitem->timecreated,
                 'timemodified' => $rfcitem->timemodified,
                 'usermodified' => $rfcitem->usermodified,
+                'uc' => $cf->get('instanceid')
             ];
-
-            foreach ($rfcinfos as $rfcinfo) {
-                $sha1 = sha1($rfcitem->snapshot);
-                $rfcobject->snapshotsha1 = $sha1;
-                $rfcobject->moduleid = $rfcinfo['moduleid'] ?? null;
-                $rfcobject->modulename = $rfcinfo['modulename'] ?? null;
-                $rfcobject->modulesortorder = $rfcinfo['modulesortorder'] ?? null;
-                $cf = \core_customfield\data_controller::create(intval($rfcitem->datafieldid));
-                $rfcobject->uc = $cf->get('instanceid');
-                $DB->insert_record(self::RFC_TEMP_TABLE_NAME, $rfcobject);
+            foreach($sums as $sumvalue) {
+                $rfcobject->{$sumvalue['column']} = $sumvalue['sum'];
             }
+            $DB->insert_record(self::RFC_TEMP_TABLE_NAME, $rfcobject);
         }
         $rfcitems->close();
     }

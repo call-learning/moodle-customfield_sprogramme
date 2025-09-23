@@ -23,6 +23,7 @@ use core_reportbuilder\local\entities\course;
 use core_reportbuilder\local\entities\user;
 use customfield_sprogramme\reportbuilder\local\entities\module;
 use customfield_sprogramme\reportbuilder\local\entities\rfc;
+use customfield_sprogramme\reportbuilder\local\entities\rfc_totals;
 
 /**
  * RFCs datasource
@@ -57,11 +58,6 @@ class rfcs_totals extends datasource {
     #[\Override]
     public function get_default_filters(): array {
         return [
-            'validator:fullnamewithlink',
-            'usercreated:fullnamewithlink',
-            'rfc:timecreated',
-            'rfc:timemodified',
-            'course:coursefullnamewithlink',
             'rfc_totals:cm',
             'rfc_totals:td',
             'rfc_totals:tp',
@@ -78,7 +74,7 @@ class rfcs_totals extends datasource {
 
     #[\Override]
     protected function initialise(): void {
-        $rfc = new rfc();
+        $rfc = new rfc_totals();
 
         $rfcalias = $rfc->get_table_alias('rfc_totals');
         $this->set_main_table(rfc::RFC_TEMP_TABLE_NAME, $rfcalias);
