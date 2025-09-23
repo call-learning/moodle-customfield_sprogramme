@@ -89,6 +89,11 @@ class sprogramme_rfc extends persistent {
                 'type' => PARAM_INT,
                 'null' => NULL_ALLOWED,
                 'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:adminid'),
+                'default' => 0,
+            ],
+            'usercreated' => [
+                'type' => PARAM_INT,
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sprogramme_comp:usercreated'),
             ],
         ];
     }
@@ -97,13 +102,15 @@ class sprogramme_rfc extends persistent {
      * Get all records for a given programme.
      *
      * @param int $datafieldid
-     * @param int $userid the admin id
+     * @param int $userid
      * @return sprogramme_rfc|null
      */
     public static function get_rfc(int $datafieldid, int $userid): ?sprogramme_rfc {
+        global $USER;
         $types = [
-            ['type' => self::RFC_REQUESTED, 'adminid' => $userid],
-            ['type' => self::RFC_SUBMITTED, 'adminid' => $userid],
+            ['type' => self::RFC_REQUESTED, 'usercreated' => $userid],
+            ['type' => self::RFC_SUBMITTED, 'usercreated' => $userid],
+            ['type' => self::RFC_REJECTED, 'usercreated' => $userid],
             ['type' => self::RFC_CANCELLED, 'adminid' => $userid],
             ['type' => self::RFC_SUBMITTED],
         ];
@@ -154,7 +161,7 @@ class sprogramme_rfc extends persistent {
         $rfcs = [];
         foreach ($allrfcs as $rfcpersistent) {
             $rfc = $rfcpersistent->to_record();
-            $rfc->userinfo = utils::get_user_info($rfc->adminid);
+            $rfc->userinfo = utils::get_user_info($rfc->usercreated);
             $rfcs[] = $rfc;
         }
         return $rfcs;
@@ -168,7 +175,7 @@ class sprogramme_rfc extends persistent {
      * @param int $adminid
      * @return int
      */
-    public static function count_rfc(int $datafieldid = 0, int $type = self::RFC_SUBMITTED, $adminid = 0): int {
+    public static function count_rfc(int $datafieldid = 0, int $type = self::RFC_SUBMITTED, int $adminid = 0): int {
         $params = [];
         if ($datafieldid) {
             $params['datafieldid'] = $datafieldid;

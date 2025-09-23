@@ -90,5 +90,24 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2025091302, 'customfield', 'sprogramme');
     }
+    if ($oldversion < 2025091304) {
+        // Define field usercreated to be added to customfield_sprogramme_rfc.
+        $table = new xmldb_table('customfield_sprogramme_rfc');
+        $field = new xmldb_field('usercreated', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'adminid');
+
+        // Conditionally launch add field usercreated.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $rs = $DB->get_recordset('customfield_sprogramme_rfc');
+        foreach ($rs as $record) {
+            $record->usercreated = $record->usermodified;
+            $DB->update_record('customfield_sprogramme_rfc', $record);
+        }
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025091304, 'customfield', 'sprogramme');
+    }
+
     return true;
 }

@@ -60,7 +60,7 @@ class reject_rfc extends external_api {
         $context = utils::get_context_from_datafieldid($params['datafieldid']);
         self::validate_context($context);
         $rfc = new rfc_manager($datafieldid);
-        if (!$rfc->can_reject()) {
+        if (!$rfc->can_reject($params['userid'])) {
             throw new \moodle_exception('rfcrejectionnotallowed', 'customfield_sprogramme');
         }
         $rfcmanager = new rfc_manager($params['datafieldid']);

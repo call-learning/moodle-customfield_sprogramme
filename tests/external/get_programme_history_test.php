@@ -69,7 +69,7 @@ final class get_programme_history_test extends \externallib_advanced_testcase {
         $this->assertFalse($pm->has_history());
         $rfc1 = $pgenerator->create_rfc(
             $cfdata->get('id'),
-            userid: $teacher1->id,
+            usercreated: $teacher1->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
             snapshot: json_encode($sampledata[0])
         );
@@ -79,7 +79,7 @@ final class get_programme_history_test extends \externallib_advanced_testcase {
         $modifieddata[0]['rows'][0]['dd_rse'] = 'New RSE Value';
         $rfc2 = $pgenerator->create_rfc(
             $cfdata->get('id'),
-            userid: $teacher1->id,
+            usercreated: $teacher1->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
             snapshot: json_encode($modifieddata)
         );

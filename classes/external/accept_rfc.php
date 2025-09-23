@@ -61,7 +61,7 @@ class accept_rfc extends external_api {
         $context = utils::get_context_from_datafieldid($datafieldid);
         self::validate_context($context);
         $rfc = new rfc_manager($datafieldid);
-        if (!$rfc->can_accept()) {
+        if (!$rfc->can_accept($params['userid'])) {
             throw new \moodle_exception('rfcacceptancenotallowed', 'customfield_sprogramme');
         }
         return $rfc->accept($params['userid']);

@@ -31,7 +31,7 @@ use customfield_sprogramme\reportbuilder\local\entities\rfc;
  * @copyright 2025 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class rfcs extends datasource {
+class rfcs_totals extends datasource {
     #[\Override]
     public static function get_name(): string {
         return get_string('report:rfc', 'customfield_sprogramme');
@@ -44,53 +44,31 @@ class rfcs extends datasource {
             'rfc:timecreated',
             'rfc:timemodified',
             'course:coursefullnamewithlink',
-            'rfc:cct_ept',
-            'rfc:dd_rse',
-            'rfc:type_ae',
-            'rfc:sequence',
-            'module:sortorder',
-            'module:name',
-            'rfc:intitule_seance',
-            'rfc:cm',
-            'rfc:td',
-            'rfc:tp',
-            'rfc:tpa',
-            'rfc:tc',
-            'rfc:aas',
-            'rfc:fmp',
-            'rfc:perso_av',
-            'rfc:perso_ap',
-            'rfc:consignes',
-            'rfc:supports',
+            'rfc_totals:cm',
+            'rfc_totals:td',
+            'rfc_totals:tp',
+            'rfc_totals:tpa',
+            'rfc_totals:tc',
+            'rfc_totals:aas',
+            'rfc_totals:fmp',
         ];
     }
 
     #[\Override]
     public function get_default_filters(): array {
         return [
-            'validator:fullname',
-            'usercreated:fullname',
+            'validator:fullnamewithlink',
+            'usercreated:fullnamewithlink',
             'rfc:timecreated',
             'rfc:timemodified',
-            'course:fullname',
-            'rfc:cct_ept',
-            'rfc:dd_rse',
-            'rfc:type_ae',
-            'rfc:sequence',
-            'module:sortorder',
-            'module:name',
-            'rfc:intitule_seance',
-            'rfc:cm',
-            'rfc:td',
-            'rfc:tp',
-            'rfc:tpa',
-            'rfc:tc',
-            'rfc:aas',
-            'rfc:fmp',
-            'rfc:perso_av',
-            'rfc:perso_ap',
-            'rfc:consignes',
-            'rfc:supports',
+            'course:coursefullnamewithlink',
+            'rfc_totals:cm',
+            'rfc_totals:td',
+            'rfc_totals:tp',
+            'rfc_totals:tpa',
+            'rfc_totals:tc',
+            'rfc_totals:aas',
+            'rfc_totals:fmp',
         ];
     }
     #[\Override]
@@ -102,7 +80,7 @@ class rfcs extends datasource {
     protected function initialise(): void {
         $rfc = new rfc();
 
-        $rfcalias = $rfc->get_table_alias('rfc');
+        $rfcalias = $rfc->get_table_alias('rfc_totals');
         $this->set_main_table(rfc::RFC_TEMP_TABLE_NAME, $rfcalias);
         $this->add_entity($rfc);
 
@@ -126,11 +104,6 @@ class rfcs extends datasource {
         $validatoralias = $validatorentity->get_table_alias('user');
         $this->add_entity($validatorentity
             ->add_join("LEFT JOIN {user} {$validatoralias} ON {$validatoralias}.id = {$rfcalias}.adminid"));
-
-        $module = new module();
-        $modulealias = $module->get_table_alias('customfield_sprogramme_module');
-        $this->add_entity($module
-            ->add_join("LEFT JOIN {customfield_sprogramme_module} {$modulealias} ON {$modulealias}.id = {$rfcalias}.moduleid"));
 
         $this->add_all_from_entities();
     }

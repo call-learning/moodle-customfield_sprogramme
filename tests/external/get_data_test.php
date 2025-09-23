@@ -119,7 +119,7 @@ final class get_data_test extends \externallib_advanced_testcase {
         $data[0]['rows'][0]['cells'][2]['value'] = 18; // Change cm information.
         $pgenerator->create_rfc(
             $cfdata->get('id'),
-            userid: $users[1]->id,
+            usercreated: $users[1]->id,
             snapshot: json_encode($data),
             type: sprogramme_rfc::RFC_SUBMITTED,
         );

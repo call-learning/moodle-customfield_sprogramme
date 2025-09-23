@@ -70,7 +70,7 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
             'users' => $users,
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
-        $this->setAdminUser();
+        $this->setUser($users[1]);
         $cancelled = $this->cancel_rfc($cfdataid, $users[1]->id);
         $this->assertTrue($cancelled);
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_CANCELLED]));
@@ -87,7 +87,7 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
             'users' => $users,
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
-        $this->setUser($users[1]); // The user cannot cancel his own rfc.
+        $this->setUser($users[2]); // The user2 cannot cancel the rfc of user1.
         $this->expectExceptionMessage('customfield_sprogramme/rfccancellationnotallowed');
         $this->cancel_rfc($cfdataid, $users[1]->id);
     }
@@ -137,10 +137,11 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
         $cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
         $users[] = $this->getDataGenerator()->create_and_enrol($course, 'manager');
         $users[] = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+        $users[] = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $pgenerator->create_rfc(
             $cfdata->get('id'),
-            userid: $users[1]->id,
+            usercreated: $users[1]->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
             snapshot: json_encode($sampleprogrammedata[0])
         );

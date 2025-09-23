@@ -54,7 +54,7 @@ class cancel_rfc extends external_api {
             self::execute_parameters(),
             [
                 'datafieldid' => $courseid,
-                'userid' => $userid,
+                'userid' => $userid, // User who created the RFC.
             ]
         );
         $datafieldid = $params['datafieldid'];

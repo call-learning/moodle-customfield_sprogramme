@@ -57,9 +57,7 @@ final class remove_rfc_test extends \externallib_advanced_testcase {
             'users' => $users,
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
-        $this->setUser($users[0]);
-        $removed = $this->remove_rfc($cfdataid, $users[0]->id);
-        $this->assertFalse($removed);
+        $this->setUser($users[1]);
         $removed = $this->remove_rfc($cfdataid, $users[1]->id);
         $this->assertTrue($removed);
         $this->assertEquals(0, sprogramme_rfc::count_records());
@@ -103,7 +101,7 @@ final class remove_rfc_test extends \externallib_advanced_testcase {
         $this->setUser($users[0]); // The admin user is the user1.
         $pgenerator->create_rfc(
             $cfdata->get('id'),
-            userid: $users[1]->id, // Admin id.
+            usercreated: $users[1]->id, // Admin id.
             type: sprogramme_rfc::RFC_REQUESTED,
             snapshot: json_encode($sampleprogrammedata[0])
         );

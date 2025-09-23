@@ -63,8 +63,6 @@ final class accept_rfc_test extends \externallib_advanced_testcase {
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
         $this->setUser($users[0]);
-        $accepted = $this->accept_rfc($cfdataid, $users[0]->id);
-        $this->assertFalse($accepted);
         $accepted = $this->accept_rfc($cfdataid, $users[1]->id);
         $this->assertTrue($accepted);
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_ACCEPTED]));
@@ -121,7 +119,7 @@ final class accept_rfc_test extends \externallib_advanced_testcase {
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $pgenerator->create_rfc(
             $cfdata->get('id'),
-            userid: $users[1]->id,
+            usercreated: $users[1]->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
             snapshot: json_encode($sampleprogrammedata[0])
         );

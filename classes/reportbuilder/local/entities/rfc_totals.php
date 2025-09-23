@@ -21,13 +21,14 @@ use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\filters\date;
 use core_reportbuilder\local\filters\text;
 use core_reportbuilder\local\filters\user;
-use core_reportbuilder\local\report\{column, filter};
-use customfield_sprogramme\reportbuilder\local\helpers\format;
 use core_reportbuilder\local\helpers\format as rbformat;
+use core_reportbuilder\local\report\{column, filter};
+use customfield_sprogramme\local\programme_manager;
+use customfield_sprogramme\reportbuilder\local\helpers\format;
 use lang_string;
 
 /**
- * Class rfc
+ * Class rfc totals
  *
  * Note: we use a temptable to join the data from the customfield_data table
  * with the data from the customfield_sprogramme_rfc table. This is because
@@ -39,16 +40,16 @@ use lang_string;
  * @copyright  2025 Laurent David <laurent@¢all-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class rfc extends base {
+class rfc_totals extends base {
     /**
      * The name of the temporary table used to store RFC data
      */
-    const RFC_TEMP_TABLE_NAME = 'temp_reportbuilder_rfcs';
+    const RFC_TEMP_TABLE_NAME = 'temp_reportbuilder_rfcs_totals';
 
     #[\Override]
     protected function get_default_table_aliases(): array {
         return [
-            'rfc' => 'temp_reportbuilder_rfcs',
+            'rfc_totals' => 'temp_reportbuilder_rfcs_totals',
             'customfield_data' => 'cfdata',
             'customfield_field' => 'cffield',
             'user' => 'user',
@@ -86,7 +87,7 @@ class rfc extends base {
     #[\Override]
     protected function get_all_columns(): array {
         $this->init_temp_table();
-        $rfcalias = $this->get_table_alias('rfc');
+        $rfcalias = $this->get_table_alias('rfc_totals');
 
         $columns[] = (new column(
             'type',
@@ -97,61 +98,6 @@ class rfc extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_fields("{$rfcalias}.type")
             ->set_is_sortable(true);
-
-        $columns[] = (new column(
-            'cct_ept',
-            new lang_string('programme:cct_ept', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$rfcalias}.cct_ept, {$rfcalias}.o_cct_ept AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
-            'dd_rse',
-            new lang_string('programme:dd_rse', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$rfcalias}.dd_rse, {$rfcalias}.o_dd_rse AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
-            'type_ae',
-            new lang_string('programme:type_ae', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$rfcalias}.type_ae, {$rfcalias}.o_type_ae AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
-            'sequence',
-            new lang_string('programme:sequence', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_INTEGER)
-            ->add_fields("{$rfcalias}.sequence, {$rfcalias}.o_sequence AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
-            'intitule_seance',
-            new lang_string('programme:intitule_seance', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$rfcalias}.intitule_seance, {$rfcalias}.o_intitule_seance AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
 
         $columns[] = (new column(
             'cm',
@@ -231,50 +177,6 @@ class rfc extends base {
             ->set_callback([format::class, 'format_rfc_column']);
 
         $columns[] = (new column(
-            'perso_av',
-            new lang_string('programme:perso_av', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.perso_av, {$rfcalias}.o_perso_av AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
-            'perso_ap',
-            new lang_string('programme:perso_ap', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_FLOAT)
-            ->add_fields("{$rfcalias}.perso_ap, {$rfcalias}.o_perso_ap AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
-            'consignes',
-            new lang_string('programme:consignes', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$rfcalias}.consignes, {$rfcalias}.o_consignes AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
-            'supports',
-            new lang_string('programme:supports', 'customfield_sprogramme'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->set_type(column::TYPE_TEXT)
-            ->add_fields("{$rfcalias}.supports, {$rfcalias}.o_supports AS oldvalue")
-            ->set_is_sortable(true)
-            ->set_callback([format::class, 'format_rfc_column']);
-
-        $columns[] = (new column(
             'timecreated',
             new lang_string('programme:timecreated', 'customfield_sprogramme'),
             $this->get_entity_name()
@@ -301,46 +203,6 @@ class rfc extends base {
     #[\Override]
     protected function get_all_filters(): array {
         $rfcalias = $this->get_table_alias('rfc');
-
-        $filters[] = (new filter(
-            text::class,
-            'intitule_seance',
-            new lang_string('programme:intitule_seance', 'customfield_sprogramme'),
-            $this->get_entity_name(),
-            "{$rfcalias}.intitule_seance"
-        ))->add_joins($this->get_joins());
-
-        $filters[] = (new filter(
-            text::class,
-            'cct_ept',
-            new lang_string('programme:cct_ept', 'customfield_sprogramme'),
-            $this->get_entity_name(),
-            "{$rfcalias}.cct_ept"
-        ))->add_joins($this->get_joins());
-
-        $filters[] = (new filter(
-            text::class,
-            'dd_rse',
-            new lang_string('programme:dd_rse', 'customfield_sprogramme'),
-            $this->get_entity_name(),
-            "{$rfcalias}.dd_rse"
-        ))->add_joins($this->get_joins());
-
-        $filters[] = (new filter(
-            text::class,
-            'type_ae',
-            new lang_string('programme:type_ae', 'customfield_sprogramme'),
-            $this->get_entity_name(),
-            "{$rfcalias}.type_ae"
-        ))->add_joins($this->get_joins());
-
-        $filters[] = (new filter(
-            text::class,
-            'sequence',
-            new lang_string('programme:sequence', 'customfield_sprogramme'),
-            $this->get_entity_name(),
-            "{$rfcalias}.sequence"
-        ))->add_joins($this->get_joins());
 
         $filters[] = (new filter(
             text::class,
@@ -415,22 +277,6 @@ class rfc extends base {
         ))->add_joins($this->get_joins());
 
         $filters[] = (new filter(
-            text::class,
-            'consignes',
-            new lang_string('programme:consignes', 'customfield_sprogramme'),
-            $this->get_entity_name(),
-            "{$rfcalias}.consignes"
-        ))->add_joins($this->get_joins());
-
-        $filters[] = (new filter(
-            text::class,
-            'supports',
-            new lang_string('programme:supports', 'customfield_sprogramme'),
-            $this->get_entity_name(),
-            "{$rfcalias}.supports"
-        ))->add_joins($this->get_joins());
-
-        $filters[] = (new filter(
             user::class,
             'usermodified',
             new lang_string('programme:usermodified', 'customfield_sprogramme'),
@@ -474,17 +320,7 @@ class rfc extends base {
         }
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('datafieldid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('moduleid', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
-        $table->add_field('modulename', XMLDB_TYPE_CHAR, '254', null, null, null, null);
-        $table->add_field('modulesortorder', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('type', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('sortorder', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
         $table->add_field('uc', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('cct_ept', XMLDB_TYPE_CHAR, '254', null, null, null, null);
-        $table->add_field('dd_rse', XMLDB_TYPE_CHAR, '254', null, null, null, null);
-        $table->add_field('type_ae', XMLDB_TYPE_CHAR, '254', null, null, null, null);
-        $table->add_field('sequence', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('intitule_seance', XMLDB_TYPE_TEXT, null, null, null, null, null);
         $table->add_field('cm', XMLDB_TYPE_FLOAT, null, null, null, null, null);
         $table->add_field('td', XMLDB_TYPE_FLOAT, null, null, null, null, null);
         $table->add_field('tp', XMLDB_TYPE_FLOAT, null, null, null, null, null);
@@ -494,24 +330,6 @@ class rfc extends base {
         $table->add_field('fmp', XMLDB_TYPE_FLOAT, null, null, null, null, null);
         $table->add_field('perso_av', XMLDB_TYPE_FLOAT, null, null, null, null, null);
         $table->add_field('perso_ap', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('consignes', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('supports', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('o_cct_ept', XMLDB_TYPE_CHAR, '254', null, null, null, null);
-        $table->add_field('o_dd_rse', XMLDB_TYPE_CHAR, '254', null, null, null, null);
-        $table->add_field('o_type_ae', XMLDB_TYPE_CHAR, '254', null, null, null, null);
-        $table->add_field('o_sequence', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('o_intitule_seance', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('o_cm', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_td', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_tp', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_tpa', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_tc', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_aas', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_fmp', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_perso_av', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_perso_ap', XMLDB_TYPE_FLOAT, null, null, null, null, null);
-        $table->add_field('o_consignes', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('o_supports', XMLDB_TYPE_TEXT, null, null, null, null, null);
         $table->add_field('snapshotsha1', XMLDB_TYPE_TEXT, null, null, null, null, null);
         $table->add_field('adminid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('usercreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
@@ -547,6 +365,8 @@ class rfc extends base {
             if (!is_array($rfcinfos)) {
                 continue;
             }
+            $pm = new programme_manager($rfcitem->datafieldid);
+            $sums = $pm->get_sums($rfcinfos);
             $rfcobject = (object)[
                 'datafieldid' => $rfcitem->datafieldid,
                 'type' => $rfcitem->type,
@@ -565,18 +385,7 @@ class rfc extends base {
                 $rfcobject->modulesortorder = $rfcinfo['modulesortorder'] ?? null;
                 $cf = \core_customfield\data_controller::create(intval($rfcitem->datafieldid));
                 $rfcobject->uc = $cf->get('instanceid');
-                foreach ($rfcinfo['rows'] as $row) {
-                    $rfcobject->sortorder = $rfcinfo['moduleid'] ?? null;
-                    foreach ($rfccolumns as $column) {
-                        foreach ($row['cells'] as $cell) {
-                            if ($cell['column'] === $column) {
-                                $rfcobject->{$column} = $cell['value'];
-                                $rfcobject->{'o_' . $column} = $cell['oldvalue'] ?? null;
-                            }
-                        }
-                    }
-                    $DB->insert_record(self::RFC_TEMP_TABLE_NAME, $rfcobject);
-                }
+                $DB->insert_record(self::RFC_TEMP_TABLE_NAME, $rfcobject);
             }
         }
         $rfcitems->close();

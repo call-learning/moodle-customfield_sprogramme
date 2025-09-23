@@ -1,160 +1,161 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="customfield/field/sprogramme/db" VERSION="20250910" COMMENT="XMLDB for programme custom field"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+<XMLDB PATH="customfield/field/sprogramme/db" VERSION="20250923" COMMENT="XMLDB for programme custom field"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
-    <TABLES>
-        <TABLE NAME="customfield_sprogramme" COMMENT="Combined information for the programme">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="moduleid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="uc" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course identifier"/>
-                <FIELD NAME="cct_ept" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="CCT / EPT"/>
-                <FIELD NAME="dd_rse" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="DD / RSE"/>
-                <FIELD NAME="type_ae" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="Type AEEEV"/>
-                <FIELD NAME="sequence" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Sequence in module"/>
-                <FIELD NAME="intitule_seance" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Title of the session/exercise"/>
-                <FIELD NAME="cm" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="CM hours"/>
-                <FIELD NAME="td" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TD hours"/>
-                <FIELD NAME="tp" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TP hours"/>
-                <FIELD NAME="tpa" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TPa hours"/>
-                <FIELD NAME="tc" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TC hours"/>
-                <FIELD NAME="aas" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="AAS hours"/>
-                <FIELD NAME="fmp" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="FMP hours"/>
-                <FIELD NAME="perso_av" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="Personal hours before"/>
-                <FIELD NAME="perso_ap" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="Personal hours after"/>
-                <FIELD NAME="consignes" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Work instructions for the session"/>
-                <FIELD NAME="supports" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Pedagogical supports"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-                <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="customfield_sprogramme_disc" COMMENT="Linked disciplines">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
-                <FIELD NAME="did" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
-                <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-                <KEY NAME="fk_programme" TYPE="foreign" FIELDS="pid" REFTABLE="customfield_sprogramme" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="customfield_sprogramme_competencies" COMMENT="Linked competencies">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
-                <FIELD NAME="cid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
-                <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="fk_programme" TYPE="foreign" FIELDS="pid" REFTABLE="customfield_sprogramme" REFFIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="customfield_sprogramme_module" COMMENT="Default comment for the table, please edit me">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="name" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-                <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="customfield_sprogramme_rfc" COMMENT="request for change">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="type id"/>
-                <FIELD NAME="snapshot" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="adminid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-                <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="customfield_sprogramme_notification" COMMENT="Store email notification info">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="notifid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="recipient" TYPE="char" LENGTH="254" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="notification" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="subject" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="body" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="status" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-                <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="customfield_sprogramme_disclist" COMMENT="Store discipline structure for study programme">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="uniqueid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="parent" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-        <TABLE NAME="customfield_sprogramme_complist" COMMENT="Store competence structure for study programme">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="uniqueid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="parent" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
-            </KEYS>
-        </TABLE>
-    </TABLES>
+  <TABLES>
+    <TABLE NAME="customfield_sprogramme" COMMENT="Combined information for the programme">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="moduleid" TYPE="int" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="uc" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course identifier"/>
+        <FIELD NAME="cct_ept" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="CCT / EPT"/>
+        <FIELD NAME="dd_rse" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="DD / RSE"/>
+        <FIELD NAME="type_ae" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false" COMMENT="Type AEEEV"/>
+        <FIELD NAME="sequence" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Sequence in module"/>
+        <FIELD NAME="intitule_seance" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Title of the session/exercise"/>
+        <FIELD NAME="cm" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="CM hours"/>
+        <FIELD NAME="td" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TD hours"/>
+        <FIELD NAME="tp" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TP hours"/>
+        <FIELD NAME="tpa" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TPa hours"/>
+        <FIELD NAME="tc" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="TC hours"/>
+        <FIELD NAME="aas" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="AAS hours"/>
+        <FIELD NAME="fmp" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="FMP hours"/>
+        <FIELD NAME="perso_av" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="Personal hours before"/>
+        <FIELD NAME="perso_ap" TYPE="float" NOTNULL="false" SEQUENCE="false" COMMENT="Personal hours after"/>
+        <FIELD NAME="consignes" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Work instructions for the session"/>
+        <FIELD NAME="supports" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Pedagogical supports"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_disc" COMMENT="Linked disciplines">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
+        <FIELD NAME="did" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
+        <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="fk_programme" TYPE="foreign" FIELDS="pid" REFTABLE="customfield_sprogramme" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_competencies" COMMENT="Linked competencies">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="pid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key to Remplissage table"/>
+        <FIELD NAME="cid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Discipline id"/>
+        <FIELD NAME="percentage" TYPE="float" NOTNULL="true" SEQUENCE="false" COMMENT="Percentage of discipline"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_programme" TYPE="foreign" FIELDS="pid" REFTABLE="customfield_sprogramme" REFFIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_module" COMMENT="Default comment for the table, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_rfc" COMMENT="request for change">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="type id"/>
+        <FIELD NAME="snapshot" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="adminid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Use who accepted or rejected the rfc"/>
+        <FIELD NAME="usercreated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Use who created the rfc"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_notification" COMMENT="Store email notification info">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="notifid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="datafieldid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="recipient" TYPE="char" LENGTH="254" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="notification" TYPE="char" LENGTH="254" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="subject" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="body" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="status" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="datafieldid_fk" TYPE="foreign" FIELDS="datafieldid" REFTABLE="customfield_data" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_disclist" COMMENT="Store discipline structure for study programme">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="uniqueid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="parent" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="customfield_sprogramme_complist" COMMENT="Store competence structure for study programme">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="uniqueid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="parent" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="usermodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
 </XMLDB>

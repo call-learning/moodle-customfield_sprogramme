@@ -118,7 +118,7 @@ final class submit_rfc_test extends \externallib_advanced_testcase {
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $pgenerator->create_rfc(
             $cfdata->get('id'),
-            userid: $users[1]->id,
+            usercreated: $users[1]->id,
             snapshot: json_encode($sampleprogrammedata[0])
         );
         return [

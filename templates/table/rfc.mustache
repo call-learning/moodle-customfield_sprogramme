@@ -40,10 +40,14 @@
                 <div class="actions">
                 {{#canaccept}}
                     <a class="btn btn-sm btn-success" data-action="acceptrfc">{{#str}}accept, customfield_sprogramme{{/str}}</a>
-                    <a class="btn btn-sm btn-secondary" data-action="rejectrfc">{{#str}}reject, customfield_sprogramme{{/str}}</a>
                 {{/canaccept}}
-                {{#cansubmit}}
+                {{#canreject}}
+                    <a class="btn btn-sm btn-secondary" data-action="rejectrfc">{{#str}}reject, customfield_sprogramme{{/str}}</a>
+                {{/canreject}}
+                {{#canremove}}
                     <a class="btn btn-sm btn-secondary" data-action="removerfc">{{#str}}removerfc, customfield_sprogramme{{/str}}</a>
+                {{/canremove}}
+                {{#cansubmit}}
                     <a class="btn btn-sm btn-success" data-action="submitrfc">{{#str}}submitrfc, customfield_sprogramme{{/str}}</a>
                 {{/cansubmit}}
                 {{#issubmitted}}

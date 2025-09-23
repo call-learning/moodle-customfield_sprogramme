@@ -228,7 +228,7 @@ final class programme_manager_test extends \advanced_testcase {
             $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
             $pgenerator->create_rfc(
                 $this->cfdata->get('id'),
-                userid: $users['teacher1']->id,
+                usercreated: $users['teacher1']->id,
                 type: sprogramme_rfc::RFC_SUBMITTED,
                 snapshot: json_encode($this->sampleprogrammedata[0])
             );
@@ -266,7 +266,7 @@ final class programme_manager_test extends \advanced_testcase {
         $rfcmanager = new rfc_manager($this->cfdata->get('id'));
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            userid: $teacher2->id,
+            usercreated: $teacher2->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
             snapshot: json_encode($this->sampleprogrammedata[0])
         );
@@ -321,7 +321,7 @@ final class programme_manager_test extends \advanced_testcase {
         if ($rfcstatus != -1) {
             $pgenerator->create_rfc(
                 $this->cfdata->get('id'),
-                userid: $teacher1->id,
+                adminuserid: $teacher1->id,
                 type: $rfcstatus,
                 snapshot: json_encode($this->sampleprogrammedata[0])
             );
@@ -602,7 +602,7 @@ final class programme_manager_test extends \advanced_testcase {
         $this->setUser($teacher1);
         $rfc1 = $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            userid: $teacher1->id,
+            usercreated: $teacher1->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
             snapshot: json_encode($this->sampleprogrammedata[0])
         );
@@ -617,7 +617,7 @@ final class programme_manager_test extends \advanced_testcase {
         $modifieddata[0]['rows'][0]['dd_rse'] = 'New RSE Value';
         $rfc2 = $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            userid: $teacher1->id,
+            usercreated: $teacher1->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
             snapshot: json_encode($modifieddata)
         );

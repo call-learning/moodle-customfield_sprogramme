@@ -864,7 +864,7 @@ class Manager {
     async rejectRfc(btn) {
         const pending = new Pending('customfield_sprogramme/manager:rejectRFC');
         const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
+        const response = await Repository.rejectRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
             await this.getTableData();
         }

@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace customfield_sprogramme\reportbuilder\local\helpers;
 
+use core\output\html_writer;
 use stdClass;
 
 /**
@@ -40,10 +41,10 @@ class format {
             return '';
         }
         $displayvalue = $value ?? '';
-        $displayvalue = strval($displayvalue);
+        $displayvalue = html_writer::span($displayvalue);
         if (!empty($row->oldvalue)) {
-            $displayvalue .= " (-> {$row->oldvalue})";
+            $displayvalue .= html_writer::tag('strong', " ({$row->oldvalue})");;
         }
-        return $displayvalue;
+        return html_writer::div($displayvalue);
     }
 }

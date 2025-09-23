@@ -172,12 +172,14 @@ class get_data extends external_api {
                 'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
                 'issubmitted' => new external_value(PARAM_BOOL, 'Is submitted', VALUE_OPTIONAL),
                 'canaccept' => new external_value(PARAM_BOOL, 'Can accept', VALUE_OPTIONAL),
-                'cansubmit' => new external_value(PARAM_BOOL, 'C an submit', VALUE_OPTIONAL),
+                'canreject' => new external_value(PARAM_BOOL, 'Can reject', VALUE_OPTIONAL),
+                'canremove' => new external_value(PARAM_BOOL, 'Can remove', VALUE_OPTIONAL),
+                'cansubmit' => new external_value(PARAM_BOOL, 'Can submit', VALUE_OPTIONAL),
                 'cancancel' => new external_value(PARAM_BOOL, 'Can cancel', VALUE_OPTIONAL),
                 'userinfo' => new external_single_structure([
                     'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
                     'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
-                ], 'User Info', VALUE_OPTIONAL),
+                ], 'User who created the RFC', VALUE_OPTIONAL),
             ], 'RFC data', VALUE_OPTIONAL),
             'canedit' => new external_value(PARAM_BOOL, 'Can edit', VALUE_REQUIRED),
         ]);

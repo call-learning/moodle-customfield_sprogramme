@@ -144,22 +144,28 @@ class customfield_sprogramme_generator extends component_generator_base {
      * Create a new RFC setting for a sprogramme field.
      *
      * @param int $datafieldid  the data field id
-     * @param int $userid the user id (default to admin)
+     * @param int $adminuserid the user id (default to admin)
      * @param int $type the type of rfc
      * @param string $snapshot the snapshot data (json)
+     * @param int $usercreated the user who created the rfc (default to admin)
      * @return stdClass
      */
     public function create_rfc(
         int $datafieldid,
-        int $userid = 0,
         int $type = sprogramme_rfc::RFC_REQUESTED,
-        string $snapshot = '{}'
+        string $snapshot = '{}',
+        int $usercreated = 0,
+        int $adminuserid = 0,
     ): stdClass {
+        global $USER;
         $rfc = new sprogramme_rfc(0);
         $rfc->set('datafieldid', $datafieldid);
         $rfc->set('type', $type);
         $rfc->set('snapshot', $snapshot);
-        $rfc->set('adminid', $userid ?: get_admin()->id);
+        if ($adminuserid) {
+            $rfc->set('adminid', $adminuserid);
+        }
+        $rfc->set('usercreated', $usercreated ?: $USER->id);
         $rfc->save();
         return $rfc->to_record();
     }

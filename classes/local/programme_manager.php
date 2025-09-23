@@ -519,11 +519,15 @@ class programme_manager {
     /**
      * Get the sums of the numerice column values for a given courseid
      *
+     * @param array|null $fromdata If provided, the sums will be calculated from this data instead of the database.
      * @return array $columns
      */
-    public function get_sums(): array {
+    public function get_sums(?array $fromdata = null): array {
         $numericcomlumns = self::get_numeric_columns();
-        $data = self::get_data();
+        $data = $fromdata;
+        if (empty($fromdata)) {
+            $data = self::get_data();
+        }
         $columnstructure = self::get_column_structure();
         $columnstotals = self::get_column_totals($data, $columnstructure);
         // Sums are found in the first module.

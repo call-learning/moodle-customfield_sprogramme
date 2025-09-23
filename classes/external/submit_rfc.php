@@ -61,7 +61,7 @@ class submit_rfc extends external_api {
         self::validate_context($context);
         $rfcmanager = new rfc_manager($datafieldid);
         $rfc = new rfc_manager($datafieldid);
-        if (!$rfc->can_submit()) {
+        if (!$rfc->can_submit($params['userid'])) {
             throw new \moodle_exception('rfcsubmissionnotallowed', 'customfield_sprogramme');
         }
         return $rfcmanager->submit($params['userid']);
