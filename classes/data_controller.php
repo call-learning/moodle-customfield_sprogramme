@@ -31,7 +31,6 @@ use ReflectionClass;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class data_controller extends \core_customfield\data_controller {
-
     /** @var programme_manager|null $programmemanger The programme manager instance. */
     protected ?programme_manager $programmemanger = null;
 

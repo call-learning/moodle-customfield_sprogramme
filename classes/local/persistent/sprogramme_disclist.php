@@ -78,7 +78,7 @@ class sprogramme_disclist extends persistent {
         $sorted = [];
         foreach ($headings as $headings) {
             $items = self::get_records(['parent' => $headings->get('uniqueid')], 'sortorder');
-            $itemsmap = array_map(function($item) {
+            $itemsmap = array_map(function ($item) {
                 return [
                     'id' => $item->get('id'),
                     'uniqueid' => $item->get('uniqueid'),

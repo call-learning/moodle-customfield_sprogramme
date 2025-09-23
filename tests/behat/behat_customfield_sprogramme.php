@@ -20,7 +20,7 @@ require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
-use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use Behat\Mink\Exception\ExpectationException;
 
 /**
  * Behat steps in plugin customfield_sprogramme
@@ -31,7 +31,6 @@ use Behat\Mink\Exception\ExpectationException as ExpectationException;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_customfield_sprogramme extends behat_base {
-
     /**
      * Sets a specific cell in modulenr x , in rownr x, in a columnname to a specific value.
      *
@@ -204,8 +203,9 @@ class behat_customfield_sprogramme extends behat_base {
     public static function get_partial_named_selectors(): array {
         return [
             new behat_component_named_selector(
-                'Competencies Form', [
-                    "//*[@data-region=%locator%][@data-type='competencies']"
+                'Competencies Form',
+                [
+                    "//*[@data-region=%locator%][@data-type='competencies']",
                 ],
             ),
         ];

@@ -39,6 +39,7 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  */
 final class get_data_test extends \externallib_advanced_testcase {
     use testcase_helper_trait;
+
     /**
      * Helper
      *

@@ -29,7 +29,6 @@ use customfield_sprogramme\local\persistent\sprogramme_disc;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class programme_importer_test extends \advanced_testcase {
-
     /**
      * @var int $cfdid The custom field instance data.
      */

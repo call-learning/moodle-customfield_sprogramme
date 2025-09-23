@@ -40,7 +40,6 @@ use lang_string;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rfc extends base {
-
     /**
      * The name of the temporary table used to store RFC data
      */
@@ -431,7 +430,6 @@ class rfc extends base {
             "{$rfcalias}.supports"
         ))->add_joins($this->get_joins());
 
-
         $filters[] = (new filter(
             user::class,
             'usermodified',
@@ -557,7 +555,7 @@ class rfc extends base {
                 'usermodified' => $rfcitem->usermodified,
             ];
 
-            foreach($rfcinfos as $rfcinfo) {
+            foreach ($rfcinfos as $rfcinfo) {
                 $sha1 = sha1($rfcitem->snapshot);
                 $rfcobject->snapshotsha1 = $sha1;
                 $rfcobject->moduleid = $rfcinfo['moduleid'] ?? null;
@@ -581,5 +579,4 @@ class rfc extends base {
         }
         $rfcitems->close();
     }
-
 }

@@ -84,7 +84,7 @@ class competency extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$competencyalias}.parent")
             ->set_is_sortable(true)
-            ->add_callback(static function(string $value): string {
+            ->add_callback(static function (string $value): string {
                 $record = sprogramme_complist::get_record(['id' => $value]);
                 return $record ? $record->get('name') : '';
             });
@@ -130,9 +130,9 @@ class competency extends base {
             $this->get_entity_name(),
             "{$competencyalias}.parent"
         ))->add_joins($this->get_joins())
-            ->set_options_callback(static function(): array {
+            ->set_options_callback(static function (): array {
                 $options = sprogramme_complist::get_records(['type' => 'item'], 'name');
-                $options = array_map(function($option) {
+                $options = array_map(function ($option) {
                     return $option->get('name');
                 }, $options);
                 core_collator::asort($options);

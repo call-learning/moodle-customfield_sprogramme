@@ -172,4 +172,3 @@ $string['tpa_help'] = 'TP sur animaux sains : Séances d’enseignement où les 
 $string['unsavedchanges'] = 'Vous avez des modifications non enregistrées. Voulez-vous fermer le formulaire sans enregistrer ?';
 $string['usernotfound'] = 'Utilisateur non trouvé';
 $string['value'] = 'Valeur';
-

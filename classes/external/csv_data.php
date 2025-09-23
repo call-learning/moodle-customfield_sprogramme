@@ -29,8 +29,7 @@ use customfield_sprogramme\utils;
  * @copyright  2025 Bas Brands <bas@sonsbeekmedia.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class csv_data  extends external_api {
-
+class csv_data extends external_api {
     /**
      * Returns description of method parameters
      *

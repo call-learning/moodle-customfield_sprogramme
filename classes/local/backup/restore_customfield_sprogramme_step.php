@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace customfield_sprogramme\local\backup;
+
 use restore_path_element;
 use restore_structure_step;
-use stdClass;
 
 /**
  * Restore task that provides all the restore process for the sprogramme customfield.
@@ -27,22 +27,6 @@ use stdClass;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_customfield_sprogramme_step extends restore_structure_step {
-    /**
-     * Define the structure of the restore.
-     *
-     * @return array
-     */
-    protected function define_structure(): array {
-        $customfield = new restore_path_element('customfield', '/course/customfields/customfield'); // So we can map old to new.
-        $sprogramme = new restore_path_element('sprogramme', '/course/customfields/customfield/sprogrammes/sprogramme');
-        $module = new restore_path_element('module', '/course/customfields/customfield/modules/module');
-        $competencie = new restore_path_element('competency', '/course/customfields/customfield/sprogrammes/sprogramme/competencies/competency');
-        $discipline = new restore_path_element('discipline', '/course/customfields/customfield/sprogrammes/sprogramme/disciplines/discipline');
-        $disciplineinfos = new restore_path_element('disciplineinfo', '/course/disciplinelist/disciplineinfo');
-        $competencyinfos = new restore_path_element('competencyinfo', '/course/competencylist/competencyinfo');
-        return [$customfield,$sprogramme, $module, $competencie, $discipline, $disciplineinfos, $competencyinfos];
-    }
-
     /**
      * Process the customfield_module element.
      *
@@ -73,13 +57,13 @@ class restore_customfield_sprogramme_step extends restore_structure_step {
         $newitemid = $DB->insert_record('customfield_sprogramme', $data);
         $this->set_mapping('sprogramme', $oldid, $newitemid);
     }
+
     /**
      * Process the customfield element.
      *
      * @param array $data
      */
     public function process_customfield(array $data): void {
-
     }
 
     /**
@@ -124,7 +108,7 @@ class restore_customfield_sprogramme_step extends restore_structure_step {
         $data = (object) $data;
         $oldid = $data->id;
         $data->usermodified = $this->get_mappingid('user', $data->usermodified);
-        $existing = $DB->get_record('customfield_sprogramme_disclist', ['uniqueid' => $data->uniqueid ]);
+        $existing = $DB->get_record('customfield_sprogramme_disclist', ['uniqueid' => $data->uniqueid]);
         if ($existing) {
             $this->set_mapping('disciplineinfo', $oldid, $existing->id);
             return;
@@ -140,12 +124,12 @@ class restore_customfield_sprogramme_step extends restore_structure_step {
      *
      * @param array $data
      */
-   public function process_competencyinfo(array $data): void {
+    public function process_competencyinfo(array $data): void {
         global $DB;
         $data = (object) $data;
         $oldid = $data->id;
         $data->usermodified = $this->get_mappingid('user', $data->usermodified);
-        $existing = $DB->get_record('customfield_sprogramme_complist', ['uniqueid' => $data->uniqueid ]);
+        $existing = $DB->get_record('customfield_sprogramme_complist', ['uniqueid' => $data->uniqueid]);
         if ($existing) {
             $this->set_mapping('competencyinfo', $oldid, $existing->id);
             return;
@@ -154,5 +138,27 @@ class restore_customfield_sprogramme_step extends restore_structure_step {
         $data->usermodified = $this->get_mappingid('user', $data->usermodified);
         $newitemid = $DB->insert_record('customfield_sprogramme_complist', $data);
         $this->set_mapping('competencyinfo', $oldid, $newitemid);
+    }
+
+    /**
+     * Define the structure of the restore.
+     *
+     * @return array
+     */
+    protected function define_structure(): array {
+        $customfield = new restore_path_element('customfield', '/course/customfields/customfield'); // So we can map old to new.
+        $sprogramme = new restore_path_element('sprogramme', '/course/customfields/customfield/sprogrammes/sprogramme');
+        $module = new restore_path_element('module', '/course/customfields/customfield/modules/module');
+        $competencie = new restore_path_element(
+            'competency',
+            '/course/customfields/customfield/sprogrammes/sprogramme/competencies/competency'
+        );
+        $discipline = new restore_path_element(
+            'discipline',
+            '/course/customfields/customfield/sprogrammes/sprogramme/disciplines/discipline'
+        );
+        $disciplineinfos = new restore_path_element('disciplineinfo', '/course/disciplinelist/disciplineinfo');
+        $competencyinfos = new restore_path_element('competencyinfo', '/course/competencylist/competencyinfo');
+        return [$customfield, $sprogramme, $module, $competencie, $discipline, $disciplineinfos, $competencyinfos];
     }
 }

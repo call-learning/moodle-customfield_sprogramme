@@ -33,7 +33,6 @@ use customfield_sprogramme\utils;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_data extends external_api {
-
     /**
      * Returns description of method parameters
      *
@@ -54,7 +53,8 @@ class get_data extends external_api {
      * @return array $data - The data in JSON format
      */
     public static function execute(int $datafieldid, bool $showrfc = false): array {
-        $params = self::validate_parameters(self::execute_parameters(),
+        $params = self::validate_parameters(
+            self::execute_parameters(),
             ['datafieldid' => $datafieldid, 'showrfc' => $showrfc]
         );
         $datafieldid = $params['datafieldid'];
@@ -161,7 +161,9 @@ class get_data extends external_api {
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
                             'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
-                        ]), 'Option', VALUE_OPTIONAL,
+                        ]),
+                        'Option',
+                        VALUE_OPTIONAL,
                     ),
                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                 ])
@@ -181,4 +183,3 @@ class get_data extends external_api {
         ]);
     }
 }
-

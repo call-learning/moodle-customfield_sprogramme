@@ -107,9 +107,8 @@ class notifications {
         global $OUTPUT;
         $content = self::local_get_string('email:' . $notification, (object) $context);
         // The logo is a base64 encoded image.
+        // TODO: Check this as it seems odd.
         $logo = $OUTPUT->render_from_template('customfield_sprogramme/emails/logo', []);
-        // TODO: check this.
-        //$footer = self::local_get_string('email:footer', $logo);
         return $content . $logo;
     }
 

@@ -150,7 +150,7 @@ class programme_manager {
         $editall =
             $canaddrfc && has_capability('customfield/sprogramme:editall', utils::get_context_from_datafieldid($this->datafieldid));
 
-        $table = array_map(function($column) use ($canedit, $canaddrfc, $editall) {
+        $table = array_map(function ($column) use ($canedit, $canaddrfc, $editall) {
             if (!$column['canedit']) {
                 $column['canaddrfc'] = $canaddrfc;
                 $column['canedit'] = $canedit;
@@ -202,7 +202,7 @@ class programme_manager {
                 }
                 $rowchecked = false;
                 foreach ($row['cells'] as $cell) {
-                    $column = array_filter($columns, function($col) use ($cell) {
+                    $column = array_filter($columns, function ($col) use ($cell) {
                         return $col['column'] === $cell['column'];
                     });
                     if (empty($column)) {
@@ -359,7 +359,7 @@ class programme_manager {
         // Add the module name to the first item of the columns.
         $columns = array_merge(
             [
-                ['column' => 'module']
+                ['column' => 'module'],
             ],
             $columns,
             [
@@ -372,7 +372,7 @@ class programme_manager {
                 ['column' => 'competencies4'], ['column' => '%_competencies4'],
             ]
         );
-        $csvexport->add_data(array_map(function($column) {
+        $csvexport->add_data(array_map(function ($column) {
             return $column['column'];
         }, $columns));
         foreach ($data as $module) {
@@ -498,7 +498,7 @@ class programme_manager {
                     continue; // Skip deleted rows.
                 }
                 foreach ($row['cells'] as $cell) {
-                    $column = array_filter($columns, function($col) use ($cell) {
+                    $column = array_filter($columns, function ($col) use ($cell) {
                         return $col['column'] === $cell['column'];
                     });
                     if (empty($column)) {
@@ -530,7 +530,7 @@ class programme_manager {
         $columns = [];
 
         // Filter out the numeric columns.
-        $columns = array_filter($columnstotals, function($column) use ($numericcomlumns) {
+        $columns = array_filter($columnstotals, function ($column) use ($numericcomlumns) {
             foreach ($numericcomlumns as $numericcolumn) {
                 if ($column['column'] == $numericcolumn['column']) {
                     return true;

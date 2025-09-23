@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace customfield_sprogramme\local;
 
 use customfield_sprogramme\local\persistent\sprogramme;
@@ -552,8 +553,9 @@ final class programme_manager_test extends \advanced_testcase {
         $numericcolumns = programme_manager::get_numeric_columns();
         $this->assertEquals(
             [
-                'cm', 'td', 'tp', 'tpa', 'tc', 'aas', 'fmp', 'perso_av', 'perso_ap'
-            ], array_column($numericcolumns, 'column')
+                'cm', 'td', 'tp', 'tpa', 'tc', 'aas', 'fmp', 'perso_av', 'perso_ap',
+            ],
+            array_column($numericcolumns, 'column')
         );
     }
 

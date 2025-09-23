@@ -36,7 +36,7 @@ class setup {
      * @param bool $delete Whether to delete existing records first.
      * @return void
      */
-    public static function fill_disclist(bool $delete=true): void {
+    public static function fill_disclist(bool $delete = true): void {
         global $CFG;
 
         if ($delete) {
@@ -159,7 +159,6 @@ class setup {
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);
         }
-
     }
     /**
      * Migrate existing data from courseid to fieldid.
@@ -172,7 +171,11 @@ class setup {
         core_php_time_limit::raise(HOURSECS);
         $currentprogrammefieldid = $DB->get_field('customfield_field', 'id', ['type' => 'sprogramme']);
         if (!$currentprogrammefieldid) {
-            $currentprogrammefieldid = $DB->get_field('customfield_field', 'id', ['shortname' => 'programme', 'type' => 'text'], IGNORE_MISSING);
+            $currentprogrammefieldid = $DB->get_field(
+                'customfield_field',
+                'id',
+                ['shortname' => 'programme', 'type' => 'text']
+            );
         }
         if (!$currentprogrammefieldid) {
             throw new \moodle_exception('No sprogramme field found, cannot migrate data.');

@@ -32,7 +32,6 @@ use customfield_sprogramme\utils;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_programme_history extends external_api {
-
     /**
      * Returns description of method parameters
      *
@@ -53,7 +52,8 @@ class get_programme_history extends external_api {
      * @return array
      */
     public static function execute($rfcid, $datafieldid): array {
-        $params = self::validate_parameters(self::execute_parameters(),
+        $params = self::validate_parameters(
+            self::execute_parameters(),
             [
                 'rfcid' => $rfcid,
                 'datafieldid' => $datafieldid,

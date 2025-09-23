@@ -43,7 +43,6 @@ class formfield implements renderable, templatable {
          */
         private int $datafieldid
     ) {
-
     }
     /**
      * Export data for the template
@@ -63,7 +62,8 @@ class formfield implements renderable, templatable {
         $data->editrfcs = has_capability('customfield/sprogramme:editall', $PAGE->context);
 
         $data->rfcsurl =
-            new \moodle_url('/customfield/field/sprogramme/edit.php',
+            new \moodle_url(
+                '/customfield/field/sprogramme/edit.php',
                 [
                     'datafieldid' => $data->datafieldid,
                     'pagetype' => 'viewrfcs',

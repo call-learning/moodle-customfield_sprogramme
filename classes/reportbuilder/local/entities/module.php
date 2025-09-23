@@ -120,7 +120,6 @@ class module extends base {
         ))
             ->add_joins($this->get_joins());
 
-
         $filters[] = (new filter(
             user::class,
             'usermodified',
@@ -144,7 +143,8 @@ class module extends base {
             'timemodified',
             new lang_string('programme:timemodified', 'customfield_sprogramme'),
             $this->get_entity_name(),
-            "{$modulealias}.timemodified"))
+            "{$modulealias}.timemodified"
+        ))
             ->add_joins($this->get_joins());
         return $filters;
     }

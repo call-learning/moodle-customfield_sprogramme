@@ -38,7 +38,7 @@ final class update_sort_order_test extends \externallib_advanced_testcase {
     /**
      * Test the sort order update.
      */
-    public function test_sort_order() {
+    public function test_sort_order(): void {
         global $CFG;
         parent::setUp();
         $this->resetAfterTest();

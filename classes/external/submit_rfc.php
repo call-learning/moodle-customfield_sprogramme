@@ -49,7 +49,8 @@ class submit_rfc extends external_api {
      * @return bool
      */
     public static function execute(int $datafieldid, int $userid): bool {
-        $params = self::validate_parameters(self::execute_parameters(),
+        $params = self::validate_parameters(
+            self::execute_parameters(),
             [
                 'datafieldid' => $datafieldid,
                 'userid' => $userid,

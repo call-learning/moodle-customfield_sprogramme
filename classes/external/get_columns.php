@@ -51,7 +51,8 @@ class get_columns extends external_api {
      * @throws \invalid_parameter_exception
      */
     public static function execute(int $datafieldid): array {
-        $params = self::validate_parameters(self::execute_parameters(),
+        $params = self::validate_parameters(
+            self::execute_parameters(),
             [
                 'datafieldid' => $datafieldid,
             ]
@@ -88,7 +89,6 @@ class get_columns extends external_api {
                     'help' => new external_value(PARAM_TEXT, 'Help text', VALUE_OPTIONAL),
                     'columnid' => new external_value(PARAM_INT, 'Column id', VALUE_REQUIRED),
                     'length' => new external_value(PARAM_INT, 'Length', VALUE_REQUIRED),
-                    'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                     'field' => new external_value(PARAM_TEXT, 'Field', VALUE_REQUIRED),
                     'sample_value' => new external_value(PARAM_TEXT, 'Sample value', VALUE_REQUIRED),
                     'min' => new external_value(PARAM_INT, 'Min', VALUE_OPTIONAL),
@@ -101,7 +101,9 @@ class get_columns extends external_api {
                         new external_single_structure([
                             'name' => new external_value(PARAM_TEXT, 'Name', VALUE_REQUIRED),
                             'selected' => new external_value(PARAM_BOOL, 'Selected', VALUE_REQUIRED),
-                        ]), 'Option', VALUE_OPTIONAL
+                        ]),
+                        'Option',
+                        VALUE_OPTIONAL
                     ),
                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
 

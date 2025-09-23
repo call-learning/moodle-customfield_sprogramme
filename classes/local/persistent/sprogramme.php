@@ -33,12 +33,12 @@ class sprogramme extends persistent {
     const TABLE = 'customfield_sprogramme';
 
     /**
-     * Disciplines for the sprogramme.
+     * @var array $disciplines The disciplines for the sprogramme.
      */
     private array $disciplines = [];
 
     /**
-     * Competencies for the sprogramme.
+     * @var array $competencies The competencies for the sprogramme.
      */
     private array $competencies = [];
 
@@ -237,7 +237,7 @@ class sprogramme extends persistent {
         if ($tc) {
             $this->set('type_ae', 'tc');
         }
-        // Change the value to null if it is 0
+        // Change the value to null if it is 0.
         $tc = $tc == 0 ? null : $tc;
         $this->raw_set('tc', $tc);
     }

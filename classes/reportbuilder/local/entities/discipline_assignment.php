@@ -71,14 +71,16 @@ class discipline_assignment extends base {
         ))
             ->add_joins(
                 array_merge(
-                    $this->get_joins(), [
-                         "LEFT JOIN {customfield_sprogramme_disclist} {$disciplineelistalias} ON {$disciplinealias}.did = {$disciplineelistalias}.id"
+                    $this->get_joins(),
+                    [
+                         "LEFT JOIN {customfield_sprogramme_disclist}"
+                         . " {$disciplineelistalias} ON {$disciplinealias}.did = {$disciplineelistalias}.id",
                     ]
                 )
             )
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$disciplinealias}.percentage, {$disciplineelistalias}.name")
-            ->set_callback(function($value, stdClass $record) {
+            ->set_callback(function ($value, stdClass $record) {
                 if (!isset($record->name)) {
                     return '';
                 }
@@ -111,6 +113,4 @@ class discipline_assignment extends base {
     protected function get_default_tables(): array {
         return ['customfield_sprogramme_disc', 'customfield_sprogramme_disclist'];
     }
-
-
 }

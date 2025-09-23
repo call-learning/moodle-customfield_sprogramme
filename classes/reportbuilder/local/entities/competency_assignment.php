@@ -74,14 +74,16 @@ class competency_assignment extends base {
         ))
             ->add_joins(
                 array_merge(
-                    $this->get_joins(), [
-                        "LEFT JOIN {customfield_sprogramme_complist} {$competencyelistalias} ON {$competencyalias}.cid = {$competencyelistalias}.id"
+                    $this->get_joins(),
+                    [
+                        "LEFT JOIN {customfield_sprogramme_complist}"
+                        . " {$competencyelistalias} ON {$competencyalias}.cid = {$competencyelistalias}.id",
                     ]
                 )
             )
             ->set_type(column::TYPE_TEXT)
             ->add_fields("{$competencyalias}.percentage, {$competencyelistalias}.name")
-            ->set_callback(function($value, stdClass $record) {
+            ->set_callback(function ($value, stdClass $record) {
                 if (!isset($record->name)) {
                     return '';
                 }

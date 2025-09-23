@@ -34,7 +34,6 @@ class rfc_observer {
      * @param rfc_created $event
      */
     public static function rfc_created(rfc_created $event): void {
-
     }
 
     /**
@@ -48,5 +47,4 @@ class rfc_observer {
         $datafieldid = $eventdata['other']['datafieldid'];
         notifications::add_notification('rfc', $userid, $datafieldid);
     }
-
 }

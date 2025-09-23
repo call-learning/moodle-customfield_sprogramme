@@ -400,7 +400,6 @@ class programme extends base {
             "{$programmealias}.supports"
         ))->add_joins($this->get_joins());
 
-
         $filters[] = (new filter(
             user::class,
             'usermodified',

@@ -33,7 +33,7 @@ use stdClass;
  * @copyright  2023 CALL Learning - Laurent David laurent@call-learning.fr
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class viewrfcs implements renderable, named_templatable {
+class viewrfcs implements named_templatable, renderable {
     /**
      * @var int $status The status to display.
      */
@@ -73,7 +73,6 @@ class viewrfcs implements renderable, named_templatable {
         $paging = new paging_bar($numrfcs, $this->page, $limit, $url);
         $data['htmlpagingbar'] = $output->render($paging);
 
-
         $rfcs = sprogramme_rfc::get_rfcs($this->datafieldid, $this->status, 0, $start, $limit);
 
         $data['rfcs'] = [];
@@ -91,7 +90,6 @@ class viewrfcs implements renderable, named_templatable {
                 'status' => get_string('rfc:' . sprogramme_rfc::CHANGE_TYPES[$rfc->type], 'customfield_sprogramme'),
                 'action' => 'showrfc',
             ];
-
         }
         $data['version'] = time();
         $data['debug'] = $CFG->debugdisplay;
@@ -167,7 +165,6 @@ class viewrfcs implements renderable, named_templatable {
                 $this->accept_rfc();
                 break;
         }
-
 
         $delete = optional_param('delete', null, PARAM_INT);
         if ($delete) {

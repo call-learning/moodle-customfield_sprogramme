@@ -43,6 +43,9 @@ class sprogramme_rfc extends persistent {
         self::RFC_ACCEPTED => 'accepted',
         self::RFC_REJECTED => 'rejected',
     ];
+    /**
+     * Request for change cancelled.
+     */
     const RFC_CANCELLED = 0;
     /**
      * Request for change submitted.
@@ -61,7 +64,7 @@ class sprogramme_rfc extends persistent {
      */
     const RFC_REJECTED = 4;
 
-    // Define properties and methods as needed for the RFC functionality.
+    #[\Override]
     protected static function define_properties() {
         return [
             'courseid' => [

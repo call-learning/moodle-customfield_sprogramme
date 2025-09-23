@@ -30,7 +30,6 @@ use customfield_sprogramme\local\persistent\sprogramme_module as module;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class programme_importer extends base_persistent_importer {
-
     /**
      * @var array $modulecache Cache for the module id.
      */

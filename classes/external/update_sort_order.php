@@ -56,7 +56,8 @@ class update_sort_order extends external_api {
      * @return bool
      */
     public static function execute(string $type, int $datafieldid, int $moduleid, int $id, int $previd): bool {
-        $params = self::validate_parameters(self::execute_parameters(),
+        $params = self::validate_parameters(
+            self::execute_parameters(),
             [
                 'type' => $type,
                 'datafieldid' => $datafieldid,

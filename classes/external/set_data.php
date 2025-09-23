@@ -91,7 +91,8 @@ class set_data extends external_api {
      * @throws \invalid_parameter_exception
      */
     public static function execute(int $datafieldid, array $modules): array {
-        $params = self::validate_parameters(self::execute_parameters(),
+        $params = self::validate_parameters(
+            self::execute_parameters(),
             [
                 'datafieldid' => $datafieldid,
                 'modules' => $modules,
@@ -112,7 +113,8 @@ class set_data extends external_api {
         }
 
         $rfc = new rfc_manager($datafieldid);
-        if ($rfc->is_required()
+        if (
+            $rfc->is_required()
             && $programmemanager->has_protected_data_changes($modules)
         ) {
             if (!$rfc->can_add()) {
