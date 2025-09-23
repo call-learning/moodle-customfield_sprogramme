@@ -134,8 +134,8 @@ class rfc_manager {
      * @param int $userid The user id that created the rfc
      * @return bool
      */
-    public function can_cancel() {
-        $data = $this->get_data();
+    public function can_cancel(int $userid = 0) {
+        $data = $this->get_data($userid);
         return $data['cancancel'] ?? false;
     }
 
@@ -301,18 +301,21 @@ class rfc_manager {
     /**
      * Get the rfc data for a given datafield
      *
+     * @param int $adminid If provided, will get the rfc data for this adminid, otherwise the current user.
      * @return array $data
      */
-    public function get_data(): array {
+    public function get_data(int $adminid = 0): array {
         global $USER;
-        $changerecord = $this->get_current();
+        $adminid = $adminid ?: $USER->id;
+
+        $changerecord = $this->get_current($adminid);
         if (!$changerecord) {
             return []; // No RFC found for the course.
         }
         $data = [];
 
         $userid = $changerecord->get('adminid');
-        $cansumit = has_capability('customfield/sprogramme:edit', $this->context) && $userid == $USER->id;
+        $cansumit = has_capability('customfield/sprogramme:edit', $this->context) && $userid == $adminid;
         $canaccept = has_capability('customfield/sprogramme:editall', $this->context);
         $issubmitted = $changerecord->get('type') == sprogramme_rfc::RFC_SUBMITTED;
 
@@ -321,7 +324,7 @@ class rfc_manager {
         $data['userinfo'] = utils::get_user_info($userid);
         $data['canaccept'] = $canaccept;
         $data['cansubmit'] = $cansumit && !$issubmitted && !$canaccept;
-        $data['cancancel'] = $cansumit && $issubmitted && !$canaccept;
+        $data['cancancel'] = $cansumit && $issubmitted && $canaccept;
         return $data;
     }
 
@@ -362,9 +365,11 @@ class rfc_manager {
     /**
      * Get the current rfc for a given datafield
      *
+     * @param int $foradminid If provided, will get the rfc for this adminid, otherwise the first one found.
      * @return sprogramme_rfc|null
      */
-    public function get_current(): ?sprogramme_rfc {
-        return sprogramme_rfc::get_rfc($this->datafieldid);
+    public function get_current(int $foradminid = 0): ?sprogramme_rfc {
+        global $USER;
+        return sprogramme_rfc::get_rfc($this->datafieldid, $foradminid ?: $USER->id);
     }
 }

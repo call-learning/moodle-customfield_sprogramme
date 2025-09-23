@@ -44,6 +44,9 @@ class behat_customfield_sprogramme extends behat_base {
     public function set_cell_value_to($modulenr, $rownr, $columnname, $value) {
         $cell = $this->find_cell($modulenr, $rownr, $columnname);
         $cellinput = $cell->find('css', 'input, select, textarea');
+        if (!$cellinput) {
+            throw new ExpectationException('Cell input (field) not found in row ' . $rownr . ' and column ' . $columnname, $this->getSession());
+        }
         $fieldinstance = behat_field_manager::get_field_instance('field', $cellinput, $this->getSession());
         // Set the value.
         $fieldinstance->set_value($value);

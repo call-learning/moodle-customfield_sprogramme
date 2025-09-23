@@ -849,7 +849,7 @@ class Manager {
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.acceptRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
-            this.getTableData();
+            await this.getTableData();
             const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
             const modulesStatic = this.parseModules(update);
             State.setValue('modulesstatic', modulesStatic);
@@ -862,11 +862,13 @@ class Manager {
      * @return {void}
      */
     async rejectRfc(btn) {
+        const pending = new Pending('customfield_sprogramme/manager:rejectRFC');
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
-            this.getTableData();
+            await this.getTableData();
         }
+        pending.resolve();
     }
 
     /**
@@ -875,11 +877,13 @@ class Manager {
      * @return {void}
      */
     async submitRfc(btn) {
+        const pending = new Pending('customfield_sprogramme/manager:submitRFC');
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.submitRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
-            this.getTableData();
+            await this.getTableData();
         }
+        pending.resolve();
     }
 
     /**
@@ -888,11 +892,13 @@ class Manager {
      * @return {void}
      */
     async cancelRfc(btn) {
+        const pending = new Pending('customfield_sprogramme/manager:cancelRFC');
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
             await this.getTableData();
         }
+        pending.resolve();
     }
 
     /**
@@ -901,11 +907,13 @@ class Manager {
      * @return {void}
      */
     async removeRfc(btn) {
+        const pending = new Pending('customfield_sprogramme/manager:removeRFC');
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.removeRfc({datafieldid: this.datafieldid, userid: userid});
         if (response) {
-            this.getTableData();
+            await this.getTableData();
         }
+        pending.resolve();
     }
 
     /**

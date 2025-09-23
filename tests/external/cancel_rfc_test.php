@@ -70,7 +70,7 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
             'users' => $users,
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
-        $this->setUser($users[1]);
+        $this->setAdminUser();
         $cancelled = $this->cancel_rfc($cfdataid, $users[1]->id);
         $this->assertTrue($cancelled);
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_CANCELLED]));
@@ -87,7 +87,7 @@ final class cancel_rfc_test extends \externallib_advanced_testcase {
             'users' => $users,
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
-        $this->setUser($users[0]);
+        $this->setUser($users[1]); // The user cannot cancel his own rfc.
         $this->expectExceptionMessage('customfield_sprogramme/rfccancellationnotallowed');
         $this->cancel_rfc($cfdataid, $users[1]->id);
     }

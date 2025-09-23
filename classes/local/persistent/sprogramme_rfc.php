@@ -97,15 +97,14 @@ class sprogramme_rfc extends persistent {
      * Get all records for a given programme.
      *
      * @param int $datafieldid
+     * @param int $userid the admin id
      * @return sprogramme_rfc|null
      */
-    public static function get_rfc(int $datafieldid): ?sprogramme_rfc {
-        global $USER;
-
+    public static function get_rfc(int $datafieldid, int $userid): ?sprogramme_rfc {
         $types = [
-            ['type' => self::RFC_REQUESTED, 'adminid' => $USER->id],
-            ['type' => self::RFC_SUBMITTED, 'adminid' => $USER->id],
-            ['type' => self::RFC_CANCELLED, 'adminid' => $USER->id],
+            ['type' => self::RFC_REQUESTED, 'adminid' => $userid],
+            ['type' => self::RFC_SUBMITTED, 'adminid' => $userid],
+            ['type' => self::RFC_CANCELLED, 'adminid' => $userid],
             ['type' => self::RFC_SUBMITTED],
         ];
 
