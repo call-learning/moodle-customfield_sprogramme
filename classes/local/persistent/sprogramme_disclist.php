@@ -44,27 +44,27 @@ class sprogramme_disclist extends persistent {
             'uniqueid' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'competvet', 'uniqueid'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'uniqueid'),
             ],
             'type' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'competvet', 'type'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'type'),
             ],
             'parent' => [
                 'null' => NULL_ALLOWED,
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'competvet', 'parent'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'parent'),
             ],
             'name' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_TEXT,
-                'message' => new lang_string('invaliddata', 'competvet', 'name'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'name'),
             ],
             'sortorder' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'competvet', 'sortorder'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'sortorder'),
             ],
         ];
     }

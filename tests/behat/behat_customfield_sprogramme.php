@@ -143,6 +143,25 @@ class behat_customfield_sprogramme extends behat_base {
     }
 
     /**
+     * Adds a new module by clicking the add module button (data-action="addmodule").
+     *
+     * @Given /^I add a new module$/
+     * @throws ExpectationException
+     */
+    public function add_module() {
+        // Find the app.
+        $app = $this->find('css', '[data-region="app"]');
+
+        // Find the add module button.
+        $addmodulebutton = $app->find('css', '[data-action="addmodule"]');
+        if (empty($addmodulebutton)) {
+            throw new ElementNotFoundException($this->getSession(), 'add module button', 'css', '[data-action="addmodule"]');
+        }
+        // Click the add module button.
+        $addmodulebutton->click();
+    }
+
+    /**
      * Adds a new row to the module by clicking the add button (data-action="addrow").
      *
      * @Given /^I add a new row to mod "(?P<modulenr_string>(?:[^"]|\\")*)"$/
@@ -170,9 +189,9 @@ class behat_customfield_sprogramme extends behat_base {
         $rows = $module->findAll('css', '[data-region="rows"]');
 
         // Find the add button in the module.
-        $addbutton = $module->find('css', '[data-action="addrow"]');
+        $addbutton = $module->find('css', '[data-action="addrow"][data-id="-1"]');
         if (empty($addbutton)) {
-            throw new ElementNotFoundException($this->getSession(), 'add button', 'css', '[data-action="addrow"]');
+            throw new ElementNotFoundException($this->getSession(), 'add button', 'css', '[data-action="addrow"][data-id="-1"]');
         }
         // Click the add button.
         $addbutton->click();
@@ -262,5 +281,138 @@ class behat_customfield_sprogramme extends behat_base {
         $fieldcontroller->set($fieldcontroller->datafield(), 1);
         $fieldcontroller->set('contextid', context_course::instance($courseid)->id);
         $fieldcontroller->save();
+    }
+
+    /**
+     * Checks if text exists in the programme syllabus region.
+     *
+     * @Then /^I should see \"(?P<text_string>(?:[^\"]|\\\\\")*)\" in the programme region$/
+     * @param string $text The text to look for
+     * @throws ExpectationException
+     */
+    public function i_should_see_text_in_programme_region($text) {
+        // Find the programme region
+        $programmeregion = $this->find('css', '.customfield-sprogramme.syllabuspage');
+        if (!$programmeregion) {
+            throw new ElementNotFoundException($this->getSession(), 'programme region', 'css', '.customfield-sprogramme.syllabuspage');
+        }
+
+        // Check if the text exists in the programme region
+        $regiontext = $programmeregion->getText();
+        if (strpos($regiontext, $text) === false) {
+            throw new ExpectationException('Text "' . $text . '" not found in the programme region', $this->getSession());
+        }
+    }
+
+    /**
+     * Sets the module name for a specific module.
+     *
+     * @Given /^I set mod "(?P<modulenr_string>(?:[^\"]|\\\\\")*)\" name to "(?P<name_string>(?:[^\"]|\\\\\")*)\"$/
+     * @param string $modulenr The module number
+     * @param string $name The module name to set
+     * @throws ExpectationException
+     */
+    public function set_module_name($modulenr, $name) {
+        // Find the module using the same pattern as find_cell
+        $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
+        $baseelement = $this->find('xpath', $baselocator);
+
+        // Find the module name input within this module
+        $modulenameinput = $this->find(
+            'css',
+            'input[data-region="modulename"]',
+            new ExpectationException('Module name input not found for module ' . $modulenr, $this->getSession()),
+            $baseelement,
+        );
+
+        // Clear and set the new value
+        $modulenameinput->setValue($name);
+    }
+
+    /**
+     * Deletes a specific module by clicking the delete button.
+     *
+     * @Given /^I delete mod "(?P<modulenr_string>(?:[^\"]|\\\\\")*)\"$/
+     * @param string $modulenr The module number
+     * @throws ExpectationException
+     */
+    public function delete_module($modulenr) {
+        // Find the module using the same pattern as find_cell
+        $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
+        $baseelement = $this->find('xpath', $baselocator);
+
+        // Find the delete button within this module
+        $deletebutton = $this->find(
+            'css',
+            'button[data-action="deletemodule"]',
+            new ExpectationException('Delete button not found for module ' . $modulenr, $this->getSession()),
+            $baseelement,
+        );
+
+        // Click the delete button
+        $deletebutton->click();
+    }
+
+    /**
+     * Deletes a specific row within a module by clicking the delete button.
+     *
+     * @Given /^I delete mod "(?P<modulenr_string>(?:[^\"]|\\\\\")*)\" row "(?P<rownr_string>(?:[^\"]|\\\\\")*)\"$/
+     * @param string $modulenr The module number
+     * @param string $rownr The row number
+     * @throws ExpectationException
+     */
+    public function delete_row($modulenr, $rownr) {
+        // Find the specific row using the existing find_row method
+        $row = $this->find_row($modulenr, $rownr);
+
+        // Find the delete button within this row
+        $deletebutton = $this->find(
+            'css',
+            'button[data-action="deleterow"]',
+            new ExpectationException('Delete row button not found for module ' . $modulenr . ' row ' . $rownr, $this->getSession()),
+            $row,
+        );
+
+        // Click the delete button
+        $deletebutton->click();
+    }
+
+    /**
+     * Checks that text does NOT exist in the programme syllabus region.
+     *
+     * @Then /^I should not see \"(?P<text_string>(?:[^\"]|\\\\\")*)\" in the programme region$/
+     * @param string $text The text that should not be found
+     * @throws ExpectationException
+     */
+    public function i_should_not_see_text_in_programme_region($text) {
+        // Find the programme region
+        $programmeregion = $this->find('css', '.customfield-sprogramme.syllabuspage');
+        if (!$programmeregion) {
+            throw new ElementNotFoundException($this->getSession(), 'programme region', 'css', '.customfield-sprogramme.syllabuspage');
+        }
+
+        // Check if the text does NOT exist in the programme region
+        $regiontext = $programmeregion->getText();
+        if (strpos($regiontext, $text) !== false) {
+            throw new ExpectationException('Text "' . $text . '" was found in the programme region but should not be present', $this->getSession());
+        }
+    }
+
+    /**
+     * Closes the editing form by clicking the close button.
+     *
+     * @Given /^I close the programme editing form$/
+     * @throws ExpectationException
+     */
+    public function close_programme_editing_form() {
+        // Find the close button
+        $closebutton = $this->find(
+            'css',
+            'button[data-action="closeform"]',
+            new ExpectationException('Close form button not found', $this->getSession())
+        );
+
+        // Click the close button
+        $closebutton->click();
     }
 }

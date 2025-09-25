@@ -442,7 +442,7 @@
 .modal .modal-customfield_sprogramme_editor .modal-header {
   align-items: center;
 }
-.modal .modal-customfield_sprogramme_editor .modal-header .close {
+.modal .modal-customfield_sprogramme_editor .modal-header .btn-close {
   display: none;
 }
 .modal .modal-customfield_sprogramme_editor .close {

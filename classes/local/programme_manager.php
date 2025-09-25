@@ -317,6 +317,11 @@ class programme_manager {
                 return;
             }
             $prevrecord = sprogramme::get_record(['id' => $previd]);
+            if (!$prevrecord) {
+                // Handle case where prevrecord doesn't exist
+                $this->update_sort_order($type, $moduleid, $id, null);
+                return;
+            }
             $records = sprogramme::get_all_records_for_module($prevrecord->get('moduleid'));
             $sortorder = 0;
             foreach ($records as $record) {
