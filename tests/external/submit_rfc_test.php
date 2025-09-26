@@ -76,7 +76,7 @@ final class submit_rfc_test extends \externallib_advanced_testcase {
             'cfdataid' => $cfdataid,
         ] = $this->setup_course_and_rfc();
         $this->expectExceptionMessage('customfield_sprogramme/rfcsubmissionnotallowed');
-        $this->setUser($users[0]);
+        $this->setUser($users[2]);
         $this->submit_rfc($cfdataid, $users[1]->id);
     }
 
@@ -114,6 +114,7 @@ final class submit_rfc_test extends \externallib_advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
         $users[] = $this->getDataGenerator()->create_and_enrol($course, 'manager');
+        $users[] = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $users[] = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $pgenerator->create_rfc(

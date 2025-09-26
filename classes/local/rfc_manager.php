@@ -142,6 +142,7 @@ class rfc_manager {
      * @return bool
      */
     public function can_cancel(int $userid): bool {
+        global $USER;
         $changerecord = $this->get_current($userid);
         if (!$changerecord) {
             return false; // No RFC found for the course.
@@ -149,7 +150,8 @@ class rfc_manager {
 
         $cancancel = has_capability('customfield/sprogramme:edit', $this->context);
         $cancancel = $cancancel && $changerecord->get('type') == sprogramme_rfc::RFC_SUBMITTED;
-        $cancancel = $cancancel && !has_capability('customfield/sprogramme:editall', $this->context);
+        $cancancel = $cancancel && (($USER->id == $userid)
+                || has_capability('customfield/sprogramme:editall', $this->context));
         $cancancel = $cancancel && $changerecord->get('usercreated') == $userid;
         return $cancancel;
     }
@@ -216,12 +218,15 @@ class rfc_manager {
      * @return bool
      */
     public function can_submit(int $userid): bool {
+        global $USER;
         $changerecord = $this->get_current($userid);
         if (!$changerecord) {
             return false; // No RFC found for the course.
         }
         $usercreated = $changerecord->get('usercreated');
         $cansumit = has_capability('customfield/sprogramme:edit', $this->context) && $usercreated == $userid;
+        $cansumit = $cansumit && (($USER->id == $userid)
+            || has_capability('customfield/sprogramme:editall', $this->context));
         $cansumit = $cansumit && $changerecord->get('type') != sprogramme_rfc::RFC_SUBMITTED;
         return $cansumit;
     }
