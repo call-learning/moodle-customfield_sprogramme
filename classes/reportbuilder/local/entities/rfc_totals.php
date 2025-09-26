@@ -369,9 +369,9 @@ class rfc_totals extends base {
                 'timecreated' => $rfcitem->timecreated,
                 'timemodified' => $rfcitem->timemodified,
                 'usermodified' => $rfcitem->usermodified,
-                'uc' => $cf->get('instanceid')
+                'uc' => $cf->get('instanceid'),
             ];
-            foreach($sums as $sumvalue) {
+            foreach ($sums as $sumvalue) {
                 $rfcobject->{$sumvalue['column']} = $sumvalue['sum'];
             }
             $DB->insert_record(self::RFC_TEMP_TABLE_NAME, $rfcobject);

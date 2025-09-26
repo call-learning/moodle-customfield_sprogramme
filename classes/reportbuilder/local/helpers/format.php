@@ -43,7 +43,8 @@ class format {
         $displayvalue = $value ?? '';
         $displayvalue = html_writer::span($displayvalue);
         if (!empty($row->oldvalue)) {
-            $displayvalue .= html_writer::tag('strong', " ({$row->oldvalue})");;
+            $displayvalue .= html_writer::tag('strong', " ({$row->oldvalue})");
+            ;
         }
         return html_writer::div($displayvalue);
     }
