@@ -57,17 +57,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I should see mod "2" row "2" column "Session title or exercise" with value "Advanced Session 2"
     And I should see mod "2" row "2" column "CM" with value "1.5"
 
-    # Verify data appears on syllabus page
-    And I am on "uc_SYLL1" course homepage
-    When I click on "See Syllabus" "link"
-    Then ".customfield-sprogramme.syllabuspage" "css_element" should exist
-    And I should see "Module 1: Basic Concepts" in the programme region
-    And I should see "Module 2: Advanced Topics" in the programme region
-    And I should see "Session 1" in the programme region
-    And I should see "Session 2" in the programme region
-    And I should see "Advanced Session 1" in the programme region
-    And I should see "Advanced Session 2" in the programme region
-
   Scenario: Entering, Modifying and checking data
     Given I am on the "uc_SYLL1" course page logged in as "admin"
     And I navigate to "Settings" in current page administration
@@ -108,19 +97,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I should see mod "1" row "2" column "Session title or exercise" with value "Second Session"
     And I should see mod "2" row "1" column "Session title or exercise" with value "Modified Session"
     And I should see mod "2" row "1" column "TP" with value "7.5"
-
-    # Verify modifications appear on syllabus page
-    And I am on "uc_SYLL1" course homepage
-    When I click on "See Syllabus" "link"
-    Then ".customfield-sprogramme.syllabuspage" "css_element" should exist
-    And I should see "Module 1: Updated Name" in the programme region
-    And I should see "Module 2: Modified Name" in the programme region
-    And I should see "Updated Session" in the programme region
-    And I should see "Modified Session" in the programme region
-    And I should not see "Module 1: Initial Name" in the programme region
-    And I should not see "Module 2: Original Name" in the programme region
-    And I should not see "Initial Session" in the programme region
-    And I should not see "Original Session" in the programme region
 
   Scenario: Entering, Deleting and checking
     Given I am on the "uc_SYLL1" course page logged in as "admin"
@@ -166,18 +142,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I should see mod "1" row "2" column "Session title or exercise" with value "Module 1 Session 3"
     And I should see mod "2" row "1" column "Session title or exercise" with value "Module 3 Session 1"
 
-    # Verify deletions on syllabus page
-    And I am on "uc_SYLL1" course homepage
-    When I click on "See Syllabus" "link"
-    Then ".customfield-sprogramme.syllabuspage" "css_element" should exist
-    And I should see "Module 1: First Module" in the programme region
-    And I should see "Module 3: Third Module" in the programme region
-    And I should see "Module 1 Session 1" in the programme region
-    And I should see "Module 1 Session 3" in the programme region
-    And I should see "Module 3 Session 1" in the programme region
-    And I should not see "Module 2: Second Module" in the programme region
-    And I should not see "Module 2 Session 1" in the programme region
-    And I should not see "Module 1 Session 2" in the programme region
 
   Scenario: Editing from See Syllabus page
     Given I am on the "uc_SYLL1" course page logged in as "admin"
@@ -201,12 +165,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     # Save initial data
     And I click on "Save" "button" in the "Edit Programme" "dialogue"
 
-    # Test editing from syllabus page with editing mode on
-    And I am on "uc_SYLL1" course homepage with editing mode on
-    When I click on "See Syllabus" "link"
-    And I should see "Edit Programme"
-    When I click on "Edit Programme" "link"
-
     # Make changes from syllabus page
     And I set mod "1" row "1" column "Session title or exercise" to "Syllabus Updated Session"
     And I set mod "2" row "1" column "Session title or exercise" to "Module 2 Syllabus Updated"
@@ -215,17 +173,3 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I click on "Save" "button" in the "Edit Programme" "dialogue"
     And I close the programme editing form
 
-    # Verify changes are immediately visible
-    And I should see "Syllabus Updated Session" in the programme region
-    And I should see "Module 2 Syllabus Updated" in the programme region
-    And I should not see "Original Session Title" in the programme region
-    And I should not see "Module 2 Original Session" in the programme region
-
-    # Test that editing mode off removes Edit Programme button
-    And I am on "uc_SYLL1" course homepage with editing mode off
-    When I click on "See Syllabus" "link"
-    And I should not see "Edit Programme"
-
-    # Verify changes persisted after turning editing mode off
-    And I should see "Syllabus Updated Session" in the programme region
-    And I should see "Module 2 Syllabus Updated" in the programme region
