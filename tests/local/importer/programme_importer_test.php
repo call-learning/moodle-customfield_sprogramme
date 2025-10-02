@@ -78,8 +78,8 @@ final class programme_importer_test extends \advanced_testcase {
         $firstrecord = reset($records);
         $this->assertEquals('CM - phénomènes de transports', $firstrecord->get('intitule_seance'));
         $this->assertEquals('poly et PPT', $firstrecord->get('supports'));
-        $this->assertEquals(5, $firstrecord->get('cm'));
-        $this->assertEquals(5, $firstrecord->get('perso_ap'));
+        $this->assertEquals(4.5, $firstrecord->get('cm'));
+        $this->assertEquals(5.1, $firstrecord->get('perso_ap'));
         $disciplines = sprogramme_disc::get_all_records_for_programme($firstrecord->get('id'));
         $this->assertCount(2, $disciplines);
         $expecteddisciplines = [

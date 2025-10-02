@@ -96,7 +96,7 @@ class programme_importer extends base_persistent_importer {
                 if ($data->$property === '') {
                     $data->$property = null;
                 } else {
-                    $data->$property = (float) $data->$property;
+                    $data->$property = floatval(str_replace(',', '.', $data->$property));
                 }
             }
         }
