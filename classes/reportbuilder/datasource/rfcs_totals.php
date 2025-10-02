@@ -35,7 +35,7 @@ use customfield_sprogramme\reportbuilder\local\entities\rfc_totals;
 class rfcs_totals extends datasource {
     #[\Override]
     public static function get_name(): string {
-        return get_string('report:rfc', 'customfield_sprogramme');
+        return get_string('report:rfctotals', 'customfield_sprogramme');
     }
     #[\Override]
     public function get_default_columns(): array {

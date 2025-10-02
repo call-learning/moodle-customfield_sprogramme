@@ -31,7 +31,7 @@ use customfield_sprogramme\reportbuilder\local\entities\discipline;
 class disciplines extends datasource {
     #[\Override]
     public static function get_name(): string {
-        return get_string('report:discipline', 'customfield_sprogramme');
+        return get_string('report:disciplines', 'customfield_sprogramme');
     }
 
     #[\Override]

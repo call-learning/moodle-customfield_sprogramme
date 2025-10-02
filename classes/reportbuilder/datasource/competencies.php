@@ -31,7 +31,7 @@ use customfield_sprogramme\reportbuilder\local\entities\competency;
 class competencies extends datasource {
     #[\Override]
     public static function get_name(): string {
-        return get_string('report:competency', 'customfield_sprogramme');
+        return get_string('report:competencies', 'customfield_sprogramme');
     }
 
     #[\Override]

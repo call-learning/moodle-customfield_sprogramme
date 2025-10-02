@@ -34,7 +34,7 @@ use customfield_sprogramme\reportbuilder\local\entities\rfc;
 class rfcs extends datasource {
     #[\Override]
     public static function get_name(): string {
-        return get_string('report:rfc', 'customfield_sprogramme');
+        return get_string('report:rfcs', 'customfield_sprogramme');
     }
     #[\Override]
     public function get_default_columns(): array {
