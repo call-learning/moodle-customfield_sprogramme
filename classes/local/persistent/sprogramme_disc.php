@@ -72,9 +72,9 @@ class sprogramme_disc extends persistent {
      * @return string
      */
     public function get_name(): string {
-        $comp = sprogramme_disclist::get_record(['id' => $this->raw_get('did')], IGNORE_MISSING);
-        if ($comp) {
-            return $comp->get('name');
+        $disc = sprogramme_disclist::get_record(['uniqueid' => $this->raw_get('did')], IGNORE_MISSING);
+        if ($disc) {
+            return $disc->get('name');
         } else {
             return '';
         }

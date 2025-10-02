@@ -72,7 +72,7 @@ class sprogramme_comp extends persistent {
      * @return string
      */
     public function get_name(): string {
-        $comp = sprogramme_complist::get_record(['id' => $this->raw_get('cid')], IGNORE_MISSING);
+        $comp = sprogramme_complist::get_record(['uniqueid' => $this->raw_get('cid')], IGNORE_MISSING);
         if ($comp) {
             return $comp->get('name');
         } else {
