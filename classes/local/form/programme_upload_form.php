@@ -20,6 +20,8 @@ use context;
 use context_course;
 use context_user;
 use core_form\dynamic_form;
+use core_text;
+use csv_import_reader;
 use customfield_sprogramme\local\importer\programme_importer;
 use customfield_sprogramme\local\programme_manager;
 use customfield_sprogramme\utils;
@@ -59,7 +61,7 @@ class programme_upload_form extends dynamic_form {
                 $programmemanger = new programme_manager($data->datafieldid);
                 $programmemanger->delete_programme();
                 $programimporter = new programme_importer(['datafieldid' => $data->datafieldid]);
-                $programimporter->import($filepath, "comma");
+                $programimporter->import($filepath, $data->delimiter_name, $data->encoding);
             } finally {
                 unlink($filepath);
             }
@@ -114,10 +116,36 @@ class programme_upload_form extends dynamic_form {
         $datafieldid = $this->optional_param('datafieldid', null, PARAM_INT);
         $mform->addElement('hidden', 'datafieldid', $datafieldid);
         // Upload the CSV file.
-        $mform->addElement('filepicker', 'csvfile', get_string('csvfile', 'mod_data'), null, [
+        $mform->addElement('filepicker', 'csvfile', get_string('csvfile', 'customfield_sprogramme'), null, [
             'maxbytes' => 0,
             'accepted_types' => ['.csv'],
         ]);
+        $choices = self::get_delimiter_list();
+        $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'customfield_sprogramme'), $choices);
+        if (array_key_exists('cfg', $choices)) {
+            $mform->setDefault('delimiter_name', 'cfg');
+        } else if (get_string('listsep', 'langconfig') == ';') {
+            $mform->setDefault('delimiter_name', 'semicolon');
+        } else {
+            $mform->setDefault('delimiter_name', 'comma');
+        }
+        $choices = core_text::get_encodings();
+        $mform->addElement('select', 'encoding', get_string('encoding', 'customfield_sprogramme'), $choices);
+        $mform->setDefault('encoding', 'UTF-8');
+    }
+
+    /**
+     * Get list of cvs delimiters
+     *
+     * @return array suitable for selection box
+     */
+    private static function get_delimiter_list() {
+        global $CFG;
+        $delimiters = array('comma'=>',', 'semicolon'=>';', 'colon'=>':', 'tab'=>'\\t');
+        if (isset($CFG->CSV_DELIMITER) and strlen($CFG->CSV_DELIMITER) === 1 and !in_array($CFG->CSV_DELIMITER, $delimiters)) {
+            $delimiters['cfg'] = $CFG->CSV_DELIMITER;
+        }
+        return $delimiters;
     }
 
     /**

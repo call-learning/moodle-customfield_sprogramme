@@ -29,7 +29,7 @@ import {debounce} from 'core/utils';
 import componentInit from './local/components/table';
 import Pending from 'core/pending'; // For Behat to make sure that async calls are finished.
 import './tagmanager';
-import './programme_form';
+import initProgrammeForm from './programme_form';
 
 /**
  * Manager class.
@@ -1084,7 +1084,9 @@ class Manager {
  */
 const init = (element, datafieldid) => {
     componentInit();
-    return new Manager(element, datafieldid);
+    const manager = new Manager(element, datafieldid);
+    initProgrammeForm(manager);
+    return manager;
 };
 
 export default {

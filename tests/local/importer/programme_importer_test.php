@@ -101,4 +101,22 @@ final class programme_importer_test extends \advanced_testcase {
             $this->assertEquals($expectedcompetencies[$competency->get_name()], $competency->get('percentage'));
         }
     }
+
+
+    /**
+     * Test the importer with a sample CSV file with a different encoding.
+     *
+     * @covers \customfield_sprogramme\local\importer\programme_importer::import
+     */
+    function test_importer_with_encoding(): void {
+        global $CFG;
+        $this->resetAfterTest();
+        $filepath = $CFG->dirroot . '/customfield/field/sprogramme/tests/fixtures/programme_importer_encoded_windows.csv';
+        $programimporter = new programme_importer(['datafieldid' => $this->cfdid]);
+        $programimporter->import($filepath, "comma", "windows-1252");
+        $records = sprogramme::get_records(['datafieldid' => $this->cfdid]);
+        $this->assertCount(21, $records);
+        $firstrecord = reset($records);
+        $this->assertEquals('Histologie générale : les tissus', $firstrecord->get('intitule_seance'));
+    }
 }

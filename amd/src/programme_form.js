@@ -23,8 +23,9 @@
 
 import ModalForm from 'core_form/modalform';
 import {get_string as getString} from 'core/str';
+import Notification from "core/notification";
 
-const init = () => {
+const initProgrammeForm = (manager) => {
     document.addEventListener('click', (event) => {
         if (!event.target.closest('[data-action="programme-upload-form"]')) {
             return;
@@ -34,7 +35,7 @@ const init = () => {
 
         const modalForm = new ModalForm({
             modalConfig: {
-                title: getString('editsection'),
+                title: getString('uploadcsv', 'customfield_sprogramme'),
             },
             formClass: '\\customfield_sprogramme\\local\\form\\programme_upload_form',
             args: {
@@ -43,8 +44,18 @@ const init = () => {
             },
             saveButtonText: getString('save'),
         });
+        modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, event => {
+            if (event.detail.result) {
+                manager.getTableData();
+            } else {
+                Notification.addNotification({
+                    type: 'error',
+                    message: event.detail.errors.join('<br>')
+                });
+            }
+        });
         modalForm.show();
     });
 };
 
-init();
+export default initProgrammeForm;

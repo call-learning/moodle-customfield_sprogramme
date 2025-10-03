@@ -49,6 +49,8 @@ $string['competency_assignment:percentage'] = 'Pourcentage';
 $string['competency_assignment:percentagewithlabel'] = 'Pourcentage avec libellé';
 $string['confirm'] = 'Confirmer';
 $string['consignes_help'] = 'Cette case renseigne sur tout ce que doit faire l’étudiant pour préparer la séance / l’exercice avant de s’y présenter. Ce qui n’est pas indiqué ici ne peut pas être exigé lors de la séance / l’exercice.';
+$string['csvdelimiter'] = 'Délimiteur CSV';
+$string['csvfile'] = 'Fichier CSV';
 $string['dd_rse_help'] = 'Développement Durable / Responsabilité Sociétale et Environnementale : Cette case indique si la séance traite intégralement ou en partie de notions en lien avec le domaine DD / RSE.';
 $string['discipline:name'] = 'Nom';
 $string['discipline:parent'] = 'Parent';
@@ -74,6 +76,7 @@ $string['email:rfc'] = <<<'EOF'
 <p>Bien cordialement</p>
 EOF;
 $string['email:rfc:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
+$string['encoding'] = 'Encodage';
 $string['entity:competency'] = 'Compétence';
 $string['entity:competency_assignment'] = 'Affectation de compétence';
 $string['entity:discipline'] = 'Discipline';
@@ -172,5 +175,6 @@ $string['td_help'] = 'Travaux Dirigés : Séances d’enseignement dirigé au co
 $string['tp_help'] = 'Travaux Pratiques non cliniques : Séances d’enseignement où les étudiants manipulent eux-mêmes les ressources pédagogiques (logiciels, microscopes, expé en labo, etc) sans manipulation d’animaux, d’organes ou de mannequins.';
 $string['tpa_help'] = 'TP sur animaux sains : Séances d’enseignement où les étudiants travaillent eux-mêmes sur des animaux sains, des pièces anatomiques, des mannequins, des carcasses, etc. (par exemple : inspection ante mortem et post mortem, hygiène alimentaire, etc.). Toutes les activités VetSims sont incluses dans cette catégorie.';
 $string['unsavedchanges'] = 'Vous avez des modifications non enregistrées. Voulez-vous fermer le formulaire sans enregistrer ?';
+$string['uploadcsv'] = 'Charger un fichier CSV';
 $string['usernotfound'] = 'Utilisateur non trouvé';
 $string['value'] = 'Valeur';

@@ -49,6 +49,8 @@ $string['competency_assignment:percentage'] = 'Percentage';
 $string['competency_assignment:percentagewithlabel'] = 'Percentage with label';
 $string['confirm'] = 'Confirm';
 $string['consignes_help'] = 'This field indicates everything the student must do to prepare for the session/exercise before attending. Anything not indicated here cannot be required during the session/exercise.';
+$string['csvdelimiter'] = 'CSV delimiter';
+$string['csvfile'] = 'CSV file';
 $string['dd_rse_help'] = 'Sustainable Development / Social and Environmental Responsibility: This checkbox indicates whether the session fully or partially addresses concepts related to the SD / SER domain.';
 $string['discipline:name'] = 'Name';
 $string['discipline:parent'] = 'Parent';
@@ -72,6 +74,7 @@ $string['email:rfc'] = <<<'EOF'
 <p>Best regards</p>
 EOF;
 $string['email:rfc:subject'] = '[Syllabus] Request for programme change for: {$a->coursename}';
+$string['encoding'] = 'Encoding';
 $string['entity:competency'] = 'Competency';
 $string['entity:competency_assignment'] = 'Competency assignment';
 $string['entity:discipline'] = 'Discipline';
@@ -170,5 +173,6 @@ $string['td_help'] = 'Directed Work: Teaching sessions where students work alone
 $string['tp_help'] = 'Practical Work non-clinical: Teaching sessions where students themselves manipulate teaching resources (software, microscopes, lab experiments, etc.) without handling animals, organs, or mannequins.';
 $string['tpa_help'] = 'Practical Work on healthy animals: Teaching sessions where students work themselves on healthy animals, anatomical parts, mannequins, carcasses, etc. (for example: ante mortem and post mortem inspection, food hygiene, etc.). All VetSims activities are included in this category.';
 $string['unsavedchanges'] = 'You have unsaved changes. Do you want to close the form without saving?';
+$string['uploadcsv'] = 'Upload CSV file';
 $string['usernotfound'] = 'User not found';
 $string['value'] = 'Value';
