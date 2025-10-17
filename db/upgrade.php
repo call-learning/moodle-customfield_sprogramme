@@ -108,6 +108,17 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         // Sprogramme savepoint reached.
         upgrade_plugin_savepoint(true, 2025091304, 'customfield', 'sprogramme');
     }
+    if ($oldversion < 2025101700) {
+        // Rename field userid on table customfield_sprogramme_notification to NEWNAMEGOESHERE.
+        $table = new xmldb_table('customfield_sprogramme_notification');
+        $field = new xmldb_field('notifid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'id');
+
+        // Launch rename field userid.
+        $dbman->rename_field($table, $field, 'userid');
+
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2025101700, 'customfield', 'sprogramme');
+    }
 
     return true;
 }

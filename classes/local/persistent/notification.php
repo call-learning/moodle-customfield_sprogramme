@@ -17,6 +17,7 @@
 namespace customfield_sprogramme\local\persistent;
 
 use core\persistent;
+use core_user;
 use lang_string;
 
 /**
@@ -60,10 +61,10 @@ class notification extends persistent {
      */
     protected static function define_properties() {
         return [
-            'notifid' => [
+            'userid' => [
                 'null' => NULL_NOT_ALLOWED,
                 'type' => PARAM_INT,
-                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:notifid'),
+                'message' => new lang_string('invaliddata', 'customfield_sprogramme', 'notification:userid'),
             ],
             'courseid' => [
                 'null' => NULL_ALLOWED,
@@ -129,15 +130,30 @@ class notification extends persistent {
      * @return bool
      */
     public function can_send(): bool {
+        $emailsenabled = get_config('customfield_sprogramme', 'emailsenabled');
+        if (empty($emailsenabled)) {
+            return false;
+        }
         return $this->get('status') === self::STATUS_PENDING;
     }
 
     /**
-     * Get the pending notifications.
-     * @param int $status
-     * @return array
+     * Send the notification email.
      */
-    public static function get_notifications($status = self::STATUS_PENDING): array {
-        return self::get_records(['status' => $status], 'timecreated');
+    public function send() {
+        if (!$this->can_send()) {
+            return;
+        }
+        $noreplyuser = core_user::get_noreply_user();
+        $noreplyuser->email = $this->raw_get('recipient');
+        $subject = $this->raw_get('subject');
+        $body = $this->raw_get('body');
+        $success = email_to_user($noreplyuser, core_user::get_noreply_user(), $subject, $body);
+        if (!$success) {
+            debugging("Failed to send email to user ID {$noreplyuser->email}", DEBUG_DEVELOPER);
+        } else {
+            $this->raw_set('status', self::STATUS_SEND);
+            $this->save();
+        }
     }
 }

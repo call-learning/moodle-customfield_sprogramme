@@ -42,13 +42,16 @@ class notifications extends \core\task\scheduled_task {
      * Execute the task sending reminders to students who have items to do.
      */
     public function execute() {
-        $notifications = notification::get_notifications();
+        $emailsenabled = get_config('customfield_sprogramme', 'emailsenabled');
+        if (empty($emailsenabled)) {
+            return;
+        }
+        $notifications = notification::get_records(['status' => notification::STATUS_PENDING]);
         foreach ($notifications as $notification) {
             try {
-                $notification->update();
-                notificationsapi::send_email($notification);
+                $notification->send();
             } catch (\Exception $e) {
-                debugging("Exception when sending email to user ID {$notification->userid}: " . $e->getMessage(), DEBUG_DEVELOPER);
+                debugging("Exception when sending email to user ID {$notification->get('userid')}: " . $e->getMessage(), DEBUG_DEVELOPER);
             }
         }
     }

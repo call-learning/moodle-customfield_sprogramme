@@ -33,25 +33,32 @@ class notifications {
      * Set the notification for the given planning.
      *
      * @param string $type The type of notification to send.
-     * @param int $id The Notification ID.
+     * @param int $userid The Notification unique ID.
      * @param int $datafieldid The Data field ID.
      * @param array $context The email template context (planning, students, etc.).
      */
-    public static function add_notification(string $type, int $id, int $datafieldid, array $context = []) {
+    public static function add_notification(string $type, int $userid, int $datafieldid, array $context = []) {
         $context = self::add_global_context($context, $datafieldid);
         // Get the default language for the emails from the Course settings.
         $subject = self::local_get_string('email:' . $type . ':subject', (object) $context);
         $body = self::get_email_body($type, $context);
-
         $recipients = self::get_recipients();
-        $immediateemail = get_config('customfield_sprogramme', 'immediate_email');
 
         foreach ($recipients as $recipient) {
             try {
-                $nf = self::create($type, $id, $datafieldid, $recipient, $subject, $body, notification::STATUS_PENDING);
-                if ($immediateemail) {
-                    self::send_email($nf);
-                }
+                $nf = new notification(
+                    0,
+                    (object) [
+                        'notification' => $type,
+                        'userid' => $userid,
+                        'datafieldid' => $datafieldid,
+                        'recipient' => $recipient,
+                        'subject' => $subject,
+                        'body' => $body,
+                        'status' => notification::STATUS_PENDING,
+                    ]
+                );
+                $nf->save();
             } catch (\exception $e) {
                 debugging("Exception when sending email to user ID {$recipient->id}: " . $e->getMessage(), DEBUG_DEVELOPER);
             }
@@ -104,12 +111,8 @@ class notifications {
      * @return string
      */
     private static function get_email_body(string $notification, array $context): string {
-        global $OUTPUT;
         $content = self::local_get_string('email:' . $notification, (object) $context);
-        // The logo is a base64 encoded image.
-        // TODO: Check this as it seems odd.
-        $logo = $OUTPUT->render_from_template('customfield_sprogramme/emails/logo', []);
-        return $content . $logo;
+        return $content;
     }
 
     /**
@@ -126,43 +129,6 @@ class notifications {
         $recipients = explode(',', $recipients);
         $recipients = array_map('trim', $recipients);
         return $recipients;
-    }
-
-    /**
-     * Create a new notification.
-     *
-     * @param string $type The type of notification sent.
-     * @param int $id The Notification ID.
-     * @param int $datafieldid The Course ID.
-     * @param string $recipient The email address of the recipient.
-     * @param string $subject The email subject.
-     * @param string $body The email body content.
-     * @param int $status The status of the notification.
-     * @return notification
-     */
-    private static function create(
-        string $type,
-        int $id,
-        int $datafieldid,
-        string $recipient,
-        string $subject,
-        string $body,
-        int $status
-    ) {
-        $nf = new notification(
-            0,
-            (object) [
-                'notification' => $type,
-                'notifid' => $id,
-                'datafieldid' => $datafieldid,
-                'recipient' => $recipient,
-                'subject' => $subject,
-                'body' => $body,
-                'status' => $status,
-            ]
-        );
-        $nf->save();
-        return $nf;
     }
 
     /**

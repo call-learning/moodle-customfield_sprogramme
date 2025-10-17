@@ -43,6 +43,7 @@ if ($datafieldid) {
     $course = get_site();
 }
 require_login($course);
+require_capability('moodle/course:update', $context);
 $url = new moodle_url('/customfield/field/sprogramme/edit.php', ['datafieldid' => $datafieldid]);
 $PAGE->set_url($url);
 $PAGE->set_context($context);
@@ -61,15 +62,11 @@ switch ($pagetype) {
         break;
     case 'viewrfcs':
         $viewnotification = new viewrfcs($datafieldid);
+        $viewnotification->before_render();
         echo $renderer->render($viewnotification);
-        break;
-    case 'setup':
-        setup::fill_disclist();
-        setup::fill_complist();
         break;
     default:
         echo $OUTPUT->notification(get_string('invalidpagetype', 'customfield_sprogramme'), 'error');
         break;
 }
-
 echo $OUTPUT->footer();

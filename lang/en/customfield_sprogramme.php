@@ -74,6 +74,8 @@ $string['email:rfc'] = <<<'EOF'
 <p>Best regards</p>
 EOF;
 $string['email:rfc:subject'] = '[Syllabus] Request for programme change for: {$a->coursename}';
+$string['emailsenabled'] = 'Activate email notifications';
+$string['emailsenabled_desc'] = 'If enabled, email notifications will be sent when a change request is submitted.';
 $string['encoding'] = 'Encoding';
 $string['entity:competency'] = 'Competency';
 $string['entity:competency_assignment'] = 'Competency assignment';

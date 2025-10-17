@@ -27,14 +27,20 @@ defined('MOODLE_INTERNAL') || die();
 if ($hassiteconfig) {
     // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
     if ($ADMIN->fulltree) {
-        $settings->add(
-            new admin_setting_configtext(
-                'customfield_sprogramme/approvalemail',
-                get_string('approvalemail', 'customfield_sprogramme'),
-                get_string('approvalemail_desc', 'customfield_sprogramme'),
-                '',
-                PARAM_RAW,
-            )
+        $emailsenabled = new admin_setting_configcheckbox(
+            'customfield_sprogramme/emailsenabled',
+            get_string('emailsenabled', 'customfield_sprogramme'),
+            get_string('emailsenabled_desc', 'customfield_sprogramme'),
+            0,
         );
+        $settings->add($emailsenabled);
+        $approvalemail = new admin_setting_configtext(
+            'customfield_sprogramme/approvalemail',
+            get_string('approvalemail', 'customfield_sprogramme'),
+            get_string('approvalemail_desc', 'customfield_sprogramme'),
+            '',
+            PARAM_RAW,
+        );
+        $settings->add($approvalemail);
     }
 }

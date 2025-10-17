@@ -17,7 +17,6 @@
 namespace customfield_sprogramme\output;
 
 use core\output\named_templatable;
-use customfield_sprogramme\local\api\notifications;
 use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\utils;
 use moodle_url;
@@ -45,6 +44,10 @@ class viewrfcs implements named_templatable, renderable {
     protected $page;
 
     /**
+     * @var int $task The notification task to perform.
+     */
+    protected $task;
+    /**
      * Construct this renderable.
      */
     public function __construct(
@@ -62,8 +65,6 @@ class viewrfcs implements named_templatable, renderable {
      */
     public function export_for_template(renderer_base $output) {
         global $CFG;
-
-        $this->before_render();
 
         $data['status'] = $this->get_status_tabs();
         $numrfcs = sprogramme_rfc::count_rfc($this->datafieldid, $this->status);
@@ -91,6 +92,7 @@ class viewrfcs implements named_templatable, renderable {
                 'action' => 'showrfc',
             ];
         }
+        $data['url'] = $url->out(false);
         $data['version'] = time();
         $data['debug'] = $CFG->debugdisplay;
 
@@ -149,58 +151,6 @@ class viewrfcs implements named_templatable, renderable {
     public function before_render(): void {
         $this->status = optional_param('status', sprogramme_rfc::RFC_ACCEPTED, PARAM_INT);
         $this->page = optional_param('page', 0, PARAM_INT);
-        $action = optional_param('action', '', PARAM_ALPHANUMEXT);
-        switch ($action) {
-            case 'deleteall':
-                $params = ['action' => $this->status];
-                if ($this->datafieldid !== 0) {
-                    $params['datafieldid'] = $this->datafieldid;
-                }
-                $todelete = sprogramme_rfc::get_records($params);
-                foreach ($todelete as $rfc) {
-                    $rfc->delete();
-                }
-                break;
-            case 'acceptrfc':
-                $this->accept_rfc();
-                break;
-        }
-
-        $delete = optional_param('delete', null, PARAM_INT);
-        if ($delete) {
-            $todelete = sprogramme_rfc::get_record(['id' => $delete]);
-            $todelete->delete();
-        }
-
-        $send = optional_param('send', null, PARAM_INT);
-        if ($send) {
-            $rfc = sprogramme_rfc::get_record(['id' => $send]);
-            notifications::send_email($rfc);
-        }
-
-        $sendall = optional_param('sendall', null, PARAM_INT);
-        if ($sendall) {
-            $params = ['datafieldid' => $this->datafieldid];
-            if ($this->task) {
-                $params['notification'] = $this->task;
-            }
-            $rfcs = sprogramme_rfc::get_records($params);
-            foreach ($rfcs as $rfc) {
-                notifications::send_email($rfc);
-            }
-        }
-
-        $deleteall = optional_param('deleteall', null, PARAM_INT);
-        if ($deleteall) {
-            $params = ['datafieldid' => $this->datafieldid];
-            if ($this->task) {
-                $params['notification'] = $this->task;
-            }
-            $rfcs = sprogramme_rfc::get_records($params);
-            foreach ($rfcs as $rfc) {
-                $rfc->delete();
-            }
-        }
     }
 
     /**
