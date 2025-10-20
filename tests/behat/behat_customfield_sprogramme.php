@@ -378,4 +378,59 @@ class behat_customfield_sprogramme extends behat_base {
 
         return $row;
     }
+
+    /**
+     * Checks if text exists in the programme syllabus region.
+     *
+     * @Then /^I should see \"(?P<text_string>(?:[^\"]|\\\\\")*)\" in the programme region$/
+     * @param string $text The text to look for
+     * @throws ExpectationException
+     */
+    public function i_should_see_text_in_programme_region($text) {
+        // Find the programme region.
+        $programmeregion = $this->find('css', '.customfield-sprogramme.syllabuspage');
+        if (!$programmeregion) {
+            throw new ElementNotFoundException(
+                $this->getSession(),
+                'programme region',
+                'css',
+                '.customfield-sprogramme.syllabuspage'
+            );
+        }
+
+        // Check if the text exists in the programme region.
+        $regiontext = $programmeregion->getText();
+        if (strpos($regiontext, $text) === false) {
+            throw new ExpectationException('Text "' . $text . '" not found in the programme region', $this->getSession());
+        }
+    }
+
+    /**
+     * Checks that text does NOT exist in the programme syllabus region.
+     *
+     * @Then /^I should not see \"(?P<text_string>(?:[^\"]|\\\\\")*)\" in the programme region$/
+     * @param string $text The text that should not be found
+     * @throws ExpectationException
+     */
+    public function i_should_not_see_text_in_programme_region($text) {
+        // Find the programme region.
+        $programmeregion = $this->find('css', '.customfield-sprogramme.syllabuspage');
+        if (!$programmeregion) {
+            throw new ElementNotFoundException(
+                $this->getSession(),
+                'programme region',
+                'css',
+                '.customfield-sprogramme.syllabuspage'
+            );
+        }
+
+        // Check if the text does NOT exist in the programme region.
+        $regiontext = $programmeregion->getText();
+        if (strpos($regiontext, $text) !== false) {
+            throw new ExpectationException(
+                'Text "' . $text . '" was found in the programme region but should not be present',
+                $this->getSession()
+            );
+        }
+    }
 }
