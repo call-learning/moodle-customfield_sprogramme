@@ -29,6 +29,7 @@ global $PAGE, $OUTPUT;
 use customfield_sprogramme\output\formfield;
 use customfield_sprogramme\output\programme;
 use customfield_sprogramme\output\viewrfcs;
+use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\setup;
 
 $datafieldid = optional_param('datafieldid', 0, PARAM_INT);
@@ -63,6 +64,11 @@ switch ($pagetype) {
     case 'viewrfcs':
         $viewnotification = new viewrfcs($datafieldid);
         $viewnotification->before_render();
+        echo $renderer->render($viewnotification);
+        break;
+    case 'allrequests':
+        $viewnotification = new viewrfcs(0);
+        $viewnotification->set_status(sprogramme_rfc::RFC_SUBMITTED);
         echo $renderer->render($viewnotification);
         break;
     default:

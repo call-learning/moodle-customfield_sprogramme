@@ -242,7 +242,7 @@ class rfc_manager {
         $rfc = sprogramme_rfc::get_record(
             [
                 'datafieldid' => $this->datafieldid,
-                'usercreated' => $USER->id,
+                'adminid' => $USER->id,
                 'type' => sprogramme_rfc::RFC_REQUESTED,
             ]
         );
@@ -250,6 +250,7 @@ class rfc_manager {
         if (!$rfc) {
             $rfc = new sprogramme_rfc();
             $rfc->set('datafieldid', $this->datafieldid);
+            $rfc->set('adminid', intval($USER->id));
             $rfc->set('usercreated', intval($USER->id));
             $rfc->set('snapshot', json_encode($data));
             $rfc->set('type', sprogramme_rfc::RFC_REQUESTED);
@@ -297,6 +298,7 @@ class rfc_manager {
         $record = $this->get_current($userid);
         if ($record) {
             $record->set('type', sprogramme_rfc::RFC_SUBMITTED);
+            $record->set('adminid', $userid);
             $record->save();
             $result = true;
             $event = \customfield_sprogramme\event\rfc_submitted::create(

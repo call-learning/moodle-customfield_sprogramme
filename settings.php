@@ -42,5 +42,16 @@ if ($hassiteconfig) {
             PARAM_RAW,
         );
         $settings->add($approvalemail);
+        // Link to all submitted rfcs.
+        $manageurl = new \moodle_url('/customfield/field/sprogramme/edit.php', ['pagetype' => 'allrequests', 'datafieldid' => 0]);
+        $settings->add(new admin_setting_description(
+            'submitted_rfcs_link',
+            get_string('report:rfcs', 'customfield_sprogramme'),
+            \html_writer::link(
+                $manageurl,
+                get_string('report:rfcs', 'customfield_sprogramme'),
+                ['class' => 'btn btn-primary mb-3']
+            )
+        ));
     }
 }

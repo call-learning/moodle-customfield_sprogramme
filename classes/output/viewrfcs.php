@@ -105,6 +105,9 @@ class viewrfcs implements named_templatable, renderable {
      */
     public function get_status_tabs(): array {
         $data = [];
+        if ($this->status === sprogramme_rfc::RFC_SUBMITTED) {
+            return $data; // No tabs for submitted status.
+        }
         $allowed = [
             sprogramme_rfc::RFC_ACCEPTED => 'accepted',
             sprogramme_rfc::RFC_REJECTED => 'rejected',
@@ -174,5 +177,14 @@ class viewrfcs implements named_templatable, renderable {
      */
     public function get_template_name(\renderer_base $renderer): string {
         return 'customfield_sprogramme/viewrfcs';
+    }
+
+    /**
+     * Set the status to filter rfcs.
+     * @param int $status
+     * @return void
+     */
+    public function set_status(int $status): void {
+        $this->status = $status;
     }
 }

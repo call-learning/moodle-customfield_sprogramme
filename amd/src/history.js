@@ -23,6 +23,7 @@
 
 import State from 'customfield_sprogramme/local/state';
 import Repository from 'customfield_sprogramme/local/repository';
+import Pending from 'core/pending'; // For Behat to make sure that async calls are finished.
 import Notification from 'core/notification';
 import componentInit from './local/components/history';
 
@@ -41,6 +42,7 @@ class History {
         this.rfcid = rfcid;
         this.datafieldid = datafieldid;
         this.getProgrammeHistory();
+        this.addEventListeners();
     }
 
     /**
@@ -59,7 +61,7 @@ class History {
             const history = {
                 'modules': this.parseModules(response),
                 'columns': response.columns,
-                'rfcs': response.rfcs,
+                'rfc': response.rfc,
             };
             State.setValue('history', history);
         } catch (error) {
@@ -86,6 +88,65 @@ class History {
             });
         });
         return response.modules;
+    }
+
+
+    /**
+     * Add event listeners.
+     * @return {void}
+     */
+    addEventListeners() {
+        document.addEventListener('click', (e) => {
+            let btn = e.target.closest('.modal-customfield_sprogramme_history [data-action]');
+            if (btn) {
+                e.preventDefault();
+                this.actions(btn.dataset.action, btn);
+            }
+
+        });
+    }
+
+    /**
+     * Actions.
+     * @param {string} action The button that was clicked.
+     * @param {HTMLElement|null} element The element that was clicked.
+     */
+    actions(action, element) {
+        const actionMap = {
+            'acceptrfc': this.acceptRfc,
+            'rejectrfc': this.rejectRfc,
+        };
+        if (actionMap[action]) {
+            actionMap[action].call(this, element);
+        }
+    }
+
+    /**
+     * Accept the RFC.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async acceptRfc(btn) {
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        const response = await Repository.acceptRfc({datafieldid: this.datafieldid, userid: userid});
+        if (response) {
+            this.getProgrammeHistory();
+        }
+    }
+
+    /**
+     * Reject the RFC.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async rejectRfc(btn) {
+        const pending = new Pending('customfield_sprogramme/manager:rejectRFC');
+        const userid = btn.closest('[data-rfc]').dataset.userid;
+        const response = await Repository.rejectRfc({datafieldid: this.datafieldid, userid: userid});
+        if (response) {
+            this.getProgrammeHistory();
+        }
+        pending.resolve();
     }
 }
 

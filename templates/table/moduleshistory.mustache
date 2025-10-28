@@ -23,16 +23,7 @@
     {
     }
 }}
-<div class="d-flex align-items-start">
-    {{#rfcs}}
-        <div class="rfcrquest d-flex align-items-start" data-rfc data-userid="{{userinfo.id}}">
-            <div class="rfcinfo">
-                <div>{{#str}}rfc:changerequestby, customfield_sprogramme, {{userinfo.fullname}}{{/str}}</div>
-                <p class="mb-0 small">{{#str}}submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timecreated}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
-            </div>
-        </div>
-    {{/rfcs}}
-</div>
+{{> customfield_sprogramme/table/rfc }}
 <table class="programm-table editor toprow history">
     <tr>
         {{#columns}}
