@@ -378,4 +378,27 @@ class behat_customfield_sprogramme extends behat_base {
 
         return $row;
     }
+
+    /**
+     * Clicks the edit button for the programme field.
+     *
+     * @When /^I click the programme edit button$/
+     * @param string $fieldname The field shortname (e.g., uc_competences)
+     * @throws ExpectationException
+     */
+    public function i_click_programme_edit_button() {
+        $selector = "a[data-action='editprogramme']";
+        $editbutton = $this->find('css', $selector);
+        if (!$editbutton) {
+            throw new ElementNotFoundException(
+                $this->getSession(),
+                'edit button',
+                'css',
+                $selector
+            );
+        }
+        $editbutton->click();
+        // Wait for modal to appear.
+        $this->getSession()->wait(1000);
+    }
 }

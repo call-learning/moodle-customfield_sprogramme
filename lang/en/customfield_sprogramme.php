@@ -62,7 +62,7 @@ $string['discipline_assignment:percentagewithlabel'] = 'Percentage with label';
 $string['disciplines'] = 'Disciplines';
 $string['disciplines_help'] = 'This field indicates the AEEEV disciplines (1 to 3 maximum) that are concerned by the session/exercise, and their respective percentages within the session (for example, 10% for "2. Immunology", 60% for "2. Parasitology", and 30% for "4.FPA Preventive medicine". The sum must equal 100%.';
 $string['edit'] = 'Edit';
-$string['editprogramme'] = 'Edit Programme';
+$string['editprogramme'] = 'Edit';
 $string['email:rfc'] = <<<'EOF'
 
 <p>Hello,</p>
