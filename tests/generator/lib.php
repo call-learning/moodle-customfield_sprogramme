@@ -52,7 +52,12 @@ class customfield_sprogramme_generator extends component_generator_base {
             $record['parent'] = null;
         }
         if (!isset($record['sortorder'])) {
-            $maxsortorder = $DB->get_field_sql('SELECT MAX(sortorder) FROM {customfield_sprogramme_disclist} WHERE type = ?', [$record['type']]);
+            $maxsortorder = $DB->get_field_sql(
+                'SELECT MAX(sortorder)
+                FROM {customfield_sprogramme_disclist}
+                WHERE type = ?',
+                [$record['type']]
+            );
             $record['sortorder'] = $maxsortorder + 1;
         }
 
@@ -91,7 +96,12 @@ class customfield_sprogramme_generator extends component_generator_base {
             $record['parent'] = null;
         }
         if (!isset($record['sortorder'])) {
-            $maxsortorder = $DB->get_field_sql('SELECT MAX(sortorder) FROM {customfield_sprogramme_complist} WHERE type = ?', [$record['type']]);
+            $maxsortorder = $DB->get_field_sql(
+                'SELECT MAX(sortorder)
+                FROM {customfield_sprogramme_complist}
+                WHERE type = ?',
+                [$record['type']]
+            );
             $record['sortorder'] = $maxsortorder + 1;
         }
 
@@ -144,10 +154,10 @@ class customfield_sprogramme_generator extends component_generator_base {
      * Create a new RFC setting for a sprogramme field.
      *
      * @param int $datafieldid  the data field id
-     * @param int $adminuserid the user id (default to admin)
      * @param int $type the type of rfc
      * @param string $snapshot the snapshot data (json)
      * @param int $usercreated the user who created the rfc (default to admin)
+     * @param int $adminuserid the user who created the rfc (default to admin)
      * @return stdClass
      */
     public function create_rfc(
@@ -168,9 +178,6 @@ class customfield_sprogramme_generator extends component_generator_base {
         $rfc->set('usercreated', $usercreated ?: $USER->id);
         $rfc->save();
         return $rfc->to_record();
-    }
-
-    public function create_notification(int $fieldid, int $notificationvalue): void {
     }
 
     /**

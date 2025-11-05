@@ -26,7 +26,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I navigate to "Settings" in current page administration
     And I expand all fieldsets
     And I click the programme edit button
-
     # Create Module 1 with 2 rows
     And I set mod "1" name to "Module 1: Basic Concepts"
     And I set mod "1" row "1" column "Session title or exercise" to "Session 1"
@@ -34,7 +33,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I add a new row to mod "1"
     And I set mod "1" row "2" column "Session title or exercise" to "Session 2"
     And I set mod "1" row "2" column "TD" to "3.0"
-
     # Add Module 2 with 2 rows
     And I add a new module
     And I set mod "2" name to "Module 2: Advanced Topics"
@@ -43,10 +41,8 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I add a new row to mod "2"
     And I set mod "2" row "2" column "Session title or exercise" to "Advanced Session 2"
     And I set mod "2" row "2" column "CM" to "1.5"
-
     # Save the programme
     And I click on "Save" "button" in the "Edit" "dialogue"
-
     # Check if all values are saved correctly
     Then I should see mod "1" row "1" column "Session title or exercise" with value "Session 1"
     And I should see mod "1" row "1" column "CM" with value "2.5"
@@ -62,7 +58,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I navigate to "Settings" in current page administration
     And I expand all fieldsets
     And I click the programme edit button
-
     # Create initial data
     And I set mod "1" name to "Module 1: Initial Name"
     And I set mod "1" row "1" column "Session title or exercise" to "Initial Session"
@@ -70,16 +65,13 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I add a new row to mod "1"
     And I set mod "1" row "2" column "Session title or exercise" to "Second Session"
     And I set mod "1" row "2" column "TD" to "2.0"
-
     # Add second module
     And I add a new module
     And I set mod "2" name to "Module 2: Original Name"
     And I set mod "2" row "1" column "Session title or exercise" to "Original Session"
     And I set mod "2" row "1" column "TP" to "3.0"
-
     # Save initial data
     And I click on "Save" "button" in the "Edit" "dialogue"
-
     # Modify the data
     And I set mod "1" name to "Module 1: Updated Name"
     And I set mod "1" row "1" column "Session title or exercise" to "Updated Session"
@@ -87,10 +79,8 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I set mod "2" name to "Module 2: Modified Name"
     And I set mod "2" row "1" column "Session title or exercise" to "Modified Session"
     And I set mod "2" row "1" column "TP" to "7.5"
-
     # Save modifications
     And I click on "Save" "button" in the "Edit" "dialogue"
-
     # Check if modifications are saved correctly
     Then I should see mod "1" row "1" column "Session title or exercise" with value "Updated Session"
     And I should see mod "1" row "1" column "CM" with value "5.5"
@@ -103,7 +93,6 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I navigate to "Settings" in current page administration
     And I expand all fieldsets
     And I click the programme edit button
-
     # Create initial data with 3 modules and multiple rows
     And I set mod "1" name to "Module 1: First Module"
     And I set mod "1" row "1" column "Session title or exercise" to "Module 1 Session 1"
@@ -114,41 +103,32 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I add a new row to mod "1"
     And I set mod "1" row "3" column "Session title or exercise" to "Module 1 Session 3"
     And I set mod "1" row "3" column "TP" to "3.5"
-
     And I add a new module
     And I set mod "2" name to "Module 2: Second Module"
     And I set mod "2" row "1" column "Session title or exercise" to "Module 2 Session 1"
     And I set mod "2" row "1" column "CM" to "4.5"
-
     And I add a new module
     And I set mod "3" name to "Module 3: Third Module"
     And I set mod "3" row "1" column "Session title or exercise" to "Module 3 Session 1"
     And I set mod "3" row "1" column "TP" to "5.5"
-
     # Save initial data
     And I click on "Save" "button" in the "Edit" "dialogue"
-
     # Delete module 2 (middle module)
     And I delete mod "2"
-
     # Delete row 2 from module 1
     And I delete mod "1" row "2"
-
     # Save deletions
     And I click on "Save" "button" in the "Edit" "dialogue"
-
     # Check that deletions worked correctly
     Then I should see mod "1" row "1" column "Session title or exercise" with value "Module 1 Session 1"
     And I should see mod "1" row "2" column "Session title or exercise" with value "Module 1 Session 3"
     And I should see mod "2" row "1" column "Session title or exercise" with value "Module 3 Session 1"
-
 
   Scenario: Editing from See Syllabus page
     Given I am on the "uc_SYLL1" course page logged in as "admin"
     And I navigate to "Settings" in current page administration
     And I expand all fieldsets
     And I click the programme edit button
-
     # Create initial data
     And I set mod "1" name to "Module 1: Original Title"
     And I set mod "1" row "1" column "Session title or exercise" to "Original Session Title"
@@ -156,19 +136,15 @@ Feature: Programme CRUD operations in customfield_sprogramme
     And I add a new row to mod "1"
     And I set mod "1" row "2" column "Session title or exercise" to "Second Original Session"
     And I set mod "1" row "2" column "TD" to "3.0"
-
     And I add a new module
     And I set mod "2" name to "Module 2: Second Original"
     And I set mod "2" row "1" column "Session title or exercise" to "Module 2 Original Session"
     And I set mod "2" row "1" column "TP" to "4.0"
-
     # Save initial data
     And I click on "Save" "button" in the "Edit" "dialogue"
-
     # Make changes from syllabus page
     And I set mod "1" row "1" column "Session title or exercise" to "Syllabus Updated Session"
     And I set mod "2" row "1" column "Session title or exercise" to "Module 2 Syllabus Updated"
-
     # Save and close editing form
     And I click on "Save" "button" in the "Edit" "dialogue"
     And I close the programme editing form

@@ -46,7 +46,7 @@ class sprogramme extends persistent {
      * Create an instance of this class.
      *
      * @param int $id If set, this is the id of an existing record, used to load the data.
-     * @param stdClass $record If set will be passed to {@link self::from_record()}.
+     * @param \stdClass|null $record If set will be passed to {@see self::from_record()}.
      */
     public function __construct($id = 0, ?\stdClass $record = null) {
         if (isset($record->disciplines)) {

@@ -141,8 +141,12 @@ class programme_upload_form extends dynamic_form {
      */
     private static function get_delimiter_list() {
         global $CFG;
-        $delimiters = array('comma'=>',', 'semicolon'=>';', 'colon'=>':', 'tab'=>'\\t');
-        if (isset($CFG->CSV_DELIMITER) and strlen($CFG->CSV_DELIMITER) === 1 and !in_array($CFG->CSV_DELIMITER, $delimiters)) {
+        $delimiters = ['comma' => ',', 'semicolon' => ';', 'colon' => ':', 'tab' => '\\t'];
+        if (
+            isset($CFG->CSV_DELIMITER)
+            && strlen($CFG->CSV_DELIMITER) === 1
+            && !in_array($CFG->CSV_DELIMITER, $delimiters)
+        ) {
             $delimiters['cfg'] = $CFG->CSV_DELIMITER;
         }
         return $delimiters;

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace external;
+namespace customfield_sprogramme\external;
 
 use core_external\external_api;
 use customfield_sprogramme\external\accept_rfc;

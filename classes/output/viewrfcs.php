@@ -49,6 +49,7 @@ class viewrfcs implements named_templatable, renderable {
     protected $task;
     /**
      * Construct this renderable.
+     * @param int $datafieldid
      */
     public function __construct(
         /**

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace external;
+namespace customfield_sprogramme\external;
 
 use core_external\external_api;
 use customfield_sprogramme\external\accept_rfc;
@@ -53,7 +53,9 @@ final class get_columns_test extends \externallib_advanced_testcase {
         $this->resetAfterTest();
         $cfgenerator = $this->getDataGenerator()->get_plugin_generator('core_customfield');
         $cfcat = $cfgenerator->create_category();
-        $cfield = $cfgenerator->create_field(['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'sprogramme']);
+        $cfield = $cfgenerator->create_field(
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'sprogramme']
+        );
         $course = $this->getDataGenerator()->create_course();
         $cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
         $this->setAdminUser();

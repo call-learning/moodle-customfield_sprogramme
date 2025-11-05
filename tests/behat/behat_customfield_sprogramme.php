@@ -18,6 +18,11 @@
 
 require_once(__DIR__ . '/../../../../../lib/behat/behat_base.php');
 
+
+// Ignore all line length warnings in this file as behat @Given statements adhere to a specific format.
+// phpcs:disable moodle.Files.LineLength.MaxExceeded
+// phpcs:disable moodle.Files.LineLength.TooLong
+
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
@@ -169,8 +174,12 @@ class behat_customfield_sprogramme extends behat_base {
      */
     public function click_on_mod_row($modulenr, $rownr, $locator, $selector) {
         $row = $this->find_row($modulenr, $rownr);
-        $element = $this->find($selector, $locator,
-            new ExpectationException('Element ' . $locator . ' not found in row ' . $rownr, $this->getSession()), $row);
+        $element = $this->find(
+            $selector,
+            $locator,
+            new ExpectationException('Element ' . $locator . ' not found in row ' . $rownr, $this->getSession()),
+            $row
+        );
         if (empty($element)) {
             throw new ElementNotFoundException($this->getSession(), 'element', $selector, $locator);
         }
@@ -201,15 +210,14 @@ class behat_customfield_sprogramme extends behat_base {
      * Enables the programme custom field for a course.
      * @Given /^the programme custom field "(?P<customfieldname_string>(?:[^"]|\\")*)" is enabled for course "(?P<coursename_string>(?:[^"]|\\")*)"$/
      *
-     * @param $customfieldname
-     * @param $coursename
+     * @param string $customfieldname
+     * @param string $coursename
      *
      * @return void
      * @throws ElementNotFoundException
-     * @throws coding_exception
      * @throws moodle_exception
      */
-    public function i_enable_programme($customfieldname, $coursename) {
+    public function i_enable_programme(string $customfieldname, string $coursename) {
         $courseid = $this->get_course_id($coursename);
         $handler = \core_customfield\handler::get_handler('core_course', 'course');
         $cfdata = $handler->get_instance_data($courseid, true);
@@ -236,7 +244,7 @@ class behat_customfield_sprogramme extends behat_base {
      * @param string $name The module name to set
      * @throws ExpectationException
      */
-    public function set_module_name($modulenr, $name) {
+    public function set_module_name(string $modulenr, string $name): void {
         // Find the module using the same pattern as find_cell.
         $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
         $baseelement = $this->find('xpath', $baselocator);
@@ -260,7 +268,7 @@ class behat_customfield_sprogramme extends behat_base {
      * @param string $modulenr The module number
      * @throws ExpectationException
      */
-    public function delete_module($modulenr) {
+    public function delete_module(string $modulenr): void {
         // Find the module using the same pattern as find_cell.
         $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
         $baseelement = $this->find('xpath', $baselocator);
@@ -285,7 +293,7 @@ class behat_customfield_sprogramme extends behat_base {
      * @param string $rownr The row number
      * @throws ExpectationException
      */
-    public function delete_row($modulenr, $rownr) {
+    public function delete_row(string $modulenr, string $rownr): void {
         // Find the specific row using the existing find_row method.
         $row = $this->find_row($modulenr, $rownr);
 
@@ -307,7 +315,7 @@ class behat_customfield_sprogramme extends behat_base {
      * @Given /^I close the programme editing form$/
      * @throws ExpectationException
      */
-    public function close_programme_editing_form() {
+    public function close_programme_editing_form(): void {
         // Find the close button.
         $closebutton = $this->find(
             'css',
@@ -322,13 +330,14 @@ class behat_customfield_sprogramme extends behat_base {
     /**
      * Find an element in the app table.
      *
-     * @param $modulenr
-     * @param $rownr
-     * @param $columnname
+     * @param string $modulenr
+     * @param string $rownr
+     * @param string $columnname
      * @return NodeElement
-     * @throws ElementNotFoundException|ExpectationException
+     * @throws ElementNotFoundException
+     * @throws ExpectationException
      */
-    private function find_cell($modulenr, $rownr, $columnname) {
+    private function find_cell(string $modulenr, string $rownr, string $columnname): NodeElement {
         // There can be multiple modules in the app identified by [data-region="module"].
         $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
         $baseelement = $this->find('xpath', $baselocator);
@@ -357,13 +366,11 @@ class behat_customfield_sprogramme extends behat_base {
     /**
      * Find an element in the app table.
      *
-     * @param $modulenr
-     * @param $rownr
-     * @param $columnname
+     * @param string $modulenr
+     * @param string $rownr
      * @return NodeElement
-     * @throws ElementNotFoundException|ExpectationException
      */
-    private function find_row($modulenr, $rownr) {
+    private function find_row(string $modulenr, string $rownr) {
         // There can be multiple modules in the app identified by [data-region="module"].
         $baselocator = "//*[@data-region = 'app']//*[@data-region = 'module'][$modulenr]";
         $baseelement = $this->find('xpath', $baselocator);
@@ -383,8 +390,7 @@ class behat_customfield_sprogramme extends behat_base {
      * Clicks the edit button for the programme field.
      *
      * @When /^I click the programme edit button$/
-     * @param string $fieldname The field shortname (e.g., uc_competences)
-     * @throws ExpectationException
+     * @throws ElementNotFoundException
      */
     public function i_click_programme_edit_button() {
         $selector = "a[data-action='editprogramme']";

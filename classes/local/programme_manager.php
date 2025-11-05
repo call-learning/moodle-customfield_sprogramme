@@ -318,7 +318,7 @@ class programme_manager {
             }
             $prevrecord = sprogramme::get_record(['id' => $previd]);
             if (!$prevrecord) {
-                // Handle case where prevrecord doesn't exist
+                // Handle case where prevrecord doesn't exist.
                 $this->update_sort_order($type, $moduleid, $id, null);
                 return;
             }

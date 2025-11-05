@@ -25,6 +25,7 @@ use core_reportbuilder\tests\core_reportbuilder_testcase;
  * @category   test
  * @copyright  2025 Laurent David <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \customfield_sprogramme\reportbuilder\datasource\competencies
  */
 final class competencies_test extends core_reportbuilder_testcase {
     /**

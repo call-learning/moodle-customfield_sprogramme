@@ -27,6 +27,7 @@ use customfield_sprogramme\local\persistent\sprogramme_disc;
  * @category   test
  * @copyright  2025 Laurent David <laurent@call-learning.fr> / SAS CALL Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers \customfield_sprogramme\local\importer\programme_importer::import
  */
 final class programme_importer_test extends \advanced_testcase {
     /**
@@ -64,10 +65,8 @@ final class programme_importer_test extends \advanced_testcase {
 
     /**
      * Test the importer with a sample CSV file.
-     *
-     * @covers \customfield_sprogramme\local\importer\programme_importer::import
      */
-    function test_importer(): void {
+    public function test_importer(): void {
         global $CFG;
         $this->resetAfterTest();
         $filepath = $CFG->dirroot . '/customfield/field/sprogramme/tests/fixtures/programme_importer.csv';
@@ -105,10 +104,8 @@ final class programme_importer_test extends \advanced_testcase {
 
     /**
      * Test the importer with a sample CSV file with a different encoding.
-     *
-     * @covers \customfield_sprogramme\local\importer\programme_importer::import
      */
-    function test_importer_with_encoding(): void {
+    public function test_importer_with_encoding(): void {
         global $CFG;
         $this->resetAfterTest();
         $filepath = $CFG->dirroot . '/customfield/field/sprogramme/tests/fixtures/programme_importer_encoded_windows.csv';

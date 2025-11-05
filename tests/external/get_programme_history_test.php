@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace external;
+namespace customfield_sprogramme\external;
 
 use core_external\external_api;
 use customfield_sprogramme\external\get_programme_history;
@@ -49,7 +49,7 @@ final class get_programme_history_test extends \externallib_advanced_testcase {
     /**
      * Test the get programme history function.
      */
-    public function et_programme_history() {
+    public function test_programme_history(): void {
         global $CFG;
         parent::setUp();
         $this->resetAfterTest();
@@ -59,7 +59,9 @@ final class get_programme_history_test extends \externallib_advanced_testcase {
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $cfgenerator = $this->getDataGenerator()->get_plugin_generator('core_customfield');
         $cfcat = $cfgenerator->create_category();
-        $cfield = $cfgenerator->create_field(['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'sprogramme']);
+        $cfield = $cfgenerator->create_field(
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'sprogramme']
+        );
         $course = $this->getDataGenerator()->create_course();
         $cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
 
@@ -75,7 +77,7 @@ final class get_programme_history_test extends \externallib_advanced_testcase {
         );
 
         // Create another rfc.
-        $modifieddata = $this->$sampledata[0];
+        $modifieddata = $sampledata[0];
         $modifieddata[0]['rows'][0]['dd_rse'] = 'New RSE Value';
         $rfc2 = $pgenerator->create_rfc(
             $cfdata->get('id'),

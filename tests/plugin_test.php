@@ -255,10 +255,16 @@ final class plugin_test extends \advanced_testcase {
         // Backup and restore the course.
         $backupid = $this->backup($this->courses[1]);
         $newcourseid = $this->restore($backupid, $this->courses[1], '_copy');
-        $newcf1data = $DB->get_record('customfield_data', ['instanceid' => $newcourseid, 'fieldid' => $this->cfields[1]->get('id')]);
+        $newcf1data = $DB->get_record(
+            'customfield_data',
+            ['instanceid' => $newcourseid, 'fieldid' => $this->cfields[1]->get('id')]
+        );
         $this->assertNotEmpty($newcf1data);
         $this->assertNotEmpty($newcf1data->intvalue);
-        $newcf2data = $DB->get_record('customfield_data', ['instanceid' => $newcourseid, 'fieldid' => $this->cfields[2]->get('id')]);
+        $newcf2data = $DB->get_record(
+            'customfield_data',
+            ['instanceid' => $newcourseid, 'fieldid' => $this->cfields[2]->get('id')]
+        );
         $this->assertNotEmpty($newcf2data);
         $this->assertEmpty($newcf2data->intvalue);
 

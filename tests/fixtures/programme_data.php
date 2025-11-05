@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Sprogramme customfield data generator.
+ *
+ * @package    customfield_sprogramme
+ * @category   test
+ * @copyright  2025 Laurent David - CALL Learning <laurent@¢all-learning.fr>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ **/
 function get_sample_programme_data(): array {
     $programmedata = [];
     $programmedata[] =

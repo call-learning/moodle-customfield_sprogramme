@@ -51,7 +51,10 @@ class notifications extends \core\task\scheduled_task {
             try {
                 $notification->send();
             } catch (\Exception $e) {
-                debugging("Exception when sending email to user ID {$notification->get('userid')}: " . $e->getMessage(), DEBUG_DEVELOPER);
+                debugging(
+                    "Exception when sending email to user ID {$notification->get('userid')}: " . $e->getMessage(),
+                    DEBUG_DEVELOPER
+                );
             }
         }
     }

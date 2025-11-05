@@ -123,6 +123,7 @@ class rfc_manager {
     /**
      * Check if a user can accept a rfc for a course (if they have the capability to edit all and can edit)
      *
+     * @param int $userid
      * @return bool
      */
     public function can_accept(int $userid): bool {
@@ -195,10 +196,10 @@ class rfc_manager {
         return $this->can_accept($userid); // Same capability as accepting.
     }
 
-
     /**
      * Check if a user can remove a rfc for a datafield (if they have the capability to edit all)
      *
+     * @param int $userid
      * @return bool
      */
     public function can_remove(int $userid): bool {
@@ -230,12 +231,13 @@ class rfc_manager {
         $cansumit = $cansumit && $changerecord->get('type') != sprogramme_rfc::RFC_SUBMITTED;
         return $cansumit;
     }
+
     /**
      * Get the rfc for a given datafield and user
      *
-     * @param int $userid
      * @param mixed $data
      * @return sprogramme_rfc
+     * @throws \coding_exception
      */
     public function create(mixed $data): sprogramme_rfc {
         global $USER;

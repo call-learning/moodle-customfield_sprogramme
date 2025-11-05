@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace external;
+namespace customfield_sprogramme\external;
 
 use core_external\external_api;
 use customfield_sprogramme\external\update_sort_order;
@@ -48,7 +48,9 @@ final class update_sort_order_test extends \externallib_advanced_testcase {
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $cfgenerator = $this->getDataGenerator()->get_plugin_generator('core_customfield');
         $cfcat = $cfgenerator->create_category();
-        $cfield = $cfgenerator->create_field(['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'sprogramme']);
+        $cfield = $cfgenerator->create_field(
+            ['categoryid' => $cfcat->get('id'), 'shortname' => 'myfield1', 'type' => 'sprogramme']
+        );
         $course = $this->getDataGenerator()->create_course();
         $cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
 
@@ -65,7 +67,13 @@ final class update_sort_order_test extends \externallib_advanced_testcase {
         $this->assertEquals(array_combine($rowids, [5, 2]), array_column($data[0]['rows'], 'sortorder', 'id'));
 
         $this->setAdminUser();
-        $this->update_sort_order('row', $cfdata->get('id'), $data[0]['moduleid'], $data[0]['rows'][0]['id'], $data[0]['rows'][1]['id']);
+        $this->update_sort_order(
+            'row',
+            $cfdata->get('id'),
+            $data[0]['moduleid'],
+            $data[0]['rows'][0]['id'],
+            $data[0]['rows'][1]['id']
+        );
         $data = $pm->get_data();
         $this->assertEquals(array_combine($rowids, [5, 6]), array_column($data[0]['rows'], 'sortorder', 'id'));
     }

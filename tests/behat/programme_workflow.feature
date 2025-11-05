@@ -1,5 +1,5 @@
 @customfield @customfield_sprogramme @javascript
-Feature: As a teacher I can edit a Programme data in customfield_sprogramme
+Feature: As a teacher I can go through all steps in customfield_sprogramme workdflow
 
   Background:
     Given the following "courses" exist:
@@ -54,7 +54,6 @@ Feature: As a teacher I can edit a Programme data in customfield_sprogramme
     And I click the programme edit button
     Then I should see mod "1" row "1" column "Session title or exercise" with value "Séance teacher1"
     And I log out
-
 
   Scenario: Teacher 1 enters programme data then submit for approval, teacher 2 should not be able to edit and when the admin accept it,
     teacher 2 should be able to see the changes.
@@ -133,7 +132,6 @@ Feature: As a teacher I can edit a Programme data in customfield_sprogramme
     Then I should see mod "1" row "1" column "Session title or exercise" with value "Séance teacher1"
     And I should see "Reset all changes" in the "Edit" "dialogue"
     And I log out
-
 
   Scenario: Teacher 1 enters programme data then submit for approval, admin reject it, Teacher 1 should be able to remove it and edit again.
     Given I am on the "SYLL1" course page logged in as "teacher1"
