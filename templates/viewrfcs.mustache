@@ -49,9 +49,9 @@
                     "fullname": "John Doe",
                     "firstname": "John",
                     "lastname": "Doe",
-                    "email": "
+                    "email": "",
                     "userpictureurl": "http://example.com/pix/u/f1.png"
-                },
+                }
             }
         ]
     }
@@ -61,7 +61,8 @@
         <ul class="nav nav-tabs" id="rfcstatustabs" role="tablist">
             {{#status}}
                 <li class="nav-item">
-                    <a class="nav-link {{#selected}}active{{/selected}}" id="{{key}}-tab" href="{{{url}}}" aria-selected="{{#selected}}true{{/selected}}{{^selected}}false{{/selected}}">
+                    <a class="nav-link {{#selected}}active{{/selected}}" id="{{key}}-tab" href="{{{url}}}"
+                       aria-selected="{{#selected}}true{{/selected}}{{^selected}}false{{/selected}}">
                         {{name}}
                     </a>
                 </li>
@@ -71,21 +72,22 @@
 </div>
 <table class="table table-striped tablerfcs">
     <thead>
-        <tr>
-            <th>{{#str}}rfc:user, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}rfc:timecreated, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}rfc:course, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}rfc:status, customfield_sprogramme{{/str}}</th>
-            <th>{{#str}}rfc:actions, customfield_sprogramme{{/str}}</th>
-        </tr>
+    <tr>
+        <th>{{#str}}rfc:user, customfield_sprogramme{{/str}}</th>
+        <th>{{#str}}rfc:timecreated, customfield_sprogramme{{/str}}</th>
+        <th>{{#str}}rfc:course, customfield_sprogramme{{/str}}</th>
+        <th>{{#str}}rfc:status, customfield_sprogramme{{/str}}</th>
+        <th>{{#str}}rfc:actions, customfield_sprogramme{{/str}}</th>
+    </tr>
     </thead>
     <tbody>
-        {{#rfcs}}
+    {{#rfcs}}
         <tr>
             <td>
                 <div class="d-flex align-items-center position-relative">
                     <img src="{{userinfo.userpictureurl}}" alt="{{userinfo.fullname}}" class="userpicture">
-                    <a class="stretched-link" href="{{{profileurl}}}" data-region="studentname" data-studentid="{{userinfo.id}}" data-firstname="{{userinfo.firstname}}" data-lastname="{{userinfo.lastname}}" data-email="{{userinfo.email}}">{{userinfo.fullname}}</a>
+                    <a class="stretched-link" href="{{{profileurl}}}" data-region="studentname" data-studentid="{{userinfo.id}}" data-firstname="{{userinfo.firstname}}"
+                       data-lastname="{{userinfo.lastname}}" data-email="{{userinfo.email}}">{{userinfo.fullname}}</a>
                 </div>
             </td>
             <td>{{#userdate}}{{timemodified}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</td>
@@ -97,7 +99,7 @@
                 </a>
             </td>
         </tr>
-        {{/rfcs}}
+    {{/rfcs}}
     </tbody>
 </table>
 {{{htmlpagingbar}}}
@@ -118,7 +120,7 @@
 </div>
 
 {{#js}}
-require(['customfield_sprogramme/programme_actions'], function(action) {
+    require(['customfield_sprogramme/programme_actions'], function(action) {
     action.init();
-});
+    });
 {{/js}}

@@ -21,7 +21,42 @@
 
     Example context (json):
     {
-        "rowname": "Row 1"
+        "rowname": "Row 1",
+        "rowid": 123,
+        "tagtype": "discipline",
+        "arrowoffset": 20,
+        "hasmaxtags": false,
+        "settags": [
+            {
+                "id": 2,
+                "name": "Literacy & data management",
+                "percentage": 23
+            }
+        ],
+        "taglist": [
+            {
+                "name": "A",
+                "items": [
+                    {
+                        "uniqueid": "tag-1",
+                        "name": "Art"
+                    },
+                    {
+                        "uniqueid": "tag-2",
+                        "name": "Astronomy"
+                    }
+                ]
+            },
+            {
+                "name": "B",
+                "items": [
+                    {
+                        "uniqueid": "tag-3",
+                        "name": "Biology"
+                    }
+                ]
+            }
+        ]
     }
 }}
 <div class="tag-form" data-region="tagform" data-type="{{tagtype}}" data-rowid="{{rowid}}">

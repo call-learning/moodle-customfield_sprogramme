@@ -21,6 +21,59 @@
 
     Example context (json):
     {
+        "datafieldid": 1,
+        "columns": [
+            {
+                "columnid": "cm",
+                "field": "cm",
+                "label": "CM",
+                "sum": "12.5",
+                "newsum": "10.0",
+                "hasnewsum": true
+            },
+            {
+                "columnid": "td",
+                "field": "td",
+                "label": "TD",
+                "sum": "8.0"
+            }
+        ],
+        "modules": [
+            {
+                "moduleid": 1,
+                "modulename": "Module 1",
+                "rows": [
+                    {
+                        "cells": [
+                            {
+                                "type": "float",
+                                "value": "2.5",
+                                "changed": true,
+                                "oldvalue": "3.0"
+                            },
+                            {
+                                "type": "float",
+                                "value": "1.0"
+                            }
+                        ],
+                        "disciplines": [
+                            {
+                                "id": 1,
+                                "name": "Discipline 1",
+                                "percentage": 50
+                            }
+                        ],
+                        "competencies": [
+                            {
+                                "id": 2,
+                                "name": "Competency 1",
+                                "percentage": 30
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 }}
 {{> customfield_sprogramme/table/rfc }}
@@ -38,9 +91,9 @@
 </table>
 {{#modules}}
     <span class="modules mb-5" data-region="module" data-id="{{moduleid}}">
-        <div class="d-flex mb-1 p-1 align-items-center">
+        <span class="d-flex mb-1 p-1 align-items-center">
             <h4 class="mb-0">{{{modulename}}}</h4>
-        </div>
+        </span>
         <table class="programm-table standard">
             <thead>
                 <tr data-region="columns">
