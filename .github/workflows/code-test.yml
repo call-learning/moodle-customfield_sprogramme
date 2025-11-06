@@ -1,4 +1,4 @@
-name: Code testing
+name: PHP Unit and Behat tests
 
 on: [push, pull_request]
 

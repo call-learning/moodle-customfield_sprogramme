@@ -4,8 +4,8 @@
   "description": "scss compiler",
   "main": "index.js",
   "scripts": {
-    "compile:sass": "grunt sass",
-    "watch:sass": "grunt sass --watch",
+    "compile:sass": "grunt sprogramme_sass",
+    "watch:sass": "grunt sprogramme_sass --watch",
     "livereload": "livereload -d .",
     "watch:mustache": "nodemon -e mustache -x \"/opt/homebrew/bin/php ../../admin/cli/purge_caches.php\"",
     "start": "npm-run-all --parallel watch:sass watch:mustache livereload"

@@ -29,16 +29,17 @@
     background-color: #fff;
     background-clip: padding-box;
     border: 0;
-    border-radius: 0rem;
+    border-radius: 0;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-.customfield-sprogramme .programm-input::placeholder, .customfield-sprogramme .programm-input::-webkit-input-placeholder {
+.customfield-sprogramme .programm-input::placeholder,
+.customfield-sprogramme .programm-input::-webkit-input-placeholder {
     color: #d7d7d8;
 }
 .customfield-sprogramme .programm-input:focus {
     outline: 1px solid #7fb6f1;
     background-color: #f7f7f7;
-    border-radius: 0rem;
+    border-radius: 0;
 }
 .customfield-sprogramme .programm-textarea {
     display: block;
@@ -53,13 +54,13 @@
     background-color: #fff;
     background-clip: padding-box;
     border: 0;
-    border-radius: 0rem;
+    border-radius: 0;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .customfield-sprogramme .programm-textarea:focus {
     outline: 1px solid #7fb6f1;
     background-color: #f7f7f7;
-    border-radius: 0rem;
+    border-radius: 0;
 }
 .customfield-sprogramme .module-input {
     border-radius: 0;
@@ -108,7 +109,6 @@
 .customfield-sprogramme .disciplines .badge .percentage,
 .customfield-sprogramme .competencies .badge .percentage {
     background-color: #fff;
-    margin-left: 0.5rem;
     border-radius: 1.5rem;
     margin-left: auto;
     display: flex;
@@ -182,7 +182,7 @@
 .customfield-sprogramme .programm-table.toprow th {
     display: none;
     position: relative;
-    color: #C6C6C6;
+    color: #c6c6c6;
 }
 .customfield-sprogramme .programm-table.toprow th.haschanges .sumcontainer {
     color: rgb(206, 38, 38);
@@ -219,7 +219,8 @@
     max-width: 170px;
     padding: 0.4rem;
 }
-.customfield-sprogramme .programm-table th.float, .customfield-sprogramme .programm-table th.int {
+.customfield-sprogramme .programm-table th.float,
+.customfield-sprogramme .programm-table th.int {
     background-color: #f7f7f7;
     width: 55.55px;
     max-width: 55.55px;
@@ -232,7 +233,7 @@
 .customfield-sprogramme .programm-table th.text {
     width: 200px;
     min-width: 200px;
-    white-space: wrap;
+    white-space: normal;
 }
 .customfield-sprogramme .programm-table th .thlabel {
     display: block;
@@ -245,7 +246,6 @@
 }
 .customfield-sprogramme .programm-table th .sum {
     display: flex;
-    width: 100%;
     text-align: left;
     width: auto;
     height: 20px;
@@ -256,7 +256,6 @@
 }
 .customfield-sprogramme .programm-table th .newsum {
     display: flex;
-    width: 100%;
     text-align: left;
     width: auto;
     height: 20px;
@@ -274,7 +273,8 @@
     margin-left: 1rem;
     width: calc(100% - 1rem);
 }
-.customfield-sprogramme.syllabuspage .programm-table th.float, .customfield-sprogramme.syllabuspage .programm-table th.int,
+.customfield-sprogramme.syllabuspage .programm-table th.float,
+.customfield-sprogramme.syllabuspage .programm-table th.int,
 .customfield-sprogramme.syllabuspage .programm-table td.float,
 .customfield-sprogramme.syllabuspage .programm-table td.int {
     width: 30px;
@@ -289,7 +289,8 @@
 .customfield-sprogramme.syllabuspage .programm-table tr.tags {
     display: none;
 }
-.customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-disciplines, .customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-competencies {
+.customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-disciplines,
+.customfield-sprogramme.syllabuspage .programm-table tr.tags.show.has-competencies {
     display: table-row;
 }
 .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines,
@@ -348,7 +349,7 @@
     height: 0;
     border-top: 12px solid transparent;
     border-bottom: 12px solid transparent;
-    border-left: 12px solid #ffffff;
+    border-left: 12px solid #fff;
     z-index: 2;
 }
 .customfield-sprogramme .formarrow::after {
@@ -378,7 +379,8 @@
 .customfield-sprogramme .tag-form .badge .btn {
     display: block;
 }
-.customfield-sprogramme .tag-form .btn.btn-icon:hover, .customfield-sprogramme .tag-form .btn.btn-icon:focus {
+.customfield-sprogramme .tag-form .btn.btn-icon:hover,
+.customfield-sprogramme .tag-form .btn.btn-icon:focus {
     background-color: #ead9d9;
 }
 .customfield-sprogramme .tag-form input,

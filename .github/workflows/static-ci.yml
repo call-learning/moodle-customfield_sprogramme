@@ -1,4 +1,4 @@
-name: CI Test for Moodle Plugin
+name: Static code analysis tests
 
 on: [push, pull_request]
 
@@ -58,9 +58,9 @@ jobs:
           sudo locale-gen en_AU.UTF-8
           echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
 
-      - name: Install moodle-plugin-ci
+      - name: Install moodle-plugin-ci (not init for behat and phpunit)
         run: |
-          moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+          moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1 --no-init
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}

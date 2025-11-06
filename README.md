@@ -3,9 +3,9 @@
 This plugin adds a new custom field type "Programme" to Moodle's custom fields used by local_envasyllabus
 to display programme information in various places.
 
-[![Code testing](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/code-test.yml/badge.svg)](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/code-test.yml)
+[![PHP Unit and Behat tests](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/code-test.yml/badge.svg)](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/code-test.yml)
 
-[![Moodle Plugin CI](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/ci.yml/badge.svg)](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/ci.yml)
+[![Static code analysis tests](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/static-ci.yml/badge.svg)](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/static-ci.yml)
 
 
 ## Installing via uploaded ZIP file ##

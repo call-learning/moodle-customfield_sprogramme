@@ -4,7 +4,6 @@
 
 module.exports = grunt => {
     const path = require('path');
-    const originalCwd = process.cwd();
     const moodleRoot = path.resolve(__dirname, '../../../');
 
     // Always load the sass task before configuring/merging.
@@ -13,54 +12,41 @@ module.exports = grunt => {
     // One place to keep Sass options consistent.
     const sassOptions = {
         implementation: require('sass'),
-        includePaths: [path.join(originalCwd, 'scss/')],
-        outputStyle: 'expanded',   // pretty output
-        indentType: 'space',       // spaces instead of tabs
-        indentWidth: 4             // 4-space indents
+        includePaths: [path.join(moodleRoot, 'customfield/field/sprogramme/scss/')],
+        outputStyle: 'expanded', // Pretty output.
+
     };
-
-
+    process.chdir(moodleRoot);
     try {
-        // Move to Moodle root to allow loading its Gruntfile in-context.
-        process.chdir(moodleRoot);
-
         const rootGruntfile = path.join(moodleRoot, 'Gruntfile.js');
         if (grunt.file.exists(rootGruntfile)) {
             require(rootGruntfile)(grunt);
         }
-
         // Extend/override with your project-specific target using absolute paths.
         grunt.config.merge({
             sass: {
                 sprogramme: {
                     files: {
-                        [path.join(originalCwd, 'styles.css')]:
-                            path.join(originalCwd, 'scss/styles.scss')
+                        [path.join(moodleRoot, 'customfield/field/sprogramme/styles.css')]:
+                            path.join(moodleRoot, 'customfield/field/sprogramme/scss/styles.scss')
                     },
                     options: sassOptions
                 }
-            }
-        });
-
-    } catch (error) {
-        grunt.log.error('Erreur lors du chargement du Gruntfile racine:', error.message);
-
-        // Fallback: configure a minimal local build from the original CWD.
-        grunt.initConfig({
-            sass: {
+            },
+            stylelint: {
                 sprogramme: {
-                    files: {
-                        'styles.css': 'scss/styles.scss'
+                    options: {
+                        fix: true,
                     },
-                    options: sassOptions
+                    src: [path.join(moodleRoot, 'customfield/field/sprogramme/styles.css')]
                 }
             }
         });
-
+        // Default task available in both success/failure paths.
+        grunt.registerTask('sprogramme_sass', ['sass:sprogramme', 'stylelint:sprogramme']);
+        grunt.registerTask('default', ['sprogramme_sass']);
     } finally {
         // Always return to the original working directory.
-        try { process.chdir(originalCwd); } catch (_) {}
+        process.env.PWD = moodleRoot; // optional, helps code that prefers PWD.
     }
-    // Default task available in both success/failure paths.
-    grunt.registerTask('default', ['sass:sprogramme']);
 };
