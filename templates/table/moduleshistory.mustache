@@ -90,10 +90,10 @@
     </tr>
 </table>
 {{#modules}}
-    <span class="modules mb-5" data-region="module" data-id="{{moduleid}}">
-        <span class="d-flex mb-1 p-1 align-items-center">
-            <h4 class="mb-0">{{{modulename}}}</h4>
-        </span>
+    <div class="modules mb-5" data-region="module" data-id="{{moduleid}}">
+        <div class="d-flex mb-1 p-1 align-items-center">
+            <span class="mb-0 h4">{{{modulename}}}</span>
+        </div>
         <table class="programm-table standard">
             <thead>
                 <tr data-region="columns">
@@ -138,5 +138,5 @@
                 {{/rows}}
             </tbody>
         </table>
-    </span>
+    </div>
 {{/modules}}

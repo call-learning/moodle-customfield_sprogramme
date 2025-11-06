@@ -1,8 +1,12 @@
 # Programme customfield #
 
-TODO Describe the plugin shortly here.
+This plugin adds a new custom field type "Programme" to Moodle's custom fields used by local_envasyllabus
+to display programme information in various places.
 
-TODO Provide more detailed description here.
+[![Code testing](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/code-test.yml/badge.svg)](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/code-test.yml)
+
+[![Moodle Plugin CI](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/ci.yml/badge.svg)](https://github.com/call-learning/moodle-customfield_sprogramme/actions/workflows/ci.yml)
+
 
 ## Installing via uploaded ZIP file ##
 
@@ -29,7 +33,8 @@ to complete the installation from the command line.
 
 ## License ##
 
-2020 CALL Learning <laurent@call-learning.fr>
+2025 CALL Learning <laurent@call-learning.fr>
+2025 Bas Brands <bas@sonsbeekmedia.nl>
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

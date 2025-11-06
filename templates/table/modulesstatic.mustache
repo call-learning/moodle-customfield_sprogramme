@@ -21,6 +21,154 @@
 
     Example context (json):
     {
+        "modulesstatic": [
+            {
+                "moduleid": 1,
+                "modulename": "Module 1",
+                "columns": [
+                    {
+                        "columnid": "cm",
+                        "field": "cm",
+                        "label": "CM",
+                        "help": "Hebergement des cours en ligne"
+                    },
+                    {
+                        "columnid": "td",
+                        "field": "td",
+                        "label": "TD"
+                    },
+                    {
+                        "columnid": "tp",
+                        "field": "tp",
+                        "label": "TP"
+                    },
+                    {
+                        "columnid": "project",
+                        "field": "project",
+                        "label": "Project"
+                    },
+                    {
+                        "columnid": "other",
+                        "field": "other",
+                        "label": "Other"
+                    },
+                    {
+                        "columnid": "total",
+                        "field": "total",
+                        "label": "Total"
+                    },
+                    {
+                        "columnid": "credits",
+                        "field": "credits",
+                        "label": "Credits"
+                    },
+                    {
+                        "columnid": "hourspercredit",
+                        "field": "hourspercredit",
+                        "label": "Hours per credit"
+                    },
+                    {
+                        "columnid": "description",
+                        "field": "description",
+                        "label": "Description"
+                    },
+                    {
+                        "columnid": "objectives",
+                        "field": "objectives",
+                        "label": "Objectives"
+                    },
+                    {
+                        "columnid": "prerequisites",
+                        "field": "prerequisites",
+                        "label": "Prerequisites"
+                    },
+                    {
+                        "columnid": "disciplines",
+                        "field": "disciplines",
+                        "label": "Disciplines"
+                    }
+                ],
+                "rows": [
+                    {
+                        "id": 101,
+                        "cells": [
+                            {
+                                "column": "cm",
+                                "value": "2.5",
+                                "type": "float"
+                            },
+                            {
+                                "column": "td",
+                                "value": "1.0",
+                                "type": "float"
+                            },
+                            {
+                                "column": "tp",
+                                "value": "3.0",
+                                "type": "float"
+                            },
+                            {
+                                "column": "project",
+                                "value": "0.5",
+                                "type": "float"
+                            },
+                            {
+                                "column": "other",
+                                "value": "1.0",
+                                "type": "float"
+                            },
+                            {
+                                "column": "total",
+                                "value": "8.0",
+                                "type": "float"
+                            },
+                            {
+                                "column": "credits",
+                                "value": "3",
+                                "type": "int"
+                            },
+                            {
+                                "column": "hourspercredit",
+                                "value": "10",
+                                "type": "int"
+                            },
+                            {
+                                "column": "description",
+                                "value": "Introduction to advanced topics.",
+                                "type": "text"
+                            },
+                            {
+                                "column": "objectives",
+                                "value": "Understand key concepts.",
+                                "type": "text"
+                            },
+                            {
+                                "column": "prerequisites",
+                                "value": "Basic knowledge of the subject.",
+                                "type": "text"
+                            },
+                            {
+                                "column": "disciplines",
+                                "value": "",
+                                "type": "tags"
+                            }
+                        ],
+                        "disciplines": [
+                            {
+                                "name": "Mathematics",
+                                "percentage": 50
+                            }
+                        ],
+                        "competencies": [
+                            {
+                                "name": "Problem Solving",
+                                "percentage": 30
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 }}
 {{#modulesstatic}}
@@ -40,10 +188,10 @@
             </thead>
             <tbody data-region="rows">
                 {{#rows}}
-                    <tr class="{{#disciplines}}show-disciplines {{/disciplines}} {{#competencies}}show-competencies {{/competencies}}" data-toggle="collapse" data-target="#row-{{id}}" aria-expanded="false" aria-controls="collapseWidthExample">
+                    <tr class="{{#disciplines}}show-disciplines {{/disciplines}} {{#competencies}}show-competencies {{/competencies}}" data-toggle="collapse" data-target="#row-{{id}}" aria-expanded="false">
                         {{#cells}}
                             <td class="static {{type}} {{column}}">
-                                <span class="staticdata">{{{value}}}</div>
+                                <span class="staticdata">{{{value}}}</span>
                             </td>
                         {{/cells}}
                     </tr>
