@@ -111,7 +111,13 @@ class discipline extends base {
         return $columns;
     }
 
-    #[\Override]
+    /**
+     * Returns list of all available filters.
+     *
+     * These are all the filters available to use in any report that uses this entity.
+     *
+     * @return filter[]
+     */
     protected function get_all_filters(): array {
         $competencyalias = $this->get_table_alias('customfield_sprogramme_disclist');
 

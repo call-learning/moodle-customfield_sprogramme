@@ -53,7 +53,13 @@ class competency_assignment extends base {
         return $this;
     }
 
-    #[\Override]
+    /**
+     * Returns list of all available columns.
+     *
+     * These are all the columns available to use in any report that uses this entity.
+     *
+     * @return column[]
+     */
     protected function get_all_columns(): array {
         $competencyalias = $this->get_table_alias('customfield_sprogramme_competencies');
         $columns[] = (new column(
@@ -92,7 +98,13 @@ class competency_assignment extends base {
         return $columns;
     }
 
-    #[\Override]
+    /**
+     * Returns list of all available filters.
+     *
+     * These are all the filters available to use in any report that uses this entity.
+     *
+     * @return filter[]
+     */
     protected function get_all_filters(): array {
         $competencyalias = $this->get_table_alias('customfield_sprogramme_competencies');
 

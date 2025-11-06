@@ -50,7 +50,13 @@ class discipline_assignment extends base {
         return $this;
     }
 
-    #[\Override]
+    /**
+     * Returns list of all available columns.
+     *
+     * These are all the columns available to use in any report that uses this entity.
+     *
+     * @return column[]
+     */
     protected function get_all_columns(): array {
         $disciplinealias = $this->get_table_alias('customfield_sprogramme_disc');
         $columns[] = (new column(
@@ -89,7 +95,13 @@ class discipline_assignment extends base {
         return $columns;
     }
 
-    #[\Override]
+    /**
+     * Returns list of all available filters.
+     *
+     * These are all the filters available to use in any report that uses this entity.
+     *
+     * @return filter[]
+     */
     protected function get_all_filters(): array {
         $disciplinealias = $this->get_table_alias('customfield_sprogramme_disc');
 
