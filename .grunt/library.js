@@ -40,7 +40,6 @@ const buildSass = (grunt) => {
     const moodleRoot = findRoot(__dirname, 'config-dist.php');
     const MODULE_PATH = getModulePath(moodleRoot);
     const MODULE_NAME = getModuleName(MODULE_PATH, moodleRoot);
-    const currentDir = process.cwd();
     grunt.loadNpmTasks('grunt-sass');
     process.chdir(moodleRoot);
     process.env.PWD = moodleRoot; // Optional, helps code that prefers PWD.
@@ -66,11 +65,16 @@ const buildSass = (grunt) => {
                 path.join(moodleRoot, MODULE_PATH, '/scss')
             ],
             sourceComments: true,
+            outputStyle: 'expanded',
         }
     };
     config.stylelint[MODULE_NAME] = {
         options: {
             fix: true,
+        },
+        rules: {
+            "indentation": 4,
+            "declaration-block-single-line-max-declarations": 1,
         },
         src: [path.join(moodleRoot, MODULE_PATH, '/styles.css')]
     };
