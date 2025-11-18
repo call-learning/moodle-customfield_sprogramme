@@ -28,6 +28,7 @@ Feature: Managers can manage course custom fields sprogramme
       | Name       | Test field |
       | Short name | testfield  |
     And I click on "Save changes" "button" in the "Adding a new Programme customfield" "dialogue"
+    And I wait until the page is ready
     And I click on "Delete" "link" in the "Test field" "table_row"
     And I click on "Yes" "button" in the "Confirm" "dialogue"
     Then I should not see "Test field"
