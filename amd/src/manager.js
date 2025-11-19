@@ -415,7 +415,7 @@ class Manager {
             saveConfirmButton.classList.add('saving');
             if (!this.validateModules()) {
                 pending.resolve();
-                return '';
+                return;
             }
             const modules = State.getValue('modules');
             const cleanedModules = this.cleanModules(modules);
