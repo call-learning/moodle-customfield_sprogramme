@@ -132,28 +132,6 @@ class notifications {
     }
 
     /**
-     * Send the email notification to the given recipient.
-     *
-     * @param notification $notification
-     */
-    public static function send_email(notification $notification) {
-        if ($notification->get('status') == notification::STATUS_SEND) {
-            return;
-        }
-        $noreplyuser = \core_user::get_noreply_user();
-        $noreplyuser->email = $notification->get('recipient');
-        $subject = $notification->get('subject');
-        $body = $notification->get('body');
-        $success = email_to_user($noreplyuser, core_user::get_noreply_user(), $subject, $body);
-        if (!$success) {
-            debugging("Failed to send email to user ID {$noreplyuser->email}", DEBUG_DEVELOPER);
-        } else {
-            $notification->set('status', notification::STATUS_SEND);
-            $notification->save();
-        }
-    }
-
-    /**
      * Processes a custom string by replacing placeholders with actual values.
      *
      * @param string $string The custom string containing placeholders.
