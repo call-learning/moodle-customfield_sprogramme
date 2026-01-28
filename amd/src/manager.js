@@ -636,7 +636,7 @@ class Manager {
                         const column = columnsData.find(c => c.columnid === cell.columnid);
                         if (column) {
                             if (cell.changed) {
-                                column.sum = (parseFloat(column.sum) || 0) + parseFloat(cell.oldvalue);
+                                column.sum = (parseFloat(column.sum) || 0) + (parseFloat(cell.oldvalue) || 0);
                             } else if (cell.value && cell.value !== null) {
                                 column.sum = (parseFloat(column.sum) || 0) + parseFloat(cell.value);
                             }

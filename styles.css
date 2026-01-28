@@ -194,18 +194,15 @@
     min-width: 55.55px;
 }
 .customfield-sprogramme .programm-table.toprow .sumcontainer {
-    position: absolute;
-    left: 0;
-    right: 0;
+    display: flex;
+    flex-direction: column;
     background-color: #f7f7f7;
     padding: 0 10px;
     bottom: 5px;
-    display: flex;
     justify-content: space-between;
     align-items: center;
     border-radius: 50%;
     width: 100%;
-    height: 20px;
     color: var(--dark);
 }
 .customfield-sprogramme .programm-table th,
@@ -266,8 +263,13 @@
 .customfield-sprogramme .programm-table td.static {
     padding: 0.4rem;
 }
-.customfield-sprogramme .programm-table td.haschanges input {
+.customfield-sprogramme .programm-table td.has-changes input {
     background-color: #f4ffff;
+}
+.customfield-sprogramme .programm-table td .change {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 .customfield-sprogramme.syllabuspage .programm-table {
     margin-left: 1rem;

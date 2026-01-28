@@ -218,18 +218,15 @@
             }
 
             .sumcontainer {
-                position: absolute;
-                left: 0;
-                right: 0;
+                display: flex;
+                flex-direction: column;
                 background-color: #f7f7f7;
                 padding: 0 10px;
                 bottom: 5px;
-                display: flex;
                 justify-content: space-between;
                 align-items: center;
                 border-radius: 50%;
                 width: 100%;
-                height: 20px;
                 color: var(--dark);
             }
         }
@@ -298,13 +295,19 @@
             }
         }
 
-        td.static {
-            padding: 0.4rem;
-        }
-
-        td.haschanges {
-            input {
-                background-color: #f4ffff;
+        td {
+            &.static {
+                padding: 0.4rem;
+            }
+            &.has-changes {
+                input {
+                    background-color: #f4ffff;
+                }
+            }
+            .change {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     }

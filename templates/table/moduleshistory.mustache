@@ -81,8 +81,8 @@
     <tr>
         {{#columns}}
             <th class="{{field}}" data-columnid="{{columnid}}"><span class="thlabel">{{{label}}}</span>
-                <div class="d-flex sumcontainer">
-                    <span class="newsum {{^hasnewsum}}d-none{{/hasnewsum}}{{#hasnewsum}}ml-1{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>
+                <div class="sumcontainer">
+                    <span class="newsum {{^hasnewsum}}d-none{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="newsumtotals">{{#newsum}}{{newsum}}{{/newsum}}</span>
                     <span class="sum{{#hasnewsum}} strikethrough{{/hasnewsum}}" data-columnid="{{columnid}}" data-region="sumtotals">{{#sum}}{{sum}}{{/sum}}</span>
                 </div>
             </th>
