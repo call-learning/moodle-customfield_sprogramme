@@ -43,7 +43,7 @@ const buildSass = (grunt) => {
     const rootGruntfile = path.join(moodleRoot, 'Gruntfile.js');
     if (grunt.file.exists(rootGruntfile)) {
         process.chdir(moodleRoot); // Change to moodle root before loading the main Gruntfile.
-        // But do not change the process.env.PWD
+        // But do not change the process.env.PWD.
         require(rootGruntfile)(grunt);
     }
     const config = {
@@ -73,10 +73,13 @@ const buildSass = (grunt) => {
             fix: true,
             cache: false,
             failOnError: false,
+            quietDeprecationWarnings: true,
+            customSyntax: 'postcss-scss',
             config: {
                 rules: {
                     "indentation": 4,
                     "declaration-block-single-line-max-declarations": 1,
+                    "selector-list-comma-newline-after": "always",
                 }
             },
         },

@@ -4,8 +4,8 @@
   "description": "scss compiler",
   "main": "index.js",
   "scripts": {
-    "compile:sass": "grunt customfield_sprogramme",
-    "watch:sass": "grunt customfield_sprogramme --watch",
+    "compile:sass": "grunt sass:customfield_sprogramme && grunt stylelint:customfield_sprogramme",
+    "watch:sass": "grunt sass:customfield_sprogramme --watch",
     "livereload": "livereload -d .",
     "watch:mustache": "nodemon -e mustache -x \"/opt/homebrew/bin/php ../../admin/cli/purge_caches.php\"",
     "start": "npm-run-all --parallel watch:sass watch:mustache livereload"
