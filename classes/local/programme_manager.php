@@ -710,6 +710,7 @@ class programme_manager {
      */
     private function invalidate_cache(): void {
         cache_helper::invalidate_by_event('customfield_sprogramme/changesinprogramme', [$this->datafieldid]);
+        cache_helper::invalidate_by_event('changesincourse', [$this->courseid]);
     }
 
     /**
