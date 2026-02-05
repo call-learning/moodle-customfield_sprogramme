@@ -519,6 +519,9 @@ final class programme_manager_test extends \advanced_testcase {
         // Change a protected field (cm).
         $data[0]['rows'][0]['cells'][2]['value'] = 20.0;
         $this->assertTrue($pm->has_protected_data_changes($data));
+        // Remove an entire row, which should be considered a protected change.
+        $data[0]['rows'][0]['deleted'] = true;
+        $this->assertTrue($pm->has_protected_data_changes($data));
     }
 
     /**

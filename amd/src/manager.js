@@ -237,7 +237,6 @@ class Manager {
                 'id': 'id',
                 'sortorder': 'sortorder',
                 'deleted': 'false',
-                'todelete': 'false',
                 'cells': {
                     'type': 'type',
                     'column': 'column',
@@ -542,7 +541,7 @@ class Manager {
                         }
                     });
                 } else {
-                    // Remove the row from the module.
+                    // Directly remove the row from the module.
                     modulefound.rows.splice(rowIndex, 1);
                 }
                 State.setValue('modules', modules);

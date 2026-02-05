@@ -500,7 +500,7 @@ class programme_manager {
             foreach ($module['rows'] as $row) {
                 $rowdeleted = $row['deleted'] ?? false;
                 if ($rowdeleted) {
-                    continue; // Skip deleted rows.
+                    return true; // If a row is deleted, there are data changes for protected columns.
                 }
                 foreach ($row['cells'] as $cell) {
                     $column = array_filter($columns, function ($col) use ($cell) {

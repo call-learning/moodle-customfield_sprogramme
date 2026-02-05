@@ -163,18 +163,24 @@
             background-color: #f8f8f8;
         }
 
-        .deletepending input,
-        .deletepending textarea,
-        .deletepending select,
-        .deletepending .actions button {
-            text-decoration: line-through;
-            background-color: #f8f8f8;
-        }
-
-        .deletepending .actions button,
-        .deletepending .disciplines button,
-        .deletepending .competencies button {
-            display: none;
+        .deletepending {
+            input,
+            textarea,
+            select,
+            .actions button,
+            .static
+            {
+                text-decoration: line-through;
+                background-color: #f8f8f8;
+                .newvalue {
+                    text-decoration: none;
+                }
+            }
+            .actions button,
+            .disciplines button,
+            .competencies button {
+                display: none;
+            }
         }
 
         tr.haserror [data-group="unique"] {

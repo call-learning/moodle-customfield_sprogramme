@@ -151,9 +151,18 @@
 .customfield-sprogramme .programm-table .deletepending input,
 .customfield-sprogramme .programm-table .deletepending textarea,
 .customfield-sprogramme .programm-table .deletepending select,
-.customfield-sprogramme .programm-table .deletepending .actions button {
+.customfield-sprogramme .programm-table .deletepending .actions button,
+.customfield-sprogramme .programm-table .deletepending .static {
     text-decoration: line-through;
     background-color: #f8f8f8;
+}
+.customfield-sprogramme .programm-table .deletepending input .newvalue,
+.customfield-sprogramme .programm-table .deletepending textarea .newvalue,
+.customfield-sprogramme .programm-table .deletepending select .newvalue,
+.customfield-sprogramme .programm-table .deletepending .actions button .newvalue,
+.customfield-sprogramme .programm-table .deletepending .static .newvalue {
+    text-decoration: none;
+    background-color: initial;
 }
 .customfield-sprogramme .programm-table .deletepending .actions button,
 .customfield-sprogramme .programm-table .deletepending .disciplines button,
