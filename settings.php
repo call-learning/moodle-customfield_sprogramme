@@ -53,5 +53,23 @@ if ($hassiteconfig) {
                 ['class' => 'btn btn-primary mb-3']
             )
         ));
+
+        $departementcustomfieldname = new admin_setting_configtext(
+            'customfield_sprogramme/departmentcustomfieldname',
+            get_string('departmentcustomfieldname', 'customfield_sprogramme'),
+            get_string('departmentcustomfieldname_desc', 'customfield_sprogramme'),
+            'uc_departement',
+            PARAM_ALPHANUMEXT
+        );
+        $settings->add($departementcustomfieldname);
+
+        $responsiblerolename = new admin_setting_configtext(
+            'customfield_sprogramme/responsiblerolename',
+            get_string('responsiblerolename', 'customfield_sprogramme'),
+            get_string('responsiblerolename_desc', 'customfield_sprogramme'),
+            'responsablecourse',
+            PARAM_ALPHANUM
+        );
+        $settings->add($responsiblerolename);
     }
 }

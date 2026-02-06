@@ -52,6 +52,8 @@ $string['consignes_help'] = 'Cette case renseigne sur tout ce que doit faire l�
 $string['csvdelimiter'] = 'Délimiteur CSV';
 $string['csvfile'] = 'Fichier CSV';
 $string['dd_rse_help'] = 'Développement Durable / Responsabilité Sociétale et Environnementale : Cette case indique si la séance traite intégralement ou en partie de notions en lien avec le domaine DD / RSE.';
+$string['departmentcustomfieldname'] = 'Department custom field';
+$string['departmentcustomfieldname_desc'] = 'The department custom field used for notifications.';
 $string['discipline:name'] = 'Nom';
 $string['discipline:parent'] = 'Parent';
 $string['discipline:sortorder'] = 'Ordre de tri';
@@ -63,8 +65,27 @@ $string['disciplines'] = 'Disciplines';
 $string['disciplines_help'] = 'Cette case indique les disciplines AEEEV (de 1 à 3 maximum) qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance (par exemple, 10% pour « 2. Immunology », 60% pour « 2. Parasitology », et 30% pour « 4.FPA Preventive medicine ». La somme doit faire 100%.';
 $string['edit'] = 'Modifier';
 $string['editprogramme'] = 'Modifier';
-$string['email:rfc'] = <<<'EOF'
+$string['email:rfc_accepted'] = <<<'EOF'
+<p>Bonjour,</p>
+<p>La demande de modification de programme concernant l’unité d’enseignement suivante :<p>
+<p><strong>{$a->coursename}</strong></p>
+<ul>
+<li></li>Responsable(s) de l’UC : [{$a->responsibles}]</li>
+<li>Demandeur : {$a->requester}</li>
+<li>Département de rattachement : {$a->department}</li>
+</ul>
+</p>
 
+<p>a été validée par le chef de département concerné et la DEVE.</p>
+
+<p>Ce message est adressé aux trois chefs de département, au responsable qualité, au directeur des formations ainsi qu’à l’administrateur Moodle, afin d’assurer une information partagée sur les évolutions de la maquette pédagogique.</p>
+<p>Pour consulter l’historique des modifications validées pour cette UC, veuillez suivre le lien ci-dessous et cliquer sur le bouton "Historique" du programme :</p>
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Bien cordialement</p>
+EOF;
+
+$string['email:rfc_accepted:subject'] = '[Syllabus] Modification de programme validée pour l\'UC :{$a->coursename}';
+$string['email:rfc_submitted'] = <<<'EOF'
 <p>Bonjour,</p>
 
 <p>Une demande de modification de programme a été soumise pour l'UC suivante :{$a->coursename}.</p>
@@ -75,7 +96,8 @@ $string['email:rfc'] = <<<'EOF'
 <a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Bien cordialement</p>
 EOF;
-$string['email:rfc:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
+$string['email:rfc_submitted:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
+
 $string['emailsenabled'] = 'Activer les notifications par e-mail';
 $string['emailsenabled_desc'] = 'Si activé, les notifications par e-mail seront envoyées lors de la soumission de demandes de modification de programme.';
 $string['encoding'] = 'Encodage';
@@ -136,6 +158,8 @@ $string['report:programme'] = 'Programme';
 $string['report:rfcs'] = 'Demande de changement';
 $string['report:rfctotals'] = 'Totaux des demandes de changement';
 $string['resetrfc'] = 'Masquer les modifications proposées';
+$string['responsiblerolename'] = 'Rôle responsable (shortname)';
+$string['responsiblerolename_desc'] = 'Nom court du rôle responsable. Les utilisateurs avec ce rôle seront notifiés des demandes de modification de programme et pourront les certifier.';
 $string['rfc:accepted'] = 'Acceptée';
 $string['rfc:actions'] = 'Actions';
 $string['rfc:changerequestby'] = 'Demande de modification par {$a}';

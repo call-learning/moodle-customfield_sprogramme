@@ -32,4 +32,8 @@ $observers = [
         'eventname'   => '\customfield_sprogramme\event\rfc_submitted',
         'callback'    => \customfield_sprogramme\local\observers\rfc_observer::class . '::rfc_submitted',
     ],
+    [
+        'eventname'   => '\customfield_sprogramme\event\rfc_accepted',
+        'callback'    => \customfield_sprogramme\local\observers\rfc_observer::class . '::rfc_accepted',
+    ],
 ];

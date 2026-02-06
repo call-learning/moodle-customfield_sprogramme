@@ -52,6 +52,8 @@ $string['consignes_help'] = 'This field indicates everything the student must do
 $string['csvdelimiter'] = 'CSV delimiter';
 $string['csvfile'] = 'CSV file';
 $string['dd_rse_help'] = 'Sustainable Development / Social and Environmental Responsibility: This checkbox indicates whether the session fully or partially addresses concepts related to the SD / SER domain.';
+$string['departmentcustomfieldname'] = 'Department custom field';
+$string['departmentcustomfieldname_desc'] = 'The department custom field used for notifications.';
 $string['discipline:name'] = 'Name';
 $string['discipline:parent'] = 'Parent';
 $string['discipline:sortorder'] = 'Sort order';
@@ -63,7 +65,23 @@ $string['disciplines'] = 'Disciplines';
 $string['disciplines_help'] = 'This field indicates the AEEEV disciplines (1 to 3 maximum) that are concerned by the session/exercise, and their respective percentages within the session (for example, 10% for "2. Immunology", 60% for "2. Parasitology", and 30% for "4.FPA Preventive medicine". The sum must equal 100%.';
 $string['edit'] = 'Edit';
 $string['editprogramme'] = 'Edit';
-$string['email:rfc'] = <<<'EOF'
+$string['email:rfc_accepted'] = <<<'EOF'
+<p>Hello,</p>
+<p>The programme change request concerning the following course unit:</p>
+<p><strong>{$a->coursename}</strong></p>
+<ul>
+<li>UC Responsible(s): [{$a->responsibles}]</li>
+<li>Requester: {$a->requester}</li>
+<li>Department: {$a->department}</li>
+</ul>
+<p>has been validated by the relevant department head and the DEVE.</p>
+<p>This message is addressed to the three department heads, the quality manager, the director of training, and the Moodle administrator, to ensure shared information about changes to the educational framework.</p>
+<p>To view the history of validated changes for this UC, please follow the link below and click on the "History" button of the programme:</p>
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Best regards</p>
+EOF;
+$string['email:rfc_accepted:subject'] = '[Syllabus] Programme change validated for UC: {$a->coursename}';
+$string['email:rfc_submitted'] = <<<'EOF'
 
 <p>Hello,</p>
 <p>A change request has been submitted for the programme of the following course: {$a->coursename}.</p>
@@ -73,7 +91,7 @@ $string['email:rfc'] = <<<'EOF'
 <a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Best regards</p>
 EOF;
-$string['email:rfc:subject'] = '[Syllabus] Request for programme change for: {$a->coursename}';
+$string['email:rfc_submitted:subject'] = '[Syllabus] Request for programme change for: {$a->coursename}';
 $string['emailsenabled'] = 'Activate email notifications';
 $string['emailsenabled_desc'] = 'If enabled, email notifications will be sent when a change request is submitted.';
 $string['encoding'] = 'Encoding';
@@ -89,7 +107,7 @@ $string['intitule_seance_help'] = 'The name of the teaching exercise is entered 
 $string['invaliddata'] = 'Invalid data: {$a}';
 $string['invalidpagetype'] = 'Invalid page type';
 $string['invalidvalue'] = 'Invalid value for column {$a->column}: {$a->value}';
-$string['maxdisciplines'] = 'You can not any more, max allowed reached';
+$string['maxdisciplines'] = 'You cannot add more';
 $string['maxpercentage'] = 'Max allowed {$a} The sum of the percentages must be 100';
 $string['module:name'] = 'Module Name';
 $string['module:sortorder'] = 'Module';
@@ -105,26 +123,26 @@ $string['pluginname'] = 'Programme customfield';
 $string['programme:aas'] = 'AAS';
 $string['programme:cct_ept'] = 'CCT EPT';
 $string['programme:cm'] = 'CM';
-$string['programme:consignes'] = 'Instructions to prepare for the session';
+$string['programme:consignes'] = 'Work instructions to prepare for the session';
 $string['programme:datafieldid'] = 'Data field id';
 $string['programme:dd_rse'] = 'DD / RSE';
 $string['programme:enabled'] = '{$a} enabled';
-$string['programme:enabledbydefault'] = 'Programme Enabled By default';
+$string['programme:enabledbydefault'] = 'Programme enabled by default';
 $string['programme:fmp'] = 'FMP';
-$string['programme:intitule_seance'] = 'Session title or exercise';
-$string['programme:perso_ap'] = 'Perso ap';
-$string['programme:perso_av'] = 'Perso av';
+$string['programme:intitule_seance'] = 'Session/exercise title';
+$string['programme:perso_ap'] = 'Personal work after';
+$string['programme:perso_av'] = 'Personal work before';
 $string['programme:sequence'] = 'Sequence';
 $string['programme:sortorder'] = 'Sort order';
-$string['programme:supports'] = 'Essential teaching materials';
+$string['programme:supports'] = 'Essential teaching supports';
 $string['programme:tc'] = 'TC';
 $string['programme:td'] = 'TD';
 $string['programme:timecreated'] = 'Time created';
 $string['programme:timemodified'] = 'Time modified';
 $string['programme:tp'] = 'TP';
-$string['programme:tpa'] = 'TPA';
-$string['programme:type_ae'] = 'Type AE';
-$string['programme:uc'] = 'UC';
+$string['programme:tpa'] = 'TPa';
+$string['programme:type_ae'] = 'AE type';
+$string['programme:uc'] = 'Course unit';
 $string['programme:usermodified'] = 'Modified by';
 $string['reject'] = 'Reject';
 $string['removerfc'] = 'Reset all changes';
@@ -132,8 +150,10 @@ $string['report:competencies'] = 'Competencies Report';
 $string['report:disciplines'] = 'Disciplines Report';
 $string['report:programme'] = 'Programme';
 $string['report:rfcs'] = 'Change requests';
-$string['report:rfctotals'] = 'Cahange requests totals';
+$string['report:rfctotals'] = 'Change requests totals';
 $string['resetrfc'] = 'Hide suggested changes';
+$string['responsiblerolename'] = 'Responsible role (shortname)';
+$string['responsiblerolename_desc'] = 'Short name of the responsible role. Users with this role will be notified of programme change requests and can certify them.';
 $string['rfc:accepted'] = 'Accepted';
 $string['rfc:actions'] = 'Actions';
 $string['rfc:changerequestby'] = 'Change request by {$a}';

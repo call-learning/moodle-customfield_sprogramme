@@ -119,6 +119,18 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         // Sprogramme savepoint reached.
         upgrade_plugin_savepoint(true, 2025101700, 'customfield', 'sprogramme');
     }
+    if ($oldversion < 2026020600) {
+        global $DB;
+        // We now have two types of notifications.
+        $DB->set_field(
+            'customfield_sprogramme_notification',
+            'notification',
+            'rfc_submitted',
+            ['notification' => 'rfc']
+        );
+        // Sprogramme savepoint reached.
+        upgrade_plugin_savepoint(true, 2026020600, 'customfield', 'sprogramme');
+    }
 
     return true;
 }

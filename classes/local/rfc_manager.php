@@ -98,6 +98,18 @@ class rfc_manager {
         $rfc->set('type', sprogramme_rfc::RFC_ACCEPTED);
         $rfc->set('adminid', $USER->id);
         $rfc->save();
+        $event = \customfield_sprogramme\event\rfc_accepted::create(
+            [
+                'context' => $this->context,
+                'objectid' => $rfc->get('id'),
+                'other' => [
+                    'datafieldid' => $this->datafieldid,
+                    'rfcid' => $rfc->get('id'),
+                    'usercreated' => $usercreated,
+                ],
+            ]
+        );
+        $event->trigger();
         $programme = new programme_manager($this->datafieldid);
         $result = $programme->set_data($data);
         if (!$result) {

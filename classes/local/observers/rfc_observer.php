@@ -16,6 +16,7 @@
 
 namespace customfield_sprogramme\local\observers;
 
+use customfield_sprogramme\event\rfc_accepted;
 use customfield_sprogramme\event\rfc_created;
 use customfield_sprogramme\event\rfc_submitted;
 use customfield_sprogramme\local\api\notifications;
@@ -45,6 +46,19 @@ class rfc_observer {
         $eventdata = $event->get_data();
         $userid = $eventdata['userid'];
         $datafieldid = $eventdata['other']['datafieldid'];
-        notifications::add_notification('rfc', $userid, $datafieldid);
+        notifications::add_notification('rfc_submitted', $userid, $datafieldid);
+    }
+
+    /**
+     * An rfc has been created.
+     *
+     * @param rfc_accepted $event
+     */
+    public static function rfc_accepted(rfc_accepted $event): void {
+        $eventdata = $event->get_data();
+        $userid = $eventdata['userid'];
+        $usercreated = $eventdata['other']['usercreated'];
+        $datafieldid = $eventdata['other']['datafieldid'];
+        notifications::add_notification('rfc_accepted', $userid, $datafieldid, ['usercreated' => $usercreated]);
     }
 }

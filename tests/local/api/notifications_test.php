@@ -47,6 +47,13 @@ final class notifications_test extends \advanced_testcase {
     protected data_controller $cfdata;
 
     /**
+     * Course data
+     *
+     * @var \stdClass $course ;
+     */
+    protected \stdClass $course;
+
+    /**
      * Setup test environment
      */
     public function setUp(): void {
@@ -68,6 +75,7 @@ final class notifications_test extends \advanced_testcase {
         );
         $course = $this->getDataGenerator()->create_course();
         $this->cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
+        $this->course = $course;
         set_config('emailsenabled', true, 'customfield_sprogramme');
     }
 
@@ -84,11 +92,11 @@ final class notifications_test extends \advanced_testcase {
             snapshot: json_encode($this->sampleprogrammedata[0]),
             usercreated: $user1->id,
         );
-        notifications::add_notification('rfc', $user1->id, $this->cfdata->get('id'));
+        notifications::add_notification('rfc_submitted', $user1->id, $this->cfdata->get('id'));
         $this->assertCount(1, notification::get_records([]));
 
         $notification = notification::get_records([])[0];
-        $this->assertEquals('rfc', $notification->get('notification'));
+        $this->assertEquals('rfc_submitted', $notification->get('notification'));
         $this->assertEquals($this->cfdata->get('id'), $notification->get('datafieldid'));
         $this->assertEquals('admin@example.com', $notification->get('recipient')); // Default admin email.
         $this->assertEquals(notification::STATUS_PENDING, $notification->get('status'));
@@ -116,18 +124,18 @@ final class notifications_test extends \advanced_testcase {
             snapshot: json_encode($this->sampleprogrammedata[0]),
             usercreated: $user1->id,
         );
-        notifications::add_notification('rfc', $user1->id, $this->cfdata->get('id'));
+        notifications::add_notification('rfc_submitted', $user1->id, $this->cfdata->get('id'));
         $notifications = notification::get_records();
         $this->assertCount(2, $notifications);
 
         $notification = $notifications[0];
-        $this->assertEquals('rfc', $notification->get('notification'));
+        $this->assertEquals('rfc_submitted', $notification->get('notification'));
         $this->assertEquals($this->cfdata->get('id'), $notification->get('datafieldid'));
         $this->assertEquals('recipient@example.com', $notification->get('recipient'));
         $this->assertEquals(notification::STATUS_PENDING, $notification->get('status'));
 
         $notification = $notifications[1];
-        $this->assertEquals('rfc', $notification->get('notification'));
+        $this->assertEquals('rfc_submitted', $notification->get('notification'));
         $this->assertEquals($this->cfdata->get('id'), $notification->get('datafieldid'));
         $this->assertEquals('recipient2@example.com', $notification->get('recipient'));
         $this->assertEquals(notification::STATUS_PENDING, $notification->get('status'));
@@ -153,8 +161,8 @@ final class notifications_test extends \advanced_testcase {
             snapshot: json_encode($this->sampleprogrammedata[0]),
             usercreated: $user2->id,
         );
-        notifications::add_notification('rfc', $user1->id, $this->cfdata->get('id'));
-        notifications::add_notification('rfc', $user2->id, $this->cfdata->get('id'));
+        notifications::add_notification('rfc_submitted', $user1->id, $this->cfdata->get('id'));
+        notifications::add_notification('rfc_submitted', $user2->id, $this->cfdata->get('id'));
         $this->assertCount(2, notification::get_records(['status' => notification::STATUS_PENDING]));
         foreach (notification::get_records([]) as $notification) {
             $notification->send();
@@ -199,8 +207,8 @@ final class notifications_test extends \advanced_testcase {
             snapshot: json_encode($this->sampleprogrammedata[0]),
             usercreated: $user2->id,
         );
-        notifications::add_notification('rfc', $user1->id, $this->cfdata->get('id'));
-        notifications::add_notification('rfc', $user2->id, $this->cfdata->get('id'));
+        notifications::add_notification('rfc_submitted', $user1->id, $this->cfdata->get('id'));
+        notifications::add_notification('rfc_submitted', $user2->id, $this->cfdata->get('id'));
         $this->assertCount(2, notification::get_records(['status' => notification::STATUS_PENDING]));
         foreach (notification::get_records([]) as $notification) {
             $notification->send();
@@ -209,5 +217,76 @@ final class notifications_test extends \advanced_testcase {
         $this->assertCount(0, $emails);
         $this->assertCount(0, notification::get_records(['status' => notification::STATUS_SEND]));
         $this->assertCount(2, notification::get_records(['status' => notification::STATUS_PENDING]));
+    }
+
+    /**
+     * Test adding global context
+     */
+    public function test_add_global_context(): void {
+        $generator = $this->getDataGenerator();
+
+        $cfgenerator = $this->getDataGenerator()->get_plugin_generator('core_customfield');
+        // If the local_envasyllabus plugin is not installed, the department field will not be presents, so we change the default
+        // value to a new field.
+        $cfielddept = $cfgenerator->create_field(
+            [
+                'categoryid' =>
+                    $this->cfdata->get_field()->get_category()->get('id'),
+                'shortname' => 'newdept',
+                'type' => 'text',
+            ]
+        );
+        $cfgenerator->add_instance_data($cfielddept, $this->course->id, 'DSPB');
+        set_config('departmentcustomfieldname', 'newdept', 'customfield_sprogramme');
+
+        $responsiblerolename = get_config('customfield_sprogramme', 'responsiblerolename');
+        $generator->create_role(
+            [
+                'shortname' => $responsiblerolename,
+                'name' => 'Responsible',
+                'archetype' => 'editingteacher',
+            ]
+        );
+        $generator->create_and_enrol($this->course, $responsiblerolename, [
+            'username' => 'responsible1',
+            'email' => 'responsible1@example.com',
+            'firstname' => 'Responsible',
+            'lastname' => 'One',
+        ]);
+        $generator->create_and_enrol($this->course, $responsiblerolename, [
+            'username' => 'responsible2',
+            'email' => 'responsible2@example.com',
+            'firstname' => 'Responsible',
+            'lastname' => 'Two',
+        ]);
+
+        $method = new \ReflectionMethod(notifications::class, 'add_global_context');
+        $method->setAccessible(true);
+        $user = $generator->create_user([
+            'username' => 'user1',
+            'email' => 'user1@example.com',
+            'firstname' => 'User',
+            'lastname' => '1',
+        ]);
+        $context = $method->invoke(
+            null,
+            ['usercreated' => $user->id,],
+            $this->cfdata->get('id'),
+            $user->id
+        );
+        $this->assertArrayHasKey('programmelink', $context);
+        $this->assertArrayHasKey('coursename', $context);
+        $this->assertArrayHasKey('department', $context);
+        $this->assertArrayHasKey('responsibles', $context);
+        $this->assertArrayHasKey('requester', $context);
+        $this->assertStringContainsString(
+            '/local/envasyllabus/syllabuspage.php?id=' . $this->cfdata->get('instanceid'),
+            $context['programmelink']
+        );
+        $this->assertEquals('tc_1 - Test course 1', $context['coursename']);
+        $this->assertEquals('DSPB', $context['department']);
+        $this->assertStringContainsString('Responsible One', $context['responsibles']);
+        $this->assertStringContainsString('Responsible Two', $context['responsibles']);
+        $this->assertEquals('User 1', $context['requester']);
     }
 }

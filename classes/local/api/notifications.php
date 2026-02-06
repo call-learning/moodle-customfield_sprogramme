@@ -33,16 +33,16 @@ class notifications {
      * Set the notification for the given planning.
      *
      * @param string $type The type of notification to send.
-     * @param int $userid The Notification unique ID.
+     * @param int $userid The Notification user ID.
      * @param int $datafieldid The Data field ID.
      * @param array $context The email template context (planning, students, etc.).
      */
     public static function add_notification(string $type, int $userid, int $datafieldid, array $context = []) {
-        $context = self::add_global_context($context, $datafieldid);
+        $context = self::add_global_context($context, $datafieldid, $userid);
         // Get the default language for the emails from the Course settings.
         $subject = self::local_get_string('email:' . $type . ':subject', (object) $context);
         $body = self::get_email_body($type, $context);
-        $recipients = self::get_recipients();
+        $recipients = self::get_recipients($type, $datafieldid, $context);
 
         foreach ($recipients as $recipient) {
             try {
@@ -70,14 +70,24 @@ class notifications {
      *
      * @param array $context
      * @param int $datafieldid
+     * @param int $userid
      * @return array
      */
-    private static function add_global_context(array $context, int $datafieldid): array {
+    private static function add_global_context(array $context, int $datafieldid, int $userid): array {
         $courseid = utils::get_instanceid_from_datafieldid($datafieldid);
         $course = get_course($courseid);
         $programmelink = new moodle_url('/local/envasyllabus/syllabuspage.php', ['id' => $courseid]);
         $context['programmelink'] = $programmelink->out();
         $context['coursename'] = $course->shortname . " - " . $course->fullname;
+        $context['department'] = self::get_department_for_course($courseid);
+        $context['responsibles'] = implode(', ', array_map(function ($user) {
+            return fullname($user);
+        }, self::get_responsible_for_course($courseid)));
+        if (isset($context['usercreated'])) {
+            $user = core_user::get_user($context['usercreated']);
+            $context['requester'] = fullname($user);
+        }
+        $context['userid'] = $userid;
         return $context;
     }
 
@@ -118,17 +128,45 @@ class notifications {
     /**
      * Get the recipients of notifications.
      *
+     * @param string $type The type of notification to send.
+     * @param int $datafieldid
+     * @param array $context
      * @return array
      */
-    private static function get_recipients(): array {
-        $recipients = get_config('customfield_sprogramme', 'approvalemail');
-        if (empty(trim($recipients))) {
+    private static function get_recipients(string $type, int $datafieldid, array $context): array {
+        $courseid = utils::get_instanceid_from_datafieldid($datafieldid);
+        $approveremails = get_config('customfield_sprogramme', 'approvalemail');
+        if (empty(trim($approveremails))) {
             return [core_user::get_support_user()->email];
         }
         // Separate the recipients by comma.
-        $recipients = explode(',', $recipients);
-        $recipients = array_map('trim', $recipients);
-        return $recipients;
+        $approveremails = explode(',', $approveremails);
+        $approveremails = array_map('trim', $approveremails);
+
+        // Now get the responsibles for courses.
+        $responsibles = self::get_responsible_for_course($courseid);
+        $responsibleemails = [];
+        foreach ($responsibles as $responsible) {
+            $responsibleemails[] = $responsible->email;
+        }
+        $emails = [];
+        switch ($type) {
+            case 'rfc_submitted':
+                // For RFC submitted, we want to send the email to the approvers and the responsibles.
+                $emails = array_merge($approveremails, $responsibleemails);
+                break;
+            case 'rfc_accepted':
+                // For RFC accepted, we also want to send the email to the user who submitted the RFC.
+                $emails = array_merge($approveremails, $responsibleemails);
+                if (isset($context['usercreated'])) {
+                    $user = core_user::get_user($context['usercreated']);
+                    if ($user->email && !in_array($user->email, $emails)) {
+                        $emails[] = $user->email;
+                    }
+                }
+                break;
+        }
+        return array_unique($emails);
     }
 
     /**
@@ -151,5 +189,53 @@ class notifications {
             $string = str_replace('{$a}', $a, $string);
         }
         return $string;
+    }
+
+    /**
+     * Get users matching the responsible role.
+     *
+     * Note this is a duplicate of the get_responsible_for_course function in local_envasyllabus
+     * but we want to avoid a dependency on the local_envasyllabus plugin in the notifications class.
+     *
+     * @param int $courseid
+     * @return array
+     */
+    protected static function get_responsible_for_course(int $courseid): array {
+        global $DB;
+        $responsiblerolename = get_config('customfield_sprogramme', 'responsiblerolename');
+        $teacherroles = $DB->get_fieldset(
+            'role',
+            'id',
+            ['shortname' => $responsiblerolename]
+        );
+        if (!empty($teacherroles)) {
+            $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+            $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
+            return get_role_users($teacherroles, \context_course::instance($courseid), true, $userfields);
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Get users matching the responsible role.
+     *
+     * We assume here that the department is stored in a custom field with
+     * shortname 'uc_departement' at the course level, but this can be adapted if needed.
+     *
+     * @param int $courseid
+     * @return string
+     */
+    protected static function get_department_for_course(int $courseid): string {
+        $handler = \core_customfield\handler::get_handler('core_course', 'course');
+        $cfdata = $handler->get_instance_data($courseid, true);
+        $customfieldname = get_config('customfield_sprogramme', 'departmentcustomfieldname') ?: 'uc_departement';
+        foreach ($cfdata as $cfdatacontroller) {
+            $shortname = $cfdatacontroller->get_field()->get('shortname');
+            if ($shortname === $customfieldname) {
+                return $cfdatacontroller->export_value() ?? '';
+            }
+        }
+        return '';
     }
 }
