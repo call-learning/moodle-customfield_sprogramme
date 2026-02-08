@@ -67,20 +67,17 @@ class get_programme_history extends external_api {
         self::validate_context(utils::get_context_from_datafieldid($datafieldid));
         // Get the programme history.
         $programmemanager = new programme_manager($datafieldid);
-        $rfcmanager = new rfc_manager($datafieldid);
         $history = $programmemanager->get_history($rfcid);
         $modules = $history['modules'];
         if (empty($modules)) {
             throw new \invalid_parameter_exception('No programme history found for this course.');
         }
-        $rfc = $rfcmanager->get_data();
         $columns = $programmemanager->get_column_structure();
         $columnstotals = $programmemanager->get_column_totals($modules, $columns);
 
         return [
             'modules' => $modules,
             'columns' => $columnstotals,
-            'rfc' => $rfc,
         ];
     }
 
@@ -165,19 +162,6 @@ class get_programme_history extends external_api {
                     'group' => new external_value(PARAM_TEXT, 'Group', VALUE_OPTIONAL),
                 ])
             ),
-            'rfc' => new external_single_structure([
-                'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
-                'issubmitted' => new external_value(PARAM_BOOL, 'Is submitted', VALUE_OPTIONAL),
-                'canaccept' => new external_value(PARAM_BOOL, 'Can accept', VALUE_OPTIONAL),
-                'canreject' => new external_value(PARAM_BOOL, 'Can reject', VALUE_OPTIONAL),
-                'canremove' => new external_value(PARAM_BOOL, 'Can remove', VALUE_OPTIONAL),
-                'cansubmit' => new external_value(PARAM_BOOL, 'Can submit', VALUE_OPTIONAL),
-                'cancancel' => new external_value(PARAM_BOOL, 'Can cancel', VALUE_OPTIONAL),
-                'userinfo' => new external_single_structure([
-                    'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
-                    'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
-                ], 'User who created the RFC', VALUE_OPTIONAL),
-            ], 'RFC data', VALUE_OPTIONAL),
         ]);
     }
 }
