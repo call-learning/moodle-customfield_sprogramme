@@ -212,6 +212,40 @@ class Repository {
 
         return promise;
     }
+
+    /**
+     * Accept the rfc (visa).
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    async acceptVisa(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_accept_visa',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
+
+    /**
+     * Reject the rfc (visa).
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    async rejectVisa(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_reject_visa',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
 }
 
 const RepositoryInstance = new Repository();

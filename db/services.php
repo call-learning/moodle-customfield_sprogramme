@@ -114,4 +114,20 @@ $functions = [
         'ajax' => true,
         'capabilities' => 'customfield/sprogramme:view',
     ],
+    'customfield_sprogramme_accept_visa' => [
+        'classname' => \customfield_sprogramme\external\accept_visa::class,
+        'methodname' => 'execute',
+        'description' => 'Accept a visa for RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
+    'customfield_sprogramme_reject_visa' => [
+        'classname' => \customfield_sprogramme\external\reject_visa::class,
+        'methodname' => 'execute',
+        'description' => 'Accept a visa for RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
 ];

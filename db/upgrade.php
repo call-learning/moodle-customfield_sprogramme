@@ -131,6 +131,34 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
         // Sprogramme savepoint reached.
         upgrade_plugin_savepoint(true, 2026020600, 'customfield', 'sprogramme');
     }
+    if ($oldversion < 2026020800) {
+        // Define table customfield_sprogramme_rfc_visa to be created.
+        $table = new xmldb_table('customfield_sprogramme_rfc_visa');
 
+        // Adding fields to table customfield_sprogramme_rfc_visa.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('rfcid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('visauser', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('status', XMLDB_TYPE_INTEGER, '4', null, null, null, null);
+        $table->add_field('comment', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table customfield_sprogramme_rfc_visa.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('visauser_fk', XMLDB_KEY_FOREIGN, ['visauser'], 'user', ['id']);
+        $table->add_key('rfc_fk', XMLDB_KEY_FOREIGN, ['rfcid'], 'customfield_sprogramme_rfc', ['id']);
+        $table->add_key('usermodified_fk', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+        // Adding indexes to table customfield_sprogramme_rfc_visa.
+        $table->add_index('rfcuser_ix', XMLDB_INDEX_UNIQUE, ['rfcid', 'visauser']);
+
+        // Conditionally launch create table for customfield_sprogramme_rfc_visa.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_plugin_savepoint(true, 2026020800, 'customfield', 'sprogramme');
+    }
     return true;
 }

@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['aas_help'] = 'Auto-Apprentissage Supervisé : Enseignement comprenant des séquences d’apprentissage individuel en autonomie où les élèves utilisent un matériel pédagogique disponible (et peuvent obtenir, à leur demande, une aide ponctuelle des enseignants) et s\'auto-évaluent (e-learning par exemple).';
 $string['accept'] = 'Accepter';
+$string['acceptvisa'] = 'Valider la modification';
+$string['accepted'] = 'Accepté';
 $string['addmodule'] = 'Ajouter un module';
 $string['addrow'] = 'Ajouter une ligne';
 $string['alreadyset'] = 'Déjà définie pour cette ligne.';
@@ -151,6 +153,8 @@ $string['programme:type_ae'] = 'Type AE';
 $string['programme:uc'] = 'UC';
 $string['programme:usermodified'] = 'Modifié par';
 $string['reject'] = 'Rejeter';
+$string['rejected'] = 'Rejeté';
+$string['rejectvisa'] = 'Ne pas valider la modification';
 $string['removerfc'] = 'Réinitialiser toutes les modifications';
 $string['report:competencies'] = 'Rapport des compétences';
 $string['report:disciplines'] = 'Rapport des disciplines';

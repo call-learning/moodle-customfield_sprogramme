@@ -82,7 +82,7 @@ class notifications {
         $context['department'] = self::get_department_for_course($courseid);
         $context['responsibles'] = implode(', ', array_map(function ($user) {
             return fullname($user);
-        }, self::get_responsible_for_course($courseid)));
+        }, utils::get_responsible_for_course($courseid)));
         if (isset($context['usercreated'])) {
             $user = core_user::get_user($context['usercreated']);
             $context['requester'] = fullname($user);
@@ -144,7 +144,7 @@ class notifications {
         $approveremails = array_map('trim', $approveremails);
 
         // Now get the responsibles for courses.
-        $responsibles = self::get_responsible_for_course($courseid);
+        $responsibles = utils::get_responsible_for_course($courseid);
         $responsibleemails = [];
         foreach ($responsibles as $responsible) {
             $responsibleemails[] = $responsible->email;
@@ -189,32 +189,6 @@ class notifications {
             $string = str_replace('{$a}', $a, $string);
         }
         return $string;
-    }
-
-    /**
-     * Get users matching the responsible role.
-     *
-     * Note this is a duplicate of the get_responsible_for_course function in local_envasyllabus
-     * but we want to avoid a dependency on the local_envasyllabus plugin in the notifications class.
-     *
-     * @param int $courseid
-     * @return array
-     */
-    protected static function get_responsible_for_course(int $courseid): array {
-        global $DB;
-        $responsiblerolename = get_config('customfield_sprogramme', 'responsiblerolename');
-        $teacherroles = $DB->get_fieldset(
-            'role',
-            'id',
-            ['shortname' => $responsiblerolename]
-        );
-        if (!empty($teacherroles)) {
-            $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
-            $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
-            return get_role_users($teacherroles, \context_course::instance($courseid), true, $userfields);
-        } else {
-            return [];
-        }
     }
 
     /**

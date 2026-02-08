@@ -61,6 +61,7 @@ const componentInit = () => {
     stateTemplate('modules');
     stateTemplate('modulesstatic', '', 'static');
     stateTemplate('rfc');
+    stateTemplate('visainfo');
     stateTemplate('editbuttons', '', 'modalheader');
 };
 

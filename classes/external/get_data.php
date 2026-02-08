@@ -23,6 +23,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use customfield_sprogramme\local\programme_manager;
 use customfield_sprogramme\local\rfc_manager;
+use customfield_sprogramme\local\visa_manager;
 use customfield_sprogramme\utils;
 
 /**
@@ -53,6 +54,7 @@ class get_data extends external_api {
      * @return array $data - The data in JSON format
      */
     public static function execute(int $datafieldid, bool $showrfc = false): array {
+        global $USER;
         $params = self::validate_parameters(
             self::execute_parameters(),
             ['datafieldid' => $datafieldid, 'showrfc' => $showrfc]
@@ -81,8 +83,15 @@ class get_data extends external_api {
                 $rfcdata = $rfc->get('snapshot');
                 $data['modules'] = json_decode($rfcdata, true);
                 $data['rfc'] = $rfcmanager->get_data();
+                $visamanager = new visa_manager($rfc->get('id'));
+                $data['visainfo'] = [
+                    'canvisa' => $visamanager->can_visa($USER->id),
+                    'rfcid' => $rfc->get('id'),
+                    'visas' => $visamanager->get_visa_data(),
+                ];
             }
         }
+
         $data['columns'] = $programmemanger->get_column_totals($modules, $columns);
         return $data;
     }
@@ -181,6 +190,25 @@ class get_data extends external_api {
                     'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
                 ], 'User who created the RFC', VALUE_OPTIONAL),
             ], 'RFC data', VALUE_OPTIONAL),
+            'visainfo' => new external_single_structure([
+                'canvisa' => new external_value(PARAM_BOOL, 'Can apply a visa', VALUE_OPTIONAL),
+                'rfcid' => new external_value(PARAM_INT, 'RFC id', VALUE_OPTIONAL),
+                'visas' => new external_multiple_structure(
+                    new external_single_structure([
+                        'comment' => new external_value(PARAM_BOOL, 'Comment', VALUE_OPTIONAL),
+                        'status' => new external_value(PARAM_BOOL, 'Status', VALUE_OPTIONAL),
+                        'statustext' => new external_value(PARAM_TEXT, 'Status text', VALUE_OPTIONAL),
+                        'visauser' => new external_single_structure([
+                            'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
+                            'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
+                        ], 'User who created the RFC', VALUE_OPTIONAL),
+                        'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
+                    ], 'Single visa', VALUE_OPTIONAL),
+                    'Visas data',
+                    VALUE_OPTIONAL
+                ),
+            ], 'Visa info', VALUE_OPTIONAL),
+
             'canedit' => new external_value(PARAM_BOOL, 'Can edit', VALUE_REQUIRED),
         ]);
     }

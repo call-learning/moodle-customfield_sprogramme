@@ -179,6 +179,9 @@ class Manager {
                 State.setValue('columns', [...columns]);
                 State.setValue('modules', modules);
                 State.setValue('rfc', response.rfc ?? []);
+                if (response.visainfo) {
+                    State.setValue('visainfo', response.visainfo);
+                }
                 State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.sumtotals();
             } else {
@@ -443,6 +446,7 @@ class Manager {
     actions(action, element) {
         const actionMap = {
             'addrow': this.addRow,
+            'acceptvisa': this.acceptVisa,
             'deleterow': this.deleteRow,
             'addmodule': this.addModule,
             'deletemodule': this.deleteModule,
@@ -451,6 +455,7 @@ class Manager {
             'closechanges': this.closeChanges,
             'acceptrfc': this.acceptRfc,
             'rejectrfc': this.rejectRfc,
+            'rejectvisa': this.rejectVisa,
             'submitrfc': this.submitRfc,
             'cancelrfc': this.cancelRfc,
             'removerfc': this.removeRfc,
@@ -864,6 +869,38 @@ class Manager {
         const pending = new Pending('customfield_sprogramme/manager:rejectRFC');
         const userid = btn.closest('[data-rfc]').dataset.userid;
         const response = await Repository.rejectRfc({datafieldid: this.datafieldid, userid: userid});
+        if (response) {
+            await this.getTableData();
+        }
+        pending.resolve();
+    }
+
+    /**
+     * Reject the Visa.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async rejectVisa(btn) {
+        const pending = new Pending('customfield_sprogramme/manager:rejectVisa');
+        const rfcId = btn.dataset.rfcId;
+
+        const response = await Repository.rejectVisa({rfcid: rfcId, comment: ''});
+        if (response) {
+            await this.getTableData();
+        }
+        pending.resolve();
+    }
+
+    /**
+     * Accept the Visa.
+     * @param {object} btn The button that was clicked.
+     * @return {void}
+     */
+    async acceptVisa(btn) {
+        const pending = new Pending('customfield_sprogramme/manager:rejectVisa');
+        const rfcId = btn.dataset.rfcId;
+
+        const response = await Repository.acceptVisa({rfcid: rfcId, comment: ''});
         if (response) {
             await this.getTableData();
         }

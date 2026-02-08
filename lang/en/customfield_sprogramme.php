@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['aas_help'] = 'Supervised Self-Learning: Teaching including sequences of individual autonomous learning where students use available teaching materials (and can obtain, upon request, occasional help from teachers) and self-evaluate (e-learning for example).';
 $string['accept'] = 'Accept';
+$string['acceptvisa'] = 'Validate the modification';
+$string['accepted'] = 'Accepted';
 $string['addmodule'] = 'Add module';
 $string['addrow'] = 'Add row';
 $string['alreadyset'] = 'Already set for this row.';
@@ -145,6 +147,8 @@ $string['programme:type_ae'] = 'AE type';
 $string['programme:uc'] = 'Course unit';
 $string['programme:usermodified'] = 'Modified by';
 $string['reject'] = 'Reject';
+$string['rejected'] = 'Rejected';
+$string['rejectvisa'] = 'Do not validate the modification';
 $string['removerfc'] = 'Reset all changes';
 $string['report:competencies'] = 'Competencies Report';
 $string['report:disciplines'] = 'Disciplines Report';

@@ -16,6 +16,7 @@
 
 namespace customfield_sprogramme;
 
+use core\context;
 use core\output\user_picture;
 use core_user;
 
@@ -101,5 +102,55 @@ class utils {
             return \context_course::instance($instanceid);
         }
         return null;
+    }
+
+    /**
+     * Get users matching the responsible role.
+     *
+     * Note this is a duplicate of the get_responsible_for_course function in local_envasyllabus
+     * but we want to avoid a dependency on the local_envasyllabus plugin in the notifications class.
+     *
+     * @param int $courseid
+     * @return array
+     */
+    public static function get_responsible_for_course(int $courseid): array {
+        $responsibleroleid = self::get_responsible_role_id();
+        if (!empty($responsibleroleid)) {
+            $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+            $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
+            return get_role_users($responsibleroleid, \context_course::instance($courseid), true, $userfields);
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Check if a user has the responsible role for a given context.
+     *
+     * @param int $userid The ID of the user to check.
+     * @param context $context The context to check against.
+     * @return bool True if the user has the responsible role, false otherwise.
+     */
+    public static function is_responsible(int $userid, context $context): bool {
+        $responsibleroleid = self::get_responsible_role_id();
+        if (!empty($responsibleroleid)) {
+            return user_has_role_assignment($userid, $responsibleroleid, $context->id);
+        }
+        return false;
+    }
+
+    /**
+     * Get the ID of the responsible role from the plugin settings.
+     *
+     * @return int|null The ID of the responsible role, or null if not found.
+     */
+    protected static function get_responsible_role_id(): ?int {
+        global $DB;
+        $responsiblerolename = get_config('customfield_sprogramme', 'responsiblerolename');
+        return $DB->get_field(
+            'role',
+            'id',
+            ['shortname' => $responsiblerolename]
+        );
     }
 }
