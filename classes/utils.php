@@ -105,7 +105,7 @@ class utils {
     }
 
     /**
-     * Get users matching the responsible role.
+     * Get users matching the head of department role.
      *
      * Note this is a duplicate of the get_responsible_for_course function in local_envasyllabus
      * but we want to avoid a dependency on the local_envasyllabus plugin in the notifications class.
@@ -113,7 +113,7 @@ class utils {
      * @param int $courseid
      * @return array
      */
-    public static function get_responsible_for_course(int $courseid): array {
+    public static function get_head_of_department_for_course(int $courseid): array {
         $responsibleroleid = self::get_responsible_role_id();
         if (!empty($responsibleroleid)) {
             $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
@@ -125,18 +125,45 @@ class utils {
     }
 
     /**
-     * Check if a user has the responsible role for a given context.
+     * Get users matching the role of the person who can add an approval/visa to the changes made on the syllabus
+     *
+     * Note this is not exactly simular to the get_responsible_for_course function in local_envasyllabus as
+     * we add a new set of role like head of department role that can also be responsible for approving the changes on the syllabus.
+     *
+     * @param int $courseid
+     * @return array
+     */
+    public static function get_responsible_visa_reviewer_for_course(int $courseid): array {
+        $responsibleroleid = self::get_responsible_role_id();
+        $headofdepartmentroleid = self::get_hod_role_id();
+
+        if (!empty($responsibleroleid) && !empty($headofdepartmentroleid)) {
+            $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+            $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
+            return get_role_users(
+                [$responsibleroleid, $headofdepartmentroleid],
+                \context_course::instance($courseid),
+                true,
+                $userfields
+            );
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Check if a user can review/approve the changes made on the syllabus based on the responsible
+     * role or head of department role assignment in the given context.
      *
      * @param int $userid The ID of the user to check.
      * @param context $context The context to check against.
      * @return bool True if the user has the responsible role, false otherwise.
      */
-    public static function is_responsible(int $userid, context $context): bool {
+    public static function is_responsible_visa_reviewer(int $userid, context $context): bool {
         $responsibleroleid = self::get_responsible_role_id();
-        if (!empty($responsibleroleid)) {
-            return user_has_role_assignment($userid, $responsibleroleid, $context->id);
-        }
-        return false;
+        $headofdepartmentroleid = self::get_hod_role_id();
+        return user_has_role_assignment($userid, $responsibleroleid, $context->id) ||
+            user_has_role_assignment($userid, $headofdepartmentroleid, $context->id);
     }
 
     /**
@@ -151,6 +178,21 @@ class utils {
             'role',
             'id',
             ['shortname' => $responsiblerolename]
+        );
+    }
+
+    /**
+     * Get the ID of the head of department role from the plugin settings.
+     *
+     * @return int|null The ID of the responsible role, or null if not found.
+     */
+    protected static function get_hod_role_id(): ?int {
+        global $DB;
+        $headofdepartmentrolename = get_config('customfield_sprogramme', 'departmentheadrolename');
+        return $DB->get_field(
+            'role',
+            'id',
+            ['shortname' => $headofdepartmentrolename]
         );
     }
 }

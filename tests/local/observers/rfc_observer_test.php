@@ -165,6 +165,22 @@ final class rfc_observer_test extends \advanced_testcase {
             'lastname' => 'Two',
         ]);
 
+        $hoduser = $generator->create_user([
+            'username' => 'headofdepartment1',
+            'email' => 'headofdepartment@example.com',
+            'firstname' => 'Head of',
+            'lastname' => 'Department',
+        ]);
+        $departmentheadrolename = get_config('customfield_sprogramme', 'departmentheadrolename');
+        $hodroleid = $generator->create_role(
+            [
+                'shortname' => $departmentheadrolename,
+                'name' => 'Responsible',
+                'archetype' => 'teacher',
+            ]
+        );
+        $generator->role_assign($hodroleid, $hoduser->id, \context_coursecat::instance($this->course->category));
+
         $emailsink = $this->redirectEmails();
         // Accept the RFC.
         $this->setAdminUser();
@@ -180,13 +196,14 @@ final class rfc_observer_test extends \advanced_testcase {
 
         $emails = $emailsink->get_messages();
         // No email should be sent on approval.
-        $this->assertCount(5, $emails);
+        $this->assertCount(6, $emails);
         $emailsto = array_map(fn($email) => $email->to, $emails);
         $this->assertContains('admin@example.com', $emailsto);
         $this->assertContains('otheruser@example.com', $emailsto);
         $this->assertContains('teacher1@example.com', $emailsto);
         $this->assertContains('responsible1@example.com', $emailsto);
         $this->assertContains('responsible2@example.com', $emailsto);
+        $this->assertContains('headofdepartment@example.com', $emailsto);
         $email = reset($emails);
         $this->assertEquals(
             '[Syllabus] Programme change validated for UC: tc_1 - Test course 1',

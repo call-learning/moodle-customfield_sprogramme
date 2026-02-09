@@ -82,7 +82,7 @@ class notifications {
         $context['department'] = self::get_department_for_course($courseid);
         $context['responsibles'] = implode(', ', array_map(function ($user) {
             return fullname($user);
-        }, utils::get_responsible_for_course($courseid)));
+        }, utils::get_responsible_visa_reviewer_for_course($courseid)));
         if (isset($context['usercreated'])) {
             $user = core_user::get_user($context['usercreated']);
             $context['requester'] = fullname($user);
@@ -144,7 +144,7 @@ class notifications {
         $approveremails = array_map('trim', $approveremails);
 
         // Now get the responsibles for courses.
-        $responsibles = utils::get_responsible_for_course($courseid);
+        $responsibles = utils::get_responsible_visa_reviewer_for_course($courseid);
         $responsibleemails = [];
         foreach ($responsibles as $responsible) {
             $responsibleemails[] = $responsible->email;

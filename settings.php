@@ -71,5 +71,14 @@ if ($hassiteconfig) {
             PARAM_ALPHANUM
         );
         $settings->add($responsiblerolename);
+
+        $responsiblerolename = new admin_setting_configtext(
+            'customfield_sprogramme/departmentheadrolename',
+            get_string('departmentheadrolename', 'customfield_sprogramme'),
+            get_string('departmentheadrolename_desc', 'customfield_sprogramme'),
+            'qualite',
+            PARAM_ALPHANUM
+        );
+        $settings->add($responsiblerolename);
     }
 }

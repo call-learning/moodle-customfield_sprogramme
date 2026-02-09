@@ -239,6 +239,7 @@ final class notifications_test extends \advanced_testcase {
         $cfgenerator->add_instance_data($cfielddept, $this->course->id, 'DSPB');
         set_config('departmentcustomfieldname', 'newdept', 'customfield_sprogramme');
 
+        // Responsible and department head roles are required for the context, so we create them and enrol some users with these roles.
         $responsiblerolename = get_config('customfield_sprogramme', 'responsiblerolename');
         $generator->create_role(
             [
@@ -259,6 +260,22 @@ final class notifications_test extends \advanced_testcase {
             'firstname' => 'Responsible',
             'lastname' => 'Two',
         ]);
+
+        $hoduser = $generator->create_user([
+            'username' => 'headofdepartment1',
+            'email' => 'headofdepartment@example.com',
+            'firstname' => 'Head of',
+            'lastname' => 'Department',
+        ]);
+        $departmentheadrolename = get_config('customfield_sprogramme', 'departmentheadrolename');
+        $hodroleid = $generator->create_role(
+            [
+                'shortname' => $departmentheadrolename,
+                'name' => 'Responsible',
+                'archetype' => 'teacher',
+            ]
+        );
+        $generator->role_assign($hodroleid, $hoduser->id, \context_coursecat::instance($this->course->category));
 
         $method = new \ReflectionMethod(notifications::class, 'add_global_context');
         $method->setAccessible(true);
@@ -287,6 +304,7 @@ final class notifications_test extends \advanced_testcase {
         $this->assertEquals('DSPB', $context['department']);
         $this->assertStringContainsString('Responsible One', $context['responsibles']);
         $this->assertStringContainsString('Responsible Two', $context['responsibles']);
+        $this->assertStringContainsString('Head of Department', $context['responsibles']);
         $this->assertEquals('User 1', $context['requester']);
     }
 }

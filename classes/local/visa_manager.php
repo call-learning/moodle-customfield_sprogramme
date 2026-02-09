@@ -94,7 +94,7 @@ class visa_manager {
      * @return bool
      */
     public function can_visa($userid): bool {
-        return utils::is_responsible($userid, $this->context);
+        return utils::is_responsible_visa_reviewer($userid, $this->context);
     }
 
     /**
