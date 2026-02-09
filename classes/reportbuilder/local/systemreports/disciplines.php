@@ -78,6 +78,6 @@ class disciplines extends system_report {
 
     #[\Override]
     protected function can_view(): bool {
-        return has_capability('moodle/site:viewreports', \context_system::instance());
+        return has_capability('moodle/reportbuilder:view', \context_system::instance());
     }
 }

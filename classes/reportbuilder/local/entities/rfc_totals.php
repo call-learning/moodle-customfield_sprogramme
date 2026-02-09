@@ -23,6 +23,7 @@ use core_reportbuilder\local\filters\text;
 use core_reportbuilder\local\filters\user;
 use core_reportbuilder\local\helpers\format as rbformat;
 use core_reportbuilder\local\report\{column, filter};
+use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\local\programme_manager;
 use customfield_sprogramme\reportbuilder\local\helpers\format;
 use lang_string;
@@ -176,6 +177,26 @@ class rfc_totals extends base {
             ->set_is_sortable(true);
 
         $columns[] = (new column(
+            'perso_ap',
+            new lang_string('programme:perso_ap', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$rfcalias}.perso_ap")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
+            'perso_av',
+            new lang_string('programme:perso_av', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_FLOAT)
+            ->add_fields("{$rfcalias}.perso_av")
+            ->set_is_sortable(true);
+
+        $columns[] = (new column(
             'timecreated',
             new lang_string('programme:timecreated', 'customfield_sprogramme'),
             $this->get_entity_name()
@@ -196,6 +217,21 @@ class rfc_totals extends base {
             ->add_fields("{$rfcalias}.timemodified")
             ->set_is_sortable(true)
             ->set_callback([rbformat::class, 'userdate']);
+        $columns[] = (new column(
+            'type',
+            new lang_string('rfc:type', 'customfield_sprogramme'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->add_fields("{$rfcalias}.type")
+            ->set_is_sortable(true)
+            ->set_callback(
+                fn($value) => get_string(
+                    'rfc:' . sprogramme_rfc::CHANGE_TYPES[$value] ?? 'unknown',
+                    'customfield_sprogramme'
+                )
+            );
         return $columns;
     }
 
@@ -341,6 +377,7 @@ class rfc_totals extends base {
         $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('type', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         $dbman->create_temp_table($table);
