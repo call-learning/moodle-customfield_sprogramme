@@ -32,9 +32,16 @@ class visa_manager {
     /**
      * The context identifier for the RFC.
      *
-    * @var context The context of the RFC.
-    */
+     * @var context The context of the RFC.
+     */
     private \context $context;
+
+    /**
+     * The datafield id for the RFC.
+     *
+     * @var int The datafield id of the RFC.
+     */
+    private int $datafieldid;
 
     /**
      * Constructor
@@ -45,11 +52,11 @@ class visa_manager {
         /** @var int $rfcid */
         private int $rfcid,
     ) {
-        if (!sprogramme_rfc::record_exists($rfcid) ) {
+        if (!sprogramme_rfc::record_exists($rfcid)) {
             throw new \moodle_exception('invalidrfcid', 'customfield_sprogramme');
         }
-        $datafieldid = sprogramme_rfc::get_record(['id' => $rfcid])->get('datafieldid');
-        $this->context = utils::get_context_from_datafieldid($datafieldid) ?? context_system::instance();
+        $this->datafieldid = sprogramme_rfc::get_record(['id' => $rfcid])->get('datafieldid');
+        $this->context = utils::get_context_from_datafieldid($this->datafieldid) ?? context_system::instance();
     }
 
     /**
@@ -67,22 +74,35 @@ class visa_manager {
      * @return array
      */
     public function get_visa_data(): array {
+        global $USER;
         $visas = $this->get_visas();
-        $data = [];
+        $data = [
+            'canvisa' => $this->can_visa($USER->id),
+            'rfcid' => $this->rfcid,
+            'visas' => [],
+            'todo' => $this->get_visas_total_todo(),
+            'approved' => 0,
+            'rejected' => 0,
+        ];
+
         foreach ($visas as $visa) {
             $visauser = \core_user::get_user($visa->get('visauser'));
-
-            $data[] = [
+            $status = $visa->get('status');
+            $data['visas'][] = [
                 'id' => $visa->get('id'),
                 'rfcid' => $visa->get('rfcid'),
                 'visauser' => [
                     'id' => $visauser->id,
                     'fullname' => fullname($visauser),
                 ],
-                'status' => $visa->get('status'),
                 'statustext' => $visa->get_status_string(),
                 'timemodified' => $visa->get('timemodified'),
             ];
+            if ($status == sprogramme_visa::STATUS_APPROVED) {
+                $data['approved']++;
+            } else if ($status == sprogramme_visa::STATUS_REJECTED) {
+                $data['rejected']++;
+            }
         }
         return $data;
     }
@@ -105,12 +125,15 @@ class visa_manager {
      * @return bool
      */
     public function accept_visa(int $userid, string $comment) {
-        $visa = $this->get_visa($userid);
+        $visa = $this->get_visa_for_user($userid);
         $visa->set('status', sprogramme_visa::STATUS_APPROVED);
         $visa->set('comment', $comment);
+        $visa->set('timemodified', time());
         $visa->update();
+        $this->trigger_visa_updated_event($visa);
         return true;
     }
+
     /**
      * Accept a visa for the current RFC.
      *
@@ -119,11 +142,37 @@ class visa_manager {
      * @return bool
      */
     public function reject_visa(int $userid, string $comment) {
-        $visa = $this->get_visa($userid);
+        $visa = $this->get_visa_for_user($userid);
         $visa->set('status', sprogramme_visa::STATUS_REJECTED);
         $visa->set('comment', $comment);
         $visa->update();
+        $this->trigger_visa_updated_event($visa);
         return true;
+    }
+
+    /**
+     * Get the datafield id for the current RFC.
+     *
+     * @return int
+     */
+    public function get_datafield_id() {
+        return $this->datafieldid;
+    }
+
+    protected function trigger_visa_updated_event(sprogramme_visa $visa) {
+        // Now send an event.
+        $event = \customfield_sprogramme\event\rfc_visa_updated::create(
+            [
+                'context' => $this->context,
+                'objectid' => $this->rfcid,
+                'other' => [
+                    'visaid' => $visa->get('id'),
+                    'status' => $visa->get('status'),
+                    'usercreated' => $visa->get('visauser'),
+                ],
+            ]
+        );
+        $event->trigger();
     }
 
     /**
@@ -132,7 +181,7 @@ class visa_manager {
      * @param int $userid
      * @return sprogramme_visa
      */
-    private function get_visa(int $userid): sprogramme_visa {
+    private function get_visa_for_user(int $userid): sprogramme_visa {
         $visa = sprogramme_visa::get_record(['rfcid' => $this->rfcid, 'visauser' => $userid]);
         if (!$visa) {
             $visa = new sprogramme_visa(0, (object) [
@@ -143,5 +192,40 @@ class visa_manager {
             $visa->create();
         }
         return $visa;
+    }
+
+    /**
+     * Get the total number of visas that still need to be done for the current RFC. *
+     * This is based on the number of responsible users for the course.
+     *
+     * @return int
+     */
+    public function get_visas_total_todo() {
+        // Count the responsible users.
+        if (!$this->context || !$this->context->instanceid || $this->context->contextlevel != CONTEXT_COURSE) {
+            return 0;
+        }
+        $responsibleusers = utils::get_responsible_visa_reviewer_for_course(
+            $this->context->instanceid
+        );
+        $responsibleuserids = array_map(fn($user) => $user->id, $responsibleusers);
+        array_unique($responsibleuserids);
+        return count($responsibleuserids);
+    }
+
+    /**
+     * Get the total number of visas that are not yet approved for the current RFC.
+     *
+     * @return int
+     */
+    public function get_visas_total_done() {
+        $visas = $this->get_visas();
+        $total = 0;
+        foreach ($visas as $visa) {
+            if ($visa->get('status') != sprogramme_visa::STATUS_APPROVED) {
+                $total++;
+            }
+        }
+        return $total;
     }
 }

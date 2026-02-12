@@ -16,6 +16,7 @@
 
 namespace customfield_sprogramme\local\persistent;
 
+use core\context;
 use core\persistent;
 use customfield_sprogramme\utils;
 use lang_string;
@@ -187,5 +188,14 @@ class sprogramme_rfc extends persistent {
             $params['adminid'] = $adminid;
         }
         return self::count_records($params);
+    }
+
+    /**
+     * Get the course id for this RFC.
+     * @return context
+     * @throws \coding_exception
+     */
+    public function get_context(): context {
+        return utils::get_context_from_datafieldid($this->raw_get('datafieldid'));
     }
 }

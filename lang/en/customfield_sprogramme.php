@@ -27,19 +27,22 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['aas_help'] = 'Supervised Self-Learning: Teaching including sequences of individual autonomous learning where students use available teaching materials (and can obtain, upon request, occasional help from teachers) and self-evaluate (e-learning for example).';
 $string['accept'] = 'Accept';
-$string['acceptvisa'] = 'Validate the modification';
 $string['accepted'] = 'Accepted';
+$string['acceptvisa'] = 'Validate';
 $string['addmodule'] = 'Add module';
 $string['addrow'] = 'Add row';
+$string['addvisa'] = 'Add visa';
 $string['alreadyset'] = 'Already set for this row.';
 $string['approvalemail'] = 'Approval email';
 $string['approvalemail_desc'] = 'Email address to send approval requests to. This is a comma separated list of email addresses.';
+$string['approved'] = 'Approved';
 $string['cachedef_columntotals'] = 'Column totals';
 $string['cachedef_programmedata'] = 'Programme data cache';
 $string['cancel'] = 'Cancel';
 $string['cancelrfc'] = 'Cancel change request';
 $string['closewithoutsaving'] = 'Close without saving';
 $string['cm_help'] = 'Main Lecture: Theoretical teaching given to a whole or partial group of students. Teaching can be with or without the aid of teaching materials, demonstration animals, or specimens. The essential characteristic is that there is no practical involvement of students in the material discussed. They listen and do not physically manipulate.';
+$string['comment'] = 'Comment';
 $string['competencies'] = 'Competencies';
 $string['competencies_help'] = 'This field indicates the competencies (1 to 3 maximum) from the national framework that are concerned by the session/exercise, and their respective percentages within the session. The sum must equal 100%.';
 $string['competency:name'] = 'Name';
@@ -96,6 +99,22 @@ $string['email:rfc_submitted'] = <<<'EOF'
 <p>Best regards</p>
 EOF;
 $string['email:rfc_submitted:subject'] = '[Syllabus] Request for programme change for: {$a->coursename}';
+$string['email:rfc_visa_all_done'] = <<<'EOF'
+<p>Hello,</p>
+<p>All visas have been completed for the programme change request concerning the following course unit:</p
+<p><strong>{$a->coursename}</strong></p>
+<ul>
+<li>UC Responsible(s): [{$a->responsibles}]</li>
+<li>Requester: {$a->requester}</li>
+<li>Department: {$a->department}</li>
+</ul>
+<p>The change request is now ready for final validation by the director of training.</p>
+<p>To view the history of validated changes for this UC, please follow the link below and
+click on the "History" button of the programme:</p>
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Best regards</p>';
+EOF;
+$string['email:rfc_visa_all_done:subject'] = '[Syllabus] All visas completed for programme change request for: {$a->coursename}';
 $string['emailsenabled'] = 'Activate email notifications';
 $string['emailsenabled_desc'] = 'If enabled, email notifications will be sent when a change request is submitted.';
 $string['encoding'] = 'Encoding';
@@ -121,6 +140,7 @@ $string['notification:rfc'] = 'Request for change';
 $string['notifications'] = 'Notifications';
 $string['overaltotals'] = 'Overall totals';
 $string['overaltotals_help'] = 'Total of all columns in the table. This is the sum of all the columns for each row.';
+$string['pending'] = 'Pending';
 $string['perso_ap_help'] = 'Estimated personal work time needed to assimilate the session/exercise. This work time includes the time spent revising for the mid-term assessment and/or final exam.';
 $string['perso_av_help'] = 'Estimated personal work time needed to prepare in advance for the session/exercise. This work time includes, among other things, the time spent completing prerequisite self-assessments before the session.';
 $string['pluginname'] = 'Programme customfield';
@@ -150,7 +170,7 @@ $string['programme:uc'] = 'Course unit';
 $string['programme:usermodified'] = 'Modified by';
 $string['reject'] = 'Reject';
 $string['rejected'] = 'Rejected';
-$string['rejectvisa'] = 'Do not validate the modification';
+$string['rejectvisa'] = 'Reject';
 $string['removerfc'] = 'Reset all changes';
 $string['report:competencies'] = 'Competencies Report';
 $string['report:disciplines'] = 'Disciplines Report';
@@ -185,8 +205,8 @@ $string['rfc:selectcourse'] = 'Select course';
 $string['rfc:selectstatus'] = 'Select status';
 $string['rfc:status'] = 'Status';
 $string['rfc:submitted'] = 'Submitted';
-$string['rfc:type'] = 'Modification type';
 $string['rfc:timecreated'] = 'Time created';
+$string['rfc:type'] = 'Modification type';
 $string['rfc:unknown'] = 'Unknown status';
 $string['rfc:user'] = 'Submitted by';
 $string['rfc:validator'] = 'Validator';
@@ -202,9 +222,15 @@ $string['submitrfc'] = 'Submit change request';
 $string['supports_help'] = 'This field indicates the essential teaching materials needed for preparing for the session/exercise and for revision. Only the teaching materials listed in this field are considered essential. If it is not essential, it is only optional and complementary.';
 $string['tc_help'] = 'Clinical Work: Practical teaching sessions performed by students in a clinical environment (individual or collective medicine) including clinical rotations both in-house and off-site (including ambulatory) under the supervision of a teacher, and autopsy.';
 $string['td_help'] = 'Directed Work: Teaching sessions where students work alone or in teams on theoretical aspects, prepared from documents, articles, etc. Students reflect and interact on concepts. The session is animated by exercises, discussions, and, if possible, case studies (problem-solving learning for example).';
+$string['total'] = 'Total';
 $string['tp_help'] = 'Practical Work non-clinical: Teaching sessions where students themselves manipulate teaching resources (software, microscopes, lab experiments, etc.) without handling animals, organs, or mannequins.';
 $string['tpa_help'] = 'Practical Work on healthy animals: Teaching sessions where students work themselves on healthy animals, anatomical parts, mannequins, carcasses, etc. (for example: ante mortem and post mortem inspection, food hygiene, etc.). All VetSims activities are included in this category.';
 $string['unsavedchanges'] = 'You have unsaved changes. Do you want to close the form without saving?';
 $string['uploadcsv'] = 'Upload CSV file';
 $string['usernotfound'] = 'User not found';
 $string['value'] = 'Value';
+$string['visa'] = 'Visa';
+$string['visa_help'] = 'When a programme change request is submitted, it must be validated by the relevant department head and
+the course leader before the changes are approved by the administrators. By clicking "Validate", you certify that the
+proposed changes comply with pedagogical and administrative requirements, and that you approve their
+implementation in the curriculum.';

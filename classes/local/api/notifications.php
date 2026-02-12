@@ -165,6 +165,10 @@ class notifications {
                     }
                 }
                 break;
+            case 'rfc_visa_all_done':
+                // For RFC visa all done, we want to send the email to the approvers.
+                $emails = $approveremails;
+                break;
         }
         return array_unique($emails);
     }

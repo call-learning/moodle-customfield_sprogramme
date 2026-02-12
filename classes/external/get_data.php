@@ -84,11 +84,7 @@ class get_data extends external_api {
                 $data['modules'] = json_decode($rfcdata, true);
                 $data['rfc'] = $rfcmanager->get_data();
                 $visamanager = new visa_manager($rfc->get('id'));
-                $data['visainfo'] = [
-                    'canvisa' => $visamanager->can_visa($USER->id),
-                    'rfcid' => $rfc->get('id'),
-                    'visas' => $visamanager->get_visa_data(),
-                ];
+                $data['visainfo'] =  $visamanager->get_visa_data();
             }
         }
 
@@ -193,10 +189,13 @@ class get_data extends external_api {
             'visainfo' => new external_single_structure([
                 'canvisa' => new external_value(PARAM_BOOL, 'Can apply a visa', VALUE_OPTIONAL),
                 'rfcid' => new external_value(PARAM_INT, 'RFC id', VALUE_OPTIONAL),
+                'todo' => new external_value(PARAM_INT, 'Todo count', VALUE_OPTIONAL),
+                'done' => new external_value(PARAM_INT, 'Done count', VALUE_OPTIONAL),
+                'approved' => new external_value(PARAM_INT, 'Approved count', VALUE_OPTIONAL),
+                'rejected' => new external_value(PARAM_INT, 'Rejected count', VALUE_OPTIONAL),
                 'visas' => new external_multiple_structure(
                     new external_single_structure([
                         'comment' => new external_value(PARAM_BOOL, 'Comment', VALUE_OPTIONAL),
-                        'status' => new external_value(PARAM_BOOL, 'Status', VALUE_OPTIONAL),
                         'statustext' => new external_value(PARAM_TEXT, 'Status text', VALUE_OPTIONAL),
                         'visauser' => new external_single_structure([
                             'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),

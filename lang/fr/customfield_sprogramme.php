@@ -27,19 +27,22 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['aas_help'] = 'Auto-Apprentissage Supervisé : Enseignement comprenant des séquences d’apprentissage individuel en autonomie où les élèves utilisent un matériel pédagogique disponible (et peuvent obtenir, à leur demande, une aide ponctuelle des enseignants) et s\'auto-évaluent (e-learning par exemple).';
 $string['accept'] = 'Accepter';
-$string['acceptvisa'] = 'Valider la modification';
 $string['accepted'] = 'Accepté';
+$string['acceptvisa'] = 'Valider';
 $string['addmodule'] = 'Ajouter un module';
 $string['addrow'] = 'Ajouter une ligne';
+$string['addvisa'] = 'Ajouter visa';
 $string['alreadyset'] = 'Déjà définie pour cette ligne.';
 $string['approvalemail'] = 'Adresse e-mail d’approbation';
 $string['approvalemail_desc'] = 'Adresse e-mail à laquelle envoyer les demandes d’approbation. Utilisez une liste séparée par des virgules.';
+$string['approved'] = 'Approuvé';
 $string['cachedef_columntotals'] = 'Totaux des colonnes';
 $string['cachedef_programmedata'] = 'Cache des données du programme';
 $string['cancel'] = 'Annuler';
 $string['cancelrfc'] = 'Annuler la demande de modification';
 $string['closewithoutsaving'] = 'Fermer sans enregistrer';
 $string['cm_help'] = 'Cours Magistral : Enseignement théorique dispensé à un groupe entier ou partiel d\'étudiants. L\'enseignement peut être avec ou sans l\'aide de matériel pédagogique, d\'animaux de démonstration ou de spécimens. La caractéristique essentielle est qu\'il n\'y a pas d\'implication pratique des étudiants dans le matériel discuté. Ils écoutent et ne manipulent pas physiquement.';
+$string['comment'] = 'Commentaire';
 $string['competencies'] = 'Compétences';
 $string['competencies_help'] = 'Cette case indique les compétences (de 1 à 3 maximum) du référentiel national qui sont concernées par la séance / l’exercice, et leurs % respectifs au sein de la séance. La somme doit faire 100%.';
 $string['competency:name'] = 'Nom';
@@ -101,7 +104,21 @@ $string['email:rfc_submitted'] = <<<'EOF'
 <p>Bien cordialement</p>
 EOF;
 $string['email:rfc_submitted:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
-
+$string['email:rfc_visa_all_done:subject'] = '[Syllabus] Tous les visas complétés pour la demande de modification de programme pour : {$a->coursename}';
+$string['email:rfc_visa_all_done'] = <<<'EOF'
+<p>Bonjour,</p>
+<p>Tous les visas ont été complétés pour la demande de modification de programme concernant l’unité d’enseignement suivante :</p>
+<p><strong>{$a->coursename}</strong></p>
+<ul>
+<li>Responsable(s) de l’UC : [{$a->responsibles}]</li>
+<li>Demandeur : {$a->requester}</li>
+<li>Département : {$a->department}</li>
+</ul>
+<p>La demande de modification est maintenant prête pour la validation finale par le directeur des formations.</p>
+<p>Pour consulter l’historique des modifications validées pour cette UC, veuillez suivre le lien ci-dessous et cliquer sur le bouton "Historique" du programme :</p>
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Bien cordialement</p>
+EOF;
 $string['emailsenabled'] = 'Activer les notifications par e-mail';
 $string['emailsenabled_desc'] = 'Si activé, les notifications par e-mail seront envoyées lors de la soumission de demandes de modification de programme.';
 $string['encoding'] = 'Encodage';
@@ -127,6 +144,7 @@ $string['notification:rfc'] = 'Demande de modification';
 $string['notifications'] = 'Notifications';
 $string['overaltotals'] = 'Totaux';
 $string['overaltotals_help'] = 'Total de toutes les colonnes du tableau. Il s’agit de la somme de toutes les colonnes pour chaque ligne.';
+$string['pending'] = 'En attente';
 $string['perso_ap_help'] = 'Temps de travail personnel estimé nécessaire pour assimiler la séance / l’exercice. Ce temps de travail inclut le temps passé à réviser pour l’évaluation intermédiaire et/ou l’examen final.';
 $string['perso_av_help'] = 'Temps de travail personnel estimé nécessaire pour préparer en amont la séance / l’exercice. Ce temps de travail inclut entre autres le temps passé à réaliser des auto-évaluations de pré-requis avant la séance.';
 $string['pluginname'] = 'Champ personnalisé Programme';
@@ -156,7 +174,7 @@ $string['programme:uc'] = 'UC';
 $string['programme:usermodified'] = 'Modifié par';
 $string['reject'] = 'Rejeter';
 $string['rejected'] = 'Rejeté';
-$string['rejectvisa'] = 'Ne pas valider la modification';
+$string['rejectvisa'] = 'Reject';
 $string['removerfc'] = 'Réinitialiser toutes les modifications';
 $string['report:competencies'] = 'Rapport des compétences';
 $string['report:disciplines'] = 'Rapport des disciplines';
@@ -195,8 +213,8 @@ $string['rfc:timecreated'] = 'Date de création';
 $string['rfc:type'] = 'Type de modification';
 $string['rfc:unknown'] = 'Statut inconnu';
 $string['rfc:user'] = 'Soumission par';
-$string['rfc:view'] = 'Voir';
 $string['rfc:validator'] = 'Validateur';
+$string['rfc:view'] = 'Voir';
 $string['rfcs'] = 'Demandes {$a}';
 $string['row'] = 'Ligne {$a}';
 $string['saving'] = 'Enregistrement...';
@@ -208,9 +226,15 @@ $string['submitrfc'] = 'Soumettre une demande de modification';
 $string['supports_help'] = 'Cette case renseigne sur les supports pédagogiques indispensables à la préparation de la séance / l’exercice et à sa révision. Seul le matériel pédagogique listé dans cette case est considéré comme indispensable. S’il ne l’est pas, il n’est que facultatif et complémentaire.';
 $string['tc_help'] = 'Travaux Cliniques : Séances d\'enseignement pratique effectuées par les étudiants dans un environnement clinique (médecine individuelle ou collective) incluant les rotations cliniques intra et extra-muros (dont ambulante) sous la supervision d’un enseignant, et l’autopsie.';
 $string['td_help'] = 'Travaux Dirigés : Séances d’enseignement dirigé au cours desquelles les étudiants travaillent seuls ou en équipe sur des aspects théoriques, préparés à partir de documents, d’articles, etc. Les étudiants réfléchissent et interagissent sur des concepts. La séance est animée par des exercices, des discussions et, si possible, des études de cas (apprentissage par résolution de problèmes par exemple).';
+$string['total'] = 'Total';
 $string['tp_help'] = 'Travaux Pratiques non cliniques : Séances d’enseignement où les étudiants manipulent eux-mêmes les ressources pédagogiques (logiciels, microscopes, expé en labo, etc) sans manipulation d’animaux, d’organes ou de mannequins.';
 $string['tpa_help'] = 'TP sur animaux sains : Séances d’enseignement où les étudiants travaillent eux-mêmes sur des animaux sains, des pièces anatomiques, des mannequins, des carcasses, etc. (par exemple : inspection ante mortem et post mortem, hygiène alimentaire, etc.). Toutes les activités VetSims sont incluses dans cette catégorie.';
 $string['unsavedchanges'] = 'Vous avez des modifications non enregistrées. Voulez-vous fermer le formulaire sans enregistrer ?';
 $string['uploadcsv'] = 'Charger un fichier CSV';
 $string['usernotfound'] = 'Utilisateur non trouvé';
 $string['value'] = 'Valeur';
+$string['visa'] = 'Visa';
+$string['visa_help'] = 'Quand une demande de modification de programme est soumise, elle doit être validée par le chef
+de département concerné et le responsable de cours avant que les modifications ne soient validées par les administrateur.
+En cliquant sur "Valider", vous certifiez que les modifications proposées sont conformes aux exigences pédagogiques
+et administratives, et que vous approuvez leur mise en œuvre dans le programme d’études.';

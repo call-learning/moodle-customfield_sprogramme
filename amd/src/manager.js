@@ -30,6 +30,7 @@ import componentInit from './local/components/table';
 import Pending from 'core/pending'; // For Behat to make sure that async calls are finished.
 import './tagmanager';
 import initProgrammeForm from './programme_form';
+import initVisaForm from "./visa_form";
 
 /**
  * Manager class.
@@ -446,7 +447,6 @@ class Manager {
     actions(action, element) {
         const actionMap = {
             'addrow': this.addRow,
-            'acceptvisa': this.acceptVisa,
             'deleterow': this.deleteRow,
             'addmodule': this.addModule,
             'deletemodule': this.deleteModule,
@@ -455,7 +455,6 @@ class Manager {
             'closechanges': this.closeChanges,
             'acceptrfc': this.acceptRfc,
             'rejectrfc': this.rejectRfc,
-            'rejectvisa': this.rejectVisa,
             'submitrfc': this.submitRfc,
             'cancelrfc': this.cancelRfc,
             'removerfc': this.removeRfc,
@@ -876,38 +875,6 @@ class Manager {
     }
 
     /**
-     * Reject the Visa.
-     * @param {object} btn The button that was clicked.
-     * @return {void}
-     */
-    async rejectVisa(btn) {
-        const pending = new Pending('customfield_sprogramme/manager:rejectVisa');
-        const rfcId = btn.dataset.rfcId;
-
-        const response = await Repository.rejectVisa({rfcid: rfcId, comment: ''});
-        if (response) {
-            await this.getTableData();
-        }
-        pending.resolve();
-    }
-
-    /**
-     * Accept the Visa.
-     * @param {object} btn The button that was clicked.
-     * @return {void}
-     */
-    async acceptVisa(btn) {
-        const pending = new Pending('customfield_sprogramme/manager:rejectVisa');
-        const rfcId = btn.dataset.rfcId;
-
-        const response = await Repository.acceptVisa({rfcid: rfcId, comment: ''});
-        if (response) {
-            await this.getTableData();
-        }
-        pending.resolve();
-    }
-
-    /**
      * Submit the RFC for approval.
      * @param {object} btn The button that was clicked.
      * @return {void}
@@ -1122,6 +1089,7 @@ const init = (element, datafieldid) => {
     componentInit();
     const manager = new Manager(element, datafieldid);
     initProgrammeForm(manager);
+    initVisaForm(manager);
     return manager;
 };
 

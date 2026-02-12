@@ -102,8 +102,8 @@ class programme_upload_form extends dynamic_form {
      * @return moodle_url
      */
     protected function get_page_url_for_dynamic_submission(): moodle_url {
-        $cmid = $this->optional_param('cmid', null, PARAM_INT);
-        return new moodle_url('/mod/competvet/view.php', ['pagetype' => 'manageplanning', 'id' => $cmid, 'return' => true]);
+        $context = $this->get_context_for_dynamic_submission();
+        return new moodle_url('/course/edit.php', ['id' => $context->instanceid]);
     }
 
     /**

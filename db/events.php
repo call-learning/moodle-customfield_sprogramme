@@ -36,4 +36,8 @@ $observers = [
         'eventname'   => '\customfield_sprogramme\event\rfc_accepted',
         'callback'    => \customfield_sprogramme\local\observers\rfc_observer::class . '::rfc_accepted',
     ],
+    [
+        'eventname'   => '\customfield_sprogramme\event\rfc_visa_updated',
+        'callback'    => \customfield_sprogramme\local\observers\rfc_visa_observer::class . '::rfc_visa_updated',
+    ],
 ];

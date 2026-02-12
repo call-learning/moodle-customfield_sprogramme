@@ -36,22 +36,98 @@
         ]
     }
 }}
-<div class="d-flex align-items-end">
+<div class="card mb-3">
     {{#visainfo}}
-        {{#visas}}
-            <div class="visa d-flex align-items-start" data-visa data-userid="{{visauser.id}}">
-                {{#str}}visa:changerequestby, customfield_sprogramme, {{visauser.fullname}}{{/str}}
-                <p class="mb-0 small">{{#str}}
-                    submitdate, customfield_sprogramme{{/str}} {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}</p>
+        <div class="card-header p-0" id="visaHeading-{{rfcid}}">
+            <button
+                    class="btn btn-link btn-block text-left d-flex align-items-center"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#visaCollapse-{{rfcid}}"
+                    aria-expanded="false"
+                    aria-controls="visaCollapse-{{rfcid}}">
+
+            <span class="d-flex align-items-center mr-3 flex-shrink-0">
+                <span class="font-weight-bold">
+                    {{#str}}visa, customfield_sprogramme{{/str}}
+                </span>
+                <span
+                        class="ml-2 text-muted"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        title="{{#str}}visa_help, customfield_sprogramme{{/str}}">
+                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                </span>
+            </span>
+
+                <span class="ml-auto d-flex align-items-center">
+                <span class="d-flex align-items-center mr-3">
+                    <span class="text-muted small mr-1">{{#str}}total, customfield_sprogramme{{/str}}:</span>
+                    <span class="badge badge-info d-flex align-items-center">
+                        <i class="fa fa-list-alt mr-1" aria-hidden="true"></i>
+                        <span>{{{todo}}}</span>
+                    </span>
+                </span>
+
+                <span class="d-flex align-items-center mr-3">
+                    <span class="text-muted small mr-1">{{#str}}approved, customfield_sprogramme{{/str}}:</span>
+                    <span class="badge badge-success d-flex align-items-center">
+                        <i class="fa fa-check mr-1" aria-hidden="true"></i>
+                        <span>{{{approved}}}</span>
+                    </span>
+                </span>
+
+                <span class="d-flex align-items-center mr-3">
+                    <span class="text-muted small mr-1">{{#str}}rejected, customfield_sprogramme{{/str}}:</span>
+                    <span class="badge badge-danger d-flex align-items-center">
+                        <i class="fa fa-times mr-1" aria-hidden="true"></i>
+                        <span>{{{rejected}}}</span>
+                    </span>
+                </span>
+
+                    {{! Right: chevron }}
+                    <i class="fa fa-chevron-down text-muted ml-2" aria-hidden="true"></i>
+            </span>
+            </button>
+        </div>
+
+        <div id="visaCollapse-{{rfcid}}" class="collapse" aria-labelledby="visaHeading-{{rfcid}}">
+            <div class="card-body">
+                {{#visas}}
+                    <div class="mb-2 p-2 border rounded">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="text-primary font-weight-bold">
+                                {{visauser.fullname}}
+                            </div>
+                            <div class="text-info font-weight-bold">
+                                ({{{statustext}}})
+                            </div>
+                            <div class="text-muted small">
+                                {{#userdate}} {{timemodified}}, {{#str}} strftimedatetime, core_langconfig {{/str}} {{/userdate}}
+                            </div>
+                        </div>
+
+                        {{#comment}}
+                            <div class="mt-1 small">
+                                {{comment}}
+                            </div>
+                        {{/comment}}
+                    </div>
+                {{/visas}}
+
             </div>
-        {{/visas}}
-        {{#canvisa}}
-            <button class="btn btn-sm btn-info ml-1" data-action="acceptvisa" data-rfc-id="{{rfcid}}">
-                {{#str}}acceptvisa, customfield_sprogramme{{/str}}
-            </button>
-            <button class="btn btn-sm btn-danger ml-1" data-action="rejectvisa" data-rfc-id="{{rfcid}}">
-                {{#str}}rejectvisa, customfield_sprogramme{{/str}}
-            </button>
-        {{/canvisa}}
+            {{#canvisa}}
+                <div class="card-footer text-right">
+
+                    <a href="#"
+                       class="btn btn-sm btn-primary"
+                       data-action="addvisa"
+                       data-rfcid="{{rfcid}}">
+                        {{#str}}addvisa, customfield_sprogramme{{/str}}
+                    </a>
+
+                </div>
+            {{/canvisa}}
+        </div>
     {{/visainfo}}
 </div>
