@@ -18,6 +18,7 @@ namespace customfield_sprogramme\privacy;
 
 use core_customfield\data_controller;
 use core_customfield\privacy\customfield_provider;
+use core_privacy\local\metadata\null_provider;
 use core_privacy\local\request\writer;
 
 /**
@@ -27,7 +28,7 @@ use core_privacy\local\request\writer;
  * @copyright   2024 CALL Learning <laurent@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements customfield_provider, \core_privacy\local\metadata\null_provider {
+class provider implements customfield_provider, null_provider {
     /**
      * Get the language string identifier with the component's language
      * file to explain why this plugin stores no data.

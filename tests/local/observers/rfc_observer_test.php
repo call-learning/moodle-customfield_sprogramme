@@ -209,8 +209,13 @@ final class rfc_observer_test extends \advanced_testcase {
             '[Syllabus] Programme change validated for UC: tc_1 - Test course 1',
             $email->subject
         );
-        $this->assertStringContainsString('UC Responsible(s): [Responsible One, Responsible Two]', $email->body);
-        $this->assertStringContainsString('Requester: Teacher One', $email->body);
-        $this->assertStringContainsString('Department: DSPB', $email->body);
+        $emailwithoutlinebreaks = str_replace(["\r", "\n"], ' ', $email->body);
+        $emailwithoutlinebreaks = preg_replace('/\s+/', ' ', $emailwithoutlinebreaks);
+        $this->assertStringContainsString('UC Responsible(s)', $emailwithoutlinebreaks);
+        $this->assertStringContainsString('Head of Department', $emailwithoutlinebreaks);
+        $this->assertStringContainsString('Responsible One', $emailwithoutlinebreaks);
+        $this->assertStringContainsString('Responsible Two', $emailwithoutlinebreaks);
+        $this->assertStringContainsString('Requester: Teacher One', $emailwithoutlinebreaks);
+        $this->assertStringContainsString('Department: DSPB', $emailwithoutlinebreaks);
     }
 }

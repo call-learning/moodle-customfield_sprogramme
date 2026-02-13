@@ -31,7 +31,6 @@ use customfield_sprogramme\local\visa_manager;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rfc_visa_observer {
-
     /**
      * An rfc has been created.
      *

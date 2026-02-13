@@ -104,7 +104,6 @@ $string['email:rfc_submitted'] = <<<'EOF'
 <p>Bien cordialement</p>
 EOF;
 $string['email:rfc_submitted:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
-$string['email:rfc_visa_all_done:subject'] = '[Syllabus] Tous les visas complétés pour la demande de modification de programme pour : {$a->coursename}';
 $string['email:rfc_visa_all_done'] = <<<'EOF'
 <p>Bonjour,</p>
 <p>Tous les visas ont été complétés pour la demande de modification de programme concernant l’unité d’enseignement suivante :</p>
@@ -119,6 +118,7 @@ $string['email:rfc_visa_all_done'] = <<<'EOF'
 <a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Bien cordialement</p>
 EOF;
+$string['email:rfc_visa_all_done:subject'] = '[Syllabus] Tous les visas complétés pour la demande de modification de programme pour : {$a->coursename}';
 $string['emailsenabled'] = 'Activer les notifications par e-mail';
 $string['emailsenabled_desc'] = 'Si activé, les notifications par e-mail seront envoyées lors de la soumission de demandes de modification de programme.';
 $string['encoding'] = 'Encodage';

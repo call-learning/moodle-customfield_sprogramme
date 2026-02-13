@@ -239,7 +239,8 @@ final class notifications_test extends \advanced_testcase {
         $cfgenerator->add_instance_data($cfielddept, $this->course->id, 'DSPB');
         set_config('departmentcustomfieldname', 'newdept', 'customfield_sprogramme');
 
-        // Responsible and department head roles are required for the context, so we create them and enrol some users with these roles.
+        // Responsible and department head roles are required for the context, so we create them and enrol
+        // some users with these roles.
         $responsiblerolename = get_config('customfield_sprogramme', 'responsiblerolename');
         $generator->create_role(
             [
@@ -287,7 +288,7 @@ final class notifications_test extends \advanced_testcase {
         ]);
         $context = $method->invoke(
             null,
-            ['usercreated' => $user->id,],
+            ['usercreated' => $user->id],
             $this->cfdata->get('id'),
             $user->id
         );

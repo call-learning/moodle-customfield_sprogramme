@@ -54,7 +54,7 @@ const showVisaForm = (rfcid, manager) => {
         },
         saveButtonText: getString('save'),
     });
-    modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, async (event) => {
+    modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, async(event) => {
         if (event.detail.result) {
             let response;
             if (event.detail.statuscode === 'approved') {

@@ -84,7 +84,7 @@ class get_data extends external_api {
                 $data['modules'] = json_decode($rfcdata, true);
                 $data['rfc'] = $rfcmanager->get_data();
                 $visamanager = new visa_manager($rfc->get('id'));
-                $data['visainfo'] =  $visamanager->get_visa_data();
+                $data['visainfo'] = $visamanager->get_visa_data();
             }
         }
 

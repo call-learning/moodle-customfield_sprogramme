@@ -159,6 +159,11 @@ class visa_manager {
         return $this->datafieldid;
     }
 
+    /**
+     * Trigger an event when a visa is updated.
+     *
+     * @param sprogramme_visa $visa
+     */
     protected function trigger_visa_updated_event(sprogramme_visa $visa) {
         // Now send an event.
         $event = \customfield_sprogramme\event\rfc_visa_updated::create(

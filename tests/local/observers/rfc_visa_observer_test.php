@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace customfield_sprogramme\local\observers;
 
 use core_customfield\data_controller;
@@ -131,5 +132,4 @@ final class rfc_visa_observer_test extends \advanced_testcase {
         $this->assertContains('admin@example.com', $recipients);
         $this->assertContains('otheruser@example.com', $recipients);
     }
-
 }
