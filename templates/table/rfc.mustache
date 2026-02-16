@@ -48,11 +48,12 @@
                     <a class="btn btn-sm btn-secondary" data-action="removerfc">{{#str}}removerfc, customfield_sprogramme{{/str}}</a>
                 {{/canremove}}
                 {{#cansubmit}}
+                    <a class="btn btn-sm btn-secondary" data-action="cancelrfc">{{#str}}reeditrfc, customfield_sprogramme{{/str}}</a>
                     <a class="btn btn-sm btn-success" data-action="submitrfc">{{#str}}submitrfc, customfield_sprogramme{{/str}}</a>
                 {{/cansubmit}}
                 {{#issubmitted}}
                     {{#cancancel}}
-                        <a class="btn btn-sm mr-1 btn-warning" data-action="cancelrfc">{{#str}}cancelrfc, customfield_sprogramme{{/str}}</a>
+                        <a class="btn btn-sm me-2 btn-warning" data-action="cancelrfc">{{#str}}cancelrfc, customfield_sprogramme{{/str}}</a>
                     {{/cancancel}}
                 {{/issubmitted}}
                 </div>

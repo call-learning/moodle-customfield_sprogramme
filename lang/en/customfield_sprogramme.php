@@ -168,6 +168,7 @@ $string['programme:tpa'] = 'TPa';
 $string['programme:type_ae'] = 'AE type';
 $string['programme:uc'] = 'Course unit';
 $string['programme:usermodified'] = 'Modified by';
+$string['reeditrfc'] = 'Continue editing';
 $string['reject'] = 'Reject';
 $string['rejected'] = 'Rejected';
 $string['rejectvisa'] = 'Reject';

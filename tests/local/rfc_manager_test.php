@@ -301,7 +301,7 @@ final class rfc_manager_test extends \advanced_testcase {
         $this->assertFalse($data['issubmitted']);
         $this->assertFalse($data['canaccept']); // Teacher 1 is not admin so cannot accept.
         $this->assertTrue($data['cansubmit']); // Teacher 1 can submit.
-        $this->assertFalse($data['cancancel']); // Teacher 1 cannot cancel as nothing submitted.
+        $this->assertTrue($data['cancancel']); // Teacher 1 cannot cancel as nothing submitted.
         $this->assertTrue($data['canremove']); // Teacher 1 can remove the rfc as not submitted.
         $this->assertFalse($data['canadd']); // Teacher 1 cannot add as we have already a rfc.
 

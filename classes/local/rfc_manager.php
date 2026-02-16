@@ -162,7 +162,7 @@ class rfc_manager {
         }
 
         $cancancel = has_capability('customfield/sprogramme:edit', $this->context);
-        $cancancel = $cancancel && $changerecord->get('type') == sprogramme_rfc::RFC_SUBMITTED;
+        $cancancel = $cancancel && ($changerecord->get('type') !== sprogramme_rfc::RFC_ACCEPTED);
         $cancancel = $cancancel && (($USER->id == $userid)
                 || has_capability('customfield/sprogramme:editall', $this->context));
         $cancancel = $cancancel && $changerecord->get('usercreated') == $userid;
@@ -193,6 +193,9 @@ class rfc_manager {
     public function has_submitted(): bool {
         $changerecord = $this->get_current();
         if ($changerecord) {
+            if ($changerecord->get('type') == sprogramme_rfc::RFC_CANCELLED) {
+                return false; // If the only rfc found is cancelled, we consider that there are no submitted rfcs.
+            }
             return true; // If there is a change record for the course, it means there are submitted rfcs.
         }
         return false;
@@ -262,6 +265,16 @@ class rfc_manager {
         );
 
         if (!$rfc) {
+            $rfc = sprogramme_rfc::get_record(
+                [
+                    'datafieldid' => $this->datafieldid,
+                    'usercreated' => $USER->id,
+                    'type' => sprogramme_rfc::RFC_CANCELLED,
+                ]
+            );
+        }
+
+        if (!$rfc) {
             $rfc = new sprogramme_rfc();
             $rfc->set('datafieldid', $this->datafieldid);
             $rfc->set('adminid', intval($USER->id));
@@ -272,6 +285,7 @@ class rfc_manager {
         } else {
             // If the rfc already exists, update the snapshot.
             $rfc->set('snapshot', json_encode($data));
+            $rfc->set('type', sprogramme_rfc::RFC_REQUESTED);
             $rfc->save();
         }
         return $rfc;
@@ -286,14 +300,12 @@ class rfc_manager {
     public function cancel(int $userid): bool {
         global $USER;
         $result = false;
-        $record = sprogramme_rfc::get_record(
-            [
-                'datafieldid' => $this->datafieldid,
-                'usercreated' => $userid,
-                'type' => sprogramme_rfc::RFC_SUBMITTED,
-            ]
-        );
-        if ($record) {
+        $record = $this->get_current($userid);
+        if (
+            $record && ($record->get('type') == sprogramme_rfc::RFC_REQUESTED
+            || $record->get('type') == sprogramme_rfc::RFC_SUBMITTED
+            || $record->get('type') == sprogramme_rfc::RFC_REJECTED)
+        ) {
             $record->set('type', sprogramme_rfc::RFC_CANCELLED);
             $record->set('adminid', $USER->id);
             $record->save();
@@ -347,6 +359,10 @@ class rfc_manager {
         $data = [];
         $usercreated = $changerecord->get('usercreated');
         $issubmitted = $changerecord->get('type') == sprogramme_rfc::RFC_SUBMITTED;
+        $iscancelled = $changerecord->get('type') == sprogramme_rfc::RFC_CANCELLED;
+        if ($iscancelled) {
+            return [];
+        }
 
         $data['issubmitted'] = $issubmitted;
         $data['timemodified'] = $changerecord->get('timemodified');
