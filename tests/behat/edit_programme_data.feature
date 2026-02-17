@@ -83,4 +83,4 @@ Feature: As a teacher I can edit a Programme data in customfield_sprogramme
     And I click on "Save" "button" in the "tagform" "customfield_sprogramme > Competencies Form"
     Then I click on "Save" "button" in the "Edit" "dialogue"
     And I should see mod "1" row "1" column "Session title or exercise" with value "Séance 1"
-    And I should see mod "1" row "1" column "Competencies" with value "COPREV1 - Évaluer l'état général, le bien-être et l'état nutritionnel d'un animal ou d'un groupe d'animaux"
+    And I should see mod "1" row "2" column "Competencies" with value "COPREV1 - Évaluer l'état général, le bien-être et l'état nutritionnel d'un animal ou d'un groupe d'animaux"
