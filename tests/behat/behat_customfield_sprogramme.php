@@ -89,12 +89,17 @@ class behat_customfield_sprogramme extends behat_base {
     public function check_cell_value($modulenr, $rownr, $columnname, $value) {
         $cell = $this->find_cell($modulenr, $rownr, $columnname);
         $cellinput = $cell->find('css', 'input, select, textarea');
+        $cellvalue = null;
         if (!$cellinput) {
             // Maybe it is a readonly field, so just check the text.
             if ($newvalue = $cell->find('css', '.newvalue')) {
                 $cellvalue = trim($newvalue->getText());
-            } else {
-                $cellvalue = trim($value);
+            }
+            if ($oldvalue = $cell->find('css', '.staticdata')) {
+                $cellvalue = trim($oldvalue->getText());
+            }
+            if ($tagvalue = $cell->find('css', '.name')) {
+                $cellvalue = trim($tagvalue->getText());
             }
         } else {
             $fieldinstance = behat_field_manager::get_field_instance('field', $cellinput, $this->getSession());
@@ -328,6 +333,64 @@ class behat_customfield_sprogramme extends behat_base {
     }
 
     /**
+     * Checks that a cell in the programme table is editable (contains an input, select, or textarea).
+     *
+     * @Then /^mod "(?P<modulenr_string>(?:[^"]|\\")*)" row "(?P<rownr_string>(?:[^"]|\\")*)" column "(?P<columnname_string>(?:[^"]|\\")*)" should be editable$/
+     * @param string $modulenr The module number
+     * @param string $rownr The row number
+     * @param string $columnname The column name
+     * @throws ExpectationException
+     */
+    public function cell_should_be_editable(string $modulenr, string $rownr, string $columnname): void {
+        $cell = $this->find_cell($modulenr, $rownr, $columnname);
+        $cellinput = $cell->find('css', 'input, select, textarea');
+        if (!$cellinput) {
+            throw new ExpectationException(
+                'Cell in module ' . $modulenr . ' row ' . $rownr . ' column ' . $columnname .
+                ' is not editable (no input/select/textarea found)',
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Checks that a cell in the programme table is not editable.
+     * A non-editable cell can either be rendered as static text, or as a disabled/readonly control.
+     *
+     * @Then /^mod "(?P<modulenr_string>(?:[^"]|\\")*)" row "(?P<rownr_string>(?:[^"]|\\")*)" column "(?P<columnname_string>(?:[^"]|\\")*)" should not be editable$/
+     * @param string $modulenr The module number
+     * @param string $rownr The row number
+     * @param string $columnname The column name
+     * @throws ExpectationException
+     */
+    public function cell_should_not_be_editable(string $modulenr, string $rownr, string $columnname): void {
+        $cell = $this->find_cell($modulenr, $rownr, $columnname);
+        $cellinput = $cell->find('css', 'input, select, textarea');
+
+        if ($cellinput) {
+            $isdisabled = $cellinput->hasAttribute('disabled');
+            $isreadonly = $cellinput->hasAttribute('readonly');
+            if (!$isdisabled && !$isreadonly) {
+                throw new ExpectationException(
+                    'Cell in module ' . $modulenr . ' row ' . $rownr . ' column ' . $columnname .
+                    ' is editable (control is enabled).',
+                    $this->getSession()
+                );
+            }
+            return;
+        }
+
+        $hasstaticclass = strpos($cell->getAttribute('class') ?? '', 'static') !== false;
+        if (!$hasstaticclass) {
+            throw new ExpectationException(
+                'Cell in module ' . $modulenr . ' row ' . $rownr . ' column ' . $columnname .
+                ' is not rendered as static and has no disabled/readonly control.',
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
      * Find an element in the app table.
      *
      * @param string $modulenr
@@ -353,13 +416,26 @@ class behat_customfield_sprogramme extends behat_base {
         // Find the row in the modules rows in [data-region="rows"].
         $row = $this->find_row($modulenr, $rownr);
 
-        // Find the cell.
-        $cell = $this->find(
-            'css',
-            'td[data-columnid="' . $columnnr . '"]',
-            new ExpectationException('Cell not found in row ' . $rownr . ' and column ' . $columnname, $this->getSession()),
-            $row
-        );
+        // Special handling for Disciplines and Competencies columns which use data-region instead of data-columnid.
+        $specialcolumns = [
+            'Disciplines' => 'data-disciplines',
+            'Competencies' => 'data-competencies',
+        ];
+        if (isset($specialcolumns[$columnname])) {
+            $cell = $this->find(
+                'css',
+                'td[' . $specialcolumns[$columnname] . ']',
+                new ExpectationException('Cell not found in row ' . $rownr . ' and column ' . $columnname, $this->getSession()),
+                $row
+            );
+        } else {
+            $cell = $this->find(
+                'css',
+                'td[data-columnid="' . $columnnr . '"]',
+                new ExpectationException('Cell not found in row ' . $rownr . ' and column ' . $columnname, $this->getSession()),
+                $row
+            );
+        }
         return $cell;
     }
 
@@ -384,6 +460,42 @@ class behat_customfield_sprogramme extends behat_base {
         );
 
         return $row;
+    }
+
+    /**
+     * Clicks the element with a specific data-action attribute value.
+     *
+     * @When /^I click on the "(?P<action_string>(?:[^"]|\\")*)" data action$/
+     * @param string $action The data-action value to click
+     * @throws ElementNotFoundException
+     */
+    public function i_click_on_data_action(string $action): void {
+        $selector = '[data-action="' . $action . '"]';
+        // Prefer the active modal to avoid ambiguous matches elsewhere on the page.
+        $activemodal = $this->find('css', '.modal.show');
+        if ($activemodal) {
+            $element = $activemodal->find('css', $selector);
+            if ($element && $element->isVisible()) {
+                $element->click();
+                return;
+            }
+        }
+
+        // Fallback: click the first visible matching element on the page.
+        $elements = $this->find_all('css', $selector);
+        foreach ($elements as $element) {
+            if ($element->isVisible()) {
+                $element->click();
+                return;
+            }
+        }
+
+        throw new ElementNotFoundException(
+            $this->getSession(),
+            'visible element',
+            'css',
+            $selector
+        );
     }
 
     /**
