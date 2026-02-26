@@ -456,6 +456,7 @@ class Manager {
             'acceptrfc': this.acceptRfc,
             'rejectrfc': this.rejectRfc,
             'submitrfc': this.submitRfc,
+            'reeditrfc': this.cancelRfc,
             'cancelrfc': this.cancelRfc,
             'removerfc': this.removeRfc,
             'resetrfc': this.resetRfc,

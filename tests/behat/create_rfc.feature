@@ -104,8 +104,9 @@ Feature: As a teacher I can create and manage RFCs (Request for Change) in custo
     And I set mod "1" row "1" column "TD" to "3.5"
     And I click on "Save" "button" in the "Edit" "dialogue"
     And I should see "Continue editing" in the "Edit" "dialogue"
-    And "[data-action='cancelrfc']" "css_element" should exist in the "Edit" "dialogue"
-    And I click on the "cancelrfc" data action
+    And "[data-action='reeditrfc']" "css_element" should exist in the "Edit" "dialogue"
+    And I click on the "reeditrfc" data action
+    And I should see mod "1" row "1" column "TD" with value "3.5"
     Then mod "1" row "1" column "TD" should be editable
     And I set mod "1" row "1" column "TD" to "5.0"
     And I set mod "1" row "1" column "Perso av" to "2.3"
@@ -179,13 +180,12 @@ Feature: As a teacher I can create and manage RFCs (Request for Change) in custo
     And I navigate to "Settings" in current page administration
     And I expand all fieldsets
     And I click the programme edit button
-    And "[data-action='cancelrfc']" "css_element" should exist in the "Edit" "dialogue"
+    And "[data-action='reeditrfc']" "css_element" should exist in the "Edit" "dialogue"
     And "[data-action='submitrfc']" "css_element" should exist in the "Edit" "dialogue"
-    And I click on the "cancelrfc" data action
+    And I click on the "reeditrfc" data action
     Then mod "1" row "1" column "TD" should be editable
     # Edit and save new values
     And I set mod "1" row "1" column "TD" to "4.0"
-    And I add a new row to mod "1"
     And I set mod "1" row "2" column "CM" to "1.5"
     And I click on "Save" "button" in the "Edit" "dialogue"
     And I should see mod "1" row "1" column "TD" with value "4.0"

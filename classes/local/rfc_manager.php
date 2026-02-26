@@ -189,7 +189,7 @@ class rfc_manager {
             return false;
         }
         $current = $this->get_current($USER->id);
-        if ($current) {
+        if ($current && $current->get('type') !== sprogramme_rfc::RFC_CANCELLED) {
             return false;
         }
         return true;
