@@ -239,12 +239,13 @@ class programme_manager {
      * @return bool
      */
     public function has_history(): bool {
+        [$accepted, $rejected] = sprogramme_rfc::DECISION_TYPES;
         return sprogramme_rfc::record_exists_select(
             "datafieldid = :datafieldid AND (type = :accepted OR type = :rejected)",
             [
                 'datafieldid' => $this->datafieldid,
-                'accepted' => sprogramme_rfc::RFC_ACCEPTED,
-                'rejected' => sprogramme_rfc::RFC_REJECTED,
+                'accepted' => $accepted,
+                'rejected' => $rejected,
             ]
         );
     }

@@ -65,6 +65,23 @@ class sprogramme_rfc extends persistent {
      */
     const RFC_REJECTED = 4;
 
+    /**
+     * Active RFC states (request lifecycle before final decision).
+     */
+    const ACTIVE_TYPES = [
+        self::RFC_REQUESTED,
+        self::RFC_SUBMITTED,
+        self::RFC_CANCELLED,
+    ];
+
+    /**
+     * Final decision RFC states.
+     */
+    const DECISION_TYPES = [
+        self::RFC_ACCEPTED,
+        self::RFC_REJECTED,
+    ];
+
     #[\Override]
     protected static function define_properties() {
         return [
@@ -112,7 +129,6 @@ class sprogramme_rfc extends persistent {
             ['type' => self::RFC_REQUESTED, 'usercreated' => $userid],
             ['type' => self::RFC_SUBMITTED, 'usercreated' => $userid],
             ['type' => self::RFC_REJECTED, 'usercreated' => $userid],
-            ['type' => self::RFC_CANCELLED, 'adminid' => $userid],
             ['type' => self::RFC_SUBMITTED],
         ];
 

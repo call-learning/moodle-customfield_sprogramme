@@ -109,14 +109,10 @@ class viewrfcs implements named_templatable, renderable {
         if ($this->status === sprogramme_rfc::RFC_SUBMITTED) {
             return $data; // No tabs for submitted status.
         }
-        $allowed = [
-            sprogramme_rfc::RFC_ACCEPTED => 'accepted',
-            sprogramme_rfc::RFC_REJECTED => 'rejected',
-        ];
-        foreach ($allowed as $key => $status) {
+        foreach (sprogramme_rfc::DECISION_TYPES as $key) {
             $data[] = [
                 'key' => $key,
-                'name' => get_string('rfc:' . $status, 'customfield_sprogramme'),
+                'name' => get_string('rfc:' . sprogramme_rfc::CHANGE_TYPES[$key], 'customfield_sprogramme'),
                 'url' => new moodle_url(
                     '/customfield/field/sprogramme/edit.php',
                     $this->get_url_params(['status' => $key])

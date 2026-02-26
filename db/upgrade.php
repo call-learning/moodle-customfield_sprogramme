@@ -160,5 +160,54 @@ function xmldb_customfield_sprogramme_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2026020800, 'customfield', 'sprogramme');
     }
+    if ($oldversion < 2026020802) {
+        $activetypes = \customfield_sprogramme\local\persistent\sprogramme_rfc::ACTIVE_TYPES;
+        $decisiontypes = \customfield_sprogramme\local\persistent\sprogramme_rfc::DECISION_TYPES;
+
+        $records = $DB->get_recordset('customfield_sprogramme_rfc');
+        foreach ($records as $record) {
+            $updaterequired = false;
+            $type = (int) $record->type;
+            $adminid = (int) $record->adminid;
+            $usercreated = (int) $record->usercreated;
+            $usermodified = (int) $record->usermodified;
+
+            // Fallback requester value for legacy rows if needed.
+            if ($usercreated === 0 && $adminid > 0 && in_array($type, $activetypes, true)) {
+                $record->usercreated = $adminid;
+                $usercreated = $adminid;
+                $updaterequired = true;
+            } else if ($usercreated === 0 && $usermodified > 0) {
+                $record->usercreated = $usermodified;
+                $usercreated = $usermodified;
+                $updaterequired = true;
+            }
+
+            // Active states should not carry an approver id.
+            if (in_array($type, $activetypes, true) && $adminid !== 0) {
+                $record->adminid = 0;
+                $adminid = 0;
+                $updaterequired = true;
+            }
+
+            // Accepted/rejected rows should keep the acting approver in adminid.
+            if (in_array($type, $decisiontypes, true)) {
+                if ($adminid === 0 && $usermodified > 0) {
+                    $record->adminid = $usermodified;
+                    $adminid = $usermodified;
+                    $updaterequired = true;
+                } else if ($adminid === $usercreated && $usermodified > 0 && $usermodified !== $usercreated) {
+                    $record->adminid = $usermodified;
+                    $updaterequired = true;
+                }
+            }
+
+            if ($updaterequired) {
+                $DB->update_record('customfield_sprogramme_rfc', $record);
+            }
+        }
+        $records->close();
+        upgrade_plugin_savepoint(true, 2026020802, 'customfield', 'sprogramme');
+    }
     return true;
 }

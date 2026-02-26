@@ -156,8 +156,8 @@ class customfield_sprogramme_generator extends component_generator_base {
      * @param int $datafieldid  the data field id
      * @param int $type the type of rfc
      * @param string $snapshot the snapshot data (json)
-     * @param int $usercreated the user who created the rfc (default to admin)
-     * @param int $adminuserid the user who created the rfc (default to admin)
+     * @param int $usercreated the user who created the rfc (default to current user)
+     * @param int $adminuserid the user who approved or rejected the rfc (default to admin)
      * @return stdClass
      */
     public function create_rfc(

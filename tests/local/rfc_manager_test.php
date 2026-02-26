@@ -112,16 +112,16 @@ final class rfc_manager_test extends \advanced_testcase {
         );
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $user2->id,
-            type: sprogramme_rfc::RFC_SUBMITTED
+            type: sprogramme_rfc::RFC_SUBMITTED,
+            usercreated: $user2->id
         );
 
         $this->setUser($user3);
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $teacher2->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
-            snapshot: json_encode($this->sampleprogrammedata[0])
+            snapshot: json_encode($this->sampleprogrammedata[0]),
+            usercreated: $teacher2->id
         );
         // Just check to be sure they are created.
         $this->assertCount(3, sprogramme_rfc::get_records());
@@ -154,9 +154,9 @@ final class rfc_manager_test extends \advanced_testcase {
         $rfcmanager = new rfc_manager($this->cfdata->get('id'));
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $teacher2->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
-            snapshot: json_encode($this->sampleprogrammedata[0])
+            snapshot: json_encode($this->sampleprogrammedata[0]),
+            usercreated: $teacher2->id
         );
 
         $this->setUser($user1);
@@ -181,9 +181,9 @@ final class rfc_manager_test extends \advanced_testcase {
         $rfcmanager = new rfc_manager($this->cfdata->get('id'));
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $teacher2->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
-            snapshot: json_encode($this->sampleprogrammedata[0])
+            snapshot: json_encode($this->sampleprogrammedata[0]),
+            usercreated: $teacher2->id
         );
 
         $this->setUser($user1);
@@ -207,9 +207,35 @@ final class rfc_manager_test extends \advanced_testcase {
         $this->assertFalse($rfcmanager->has_submitted());
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $teacher->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
+            usercreated: $teacher->id,
         );
+        $this->assertTrue($rfcmanager->has_submitted());
+    }
+
+    /**
+     * Test has_submitted is course-level and not affected by current user's cancelled RFC.
+     */
+    public function test_has_submitted_with_cancelled_and_submitted_from_different_users(): void {
+        $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
+        $teacher1 = $this->getDataGenerator()->create_and_enrol($this->course, 'editingteacher');
+        $teacher2 = $this->getDataGenerator()->create_and_enrol($this->course, 'editingteacher');
+        $rfcmanager = new rfc_manager($this->cfdata->get('id'));
+
+        $pgenerator->create_rfc(
+            $this->cfdata->get('id'),
+            type: sprogramme_rfc::RFC_CANCELLED,
+            usercreated: $teacher1->id,
+        );
+        $pgenerator->create_rfc(
+            $this->cfdata->get('id'),
+            type: sprogramme_rfc::RFC_SUBMITTED,
+            usercreated: $teacher2->id,
+        );
+
+        $this->setUser($teacher1);
+        $this->assertTrue($rfcmanager->has_submitted());
+        $this->setUser($teacher2);
         $this->assertTrue($rfcmanager->has_submitted());
     }
 
@@ -227,6 +253,7 @@ final class rfc_manager_test extends \advanced_testcase {
         );
         $this->assertCount(1, sprogramme_rfc::get_records());
         $this->assertEquals($teacher->id, $created->get('usercreated'));
+        $this->assertEquals(0, $created->get('adminid'));
         $this->assertEquals($this->cfdata->get('id'), $created->get('datafieldid'));
         $this->assertEquals(sprogramme_rfc::RFC_REQUESTED, $created->get('type'));
         $this->assertEquals('{"modulename":"Module 1"}', $created->get('snapshot'));
@@ -243,6 +270,34 @@ final class rfc_manager_test extends \advanced_testcase {
     }
 
     /**
+     * Test creating a rfc reuses the current user's requested record.
+     */
+    public function test_create_reuses_requested_rfc_from_usercreated(): void {
+        $teacher = $this->getDataGenerator()->create_and_enrol($this->course, 'editingteacher');
+        $manager = $this->getDataGenerator()->create_and_enrol($this->course, 'manager');
+        $rfcmanager = new rfc_manager($this->cfdata->get('id'));
+        $this->setUser($teacher);
+
+        $created = $rfcmanager->create(
+            [
+                'modulename' => 'Module 1',
+            ]
+        );
+        $created->set('adminid', $manager->id);
+        $created->save();
+
+        $updated = $rfcmanager->create(
+            [
+                'modulename' => 'Module 2',
+            ]
+        );
+
+        $this->assertCount(1, sprogramme_rfc::get_records());
+        $this->assertEquals($created->get('id'), $updated->get('id'));
+        $this->assertEquals('{"modulename":"Module 2"}', $updated->get('snapshot'));
+    }
+
+    /**
      * Test cancelling a rfc
      */
     public function test_cancel(): void {
@@ -252,13 +307,26 @@ final class rfc_manager_test extends \advanced_testcase {
         $this->assertFalse($rfcmanager->has_submitted());
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $teacher->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
+            usercreated: $teacher->id,
         );
 
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_SUBMITTED]));
-        $rfcmanager->cancel($teacher->id);
+        $this->setUser($teacher);
+        $this->assertTrue($rfcmanager->can_cancel($teacher->id));
+        $this->assertTrue($rfcmanager->cancel($teacher->id));
+        $this->assertFalse($rfcmanager->can_cancel($teacher->id));
+        $this->assertFalse($rfcmanager->cancel($teacher->id));
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_CANCELLED]));
+        $cancelled = sprogramme_rfc::get_record(
+            [
+                'datafieldid' => $this->cfdata->get('id'),
+                'usercreated' => $teacher->id,
+                'type' => sprogramme_rfc::RFC_CANCELLED,
+            ]
+        );
+        $this->assertNotNull($cancelled);
+        $this->assertEquals(0, $cancelled->get('adminid'));
     }
 
     /**
@@ -277,6 +345,15 @@ final class rfc_manager_test extends \advanced_testcase {
         $this->setUser($teacher); // We cannot submit as another user.
         $rfcmanager->submit($teacher->id);
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_SUBMITTED]));
+        $submitted = sprogramme_rfc::get_record(
+            [
+                'datafieldid' => $this->cfdata->get('id'),
+                'usercreated' => $teacher->id,
+                'type' => sprogramme_rfc::RFC_SUBMITTED,
+            ]
+        );
+        $this->assertNotNull($submitted);
+        $this->assertEquals(0, $submitted->get('adminid'));
     }
 
     /**
@@ -301,7 +378,7 @@ final class rfc_manager_test extends \advanced_testcase {
         $this->assertFalse($data['issubmitted']);
         $this->assertFalse($data['canaccept']); // Teacher 1 is not admin so cannot accept.
         $this->assertTrue($data['cansubmit']); // Teacher 1 can submit.
-        $this->assertTrue($data['cancancel']); // Teacher 1 cannot cancel as nothing submitted.
+        $this->assertTrue($data['cancancel']); // Teacher 1 can cancel its own rfc.
         $this->assertTrue($data['canremove']); // Teacher 1 can remove the rfc as not submitted.
         $this->assertFalse($data['canadd']); // Teacher 1 cannot add as we have already a rfc.
 
@@ -340,30 +417,42 @@ final class rfc_manager_test extends \advanced_testcase {
     public function test_reject(): void {
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $teacher = $this->getDataGenerator()->create_and_enrol($this->course, 'editingteacher');
+        $manager = $this->getDataGenerator()->create_and_enrol($this->course, 'manager');
         $rfcmanager = new rfc_manager($this->cfdata->get('id'));
         $this->assertFalse($rfcmanager->has_submitted());
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $teacher->id,
             type: sprogramme_rfc::RFC_SUBMITTED,
+            usercreated: $teacher->id,
         );
 
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_SUBMITTED]));
+        $this->setUser($manager);
         $rfcmanager->reject($teacher->id);
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_REJECTED]));
+        $rejected = sprogramme_rfc::get_record(
+            [
+                'datafieldid' => $this->cfdata->get('id'),
+                'usercreated' => $teacher->id,
+                'type' => sprogramme_rfc::RFC_REJECTED,
+            ]
+        );
+        $this->assertNotNull($rejected);
+        $this->assertEquals($manager->id, $rejected->get('adminid'));
     }
 
     /**
      * Test is required
      *
-     * @param string $usersubmitted The user who submitted the rfc.
      * @param string $usercreated The user who is admin.
      * @param int $rfcstatus The status of the rfc.
      * @param array $expected The expected result.
      *
+     * @throws \coding_exception
+     * @throws \moodle_exception
      * @dataProvider get_current_provider
      */
-    public function test_get_current(string $usersubmitted, string $usercreated, int $rfcstatus, array $expected): void {
+    public function test_get_current(string $usercreated, int $rfcstatus, array $expected): void {
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $users = [];
         $users['teacher1'] = $this->getDataGenerator()->create_and_enrol($this->course, 'editingteacher');
@@ -371,19 +460,25 @@ final class rfc_manager_test extends \advanced_testcase {
         $users['manager'] = $this->getDataGenerator()->create_and_enrol($this->course, 'manager');
         $rfcmanager = new rfc_manager($this->cfdata->get('id'));
 
-        $this->setUser($users[$usersubmitted]);
+        $this->setUser($users[$usercreated]);
         $pgenerator->create_rfc(
             $this->cfdata->get('id'),
-            usercreated: $users[$usercreated]->id,
             type: $rfcstatus,
-            snapshot: json_encode($this->sampleprogrammedata[0])
+            snapshot: json_encode($this->sampleprogrammedata[0]),
+            usercreated: $users[$usercreated]->id
         );
         foreach ($expected as $user => $hasrfc) {
             $this->setUser($users[$user]);
+            $currentrfc = $rfcmanager->get_current();
             if ($hasrfc) {
-                $this->assertNotNull($rfcmanager->get_current(), "User $user should have a rfc");
+                $this->assertNotNull($currentrfc, "User $user should have a rfc");
+                $this->assertEquals(
+                    $users[$usercreated]->id,
+                    $currentrfc->get('usercreated'),
+                    "User $user should see the rfc created by {$usercreated}"
+                );
             } else {
-                $this->assertEmpty($rfcmanager->get_current(), "User $user should not have a rfc");
+                $this->assertEmpty($currentrfc, "User $user should not have a rfc");
             }
         }
     }
@@ -396,18 +491,16 @@ final class rfc_manager_test extends \advanced_testcase {
     public static function get_current_provider(): array {
         return [
             'Teacher 1 requested a rfc' => [
-                'usersubmitted' => 'teacher1',
-                'usercreated' => 'manager',
+                'usercreated' => 'teacher1',
                 'rfcstatus' => sprogramme_rfc::RFC_REQUESTED,
                 'expected' => [
-                    'teacher1' => false, // RFC has not yet been submitted.
+                    'teacher1' => true, // RFC has not yet been submitted but we have a current rfc.
                     'teacher2' => false,
-                    'manager' => true, // Manager cannot see the rfc even it is not submitted yet.
+                    'manager' => false, // Manager cannot see the rfc even it is not submitted yet.
                 ],
             ],
             'Teacher 1 submitted a rfc' => [
-                'usersubmitted' => 'teacher1',
-                'usercreated' => 'manager',
+                'usercreated' => 'teacher1',
                 'rfcstatus' => sprogramme_rfc::RFC_SUBMITTED,
                 'expected' => [
                     'teacher1' => true,
@@ -416,22 +509,20 @@ final class rfc_manager_test extends \advanced_testcase {
                 ],
             ],
             'Teacher 1 cancelled a rfc' => [
-                'usersubmitted' => 'teacher1',
-                'usercreated' => 'manager',
+                'usercreated' => 'teacher1',
                 'rfcstatus' => sprogramme_rfc::RFC_CANCELLED,
                 'expected' => [
-                    'teacher1' => false,
+                    'teacher1' => true, // Teacher 1 can see the cancelled rfc.
                     'teacher2' => false,
                     'manager' => false,
                 ],
             ],
-            'Teacher 1 cancelled a rfc managed by teacher 2' => [
-                'usersubmitted' => 'teacher1',
+            'Teacher 2 cancelled the rfc' => [
                 'usercreated' => 'teacher2',
                 'rfcstatus' => sprogramme_rfc::RFC_CANCELLED,
                 'expected' => [
                     'teacher1' => false,
-                    'teacher2' => false,
+                    'teacher2' => true,
                     'manager' => false,
                 ],
             ],
