@@ -40,13 +40,10 @@ class State {
      * @param {Object} data The data.
      * @return {Promise} The promise.
      */
-    setData(data) {
-        return new Promise((resolve) => {
-            this.data = data;
-            this.notifySubscribers();
-            this.debug();
-            resolve();
-        });
+    async setData(data) {
+        this.data = data;
+        await this.notifySubscribers();
+        this.debug();
     }
 
     /**
@@ -64,12 +61,9 @@ class State {
      * @return {Promise} The promise.
      */
     async setValue(key, value) {
-        return new Promise((resolve) => {
-            this.data[key] = value;
-            this.notifySubscriber(key);
-            this.debug();
-            resolve();
-        });
+        this.data[key] = value;
+        await this.notifySubscriber(key);
+        this.debug();
     }
 
     /**
@@ -122,22 +116,21 @@ class State {
     /**
      * Notify the subscribers, but only if the data key exists or has changed.
      */
-    notifySubscribers() {
-        this.subscribers.forEach(subscriber => {
-            if (this.data[subscriber.key] !== undefined) {
-                subscriber.callback(this.data);
-            }
-        });
+    async notifySubscribers() {
+        const callbacks = this.subscribers
+            .filter(subscriber => this.data[subscriber.key] !== undefined)
+            .map(subscriber => Promise.resolve(subscriber.callback(this.data)));
+        await Promise.all(callbacks);
     }
 
     /**
      * Notify a single subscriber.
      * @param {String} key The key.
      */
-    notifySubscriber(key) {
-        const subscriber = this.subscribers.find(subscriber => subscriber.key === key);
-        if (subscriber) {
-            subscriber.callback(this.data);
+    async notifySubscriber(key) {
+        const subscribers = this.subscribers.filter(subscriber => subscriber.key === key);
+        if (subscribers.length) {
+            await Promise.all(subscribers.map(subscriber => Promise.resolve(subscriber.callback(this.data))));
         } else {
             window.console.log(`The key ${key} is not subscribed`);
         }

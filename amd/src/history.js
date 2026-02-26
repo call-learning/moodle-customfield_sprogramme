@@ -49,6 +49,7 @@ class History {
      * Get the stored programme history for this adminid.
      */
     async getProgrammeHistory() {
+        const pending = new Pending('customfield_sprogramme/history:getProgrammeHistory');
         const context = {
             rfcid: this.rfcid,
             datafieldid: this.datafieldid,
@@ -66,6 +67,8 @@ class History {
             State.setValue('history', history);
         } catch (error) {
             Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
     }
 
@@ -127,10 +130,17 @@ class History {
      * @return {void}
      */
     async acceptRfc(btn) {
-        const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.acceptRfc({datafieldid: this.datafieldid, userid: userid});
-        if (response) {
-            this.getProgrammeHistory();
+        const pending = new Pending('customfield_sprogramme/history:acceptRFC');
+        try {
+            const userid = btn.closest('[data-rfc]').dataset.userid;
+            const response = await Repository.acceptRfc({datafieldid: this.datafieldid, userid: userid});
+            if (response) {
+                await this.getProgrammeHistory();
+            }
+        } catch (error) {
+            Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
     }
 
@@ -140,13 +150,18 @@ class History {
      * @return {void}
      */
     async rejectRfc(btn) {
-        const pending = new Pending('customfield_sprogramme/manager:rejectRFC');
-        const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.rejectRfc({datafieldid: this.datafieldid, userid: userid});
-        if (response) {
-            this.getProgrammeHistory();
+        const pending = new Pending('customfield_sprogramme/history:rejectRFC');
+        try {
+            const userid = btn.closest('[data-rfc]').dataset.userid;
+            const response = await Repository.rejectRfc({datafieldid: this.datafieldid, userid: userid});
+            if (response) {
+                await this.getProgrammeHistory();
+            }
+        } catch (error) {
+            Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
-        pending.resolve();
     }
 }
 

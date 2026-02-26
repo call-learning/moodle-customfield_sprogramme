@@ -171,31 +171,34 @@ class Manager {
      * @return {void}
      */
     async getTableData() {
+        const pending = new Pending('customfield_sprogramme/manager:getTableData');
         try {
             const response = await Repository.getData({datafieldid: this.datafieldid, showrfc: 1});
             if (response.modules.length > 0) {
                 const modules = this.parseModules(response);
                 const columns = response.columns;
 
-                State.setValue('columns', [...columns]);
-                State.setValue('modules', modules);
-                State.setValue('rfc', response.rfc ?? []);
+                await State.setValue('columns', [...columns]);
+                await State.setValue('modules', modules);
+                await State.setValue('rfc', response.rfc ?? []);
                 if (response.visainfo) {
-                    State.setValue('visainfo', response.visainfo);
+                    await State.setValue('visainfo', response.visainfo);
                 }
-                State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
+                await State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.sumtotals();
             } else {
                 const response = await Repository.getColumns({datafieldid: this.datafieldid});
                 const columns = response.columns;
-                State.setValue('columns', [...columns]);
-                State.setValue('modules', []);
-                State.setValue('rfc', []);
-                State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
+                await State.setValue('columns', [...columns]);
+                await State.setValue('modules', []);
+                await State.setValue('rfc', []);
+                await State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.addModule();
             }
         } catch (error) {
             Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
     }
 
@@ -415,26 +418,34 @@ class Manager {
         const pending = new Pending('customfield_sprogramme/manager:setTableData');
         const set = debounce(async() => {
             const saveConfirmButton = document.querySelector('[data-action="saveconfirm"]');
-            saveConfirmButton.classList.add('saving');
-            if (!this.validateModules()) {
+            if (saveConfirmButton) {
+                saveConfirmButton.classList.add('saving');
+            }
+            try {
+                if (!this.validateModules()) {
+                    return;
+                }
+                const modules = State.getValue('modules');
+                const cleanedModules = this.cleanModules(modules);
+                const response = await Repository.setData({datafieldid: this.datafieldid, modules: cleanedModules});
+                if (!response) {
+                    Notification.exception('No response from the server');
+                } else {
+                    await this.getTableData();
+                    const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
+                    const modulesStatic = this.parseModules(update);
+                    State.setValue('modulesstatic', modulesStatic);
+                }
+            } catch (error) {
+                Notification.exception(error);
+            } finally {
                 pending.resolve();
-                return;
+                if (saveConfirmButton) {
+                    setTimeout(() => {
+                        saveConfirmButton.classList.remove('saving');
+                    }, 200);
+                }
             }
-            const modules = State.getValue('modules');
-            const cleanedModules = this.cleanModules(modules);
-            const response = await Repository.setData({datafieldid: this.datafieldid, modules: cleanedModules});
-            if (!response) {
-                Notification.exception('No response from the server');
-            } else {
-                await this.getTableData();
-                const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
-                const modulesStatic = this.parseModules(update);
-                State.setValue('modulesstatic', modulesStatic);
-            }
-            pending.resolve();
-            setTimeout(() => {
-                saveConfirmButton.classList.remove('saving');
-            }, 200);
         }, 600);
         set();
     }
@@ -850,13 +861,20 @@ class Manager {
      * @return {void}
      */
     async acceptRfc(btn) {
-        const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.acceptRfc({datafieldid: this.datafieldid, userid: userid});
-        if (response) {
-            await this.getTableData();
-            const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
-            const modulesStatic = this.parseModules(update);
-            State.setValue('modulesstatic', modulesStatic);
+        const pending = new Pending('customfield_sprogramme/manager:acceptRFC');
+        try {
+            const userid = btn.closest('[data-rfc]').dataset.userid;
+            const response = await Repository.acceptRfc({datafieldid: this.datafieldid, userid: userid});
+            if (response) {
+                await this.getTableData();
+                const update = await Repository.getData({datafieldid: this.datafieldid, showrfc: 0});
+                const modulesStatic = this.parseModules(update);
+                State.setValue('modulesstatic', modulesStatic);
+            }
+        } catch (error) {
+            Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
     }
 
@@ -867,12 +885,17 @@ class Manager {
      */
     async rejectRfc(btn) {
         const pending = new Pending('customfield_sprogramme/manager:rejectRFC');
-        const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.rejectRfc({datafieldid: this.datafieldid, userid: userid});
-        if (response) {
-            await this.getTableData();
+        try {
+            const userid = btn.closest('[data-rfc]').dataset.userid;
+            const response = await Repository.rejectRfc({datafieldid: this.datafieldid, userid: userid});
+            if (response) {
+                await this.getTableData();
+            }
+        } catch (error) {
+            Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
-        pending.resolve();
     }
 
     /**
@@ -882,12 +905,17 @@ class Manager {
      */
     async submitRfc(btn) {
         const pending = new Pending('customfield_sprogramme/manager:submitRFC');
-        const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.submitRfc({datafieldid: this.datafieldid, userid: userid});
-        if (response) {
-            await this.getTableData();
+        try {
+            const userid = btn.closest('[data-rfc]').dataset.userid;
+            const response = await Repository.submitRfc({datafieldid: this.datafieldid, userid: userid});
+            if (response) {
+                await this.getTableData();
+            }
+        } catch (error) {
+            Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
-        pending.resolve();
     }
 
     /**
@@ -897,12 +925,17 @@ class Manager {
      */
     async cancelRfc(btn) {
         const pending = new Pending('customfield_sprogramme/manager:cancelRFC');
-        const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
-        if (response) {
-            await this.getTableData();
+        try {
+            const userid = btn.closest('[data-rfc]').dataset.userid;
+            const response = await Repository.cancelRfc({datafieldid: this.datafieldid, userid: userid});
+            if (response) {
+                await this.getTableData();
+            }
+        } catch (error) {
+            Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
-        pending.resolve();
     }
 
     /**
@@ -912,12 +945,17 @@ class Manager {
      */
     async removeRfc(btn) {
         const pending = new Pending('customfield_sprogramme/manager:removeRFC');
-        const userid = btn.closest('[data-rfc]').dataset.userid;
-        const response = await Repository.removeRfc({datafieldid: this.datafieldid, userid: userid});
-        if (response) {
-            await this.getTableData();
+        try {
+            const userid = btn.closest('[data-rfc]').dataset.userid;
+            const response = await Repository.removeRfc({datafieldid: this.datafieldid, userid: userid});
+            if (response) {
+                await this.getTableData();
+            }
+        } catch (error) {
+            Notification.exception(error);
+        } finally {
+            pending.resolve();
         }
-        pending.resolve();
     }
 
     /**
