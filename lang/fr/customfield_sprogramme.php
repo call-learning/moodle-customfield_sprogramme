@@ -92,6 +92,20 @@ $string['email:rfc_accepted'] = <<<'EOF'
 EOF;
 
 $string['email:rfc_accepted:subject'] = '[Syllabus] Modification de programme validée pour l\'UC :{$a->coursename}';
+$string['email:rfc_rejected'] = <<<'EOF'
+<p>Bonjour,</p>
+<p>La demande de modification de programme concernant l’unité d’enseignement suivante n’a pas été approuvée :</p>
+<p><strong>{$a->coursename}</strong></p>
+<ul>
+<li>Responsable(s) de l’UC : [{$a->responsibles}]</li>
+<li>Demandeur : {$a->requester}</li>
+<li>Département : {$a->department}</li>
+</ul>
+<p>Pour consulter cette demande, veuillez suivre ce lien et cliquer sur le bouton "modifier le programme" :</p>
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Bien cordialement</p>
+EOF;
+$string['email:rfc_rejected:subject'] = '[Syllabus] Modification de programme non approuvée pour l\'UC :{$a->coursename}';
 $string['email:rfc_submitted'] = <<<'EOF'
 <p>Bonjour,</p>
 
@@ -122,6 +136,7 @@ $string['email:rfc_visa_all_done:subject'] = '[Syllabus] Tous les visas complét
 $string['emailsenabled'] = 'Activer les notifications par e-mail';
 $string['emailsenabled_desc'] = 'Si activé, les notifications par e-mail seront envoyées lors de la soumission de demandes de modification de programme.';
 $string['encoding'] = 'Encodage';
+$string['event_rfc_rejected'] = 'RFC rejetée';
 $string['entity:competency'] = 'Compétence';
 $string['entity:competency_assignment'] = 'Affectation de compétence';
 $string['entity:discipline'] = 'Discipline';

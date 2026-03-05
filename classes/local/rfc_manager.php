@@ -402,6 +402,18 @@ class rfc_manager {
             $rfc->set('type', sprogramme_rfc::RFC_REJECTED);
             $rfc->set('adminid', $USER->id);
             $rfc->save();
+            $event = \customfield_sprogramme\event\rfc_rejected::create(
+                [
+                    'context' => $this->context,
+                    'objectid' => $rfc->get('id'),
+                    'other' => [
+                        'datafieldid' => $this->datafieldid,
+                        'rfcid' => $rfc->get('id'),
+                        'usercreated' => $userid,
+                    ],
+                ]
+            );
+            $event->trigger();
             $result = true;
         }
         return $result;

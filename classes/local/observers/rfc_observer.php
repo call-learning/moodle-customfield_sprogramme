@@ -18,6 +18,7 @@ namespace customfield_sprogramme\local\observers;
 
 use customfield_sprogramme\event\rfc_accepted;
 use customfield_sprogramme\event\rfc_created;
+use customfield_sprogramme\event\rfc_rejected;
 use customfield_sprogramme\event\rfc_submitted;
 use customfield_sprogramme\local\api\notifications;
 
@@ -60,5 +61,18 @@ class rfc_observer {
         $usercreated = $eventdata['other']['usercreated'];
         $datafieldid = $eventdata['other']['datafieldid'];
         notifications::add_notification('rfc_accepted', $userid, $datafieldid, ['usercreated' => $usercreated]);
+    }
+
+    /**
+     * An rfc has been rejected.
+     *
+     * @param rfc_rejected $event
+     */
+    public static function rfc_rejected(rfc_rejected $event): void {
+        $eventdata = $event->get_data();
+        $userid = $eventdata['userid'];
+        $usercreated = $eventdata['other']['usercreated'];
+        $datafieldid = $eventdata['other']['datafieldid'];
+        notifications::add_notification('rfc_rejected', $userid, $datafieldid, ['usercreated' => $usercreated]);
     }
 }

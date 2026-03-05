@@ -88,6 +88,20 @@ $string['email:rfc_accepted'] = <<<'EOF'
 <p>Best regards</p>
 EOF;
 $string['email:rfc_accepted:subject'] = '[Syllabus] Programme change validated for UC: {$a->coursename}';
+$string['email:rfc_rejected'] = <<<'EOF'
+<p>Hello,</p>
+<p>The programme change request concerning the following course unit has not been approved:</p>
+<p><strong>{$a->coursename}</strong></p>
+<ul>
+<li>UC Responsible(s): [{$a->responsibles}]</li>
+<li>Requester: {$a->requester}</li>
+<li>Department: {$a->department}</li>
+</ul>
+<p>To review the request, please follow this link and click on the "Edit programme" button:</p>
+<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Best regards</p>
+EOF;
+$string['email:rfc_rejected:subject'] = '[Syllabus] Programme change not approved for UC: {$a->coursename}';
 $string['email:rfc_submitted'] = <<<'EOF'
 
 <p>Hello,</p>
@@ -118,6 +132,7 @@ $string['email:rfc_visa_all_done:subject'] = '[Syllabus] All visas completed for
 $string['emailsenabled'] = 'Activate email notifications';
 $string['emailsenabled_desc'] = 'If enabled, email notifications will be sent when a change request is submitted.';
 $string['encoding'] = 'Encoding';
+$string['event_rfc_rejected'] = 'RFC rejected';
 $string['entity:competency'] = 'Competency';
 $string['entity:competency_assignment'] = 'Competency assignment';
 $string['entity:discipline'] = 'Discipline';

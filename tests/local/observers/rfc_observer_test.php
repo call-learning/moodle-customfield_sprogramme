@@ -218,4 +218,52 @@ final class rfc_observer_test extends \advanced_testcase {
         $this->assertStringContainsString('Requester: Teacher One', $emailwithoutlinebreaks);
         $this->assertStringContainsString('Department: DSPB', $emailwithoutlinebreaks);
     }
+
+    /**
+     * Test that an email is sent when an RFC is rejected.
+     */
+    public function test_rfc_rejected_email_sent(): void {
+        global $DB;
+        $this->resetAfterTest();
+
+        $rfcmanager = new rfc_manager($this->cfdata->get('id'));
+        $teacher = $DB->get_record('user', ['username' => 'teacher1']);
+        $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
+        $pgenerator->create_rfc(
+            $this->cfdata->get('id'),
+            type: sprogramme_rfc::RFC_SUBMITTED,
+            snapshot: json_encode([
+                [
+                    'moduleid' => -1,
+                    'modulesortorder' => 0,
+                    'modulename' => 'Test Module 1',
+                    'deleted' => false,
+                    'rows' => [],
+                ],
+            ]),
+            usercreated: $teacher->id,
+        );
+
+        $emailsink = $this->redirectEmails();
+        $this->setAdminUser();
+        $rfcmanager->reject($teacher->id);
+
+        ob_start();
+        \core\cron::setup_user();
+        $cron = new notifications();
+        $cron->execute();
+        ob_end_clean();
+
+        $emails = $emailsink->get_messages();
+        $this->assertCount(3, $emails);
+        $emailsto = array_map(fn($email) => $email->to, $emails);
+        $this->assertContains('admin@example.com', $emailsto);
+        $this->assertContains('otheruser@example.com', $emailsto);
+        $this->assertContains('teacher1@example.com', $emailsto);
+        $email = reset($emails);
+        $this->assertEquals(
+            '[Syllabus] Programme change not approved for UC: tc_1 - Test course 1',
+            $email->subject
+        );
+    }
 }

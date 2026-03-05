@@ -156,6 +156,7 @@ class notifications {
                 $emails = array_merge($approveremails, $responsibleemails);
                 break;
             case 'rfc_accepted':
+            case 'rfc_rejected':
                 // For RFC accepted, we also want to send the email to the user who submitted the RFC.
                 $emails = array_merge($approveremails, $responsibleemails);
                 if (isset($context['usercreated'])) {
