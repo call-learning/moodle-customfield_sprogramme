@@ -204,16 +204,21 @@ Feature: As a teacher I can create and manage RFCs (Request for Change) in custo
     And I should see mod "1" row "2" column "CM" with value "1.5"
 
   Scenario: Reviewer can add and delete own visa from dialog
-    Given the following config values are set as admin:
-      | plugin                | name                  | value          |
-      | customfield_sprogramme| responsiblerolename   | editingteacher |
-      | customfield_sprogramme| departmentheadrolename| manager        |
+    Given the following "roles" exist:
+      | name                | shortname     | description               | archetype      |
+      | SProgramme reviewer | spresponsible | SProgramme responsible    | editingteacher |
+      | SProgramme head     | sphod         | SProgramme departmenthead | editingteacher |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | manager1 | Manager   | One      | manager1@example.com |
+      | manager2 | Manager   | Two      | manager2@example.com |
     And the following "course enrolments" exist:
-      | user     | course | role    |
-      | manager1 | SYLL1  | editingteacher |
+      | user     | course | role          |
+      | manager1 | SYLL1  | spresponsible |
+      | manager2 | SYLL1  | sphod         |
+    And the following config values are set as admin:
+      | responsiblerolename    | spresponsible | customfield_sprogramme |
+      | departmentheadrolename | sphod         | customfield_sprogramme |
     And I log in as "teacher1"
     And I am on "SYLL1" course homepage
     And I navigate to "Settings" in current page administration
