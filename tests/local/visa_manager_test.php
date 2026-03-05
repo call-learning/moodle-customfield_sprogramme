@@ -191,8 +191,14 @@ final class visa_manager_test extends \advanced_testcase {
             $data['visas'],
             fn($item) => $item['visauser']['id'] === $user1->id
         ));
+        $user2data = array_values(array_filter(
+            $data['visas'],
+            fn($item) => $item['visauser']['id'] === $user2->id
+        ));
         $this->assertCount(1, $user1data);
+        $this->assertCount(1, $user2data);
         $this->assertEquals(fullname($user1), $user1data[0]['visauser']['fullname']);
         $this->assertEquals(get_string('visaapproved', 'customfield_sprogramme'), $user1data[0]['statustext']);
+        $this->assertEquals(get_string('visarejected', 'customfield_sprogramme'), $user2data[0]['statustext']);
     }
 }

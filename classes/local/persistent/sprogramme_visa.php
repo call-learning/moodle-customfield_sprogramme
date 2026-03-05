@@ -80,7 +80,7 @@ class sprogramme_visa extends persistent {
     public function get_status_string(): string {
         return match ($this->get('status')) {
             self::STATUS_APPROVED => get_string('visaapproved', 'customfield_sprogramme'),
-            self::STATUS_REJECTED => get_string('rejected', 'customfield_sprogramme'),
+            self::STATUS_REJECTED => get_string('visarejected', 'customfield_sprogramme'),
             default => get_string('pending', 'customfield_sprogramme'),
         };
     }

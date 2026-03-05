@@ -247,6 +247,7 @@ $string['usernotfound'] = 'User not found';
 $string['value'] = 'Value';
 $string['visa'] = 'Visa';
 $string['visaapproved'] = 'Visaed';
+$string['visarejected'] = 'Visa rejected';
 $string['visa_help'] = 'When a programme change request is submitted, it must be validated by the relevant department head and
 the course leader before the changes are approved by the administrators. By clicking "Validate", you certify that the
 proposed changes comply with pedagogical and administrative requirements, and that you approve their
