@@ -154,6 +154,12 @@ class notifications {
             case 'rfc_submitted':
                 // For RFC submitted, we want to send the email to the approvers and the responsibles.
                 $emails = array_merge($approveremails, $responsibleemails);
+                if (isset($context['usercreated'])) {
+                    $user = core_user::get_user($context['usercreated']);
+                    if ($user->email && !in_array($user->email, $emails)) {
+                        $emails[] = $user->email;
+                    }
+                }
                 break;
             case 'rfc_accepted':
             case 'rfc_rejected':

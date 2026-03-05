@@ -75,65 +75,72 @@ $string['edit'] = 'Modifier';
 $string['editprogramme'] = 'Modifier';
 $string['email:rfc_accepted'] = <<<'EOF'
 <p>Bonjour,</p>
-<p>La demande de modification de programme concernant l’unité d’enseignement suivante :<p>
+<p>La demande de modification de programme concernant l’unité d’enseignement suivante a été <strong>validée par la DEVE</strong> :</p>
 <p><strong>{$a->coursename}</strong></p>
 <ul>
-<li></li>Responsable(s) de l’UC : [{$a->responsibles}]</li>
+<li>Responsable(s) de l’UC : {$a->responsibles}</li>
 <li>Demandeur : {$a->requester}</li>
 <li>Département de rattachement : {$a->department}</li>
 </ul>
-</p>
-
-<p>a été validée par le chef de département concerné et la DEVE.</p>
-
-<p>Ce message est adressé aux trois chefs de département, au responsable qualité, au directeur des formations ainsi qu’à l’administrateur Moodle, afin d’assurer une information partagée sur les évolutions de la maquette pédagogique.</p>
-<p>Pour consulter l’historique des modifications validées pour cette UC, veuillez suivre le lien ci-dessous et cliquer sur le bouton "Historique" du programme :</p>
-<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>La modification est désormais <strong>prise en compte dans la maquette pédagogique</strong>.</p>
+<p>Pour consulter le programme mis à jour ou l’historique des modifications pour cette UC :</p>
+<p><a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Bien cordialement</p>
 EOF;
 
-$string['email:rfc_accepted:subject'] = '[Syllabus] Modification de programme validée pour l\'UC :{$a->coursename}';
+$string['email:rfc_accepted:subject'] = '[Syllabus] [{$a->department}] Modification de programme validée – UC : {$a->coursename}';
 $string['email:rfc_rejected'] = <<<'EOF'
 <p>Bonjour,</p>
-<p>La demande de modification de programme concernant l’unité d’enseignement suivante n’a pas été approuvée :</p>
+<p>La demande de modification de programme concernant l’unité d’enseignement suivante <strong>n’a pas été validée par la DEVE</strong> :</p>
 <p><strong>{$a->coursename}</strong></p>
 <ul>
-<li>Responsable(s) de l’UC : [{$a->responsibles}]</li>
+<li>Responsable(s) de l’UC : {$a->responsibles}</li>
 <li>Demandeur : {$a->requester}</li>
-<li>Département : {$a->department}</li>
+<li>Département de rattachement : {$a->department}</li>
 </ul>
-<p>Pour consulter cette demande, veuillez suivre ce lien et cliquer sur le bouton "modifier le programme" :</p>
-<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Des corrections sont nécessaires avant une nouvelle soumission.</p>
+<p>Pour consulter la demande et effectuer les corrections :</p>
+<p><a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Bien cordialement</p>
 EOF;
-$string['email:rfc_rejected:subject'] = '[Syllabus] Modification de programme non approuvée pour l\'UC :{$a->coursename}';
+$string['email:rfc_rejected:subject'] = '[Syllabus] [{$a->department}] Modification de programme à corriger – UC : {$a->coursename}';
 $string['email:rfc_submitted'] = <<<'EOF'
 <p>Bonjour,</p>
-
-<p>Une demande de modification de programme a été soumise pour l'UC suivante :{$a->coursename}.</p>
-
-<p>Le chef de département concerné est invité à examiner ces modifications et à confirmer son accord en répondant à ce message, en copie au directeur des formations et au responsable qualité.</p>
-<p>Une fois cet accord transmis, la direction des formations procédera à la validation finale, puis à la mise à jour de la maquette pédagogique globale.</p>
-<p>Pour consulter les modifications proposées, veuillez suivre ce lien et cliquer sur le bouton "modifier le programme" :
-<a href="{$a->programmelink}">{$a->programmelink}</a></p>
-<p>Bien cordialement</p>
-EOF;
-$string['email:rfc_submitted:subject'] = '[Syllabus] Demande de modification de programme pour l\'UC :{$a->coursename}';
-$string['email:rfc_visa_all_done'] = <<<'EOF'
-<p>Bonjour,</p>
-<p>Tous les visas ont été complétés pour la demande de modification de programme concernant l’unité d’enseignement suivante :</p>
+<p>Une demande de modification de programme a été soumise pour l’unité d’enseignement suivante :</p>
 <p><strong>{$a->coursename}</strong></p>
 <ul>
-<li>Responsable(s) de l’UC : [{$a->responsibles}]</li>
-<li>Demandeur : {$a->requester}</li>
-<li>Département : {$a->department}</li>
+ <li>Responsable(s) de l’UC : {$a->responsibles}</li>
+ <li>Demandeur : {$a->requester}</li>
+ <li>Département de rattachement : {$a->department}</li>
 </ul>
-<p>La demande de modification est maintenant prête pour la validation finale par le directeur des formations.</p>
-<p>Pour consulter l’historique des modifications validées pour cette UC, veuillez suivre le lien ci-dessous et cliquer sur le bouton "Historique" du programme :</p>
-<a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p><strong>Action attendue :</strong><br>
+Cette demande doit être examinée et visée par :</p>
+<ul>
+ <li>le(s) responsable(s) de l’UC ;</li>
+ <li>le chef du département concerné.</li>
+</ul>
+<p>Une fois ces deux visas apposés dans l’application, la demande sera transmise à la DEVE pour validation finale.</p>
+<p><strong>Si des corrections sont nécessaires</strong>, le responsable de l’UC et/ou le chef de département doivent contacter directement le demandeur par courriel <strong>(hors application)</strong> afin de lui indiquer les modifications à apporter <strong>avant une nouvelle soumission</strong>.</p>
+<p>Accès à la demande :</p>
+<p><a href="{$a->programmelink}">{$a->programmelink}</a></p>
 <p>Bien cordialement</p>
 EOF;
-$string['email:rfc_visa_all_done:subject'] = '[Syllabus] Tous les visas complétés pour la demande de modification de programme pour : {$a->coursename}';
+$string['email:rfc_submitted:subject'] = '[Syllabus] [{$a->department}] Demande de modification de programme – UC : {$a->coursename}';
+$string['email:rfc_visa_all_done'] = <<<'EOF'
+<p>Bonjour,</p>
+<p>Les visas requis ont été apposés pour la demande de modification de programme concernant l’unité d’enseignement suivante :</p>
+<p><strong>{$a->coursename}</strong></p>
+<ul>
+<li>Responsable(s) de l’UC : {$a->responsibles}</li>
+<li>Demandeur : {$a->requester}</li>
+<li>Département de rattachement : {$a->department}</li>
+</ul>
+<p>La demande est désormais prête pour la <strong>validation finale par la DEVE</strong>.</p>
+<p>Pour consulter la demande et procéder à la validation :</p>
+<p><a href="{$a->programmelink}">{$a->programmelink}</a></p>
+<p>Bien cordialement</p>
+EOF;
+$string['email:rfc_visa_all_done:subject'] = '[Syllabus] Visas complétés – validation DEVE requise – UC : {$a->coursename}';
 $string['emailsenabled'] = 'Activer les notifications par e-mail';
 $string['emailsenabled_desc'] = 'Si activé, les notifications par e-mail seront envoyées lors de la soumission de demandes de modification de programme.';
 $string['encoding'] = 'Encodage';

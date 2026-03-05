@@ -18,6 +18,7 @@ namespace customfield_sprogramme\local\observers;
 
 use customfield_sprogramme\event\rfc_visa_updated;
 use customfield_sprogramme\local\api\notifications;
+use customfield_sprogramme\local\persistent\sprogramme_rfc;
 use customfield_sprogramme\local\persistent\sprogramme_visa;
 use customfield_sprogramme\local\visa_manager;
 use customfield_sprogramme\utils;
@@ -75,7 +76,12 @@ class rfc_visa_observer {
         }
 
         if ($hodapproved) {
-            notifications::add_notification('rfc_visa_all_done', $userid, $datafieldid);
+            $rfc = sprogramme_rfc::get_record(['id' => $rfcid]);
+            $context = [];
+            if ($rfc) {
+                $context['usercreated'] = (int) $rfc->get('usercreated');
+            }
+            notifications::add_notification('rfc_visa_all_done', $userid, $datafieldid, $context);
         }
     }
 }

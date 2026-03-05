@@ -95,10 +95,11 @@ final class rfc_observer_test extends \advanced_testcase {
         ob_end_clean();
 
         $emails = $emailsink->get_messages();
-        $this->assertCount(2, $emails);
+        $this->assertCount(3, $emails);
         $emailsto = array_map(fn($email) => $email->to, $emails);
         $this->assertContains('admin@example.com', $emailsto);
         $this->assertContains('otheruser@example.com', $emailsto);
+        $this->assertContains('teacher1@example.com', $emailsto);
         $email = reset($emails);
         $this->assertEquals('[Syllabus] Request for programme change for: tc_1 - Test course 1', $email->subject);
     }
