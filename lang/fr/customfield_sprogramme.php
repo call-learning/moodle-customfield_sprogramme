@@ -250,6 +250,7 @@ $string['uploadcsv'] = 'Charger un fichier CSV';
 $string['usernotfound'] = 'Utilisateur non trouvé';
 $string['value'] = 'Valeur';
 $string['visa'] = 'Visa';
+$string['visaapproved'] = 'Visé';
 $string['visa_help'] = 'Quand une demande de modification de programme est soumise, elle doit être validée par le chef
 de département concerné et le responsable de cours avant que les modifications ne soient validées par les administrateur.
 En cliquant sur "Valider", vous certifiez que les modifications proposées sont conformes aux exigences pédagogiques

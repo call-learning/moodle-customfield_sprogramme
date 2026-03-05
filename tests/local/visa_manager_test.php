@@ -193,6 +193,6 @@ final class visa_manager_test extends \advanced_testcase {
         ));
         $this->assertCount(1, $user1data);
         $this->assertEquals(fullname($user1), $user1data[0]['visauser']['fullname']);
-        $this->assertEquals(get_string('approved', 'customfield_sprogramme'), $user1data[0]['statustext']);
+        $this->assertEquals(get_string('visaapproved', 'customfield_sprogramme'), $user1data[0]['statustext']);
     }
 }
