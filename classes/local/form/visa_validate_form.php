@@ -49,7 +49,7 @@ class visa_validate_form extends dynamic_form {
         $data = $this->get_data();
         return [
             'result' => true,
-            'statuscode' => $data->status == sprogramme_rfc::RFC_ACCEPTED ? 'approved' : 'rejected',
+            'statuscode' => $data->status == sprogramme_visa::STATUS_APPROVED ? 'approved' : 'rejected',
             'comment' => $data->comment,
         ];
     }
@@ -105,14 +105,14 @@ class visa_validate_form extends dynamic_form {
             'status',
             '',
             get_string('accept', 'customfield_sprogramme'),
-            sprogramme_rfc::RFC_ACCEPTED
+            sprogramme_visa::STATUS_APPROVED
         );
         $mform->addElement(
             'radio',
             'status',
             '',
             get_string('reject', 'customfield_sprogramme'),
-            sprogramme_rfc::RFC_REJECTED
+            sprogramme_visa::STATUS_REJECTED
         );
         $mform->setType('status', PARAM_INT);
     }
@@ -125,7 +125,7 @@ class visa_validate_form extends dynamic_form {
     public function set_data_for_dynamic_submission(): void {
         global $USER;
         $rfcid = $this->optional_param('rfcid', 0, PARAM_INT);
-        $defaultstatus = sprogramme_rfc::RFC_ACCEPTED;
+        $defaultstatus = sprogramme_visa::STATUS_APPROVED;
         $defaultcomment = '';
         $visa = sprogramme_visa::get_record(['rfcid' => $rfcid, 'visauser' => $USER->id]);
         if (!empty($visa)) {
