@@ -46,7 +46,21 @@
                     aria-expanded="false"
                     aria-controls="visaCollapse-{{rfcid}}">
                 <span class="pr-3">{{#str}}visa, customfield_sprogramme{{/str}}</span>
-                <span class="badge badge-info">{{done}}/{{todo}}</span>
+                <span class="d-flex align-items-center">
+                    {{#approved}}
+                        <span class="badge badge-success mr-1" title="{{#str}}visaapproved, customfield_sprogramme{{/str}}">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                            {{approved}}
+                        </span>
+                    {{/approved}}
+                    {{#rejected}}
+                        <span class="badge badge-danger mr-1" title="{{#str}}visarejected, customfield_sprogramme{{/str}}">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                            {{rejected}}
+                        </span>
+                    {{/rejected}}
+                    <span class="badge badge-info">{{done}}/{{todo}}</span>
+                </span>
             </button>
         </div>
         <div id="visaCollapse-{{rfcid}}" class="collapse" aria-labelledby="visaHeading-{{rfcid}}">
