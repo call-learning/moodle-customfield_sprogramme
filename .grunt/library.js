@@ -52,7 +52,8 @@ const buildSass = (grunt) => {
                 files: {}
             },
         },
-        stylelint: {}
+        stylelint: {},
+        watch: {}
     };
     const files = {};
     files[path.join(moodleRoot, MODULE_PATH, '/styles.css')] = path.join(moodleRoot, MODULE_PATH, '/scss/styles.scss');
@@ -84,6 +85,10 @@ const buildSass = (grunt) => {
             },
         },
         src: [path.join(moodleRoot, MODULE_PATH, '/styles.css')]
+    };
+    config.watch[MODULE_NAME] = {
+        files: [path.join(moodleRoot, MODULE_PATH, '/scss/**/*.scss')],
+        tasks: ['sass:' + MODULE_NAME, 'stylelint:' + MODULE_NAME]
     };
     grunt.config.merge(config);
     grunt.registerTask('default', ['sass:' + MODULE_NAME, 'stylelint:' + MODULE_NAME]);
