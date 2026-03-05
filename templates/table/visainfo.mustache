@@ -49,13 +49,11 @@
                 <span class="d-flex align-items-center">
                     {{#approved}}
                         <span class="badge badge-success mr-1" title="{{#str}}visaapproved, customfield_sprogramme{{/str}}">
-                            {{#pix}}i/valid, core, {{#str}}visaapproved, customfield_sprogramme{{/str}}{{/pix}}
                             {{approved}}
                         </span>
                     {{/approved}}
                     {{#rejected}}
                         <span class="badge badge-danger mr-1" title="{{#str}}visarejected, customfield_sprogramme{{/str}}">
-                            {{#pix}}i/invalid, core, {{#str}}visarejected, customfield_sprogramme{{/str}}{{/pix}}
                             {{rejected}}
                         </span>
                     {{/rejected}}
@@ -103,15 +101,15 @@
                                     </button>
                                 {{/comment}}
                                 {{#canmanage}}
-                                    <a href="#"
-                                       class="btn btn-icon btn-primary icon-no-margin"
-                                       data-action="addvisa"
-                                       data-rfcid="{{rfcid}}"
-                                       aria-label="{{#str}}addvisa, customfield_sprogramme{{/str}}"
-                                       title="{{#str}}addvisa, customfield_sprogramme{{/str}}">
+                                    <button type="button"
+                                            class="btn btn-icon btn-primary icon-no-margin"
+                                            data-action="addvisa"
+                                            data-rfcid="{{rfcid}}"
+                                            aria-label="{{#str}}addvisa, customfield_sprogramme{{/str}}"
+                                            title="{{#str}}addvisa, customfield_sprogramme{{/str}}">
                                         {{#pix}}i/addblock, core, {{#str}}addvisa, customfield_sprogramme{{/str}}{{/pix}}
                                         <span class="accesshide">{{#str}}addvisa, customfield_sprogramme{{/str}}</span>
-                                    </a>
+                                    </button>
                                 {{/canmanage}}
                             </td>
                         </tr>

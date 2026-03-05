@@ -62,6 +62,10 @@ const showVisaForm = (rfcid, manager) => {
                 response = await Repository.acceptVisa({
                     rfcid: rfcid, comment: event.detail.comment
                 });
+            } else if (event.detail.statuscode === 'deleted') {
+                response = await Repository.removeVisa({
+                    rfcid: rfcid
+                });
             } else {
                 response = await Repository.rejectVisa({
                     rfcid: rfcid, comment: event.detail.comment

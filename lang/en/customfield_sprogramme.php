@@ -57,6 +57,7 @@ $string['consignes_help'] = 'This field indicates everything the student must do
 $string['csvdelimiter'] = 'CSV delimiter';
 $string['csvfile'] = 'CSV file';
 $string['dd_rse_help'] = 'Sustainable Development / Social and Environmental Responsibility: This checkbox indicates whether the session fully or partially addresses concepts related to the SD / SER domain.';
+$string['deletevisa'] = 'Delete my visa';
 $string['departmentcustomfieldname'] = 'Department custom field';
 $string['departmentcustomfieldname_desc'] = 'The department custom field used for notifications.';
 $string['departmentheadrolename'] = 'Department head role (shortname)';

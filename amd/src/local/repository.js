@@ -246,6 +246,23 @@ class Repository {
 
         return promise;
     }
+
+    /**
+     * Remove own visa for the RFC.
+     * @param {Object} args The arguments.
+     * @return {Promise} The promise.
+     */
+    async removeVisa(args) {
+        const request = {
+            methodname: 'customfield_sprogramme_remove_visa',
+            args: args
+        };
+
+        let promise = Ajax.call([request])[0]
+            .fail(Notification.exception);
+
+        return promise;
+    }
 }
 
 const RepositoryInstance = new Repository();

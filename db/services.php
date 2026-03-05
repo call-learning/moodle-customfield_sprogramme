@@ -125,7 +125,15 @@ $functions = [
     'customfield_sprogramme_reject_visa' => [
         'classname' => \customfield_sprogramme\external\reject_visa::class,
         'methodname' => 'execute',
-        'description' => 'Accept a visa for RFC',
+        'description' => 'Reject a visa for RFC',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'customfield/sprogramme:edit',
+    ],
+    'customfield_sprogramme_remove_visa' => [
+        'classname' => \customfield_sprogramme\external\remove_visa::class,
+        'methodname' => 'execute',
+        'description' => 'Remove own visa for RFC',
         'type' => 'write',
         'ajax' => true,
         'capabilities' => 'customfield/sprogramme:edit',

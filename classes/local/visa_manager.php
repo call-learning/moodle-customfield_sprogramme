@@ -182,6 +182,21 @@ class visa_manager {
     }
 
     /**
+     * Remove a visa for the current RFC and user.
+     *
+     * @param int $userid
+     * @return bool
+     */
+    public function remove_visa(int $userid): bool {
+        $visa = sprogramme_visa::get_record(['rfcid' => $this->rfcid, 'visauser' => $userid]);
+        if (!$visa) {
+            return true;
+        }
+        $visa->delete();
+        return true;
+    }
+
+    /**
      * Get the datafield id for the current RFC.
      *
      * @return int

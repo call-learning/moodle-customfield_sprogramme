@@ -222,5 +222,13 @@ final class visa_manager_test extends \advanced_testcase {
         $this->assertEquals(fullname($user1), $user1data[0]['visauser']['fullname']);
         $this->assertEquals(get_string('visaapproved', 'customfield_sprogramme'), $user1data[0]['statustext']);
         $this->assertEquals(get_string('visarejected', 'customfield_sprogramme'), $user2data[0]['statustext']);
+
+        $this->assertTrue($visamanager->remove_visa($user2->id));
+        $visasafterremove = $visamanager->get_visas();
+        $visasafterremovebyuser = [];
+        foreach ($visasafterremove as $record) {
+            $visasafterremovebyuser[$record->get('visauser')] = $record;
+        }
+        $this->assertArrayNotHasKey($user2->id, $visasafterremovebyuser);
     }
 }

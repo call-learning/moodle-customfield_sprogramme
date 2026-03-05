@@ -57,6 +57,7 @@ $string['consignes_help'] = 'Cette case renseigne sur tout ce que doit faire l�
 $string['csvdelimiter'] = 'Délimiteur CSV';
 $string['csvfile'] = 'Fichier CSV';
 $string['dd_rse_help'] = 'Développement Durable / Responsabilité Sociétale et Environnementale : Cette case indique si la séance traite intégralement ou en partie de notions en lien avec le domaine DD / RSE.';
+$string['deletevisa'] = 'Supprimer mon visa';
 $string['departmentcustomfieldname'] = 'Department custom field';
 $string['departmentcustomfieldname_desc'] = 'The department custom field used for notifications.';
 $string['departmentheadrolename'] = 'Chef de département (nom court)';

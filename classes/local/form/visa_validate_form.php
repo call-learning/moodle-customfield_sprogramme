@@ -39,6 +39,8 @@ use moodle_url;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class visa_validate_form extends dynamic_form {
+    /** @var int delete action for visa form status selector. */
+    private const STATUS_DELETE = -1;
     /**
      * Process the form submission
      *
@@ -49,7 +51,11 @@ class visa_validate_form extends dynamic_form {
         $data = $this->get_data();
         return [
             'result' => true,
-            'statuscode' => $data->status == sprogramme_visa::STATUS_APPROVED ? 'approved' : 'rejected',
+            'statuscode' => match ((int)$data->status) {
+                self::STATUS_DELETE => 'deleted',
+                sprogramme_visa::STATUS_APPROVED => 'approved',
+                default => 'rejected',
+            },
             'comment' => $data->comment,
         ];
     }
@@ -113,6 +119,13 @@ class visa_validate_form extends dynamic_form {
             '',
             get_string('reject', 'customfield_sprogramme'),
             sprogramme_visa::STATUS_REJECTED
+        );
+        $mform->addElement(
+            'radio',
+            'status',
+            '',
+            get_string('deletevisa', 'customfield_sprogramme'),
+            self::STATUS_DELETE
         );
         $mform->setType('status', PARAM_INT);
     }
