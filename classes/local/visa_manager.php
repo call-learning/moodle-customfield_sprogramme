@@ -76,32 +76,58 @@ class visa_manager {
     public function get_visa_data(): array {
         global $USER;
         $visas = $this->get_visas();
+        $visasbyuser = [];
+        foreach ($visas as $visa) {
+            $visasbyuser[$visa->get('visauser')] = $visa;
+        }
+
+        $reviewers = [];
+        if ($this->context && $this->context->contextlevel == CONTEXT_COURSE && !empty($this->context->instanceid)) {
+            $reviewers = utils::get_responsible_visa_reviewer_for_course($this->context->instanceid);
+        }
+        $reviewersbyid = [];
+        foreach ($reviewers as $reviewer) {
+            $reviewersbyid[$reviewer->id] = $reviewer;
+        }
+
         $data = [
             'canvisa' => $this->can_visa($USER->id),
             'rfcid' => $this->rfcid,
             'visas' => [],
             'todo' => $this->get_visas_total_todo(),
+            'done' => 0,
             'approved' => 0,
             'rejected' => 0,
         ];
 
-        foreach ($visas as $visa) {
-            $visauser = \core_user::get_user($visa->get('visauser'));
-            $status = $visa->get('status');
+        foreach ($reviewersbyid as $reviewerid => $reviewer) {
+            $visa = $visasbyuser[$reviewerid] ?? null;
+            $status = $visa ? $visa->get('status') : sprogramme_visa::STATUS_PENDING;
+            $comment = $visa ? $visa->get('comment') : '';
+            $timemodified = $visa ? $visa->get('timemodified') : 0;
+
             $data['visas'][] = [
-                'id' => $visa->get('id'),
-                'rfcid' => $visa->get('rfcid'),
+                'id' => $visa ? $visa->get('id') : 0,
+                'rfcid' => $this->rfcid,
                 'visauser' => [
-                    'id' => $visauser->id,
-                    'fullname' => fullname($visauser),
+                    'id' => $reviewer->id,
+                    'fullname' => fullname($reviewer),
                 ],
-                'statustext' => $visa->get_status_string(),
-                'timemodified' => $visa->get('timemodified'),
+                'statustext' => $visa ? $visa->get_status_string() : get_string('pending', 'customfield_sprogramme'),
+                'isapproved' => $status == sprogramme_visa::STATUS_APPROVED,
+                'isrejected' => $status == sprogramme_visa::STATUS_REJECTED,
+                'ispending' => $status == sprogramme_visa::STATUS_PENDING,
+                'comment' => $comment,
+                'timemodified' => $timemodified,
+                'canmanage' => $data['canvisa'] && (int)$USER->id === (int)$reviewer->id,
             ];
             if ($status == sprogramme_visa::STATUS_APPROVED) {
                 $data['approved']++;
             } else if ($status == sprogramme_visa::STATUS_REJECTED) {
                 $data['rejected']++;
+            }
+            if ($status != sprogramme_visa::STATUS_PENDING) {
+                $data['done']++;
             }
         }
         return $data;

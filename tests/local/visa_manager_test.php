@@ -147,12 +147,33 @@ final class visa_manager_test extends \advanced_testcase {
      * Test accept/reject and visa data.
      */
     public function test_accept_reject_and_get_visa_data(): void {
+        $generator = $this->getDataGenerator();
         $rfc = $this->create_rfc();
         $visamanager = new visa_manager($rfc->id);
 
-        $user1 = $this->getDataGenerator()->create_user(['firstname' => 'User', 'lastname' => 'One']);
-        $user2 = $this->getDataGenerator()->create_user(['firstname' => 'User', 'lastname' => 'Two']);
-        $user3 = $this->getDataGenerator()->create_user(['firstname' => 'User', 'lastname' => 'Three']);
+        $user1 = $generator->create_user(['firstname' => 'User', 'lastname' => 'One']);
+        $user2 = $generator->create_user(['firstname' => 'User', 'lastname' => 'Two']);
+        $user3 = $generator->create_user(['firstname' => 'User', 'lastname' => 'Three']);
+
+        $responsiblerolename = get_config('customfield_sprogramme', 'responsiblerolename');
+        $responsibleroleid = $generator->create_role(
+            [
+                'shortname' => $responsiblerolename,
+                'name' => 'Responsible',
+                'archetype' => 'editingteacher',
+            ]
+        );
+        $departmentheadrolename = get_config('customfield_sprogramme', 'departmentheadrolename');
+        $generator->create_role(
+            [
+                'shortname' => $departmentheadrolename,
+                'name' => 'Head of Department',
+                'archetype' => 'teacher',
+            ]
+        );
+        $generator->enrol_user($user1->id, $this->course->id, $responsibleroleid);
+        $generator->enrol_user($user2->id, $this->course->id, $responsibleroleid);
+        $generator->enrol_user($user3->id, $this->course->id, $responsibleroleid);
 
         $visamanager->accept_visa($user1->id, 'approved');
         $visamanager->reject_visa($user2->id, 'rejected');
@@ -182,7 +203,8 @@ final class visa_manager_test extends \advanced_testcase {
         $this->setUser($user1);
         $data = $visamanager->get_visa_data();
         $this->assertEquals($rfc->id, $data['rfcid']);
-        $this->assertEquals(0, $data['todo']);
+        $this->assertEquals(3, $data['todo']);
+        $this->assertEquals(2, $data['done']);
         $this->assertEquals(1, $data['approved']);
         $this->assertEquals(1, $data['rejected']);
         $this->assertCount(3, $data['visas']);

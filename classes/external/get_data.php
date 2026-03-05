@@ -195,13 +195,17 @@ class get_data extends external_api {
                 'rejected' => new external_value(PARAM_INT, 'Rejected count', VALUE_OPTIONAL),
                 'visas' => new external_multiple_structure(
                     new external_single_structure([
-                        'comment' => new external_value(PARAM_BOOL, 'Comment', VALUE_OPTIONAL),
+                        'comment' => new external_value(PARAM_TEXT, 'Comment', VALUE_OPTIONAL),
                         'statustext' => new external_value(PARAM_TEXT, 'Status text', VALUE_OPTIONAL),
+                        'isapproved' => new external_value(PARAM_BOOL, 'Is approved', VALUE_OPTIONAL),
+                        'isrejected' => new external_value(PARAM_BOOL, 'Is rejected', VALUE_OPTIONAL),
+                        'ispending' => new external_value(PARAM_BOOL, 'Is pending', VALUE_OPTIONAL),
                         'visauser' => new external_single_structure([
                             'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
                             'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
                         ], 'User who created the RFC', VALUE_OPTIONAL),
                         'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
+                        'canmanage' => new external_value(PARAM_BOOL, 'Can manage own visa', VALUE_OPTIONAL),
                     ], 'Single visa', VALUE_OPTIONAL),
                     'Visas data',
                     VALUE_OPTIONAL

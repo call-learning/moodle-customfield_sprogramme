@@ -37,6 +37,7 @@ const initVisaForm = (manager) => {
         showVisaForm(rfcid, manager);
     });
 };
+
 /**
  * Init the visa form.
  *
