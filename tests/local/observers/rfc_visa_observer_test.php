@@ -102,6 +102,12 @@ final class rfc_visa_observer_test extends \advanced_testcase {
             'firstname' => 'Head of',
             'lastname' => 'Department',
         ]);
+        $hoduser2 = $generator->create_user([
+            'username' => 'headofdepartment2',
+            'email' => 'headofdepartment2@example.com',
+            'firstname' => 'Head of',
+            'lastname' => 'Department 2',
+        ]);
         $departmentheadrolename = get_config('customfield_sprogramme', 'departmentheadrolename');
         $hodroleid = $generator->create_role(
             [
@@ -111,6 +117,7 @@ final class rfc_visa_observer_test extends \advanced_testcase {
             ]
         );
         $generator->role_assign($hodroleid, $hoduser->id, \context_coursecat::instance($this->course->category));
+        $generator->role_assign($hodroleid, $hoduser2->id, \context_coursecat::instance($this->course->category));
 
         $visamanager = new visa_manager($rfc->id);
         $this->assertCount(0, notification::get_records(['notification' => 'rfc_visa_all_done']));
