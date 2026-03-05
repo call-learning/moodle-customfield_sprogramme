@@ -45,7 +45,7 @@
                     data-target="#visaCollapse-{{rfcid}}"
                     aria-expanded="false"
                     aria-controls="visaCollapse-{{rfcid}}">
-                <span>{{#str}}visa, customfield_sprogramme{{/str}}</span>
+                <span class="pr-3">{{#str}}visa, customfield_sprogramme{{/str}}</span>
                 <span class="badge badge-info">{{done}}/{{todo}}</span>
             </button>
         </div>
@@ -73,8 +73,11 @@
                                     <a href="#"
                                        class="btn btn-sm btn-primary"
                                        data-action="addvisa"
-                                       data-rfcid="{{rfcid}}">
-                                        {{#str}}addvisa, customfield_sprogramme{{/str}}
+                                       data-rfcid="{{rfcid}}"
+                                       aria-label="{{#str}}addvisa, customfield_sprogramme{{/str}}"
+                                       title="{{#str}}addvisa, customfield_sprogramme{{/str}}">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                        <span class="accesshide">{{#str}}addvisa, customfield_sprogramme{{/str}}</span>
                                     </a>
                                 {{/canmanage}}
                             </td>
