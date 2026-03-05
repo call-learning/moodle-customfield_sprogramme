@@ -213,7 +213,7 @@ Feature: As a teacher I can create and manage RFCs (Request for Change) in custo
       | manager1 | Manager   | One      | manager1@example.com |
     And the following "course enrolments" exist:
       | user     | course | role    |
-      | manager1 | SYLL1  | manager |
+      | manager1 | SYLL1  | editingteacher |
     And I log in as "teacher1"
     And I am on "SYLL1" course homepage
     And I navigate to "Settings" in current page administration
