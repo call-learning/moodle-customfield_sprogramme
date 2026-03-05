@@ -46,8 +46,9 @@ class rfc_observer {
     public static function rfc_submitted(rfc_submitted $event): void {
         $eventdata = $event->get_data();
         $userid = $eventdata['userid'];
+        $usercreated = $eventdata['other']['usercreated'] ?? $userid;
         $datafieldid = $eventdata['other']['datafieldid'];
-        notifications::add_notification('rfc_submitted', $userid, $datafieldid, ['usercreated' => $userid]);
+        notifications::add_notification('rfc_submitted', $userid, $datafieldid, ['usercreated' => $usercreated]);
     }
 
     /**

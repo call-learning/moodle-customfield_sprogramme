@@ -341,6 +341,7 @@ class rfc_manager {
                     'other' => [
                         'datafieldid' => $this->datafieldid,
                         'rfcid' => $record->get('id'),
+                        'usercreated' => $record->get('usercreated'),
                     ],
                 ]
             );

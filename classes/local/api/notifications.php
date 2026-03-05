@@ -85,7 +85,9 @@ class notifications {
         }, utils::get_responsible_visa_reviewer_for_course($courseid)));
         if (isset($context['usercreated'])) {
             $user = core_user::get_user($context['usercreated']);
-            $context['requester'] = fullname($user);
+            if ($user) {
+                $context['requester'] = fullname($user);
+            }
         }
         $context['userid'] = $userid;
         return $context;
@@ -156,7 +158,7 @@ class notifications {
                 $emails = array_merge($approveremails, $responsibleemails);
                 if (isset($context['usercreated'])) {
                     $user = core_user::get_user($context['usercreated']);
-                    if ($user->email && !in_array($user->email, $emails)) {
+                    if ($user && !empty($user->email) && !in_array($user->email, $emails)) {
                         $emails[] = $user->email;
                     }
                 }
@@ -167,7 +169,7 @@ class notifications {
                 $emails = array_merge($approveremails, $responsibleemails);
                 if (isset($context['usercreated'])) {
                     $user = core_user::get_user($context['usercreated']);
-                    if ($user->email && !in_array($user->email, $emails)) {
+                    if ($user && !empty($user->email) && !in_array($user->email, $emails)) {
                         $emails[] = $user->email;
                     }
                 }
