@@ -59,7 +59,13 @@ class reject_visa extends external_api {
                 'comment' => $comment,
             ]
         );
-        $rfc = \customfield_sprogramme\local\persistent\sprogramme_rfc::get_record(['id' => $params['rfcid']]);
+        $rfc = \customfield_sprogramme\local\persistent\sprogramme_rfc::get_record(
+            ['id' => $params['rfcid']],
+            IGNORE_MISSING
+        );
+        if (!$rfc) {
+            throw new \invalid_parameter_exception('Invalid RFC id');
+        }
         $datafieldid = $rfc->get('datafieldid');
         $context = utils::get_context_from_datafieldid($datafieldid);
         self::validate_context($context);

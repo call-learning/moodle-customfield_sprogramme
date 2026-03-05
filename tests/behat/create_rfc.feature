@@ -202,3 +202,44 @@ Feature: As a teacher I can create and manage RFCs (Request for Change) in custo
     And "[data-action='rejectrfc']" "css_element" should exist in the "Edit" "dialogue"
     And I should see mod "1" row "1" column "TD" with value "4.0"
     And I should see mod "1" row "2" column "CM" with value "1.5"
+
+  Scenario: Reviewer can add and delete own visa from dialog
+    Given the following config values are set as admin:
+      | plugin                | name                  | value          |
+      | customfield_sprogramme| responsiblerolename   | editingteacher |
+      | customfield_sprogramme| departmentheadrolename| manager        |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | manager1 | Manager   | One      | manager1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | manager1 | SYLL1  | manager |
+    And I log in as "teacher1"
+    And I am on "SYLL1" course homepage
+    And I navigate to "Settings" in current page administration
+    And I expand all fieldsets
+    And I set the field "SProgramme field enabled" to "1"
+    And I click on "Save and display" "button"
+    And I navigate to "Settings" in current page administration
+    And I expand all fieldsets
+    And I click the programme edit button
+    And I set mod "1" row "1" column "Session title or exercise" to "Séance Visa"
+    And I click on "Save" "button" in the "Edit" "dialogue"
+    And I click on the "submitrfc" data action
+    And I log out
+    And I log in as "manager1"
+    And I am on "SYLL1" course homepage
+    And I navigate to "Settings" in current page administration
+    And I expand all fieldsets
+    And I click the programme edit button
+    And I click on "Visa" "button" in the "Edit" "dialogue"
+    And I click on the "addvisa" data action
+    And I set the field "Comment" in the "Add visa" "dialogue" to "Needs update"
+    And I click on "Reject" "radio" in the "Add visa" "dialogue"
+    And I click on "Save" "button" in the "Add visa" "dialogue"
+    And "[data-toggle='tooltip']" "css_element" should exist in the "Edit" "dialogue"
+    And I click on "Visa" "button" in the "Edit" "dialogue"
+    And I click on the "addvisa" data action
+    And I click on "Delete my visa" "radio" in the "Add visa" "dialogue"
+    And I click on "Save" "button" in the "Add visa" "dialogue"
+    Then "[data-toggle='tooltip']" "css_element" should not exist in the "Edit" "dialogue"
