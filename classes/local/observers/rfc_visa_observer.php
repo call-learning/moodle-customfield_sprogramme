@@ -16,12 +16,11 @@
 
 namespace customfield_sprogramme\local\observers;
 
-use customfield_sprogramme\event\rfc_accepted;
-use customfield_sprogramme\event\rfc_created;
-use customfield_sprogramme\event\rfc_submitted;
 use customfield_sprogramme\event\rfc_visa_updated;
 use customfield_sprogramme\local\api\notifications;
+use customfield_sprogramme\local\persistent\sprogramme_visa;
 use customfield_sprogramme\local\visa_manager;
+use customfield_sprogramme\utils;
 
 /**
  * Monitor event related to rfc (request for change)
@@ -41,10 +40,41 @@ class rfc_visa_observer {
         $userid = $eventdata['userid'];
         $rfcid = $eventdata['objectid'];
         $visamanager = new visa_manager($rfcid);
-        $visastodo = $visamanager->get_visas_total_todo();
-        $visadone = $visamanager->get_visas_total_done();
-        if ($visadone >= $visastodo) {
-            $datafieldid = $visamanager->get_datafield_id();
+        $datafieldid = $visamanager->get_datafield_id();
+        $courseid = utils::get_instanceid_from_datafieldid($datafieldid);
+        if (empty($courseid)) {
+            return;
+        }
+
+        $responsibles = utils::get_responsible_reviewers_for_course($courseid);
+        $hodreviewers = utils::get_hod_reviewers_for_course($courseid);
+        if (empty($responsibles) || empty($hodreviewers)) {
+            return;
+        }
+
+        $visas = $visamanager->get_visas();
+        $statusbyuser = [];
+        foreach ($visas as $visa) {
+            $statusbyuser[$visa->get('visauser')] = (int)$visa->get('status');
+        }
+
+        foreach ($responsibles as $responsible) {
+            $status = $statusbyuser[$responsible->id] ?? sprogramme_visa::STATUS_PENDING;
+            if ($status == sprogramme_visa::STATUS_PENDING) {
+                return;
+            }
+        }
+
+        $hodapproved = false;
+        foreach ($hodreviewers as $hodreviewer) {
+            $status = $statusbyuser[$hodreviewer->id] ?? sprogramme_visa::STATUS_PENDING;
+            if ($status == sprogramme_visa::STATUS_APPROVED) {
+                $hodapproved = true;
+                break;
+            }
+        }
+
+        if ($hodapproved) {
             notifications::add_notification('rfc_visa_all_done', $userid, $datafieldid);
         }
     }

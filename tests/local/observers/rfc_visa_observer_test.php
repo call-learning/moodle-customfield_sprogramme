@@ -67,7 +67,7 @@ final class rfc_visa_observer_test extends \advanced_testcase {
     /**
      * Test that a notification is created when all visas are completed.
      */
-    public function test_rfc_visa_all_done_notification_created(): void {
+    public function test_rfc_visa_notification_after_hod_approval_and_responsibles_done(): void {
         $generator = $this->getDataGenerator();
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
         $creator = $generator->create_user(['username' => 'creator1']);
@@ -119,12 +119,12 @@ final class rfc_visa_observer_test extends \advanced_testcase {
         $visamanager->reject_visa($responsible1->id, 'No');
         $this->assertCount(0, notification::get_records(['notification' => 'rfc_visa_all_done']));
 
-        $this->setUser($responsible2);
-        $visamanager->reject_visa($responsible2->id, 'No');
+        $this->setUser($hoduser);
+        $visamanager->accept_visa($hoduser->id, 'Yes');
         $this->assertCount(0, notification::get_records(['notification' => 'rfc_visa_all_done']));
 
-        $this->setUser($hoduser);
-        $visamanager->reject_visa($hoduser->id, 'No');
+        $this->setUser($responsible2);
+        $visamanager->reject_visa($responsible2->id, 'No');
 
         $notifications = notification::get_records(['notification' => 'rfc_visa_all_done']);
         $this->assertCount(2, $notifications);

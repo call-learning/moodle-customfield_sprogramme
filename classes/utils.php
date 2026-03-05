@@ -134,21 +134,57 @@ class utils {
      * @return array
      */
     public static function get_responsible_visa_reviewer_for_course(int $courseid): array {
-        $responsibleroleid = self::get_responsible_role_id();
-        $headofdepartmentroleid = self::get_hod_role_id();
+        $reviewers = array_merge(
+            self::get_responsible_reviewers_for_course($courseid),
+            self::get_hod_reviewers_for_course($courseid)
+        );
+        $reviewersbyid = [];
+        foreach ($reviewers as $reviewer) {
+            $reviewersbyid[$reviewer->id] = $reviewer;
+        }
+        return array_values($reviewersbyid);
+    }
 
-        if (!empty($responsibleroleid) && !empty($headofdepartmentroleid)) {
-            $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
-            $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
-            return get_role_users(
-                [$responsibleroleid, $headofdepartmentroleid],
-                \context_course::instance($courseid),
-                true,
-                $userfields
-            );
-        } else {
+    /**
+     * Get users matching the responsible reviewer role for a course.
+     *
+     * @param int $courseid
+     * @return array
+     */
+    public static function get_responsible_reviewers_for_course(int $courseid): array {
+        $responsibleroleid = self::get_responsible_role_id();
+        if (empty($responsibleroleid)) {
             return [];
         }
+        $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+        $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
+        return get_role_users(
+            $responsibleroleid,
+            \context_course::instance($courseid),
+            true,
+            $userfields
+        );
+    }
+
+    /**
+     * Get users matching the head of department reviewer role for a course.
+     *
+     * @param int $courseid
+     * @return array
+     */
+    public static function get_hod_reviewers_for_course(int $courseid): array {
+        $headofdepartmentroleid = self::get_hod_role_id();
+        if (empty($headofdepartmentroleid)) {
+            return [];
+        }
+        $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+        $userfields = 'ra.id, u.id, u.username' . $userfieldsapi->get_sql('u')->selects;
+        return get_role_users(
+            $headofdepartmentroleid,
+            \context_course::instance($courseid),
+            true,
+            $userfields
+        );
     }
 
     /**
