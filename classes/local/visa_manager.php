@@ -82,8 +82,12 @@ class visa_manager {
         }
 
         $reviewers = [];
+        $hodreviewersbyid = [];
         if ($this->context && $this->context->contextlevel == CONTEXT_COURSE && !empty($this->context->instanceid)) {
             $reviewers = utils::get_responsible_visa_reviewer_for_course($this->context->instanceid);
+            foreach (utils::get_hod_reviewers_for_course($this->context->instanceid) as $hodreviewer) {
+                $hodreviewersbyid[$hodreviewer->id] = true;
+            }
         }
         $reviewersbyid = [];
         foreach ($reviewers as $reviewer) {
@@ -112,6 +116,7 @@ class visa_manager {
                 'visauser' => [
                     'id' => $reviewer->id,
                     'fullname' => fullname($reviewer),
+                    'isdepartmenthead' => !empty($hodreviewersbyid[$reviewer->id]),
                 ],
                 'statustext' => $visa ? $visa->get_status_string() : get_string('pending', 'customfield_sprogramme'),
                 'isapproved' => $status == sprogramme_visa::STATUS_APPROVED,

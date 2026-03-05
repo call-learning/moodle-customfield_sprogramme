@@ -203,6 +203,7 @@ class get_data extends external_api {
                         'visauser' => new external_single_structure([
                             'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
                             'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),
+                            'isdepartmenthead' => new external_value(PARAM_BOOL, 'Is head of department', VALUE_OPTIONAL),
                         ], 'User who created the RFC', VALUE_OPTIONAL),
                         'timemodified' => new external_value(PARAM_INT, 'Time modified', VALUE_OPTIONAL),
                         'canmanage' => new external_value(PARAM_BOOL, 'Can manage own visa', VALUE_OPTIONAL),

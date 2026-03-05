@@ -76,7 +76,7 @@
                     <tbody>
                     {{#visas}}
                         <tr>
-                            <td>{{visauser.fullname}}</td>
+                            <td>{{#visauser.isdepartmenthead}}<strong>{{visauser.fullname}}</strong>{{/visauser.isdepartmenthead}}{{^visauser.isdepartmenthead}}{{visauser.fullname}}{{/visauser.isdepartmenthead}}</td>
                             <td class="text-center" title="{{statustext}}">
                                 {{#isapproved}}<i class="fa fa-check text-success" aria-hidden="true"></i>{{/isapproved}}
                                 {{#isrejected}}<i class="fa fa-times text-danger" aria-hidden="true"></i>{{/isrejected}}
