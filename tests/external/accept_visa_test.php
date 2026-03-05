@@ -102,7 +102,11 @@ final class accept_visa_test extends \externallib_advanced_testcase {
         $course = $generator->create_course();
         $cfdata = $cfgenerator->add_instance_data($cfield, $course->id, 1);
         $pgenerator = $generator->get_plugin_generator('customfield_sprogramme');
-        $rfc = $pgenerator->create_rfc($cfdata->get('id'), \customfield_sprogramme\local\persistent\sprogramme_rfc::RFC_SUBMITTED, '{}');
+        $rfc = $pgenerator->create_rfc(
+            $cfdata->get('id'),
+            \customfield_sprogramme\local\persistent\sprogramme_rfc::RFC_SUBMITTED,
+            '{}'
+        );
 
         set_config('responsiblerolename', 'spg_reviewer', 'customfield_sprogramme');
         set_config('departmentheadrolename', 'spg_hod', 'customfield_sprogramme');
