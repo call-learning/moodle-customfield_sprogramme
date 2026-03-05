@@ -69,6 +69,17 @@
                                 {{#ispending}}<span class="text-muted">-</span>{{/ispending}}
                             </td>
                             <td>
+                                {{#comment}}
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{comment}}"
+                                            aria-label="{{#str}}comment, customfield_sprogramme{{/str}}: {{comment}}">
+                                        <i class="fa fa-question-circle" aria-hidden="true"></i>
+                                        <span class="accesshide">{{#str}}comment, customfield_sprogramme{{/str}}</span>
+                                    </button>
+                                {{/comment}}
                                 {{#canmanage}}
                                     <a href="#"
                                        class="btn btn-sm btn-primary"
