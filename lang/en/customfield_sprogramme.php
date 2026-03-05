@@ -133,13 +133,13 @@ $string['email:rfc_visa_all_done:subject'] = '[Syllabus] All visas completed for
 $string['emailsenabled'] = 'Activate email notifications';
 $string['emailsenabled_desc'] = 'If enabled, email notifications will be sent when a change request is submitted.';
 $string['encoding'] = 'Encoding';
-$string['event_rfc_rejected'] = 'RFC rejected';
 $string['entity:competency'] = 'Competency';
 $string['entity:competency_assignment'] = 'Competency assignment';
 $string['entity:discipline'] = 'Discipline';
 $string['entity:discipline_assignment'] = 'Discipline assignment';
 $string['entity:module'] = 'Module';
 $string['entity:programme'] = 'Programme';
+$string['event_rfc_rejected'] = 'RFC rejected';
 $string['fmp_help'] = 'Professional Training in the context of a UC: Training periods that are an integral part of the study program, but are followed outside the institution and under the supervision of a non-academic teacher (for example, a practitioner).';
 $string['history'] = 'History';
 $string['intitule_seance_help'] = 'The name of the teaching exercise is entered in this field. It must match exactly the memo indicated in Hyperplanning. This title starts with the type of exercise (CM, TD, TP, etc.) and its order in the educational ribbon. For example: "CM03 - Dairy Cow Career 1/2".';
@@ -247,9 +247,9 @@ $string['uploadcsv'] = 'Upload CSV file';
 $string['usernotfound'] = 'User not found';
 $string['value'] = 'Value';
 $string['visa'] = 'Visa';
-$string['visaapproved'] = 'Visaed';
-$string['visarejected'] = 'Visa rejected';
 $string['visa_help'] = 'When a programme change request is submitted, it must be validated by the relevant department head and
 the course leader before the changes are approved by the administrators. By clicking "Validate", you certify that the
 proposed changes comply with pedagogical and administrative requirements, and that you approve their
 implementation in the curriculum.';
+$string['visaapproved'] = 'Visaed';
+$string['visarejected'] = 'Visa rejected';

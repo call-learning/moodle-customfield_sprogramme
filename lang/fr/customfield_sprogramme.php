@@ -137,13 +137,13 @@ $string['email:rfc_visa_all_done:subject'] = '[Syllabus] Tous les visas complét
 $string['emailsenabled'] = 'Activer les notifications par e-mail';
 $string['emailsenabled_desc'] = 'Si activé, les notifications par e-mail seront envoyées lors de la soumission de demandes de modification de programme.';
 $string['encoding'] = 'Encodage';
-$string['event_rfc_rejected'] = 'RFC rejetée';
 $string['entity:competency'] = 'Compétence';
 $string['entity:competency_assignment'] = 'Affectation de compétence';
 $string['entity:discipline'] = 'Discipline';
 $string['entity:discipline_assignment'] = 'Affectation de discipline';
 $string['entity:module'] = 'Module';
 $string['entity:programme'] = 'Programme';
+$string['event_rfc_rejected'] = 'RFC rejetée';
 $string['fmp_help'] = 'Formation en Milieu Professionnel dans le cadre d’une UC : Périodes de formation qui font partie intégrante du programme d’études, mais qui sont suivies en dehors de l’établissement et sous la supervision d’un enseignant non académique (par exemple un praticien).';
 $string['history'] = 'Historique';
 $string['intitule_seance_help'] = 'Le nom de l’exercice d’enseignement est renseigné dans cette case. Il doit correspondre exactement au mémo indiqué dans Hyperplanning. Cet intitulé commence par le type d’exercice (CM, TD, TP, …) et son ordre dans le ruban pédagogique. Par exemple : « CM03 - Carrière de la vache laitière 1/2 ».';
@@ -251,9 +251,9 @@ $string['uploadcsv'] = 'Charger un fichier CSV';
 $string['usernotfound'] = 'Utilisateur non trouvé';
 $string['value'] = 'Valeur';
 $string['visa'] = 'Visa';
-$string['visaapproved'] = 'Visé';
-$string['visarejected'] = 'Visa refusé';
 $string['visa_help'] = 'Quand une demande de modification de programme est soumise, elle doit être validée par le chef
 de département concerné et le responsable de cours avant que les modifications ne soient validées par les administrateur.
 En cliquant sur "Valider", vous certifiez que les modifications proposées sont conformes aux exigences pédagogiques
 et administratives, et que vous approuvez leur mise en œuvre dans le programme d’études.';
+$string['visaapproved'] = 'Visé';
+$string['visarejected'] = 'Visa refusé';

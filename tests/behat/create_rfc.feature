@@ -223,8 +223,9 @@ Feature: As a teacher I can create and manage RFCs (Request for Change) in custo
     And I navigate to "Settings" in current page administration
     And I expand all fieldsets
     And I click the programme edit button
-    And I set mod "1" row "1" column "Session title or exercise" to "Séance Visa"
+    And I set mod "1" row "1" column "TD" to "4.0"
     And I click on "Save" "button" in the "Edit" "dialogue"
+    And "[data-action='submitrfc']" "css_element" should exist in the "Edit" "dialogue"
     And I click on the "submitrfc" data action
     And I log out
     And I log in as "manager1"
