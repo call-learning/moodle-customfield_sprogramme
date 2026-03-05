@@ -180,7 +180,7 @@ final class visa_manager_test extends \advanced_testcase {
         $visa = new sprogramme_visa(0, (object) [
             'rfcid' => $rfc->id,
             'visauser' => $user3->id,
-            'comment' => '',
+            'comment' => 'legacy comment',
             'status' => sprogramme_visa::STATUS_PENDING,
         ]);
         $visa->create();
@@ -217,11 +217,19 @@ final class visa_manager_test extends \advanced_testcase {
             $data['visas'],
             fn($item) => $item['visauser']['id'] === $user2->id
         ));
+        $user3data = array_values(array_filter(
+            $data['visas'],
+            fn($item) => $item['visauser']['id'] === $user3->id
+        ));
         $this->assertCount(1, $user1data);
         $this->assertCount(1, $user2data);
+        $this->assertCount(1, $user3data);
         $this->assertEquals(fullname($user1), $user1data[0]['visauser']['fullname']);
         $this->assertEquals(get_string('visaapproved', 'customfield_sprogramme'), $user1data[0]['statustext']);
         $this->assertEquals(get_string('visarejected', 'customfield_sprogramme'), $user2data[0]['statustext']);
+        $this->assertTrue($user1data[0]['showcomment']);
+        $this->assertTrue($user2data[0]['showcomment']);
+        $this->assertFalse($user3data[0]['showcomment']);
 
         $this->assertTrue($visamanager->remove_visa($user2->id));
         $visasafterremove = $visamanager->get_visas();

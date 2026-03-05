@@ -142,8 +142,11 @@ class visa_validate_form extends dynamic_form {
         $defaultcomment = '';
         $visa = sprogramme_visa::get_record(['rfcid' => $rfcid, 'visauser' => $USER->id]);
         if (!empty($visa)) {
-            $defaultstatus = intval($visa->get('status'));
-            $defaultcomment = $visa->get('comment');
+            $visastatus = (int)$visa->get('status');
+            if (in_array($visastatus, [sprogramme_visa::STATUS_APPROVED, sprogramme_visa::STATUS_REJECTED], true)) {
+                $defaultstatus = $visastatus;
+                $defaultcomment = $visa->get('comment');
+            }
         }
         $data = [
             'rfcid' => $rfcid,

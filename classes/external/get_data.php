@@ -200,6 +200,7 @@ class get_data extends external_api {
                         'isapproved' => new external_value(PARAM_BOOL, 'Is approved', VALUE_OPTIONAL),
                         'isrejected' => new external_value(PARAM_BOOL, 'Is rejected', VALUE_OPTIONAL),
                         'ispending' => new external_value(PARAM_BOOL, 'Is pending', VALUE_OPTIONAL),
+                        'showcomment' => new external_value(PARAM_BOOL, 'Comment is visible', VALUE_OPTIONAL),
                         'visauser' => new external_single_structure([
                             'id' => new external_value(PARAM_INT, 'UserId', VALUE_REQUIRED),
                             'fullname' => new external_value(PARAM_TEXT, 'New value', VALUE_OPTIONAL),

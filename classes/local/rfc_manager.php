@@ -399,6 +399,8 @@ class rfc_manager {
             ]
         );
         if ($rfc) {
+            $visamanager = new visa_manager($rfc->get('id'));
+            $visamanager->reset_visas_to_pending();
             $rfc->set('type', sprogramme_rfc::RFC_REJECTED);
             $rfc->set('adminid', $USER->id);
             $rfc->save();

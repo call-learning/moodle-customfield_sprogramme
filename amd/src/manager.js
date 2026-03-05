@@ -181,9 +181,7 @@ class Manager {
                 await State.setValue('columns', [...columns]);
                 await State.setValue('modules', modules);
                 await State.setValue('rfc', response.rfc ?? []);
-                if (response.visainfo) {
-                    await State.setValue('visainfo', response.visainfo);
-                }
+                await State.setValue('visainfo', response.visainfo ?? []);
                 await State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.sumtotals();
             } else {
@@ -192,6 +190,7 @@ class Manager {
                 await State.setValue('columns', [...columns]);
                 await State.setValue('modules', []);
                 await State.setValue('rfc', []);
+                await State.setValue('visainfo', []);
                 await State.setValue('editbuttons', {datafieldid: this.datafieldid, canedit: response.canedit});
                 this.addModule();
             }

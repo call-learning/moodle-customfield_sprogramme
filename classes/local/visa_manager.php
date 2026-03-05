@@ -122,6 +122,7 @@ class visa_manager {
                 'isapproved' => $status == sprogramme_visa::STATUS_APPROVED,
                 'isrejected' => $status == sprogramme_visa::STATUS_REJECTED,
                 'ispending' => $status == sprogramme_visa::STATUS_PENDING,
+                'showcomment' => $status != sprogramme_visa::STATUS_PENDING && $comment !== '',
                 'comment' => $comment,
                 'timemodified' => $timemodified,
                 'canmanage' => $data['canvisa'] && (int)$USER->id === (int)$reviewer->id,
@@ -194,6 +195,22 @@ class visa_manager {
         }
         $visa->delete();
         return true;
+    }
+
+    /**
+     * Reset all existing visas for the current RFC to pending.
+     *
+     * @return void
+     */
+    public function reset_visas_to_pending(): void {
+        $visas = $this->get_visas();
+        $now = time();
+        foreach ($visas as $visa) {
+            $visa->set('status', sprogramme_visa::STATUS_PENDING);
+            $visa->set('comment', '');
+            $visa->set('timemodified', $now);
+            $visa->update();
+        }
     }
 
     /**

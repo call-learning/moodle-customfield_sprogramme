@@ -17,6 +17,7 @@
 namespace customfield_sprogramme\local;
 
 use customfield_sprogramme\local\persistent\sprogramme_rfc;
+use customfield_sprogramme\local\persistent\sprogramme_visa;
 use customfield_sprogramme\test\testcase_helper_trait;
 
 /**
@@ -416,15 +417,34 @@ final class rfc_manager_test extends \advanced_testcase {
      */
     public function test_reject(): void {
         $pgenerator = $this->getDataGenerator()->get_plugin_generator('customfield_sprogramme');
+        set_config('responsiblerolename', 'spg_reviewer', 'customfield_sprogramme');
+        set_config('departmentheadrolename', 'spg_hod', 'customfield_sprogramme');
         $teacher = $this->getDataGenerator()->create_and_enrol($this->course, 'editingteacher');
         $manager = $this->getDataGenerator()->create_and_enrol($this->course, 'manager');
+        $reviewerroleid = $this->getDataGenerator()->create_role([
+            'shortname' => 'spg_reviewer',
+            'name' => 'SProgramme Reviewer',
+            'archetype' => 'editingteacher',
+        ]);
+        $this->getDataGenerator()->create_role([
+            'shortname' => 'spg_hod',
+            'name' => 'SProgramme HOD',
+            'archetype' => 'teacher',
+        ]);
+        $reviewer1 = $this->getDataGenerator()->create_user();
+        $reviewer2 = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($reviewer1->id, $this->course->id, $reviewerroleid);
+        $this->getDataGenerator()->enrol_user($reviewer2->id, $this->course->id, $reviewerroleid);
         $rfcmanager = new rfc_manager($this->cfdata->get('id'));
         $this->assertFalse($rfcmanager->has_submitted());
-        $pgenerator->create_rfc(
+        $rfc = $pgenerator->create_rfc(
             $this->cfdata->get('id'),
             type: sprogramme_rfc::RFC_SUBMITTED,
             usercreated: $teacher->id,
         );
+        $visamanager = new visa_manager($rfc->id);
+        $visamanager->accept_visa($reviewer1->id, 'Accepted');
+        $visamanager->reject_visa($reviewer2->id, 'Rejected');
 
         $this->assertEquals(1, sprogramme_rfc::count_records(['type' => sprogramme_rfc::RFC_SUBMITTED]));
         $this->setUser($manager);
@@ -439,6 +459,12 @@ final class rfc_manager_test extends \advanced_testcase {
         );
         $this->assertNotNull($rejected);
         $this->assertEquals($manager->id, $rejected->get('adminid'));
+        $reviewer1visa = sprogramme_visa::get_record(['rfcid' => $rfc->id, 'visauser' => $reviewer1->id]);
+        $reviewer2visa = sprogramme_visa::get_record(['rfcid' => $rfc->id, 'visauser' => $reviewer2->id]);
+        $this->assertEquals(sprogramme_visa::STATUS_PENDING, $reviewer1visa->get('status'));
+        $this->assertEquals('', $reviewer1visa->get('comment'));
+        $this->assertEquals(sprogramme_visa::STATUS_PENDING, $reviewer2visa->get('status'));
+        $this->assertEquals('', $reviewer2visa->get('comment'));
     }
 
     /**
