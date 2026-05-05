@@ -46,13 +46,13 @@ class rfc extends base {
     const RFC_TEMP_TABLE_NAME = 'temp_reportbuilder_rfcs';
 
     #[\Override]
-    protected function get_default_table_aliases(): array {
+    protected function get_default_tables(): array {
         return [
-            'rfc' => 'temp_reportbuilder_rfcs',
-            'customfield_data' => 'cfdata',
-            'customfield_field' => 'cffield',
-            'user' => 'user',
-            'course' => 'course',
+            'rfc',
+            'customfield_data',
+            'customfield_field',
+            'user',
+            'course',
         ];
     }
 

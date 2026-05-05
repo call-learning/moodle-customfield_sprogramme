@@ -59,19 +59,19 @@
                 </div>
             </div>
             {{#cansubmit}}
-                <a class="btn btn-sm btn-icon d-flex justify-content-center align-items-center icon-no-margin" data-toggle="collapse" data-target="#rfc-help" aria-expanded="false" aria-controls="rfc-{{rfcid}}">
+                <a class="btn btn-sm btn-icon d-flex justify-content-center align-items-center icon-no-margin" data-bs-toggle="collapse" data-bs-target="#rfc-help" aria-expanded="false" aria-controls="rfc-{{rfcid}}">
                     {{#pix}} a/help, core, {{#str}} rfc:help, customfield_sprogramme {{/str}} {{/pix}}
                 </a>
             {{/cansubmit}}
             {{^cansubmit}}
-                <a class="btn btn-sm btn-icon d-flex justify-content-center align-items-center icon-no-margin" data-toggle="collapse" data-target="#rfcblocked-help" aria-expanded="false" aria-controls="rfc-{{rfcid}}">
+                <a class="btn btn-sm btn-icon d-flex justify-content-center align-items-center icon-no-margin" data-bs-toggle="collapse" data-bs-target="#rfcblocked-help" aria-expanded="false" aria-controls="rfc-{{rfcid}}">
                     {{#pix}} a/help, core, {{#str}} rfc:rfcblocked, customfield_sprogramme {{/str}} {{/pix}}
                 </a>
             {{/cansubmit}}
         </div>
     {{/rfc}}
 
-    <button class="btn btn-sm btn-info d-none ml-1" data-action="resetrfc">
+    <button class="btn btn-sm btn-info d-none ms-1" data-action="resetrfc">
         {{#str}}resetrfc, customfield_sprogramme{{/str}}
     </button>
 </div>

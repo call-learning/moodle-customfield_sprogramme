@@ -34,12 +34,12 @@ use lang_string;
  */
 class programme extends base {
     #[\Override]
-    protected function get_default_table_aliases(): array {
+    protected function get_default_tables(): array {
         return [
-            'customfield_sprogramme' => 'programme',
-            'customfield_data' => 'cfdata',
-            'customfield_field' => 'cffield',
-            'user' => 'user',
+            'customfield_sprogramme',
+            'customfield_data',
+            'customfield_field',
+            'user',
         ];
     }
 

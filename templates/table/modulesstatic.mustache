@@ -180,7 +180,7 @@
             <thead>
                 <tr data-region="columns">
                     {{#columns}}
-                        <th class="{{field}}" data-columnid="{{columnid}}" {{#help}}data-toggle="popover" data-placement="bottom" data-html="true" data-content="{{{help}}}"{{/help}}>
+                        <th class="{{field}}" data-columnid="{{columnid}}" {{#help}}data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" data-bs-content="{{{help}}}"{{/help}}>
                             <span class="thlabel {{#help}}hashelp{{/help}}">{{{label}}}</span>
                         </th>
                     {{/columns}}
@@ -188,7 +188,7 @@
             </thead>
             <tbody data-region="rows">
                 {{#rows}}
-                    <tr class="{{#disciplines}}show-disciplines {{/disciplines}} {{#competencies}}show-competencies {{/competencies}}" data-toggle="collapse" data-target="#row-{{id}}" aria-expanded="false">
+                    <tr class="{{#disciplines}}show-disciplines {{/disciplines}} {{#competencies}}show-competencies {{/competencies}}" data-bs-toggle="collapse" data-bs-target="#row-{{id}}" aria-expanded="false">
                         {{#cells}}
                             <td class="static {{type}} {{column}}">
                                 <span class="staticdata">{{{value}}}</span>

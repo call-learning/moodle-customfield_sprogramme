@@ -39,25 +39,25 @@
 {{#visainfo}}
     <div class="card mb-2">
         <div class="card-header p-0" id="visaHeading-{{rfcid}}">
-            <button class="btn btn-link btn-block text-left d-flex justify-content-between align-items-center"
+            <button class="btn btn-link d-grid w-100 text-start d-flex justify-content-between align-items-center"
                     type="button"
-                    data-toggle="collapse"
-                    data-target="#visaCollapse-{{rfcid}}"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#visaCollapse-{{rfcid}}"
                     aria-expanded="false"
                     aria-controls="visaCollapse-{{rfcid}}">
-                <span class="pr-3">{{#str}}visa, customfield_sprogramme{{/str}}</span>
+                <span class="pe-3">{{#str}}visa, customfield_sprogramme{{/str}}</span>
                 <span class="d-flex align-items-center">
                     {{#approved}}
-                        <span class="badge badge-success mr-1" title="{{#str}}visaapproved, customfield_sprogramme{{/str}}">
+                        <span class="badge bg-success me-1" title="{{#str}}visaapproved, customfield_sprogramme{{/str}}">
                             {{approved}}
                         </span>
                     {{/approved}}
                     {{#rejected}}
-                        <span class="badge badge-danger mr-1" title="{{#str}}visarejected, customfield_sprogramme{{/str}}">
+                        <span class="badge bg-danger me-1" title="{{#str}}visarejected, customfield_sprogramme{{/str}}">
                             {{rejected}}
                         </span>
                     {{/rejected}}
-                    <span class="badge badge-info">{{done}}/{{todo}}</span>
+                    <span class="badge bg-info text-dark">{{done}}/{{todo}}</span>
                 </span>
             </button>
         </div>
@@ -76,10 +76,10 @@
                         <tr>
                             <td>
                                 {{#visauser.isdepartmenthead}}
-                                    <span class="mr-1 text-primary">{{#pix}}i/users, core, {{#str}}departmentheadrolename, customfield_sprogramme{{/str}}{{/pix}}</span>
+                                    <span class="me-1 text-primary">{{#pix}}i/users, core, {{#str}}departmentheadrolename, customfield_sprogramme{{/str}}{{/pix}}</span>
                                 {{/visauser.isdepartmenthead}}
                                 {{^visauser.isdepartmenthead}}
-                                    <span class="mr-1 text-muted">{{#pix}}i/user, core, {{#str}}responsiblerolename, customfield_sprogramme{{/str}}{{/pix}}</span>
+                                    <span class="me-1 text-muted">{{#pix}}i/user, core, {{#str}}responsiblerolename, customfield_sprogramme{{/str}}{{/pix}}</span>
                                 {{/visauser.isdepartmenthead}}
                                 {{visauser.fullname}}
                             </td>
@@ -92,8 +92,8 @@
                                 {{#showcomment}}
                                     <button type="button"
                                             class="btn btn-icon btn-clear icon-no-margin"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
                                             title="{{comment}}"
                                             aria-label="{{#str}}comment, customfield_sprogramme{{/str}}: {{comment}}">
                                         {{#pix}}t/messages-o, core, {{#str}}comment, customfield_sprogramme{{/str}}{{/pix}}
