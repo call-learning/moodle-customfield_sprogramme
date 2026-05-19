@@ -59,8 +59,8 @@ const init = async() => {
             await showHistory(rfcid, datafieldid);
             event.preventDefault();
         }
-        const popOvers = document.querySelectorAll('[data-toggle="popover"]');
-        const currentPopover = event.target.closest('[data-toggle="popover"]');
+        const popOvers = document.querySelectorAll('[data-bs-toggle="popover"]');
+        const currentPopover = event.target.closest('[data-bs-toggle="popover"]');
         if (popOvers.length > 0) {
             popOvers.forEach((popover) => {
                 if (popover !== currentPopover) {

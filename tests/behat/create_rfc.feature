@@ -243,9 +243,9 @@ Feature: As a teacher I can create and manage RFCs (Request for Change) in custo
     And I set the field "Comment" in the "Add visa" "dialogue" to "Needs update"
     And I click on "Reject" "radio" in the "Add visa" "dialogue"
     And I click on "Save" "button" in the "Add visa" "dialogue"
-    And "[data-toggle='tooltip']" "css_element" should exist in the "Edit" "dialogue"
+    And "[data-bs-toggle='tooltip']" "css_element" should exist in the "Edit" "dialogue"
     And I click on "Visa" "button" in the "Edit" "dialogue"
     And I click on the "addvisa" data action
     And I click on "Delete my visa" "radio" in the "Add visa" "dialogue"
     And I click on "Save" "button" in the "Add visa" "dialogue"
-    Then "[data-toggle='tooltip']" "css_element" should not exist in the "Edit" "dialogue"
+    Then "[data-bs-toggle='tooltip']" "css_element" should not exist in the "Edit" "dialogue"

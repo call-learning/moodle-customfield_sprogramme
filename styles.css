@@ -30,7 +30,9 @@
     background-clip: padding-box;
     border: 0;
     border-radius: 0;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
 }
 .customfield-sprogramme .programm-input::placeholder,
 .customfield-sprogramme .programm-input::-webkit-input-placeholder {
@@ -55,7 +57,9 @@
     background-clip: padding-box;
     border: 0;
     border-radius: 0;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
 }
 .customfield-sprogramme .programm-textarea:focus {
     outline: 1px solid #7fb6f1;
@@ -133,14 +137,14 @@
     border-left: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
 }
-.customfield-sprogramme .programm-table input[type=number] {
+.customfield-sprogramme .programm-table input[type="number"] {
     /* For most modern browsers */
     -moz-appearance: textfield; /* Firefox */
     -webkit-appearance: textfield; /* Chrome, Safari, Edge */
     appearance: textfield;
 }
-.customfield-sprogramme .programm-table input[type=number]::-webkit-inner-spin-button,
-.customfield-sprogramme .programm-table input[type=number]::-webkit-outer-spin-button {
+.customfield-sprogramme .programm-table input[type="number"]::-webkit-inner-spin-button,
+.customfield-sprogramme .programm-table input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0; /* Optional: Prevent additional spacing */
 }
@@ -168,7 +172,7 @@
 .customfield-sprogramme .programm-table .deletepending .competencies button {
     display: none;
 }
-.customfield-sprogramme .programm-table tr.haserror [data-group=unique] {
+.customfield-sprogramme .programm-table tr.haserror [data-group="unique"] {
     background-color: #f8d7da;
     color: #721c24;
 }
@@ -209,7 +213,7 @@
     align-items: center;
     border-radius: 50%;
     width: 100%;
-    color: var(--dark);
+    color: var(--bs-dark);
 }
 .customfield-sprogramme .programm-table th,
 .customfield-sprogramme .programm-table td {
@@ -309,8 +313,8 @@
 .customfield-sprogramme.syllabuspage .programm-table tr.show-competencies:hover {
     background-color: #f7f7f7;
 }
-.customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines[aria-expanded=true],
-.customfield-sprogramme.syllabuspage .programm-table tr.show-competencies[aria-expanded=true] {
+.customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines[aria-expanded="true"],
+.customfield-sprogramme.syllabuspage .programm-table tr.show-competencies[aria-expanded="true"] {
     border-bottom: initial;
 }
 .customfield-sprogramme.syllabuspage .programm-table tr.show-disciplines > td.intitule_seance > .staticdata,
@@ -369,7 +373,7 @@
     height: 0;
     border-top: 13px solid transparent;
     border-bottom: 13px solid transparent;
-    border-left: 13px solid var(--light);
+    border-left: 13px solid var(--bs-light);
 }
 .customfield-sprogramme .tag-form {
     display: block;
@@ -380,7 +384,7 @@
     padding: 0.5rem;
     background-color: #fff;
     z-index: 1;
-    border: 1px solid var(--light);
+    border: 1px solid var(--bs-light);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     font-size: 0.8rem;
 }
@@ -396,7 +400,7 @@
     font-size: 0.8rem;
 }
 .customfield-sprogramme .tag-form .list-group {
-    border-top: 1px solid var(--light);
+    border-top: 1px solid var(--bs-light);
     border-radius: 0;
 }
 .customfield-sprogramme .tag-form .list-group-item {
@@ -423,7 +427,7 @@
 .customfield-sprogramme .tag-form .tag-list {
     height: 450px;
     overflow-y: auto;
-    border-bottom: 1px solid var(--light);
+    border-bottom: 1px solid var(--bs-light);
 }
 .customfield-sprogramme .tag-form.data-tags .competences-list {
     display: none;
@@ -477,10 +481,10 @@
     margin-top: -1.5px;
 }
 .modal .modal-customfield_sprogramme_editor .saveconfirm .savingicon .icon {
-    color: var(--warning);
+    color: var(--bs-warning);
 }
 .modal .modal-customfield_sprogramme_editor .saveconfirm .defaulticon .icon {
-    color: var(--success);
+    color: var(--bs-success);
 }
 .modal .modal-customfield_sprogramme_editor .saveconfirm .icon {
     color: #9f9f9f;

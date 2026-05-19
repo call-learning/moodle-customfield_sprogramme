@@ -12,7 +12,7 @@ Feature: Managers can manage course custom fields sprogramme
     And I navigate to "Courses > Default settings > Course custom fields" in site administration
 
   Scenario: Create a custom course sprogramme field
-    When I click on "Add a new custom field" "link"
+    When I click on "Add field" "link"
     And I click on "Programme customfield" "link"
     And I set the following fields to these values:
       | Name       | Test field |
@@ -23,12 +23,13 @@ Feature: Managers can manage course custom fields sprogramme
 
   Scenario: Delete a custom course select field
     Given I change window size to "large"
-    When I click on "Add a new custom field" "link"
+    When I click on "Add field" "link"
     And I click on "Programme customfield" "link"
     And I set the following fields to these values:
       | Name       | Test field |
       | Short name | testfield  |
     And I click on "Save changes" "button" in the "Adding a new Programme customfield" "dialogue"
+    And I click on "[data-bs-toggle='dropdown']" "css_element" in the "Test field" "table_row"
     And I click on "[data-role='deletefield']" "css_element" in the "Test field" "table_row"
     And I click on "Yes" "button" in the "Confirm" "dialogue"
     Then I should not see "Test field"
