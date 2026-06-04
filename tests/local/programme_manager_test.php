@@ -402,7 +402,7 @@ final class programme_manager_test extends \advanced_testcase {
         // We should have 2 rows + header.
         $rows = explode("\n", $csvdata);
         $rows = array_filter($rows, fn($value) => !empty(trim($value)));
-        $rows = array_map('str_getcsv', $rows);
+        $rows = array_map(fn($row) => str_getcsv($row, escape: '\\'), $rows);
         $this->assertCount(3, $rows);
         $expectedrows = [
             [

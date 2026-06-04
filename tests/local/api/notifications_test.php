@@ -95,7 +95,7 @@ final class notifications_test extends \advanced_testcase {
         notifications::add_notification('rfc_submitted', $user1->id, $this->cfdata->get('id'));
         $this->assertCount(1, notification::get_records([]));
 
-        $notification = notification::get_records([])[0];
+        $notification = array_values(notification::get_records([]))[0];
         $this->assertEquals('rfc_submitted', $notification->get('notification'));
         $this->assertEquals($this->cfdata->get('id'), $notification->get('datafieldid'));
         $this->assertEquals('admin@example.com', $notification->get('recipient')); // Default admin email.
@@ -125,7 +125,7 @@ final class notifications_test extends \advanced_testcase {
             usercreated: $user1->id,
         );
         notifications::add_notification('rfc_submitted', $user1->id, $this->cfdata->get('id'));
-        $notifications = notification::get_records();
+        $notifications = array_values(notification::get_records());
         $this->assertCount(2, $notifications);
 
         $notification = $notifications[0];
