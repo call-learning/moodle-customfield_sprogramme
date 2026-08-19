@@ -29,11 +29,6 @@ use customfield_sprogramme\reportbuilder\local\entities\discipline;
  */
 class disciplines extends system_report {
     #[\Override]
-    public function get_default_conditions(): array {
-        return [];
-    }
-
-    #[\Override]
     protected function initialise(): void {
         $discipline = new discipline();
         $disciplinealias = $discipline->get_table_alias('customfield_sprogramme_disclist');
@@ -50,7 +45,12 @@ class disciplines extends system_report {
         $this->set_filter_form_default($hasfilters);
     }
 
-    #[\Override]
+    /**
+     * Add columns to the report.
+     *
+     * @return void
+     * @throws \coding_exception
+     */
     protected function add_columns(): void {
         $columns = [
             'discipline:uniqueid',
@@ -66,7 +66,12 @@ class disciplines extends system_report {
         $this->set_initial_sort_column('discipline:sortorder', SORT_ASC);
     }
 
-    #[\Override]
+    /**
+     * Add filters to the report.
+     *
+     * @return void
+     * @throws \coding_exception
+     */
     protected function add_filters(): void {
         $filters = [
             'discipline:uniqueid',

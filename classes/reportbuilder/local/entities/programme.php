@@ -441,9 +441,4 @@ class programme extends base {
 
         return $filters;
     }
-
-    #[\Override]
-    protected function can_view(): bool {
-        return has_capability('moodle/reportbuilder:view', \context_system::instance());
-    }
 }
