@@ -115,7 +115,7 @@ class rfcs extends datasource {
 
         $userentity = new user();
         $userentity->set_entity_name('usercreated');
-        $userentity->set_entity_title(new \lang_string('usercreated'));
+        $userentity->set_entity_title(new \lang_string('usercreated', 'reportbuilder'));
         $useralias = $userentity->get_table_alias('user');
         $this->add_entity($userentity
             ->add_join("LEFT JOIN {user} {$useralias} ON {$useralias}.id = {$rfcalias}.usercreated"));

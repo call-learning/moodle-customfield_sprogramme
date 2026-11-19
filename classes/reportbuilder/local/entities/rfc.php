@@ -445,7 +445,7 @@ class rfc extends base {
         $filters[] = (new filter(
             user::class,
             'usermodified',
-            new lang_string('programme:usermodified', 'customfield_sprogramme'),
+            new lang_string('usermodified', 'reportbuilder'),
             $this->get_entity_name(),
             "{$rfcalias}.usermodified"
         ))
