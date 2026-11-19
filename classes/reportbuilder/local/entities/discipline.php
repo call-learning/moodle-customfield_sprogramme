@@ -52,7 +52,12 @@ class discipline extends base {
         return $this;
     }
 
-    #[\Override]
+    /**
+     * Get all columns defined by the entity.
+     *
+     * @return array
+     * @throws \core\exception\coding_exception
+     */
     protected function get_all_columns(): array {
         $competencyalias = $this->get_table_alias('customfield_sprogramme_disclist');
         $columns[] = (new column(
